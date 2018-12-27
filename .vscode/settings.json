@@ -1,0 +1,6 @@
+{
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "prettier.tslintIntegration": true,
+  "tslint.alwaysShowRuleFailuresAsWarnings": true
+}

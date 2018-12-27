@@ -1,0 +1,6 @@
+{
+  "extends": "../tslint.json",
+  "rules": {
+    "no-submodule-imports": [true, "react-hot-loader"]
+  }
+}

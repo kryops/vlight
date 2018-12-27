@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "EditorConfig.EditorConfig",
+    "esbenp.prettier-vscode",
+    "eg2.tslint",
+    "msjsdiag.debugger-for-chrome",
+    "christian-kohler.npm-intellisense"
+  ]
+}
