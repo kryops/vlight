@@ -8,7 +8,7 @@
   "private": true,
   "scripts": {
     "clean": "rimraf backend/dist frontend/dist",
-    "build:backend": "tsc -p ./backend",
+    "build:backend": "tsc -p ./backend/src",
     "build:frontend": "cross-env NODE_ENV=production && webpack --config frontend/webpack.config.ts --env.production",
     "frontend:analyze": "webpack --config frontend/webpack.config.ts --env.production --env.analyze",
     "lint": "tslint --project . && tsc -p ./frontend",

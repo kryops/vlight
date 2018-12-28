@@ -1,24 +1,23 @@
-import compression from 'compression'
-import express from 'express'
-import { join } from 'path'
 import sourceMapSupport from 'source-map-support'
 
-import { logInfo } from './util/log'
+import { initExpressApp } from './app'
+import { initUdpMulticast } from './devices/vlight/udp'
+import { logError } from './util/log'
 
 sourceMapSupport.install()
 
-const port = 8000
-const isDevelopment = process.env.NODE_ENV === 'development'
+// we want to keep the process running under all circumstances
 
-logInfo('development', isDevelopment)
+process.on('uncaughtException', err => {
+  logError('UNCAUGHT EXCEPTION', err)
+})
 
-const app = express()
+process.on('unhandledRejection', err => {
+  logError('UNHANDLED REJECTION', err)
+})
 
-if (isDevelopment) {
-  import('./development').then(dev => dev.applyDevMiddleware(app))
-} else {
-  app.use(compression())
-  app.use(express.static(join(__dirname, '../../frontend/dist')))
-}
+// actual initialization
 
-app.listen(port, () => logInfo(`vLight listening on http://127.0.0.1:${port}`))
+initExpressApp()
+
+initUdpMulticast()
