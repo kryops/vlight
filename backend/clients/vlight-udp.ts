@@ -1,14 +1,13 @@
 import { createSocket } from 'dgram'
-import { AddressInfo } from 'net'
 
 import { udpMulticastAddress, udpPort } from '../src/config'
 import { logInfo } from '../src/util/log'
+import { getAddressString } from '../src/util/network'
 
 const socket = createSocket({ type: 'udp4', reuseAddr: true })
 
 socket.on('listening', () => {
-  const { address, port } = socket.address() as AddressInfo
-  logInfo(`UDP client listening on ${address}:${port}`)
+  logInfo(`UDP client listening on ${getAddressString(socket.address())}`)
   socket.setBroadcast(true)
   socket.setMulticastTTL(4)
   socket.addMembership(udpMulticastAddress)

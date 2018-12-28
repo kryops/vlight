@@ -1,8 +1,10 @@
 import sourceMapSupport from 'source-map-support'
 
 import { initExpressApp } from './app'
+import { httpPort } from './config'
+import { initTcpServer } from './devices/vlight/tcp'
 import { initUdpMulticast } from './devices/vlight/udp'
-import { logError } from './util/log'
+import { logError, logInfo } from './util/log'
 
 sourceMapSupport.install()
 
@@ -18,6 +20,8 @@ process.on('unhandledRejection', err => {
 
 // actual initialization
 
-initExpressApp()
+const initialization = [initExpressApp(), initUdpMulticast(), initTcpServer()]
 
-initUdpMulticast()
+Promise.all(initialization).then(() =>
+  logInfo(`vLight started on http://127.0.0.1:${httpPort}`)
+)

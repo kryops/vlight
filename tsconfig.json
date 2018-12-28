@@ -6,6 +6,7 @@
     "forceConsistentCasingInFileNames": true,
     "inlineSourceMap": true,
     "inlineSources": true,
+    "lib": ["es2018"],
     "module": "commonjs",
     "moduleResolution": "node",
     "noImplicitAny": true,

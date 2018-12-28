@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "target": "es2018",
-    "lib": ["es2018"]
+    "lib": ["es2018"],
+    "noEmit": true
   },
   "include": ["."]
 }
