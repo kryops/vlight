@@ -1,6 +1,14 @@
 # vLight Binary Protocol
 
-via TCP or UDP
+## UDP Multicast
+
+- IP: 224.0.0.244
+- Port: 43234
+- 1 Datagram per message
+
+## TCP
+
+- Port: 43235
 
 ## Message Format
 
@@ -37,13 +45,3 @@ Channel 501-512:
 ```
 0xfb <channel-501> <value>
 ```
-
-## UDP Multicast
-
-- IP: 224.0.0.244
-- Port: 43234
-- 1 Datagram per message
-
-## TCP Settings
-
-- Port: 43235
