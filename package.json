@@ -42,6 +42,7 @@
     "@types/webpack-bundle-analyzer": "^2.13.0",
     "@types/webpack-dev-middleware": "^2.0.2",
     "@types/webpack-hot-middleware": "^2.16.4",
+    "@types/ws": "^6.0.1",
     "babel-loader": "^8.0.4",
     "cross-env": "^5.2.0",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
@@ -69,6 +70,8 @@
     "express": "^4.16.4",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "source-map-support": "^0.5.9"
+    "source-map-support": "^0.5.9",
+    "tslib": "^1.9.3",
+    "ws": "^6.1.2"
   }
 }

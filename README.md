@@ -29,4 +29,6 @@ Start in production mode:
 
 ## Documentation
 
+[vLight Client Protocol via REST/WebSocket](./backend/src/api/README.md)
+
 [vLight Binary Protocol via TCP/UDP](./backend/src/devices/vlight/README.md)

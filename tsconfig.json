@@ -4,6 +4,7 @@
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
     "inlineSourceMap": true,
     "inlineSources": true,
     "lib": ["es2018"],

@@ -1,16 +1,25 @@
-import { broadcastChannel } from '../devices/vlight'
+import { getApiChannelMessage } from '../api/protocol'
+import { broadcastToSockets } from '../api/websocket'
+import { universeSize } from '../config'
+import { broadcastChannelToDevices } from '../devices/vlight'
 
-const universe = Buffer.alloc(512)
+const universe = Buffer.alloc(universeSize)
+
+function assertValidChannel(channel: number) {
+  if (channel < 1 || channel > universeSize) {
+    throw new Error(`invalid channel: ${channel}`)
+  }
+}
 
 export function getUniverse(): Buffer {
   return universe
 }
 
 export function setChannel(channel: number, value: number) {
-  if (channel < 1 || channel > 512) {
-    throw new Error(`invalid channel: ${channel}`)
-  }
+  assertValidChannel(channel)
+
   universe[channel - 1] = value
 
-  broadcastChannel(channel, value)
+  broadcastChannelToDevices(channel, value)
+  broadcastToSockets(getApiChannelMessage(channel, value))
 }

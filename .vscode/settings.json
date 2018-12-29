@@ -2,5 +2,6 @@
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "prettier.tslintIntegration": true,
-  "tslint.alwaysShowRuleFailuresAsWarnings": true
+  "tslint.alwaysShowRuleFailuresAsWarnings": true,
+  "typescript.preferences.quoteStyle": "single"
 }

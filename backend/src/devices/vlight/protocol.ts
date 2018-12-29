@@ -1,6 +1,11 @@
+import { universeSize } from '../../config'
+
 const universePrefix = new Uint8Array([0xff])
 
-export function getChannelMessage(channel: number, value: number): Buffer {
+export function getBinaryChannelMessage(
+  channel: number,
+  value: number
+): Buffer {
   if (channel <= 250) {
     return Buffer.from([channel - 1, value])
   }
@@ -10,11 +15,11 @@ export function getChannelMessage(channel: number, value: number): Buffer {
   return Buffer.from([0xfb, channel - 501, value])
 }
 
-export function getUniverseMessage(universe: Buffer): Buffer {
-  if (universe.length === 512) {
-    return Buffer.concat([universePrefix, universe], 513)
+export function getBinaryUniverseMessage(universe: Buffer): Buffer {
+  if (universe.length === universeSize) {
+    return Buffer.concat([universePrefix, universe], universeSize + 1)
   }
-  const fixedLengthMessage = Buffer.alloc(513)
+  const fixedLengthMessage = Buffer.alloc(universeSize + 1)
   fixedLengthMessage[0] = 0xff
   universe.copy(fixedLengthMessage, 1, 0)
   return fixedLengthMessage

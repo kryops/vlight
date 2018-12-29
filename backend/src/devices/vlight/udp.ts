@@ -1,18 +1,19 @@
-import { createSocket } from 'dgram'
+import { createSocket, Socket } from 'dgram'
 
 import { udpMulticastAddress, udpPort, udpUniverseInterval } from '../../config'
 import { getUniverse } from '../../universe'
 
-import { getUniverseMessage } from './protocol'
+import { getBinaryUniverseMessage } from './protocol'
 
-const udpSocket = createSocket({ type: 'udp4', reuseAddr: true })
+let udpSocket: Socket
 
 export async function initUdpMulticast() {
   setInterval(() => {
-    sendUdpMulticastMessage(getUniverseMessage(getUniverse()))
+    sendUdpMulticastMessage(getBinaryUniverseMessage(getUniverse()))
   }, udpUniverseInterval)
 
   await new Promise(resolve => {
+    udpSocket = createSocket({ type: 'udp4', reuseAddr: true })
     udpSocket.bind(udpPort, () => {
       udpSocket.setBroadcast(true)
       udpSocket.setMulticastTTL(4)
@@ -23,5 +24,7 @@ export async function initUdpMulticast() {
 }
 
 export function sendUdpMulticastMessage(message: Buffer) {
-  udpSocket.send(message, udpPort)
+  if (udpSocket !== undefined) {
+    udpSocket.send(message, udpPort)
+  }
 }

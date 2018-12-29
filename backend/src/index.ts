@@ -1,5 +1,6 @@
 import sourceMapSupport from 'source-map-support'
 
+import { initWebSocketApi } from './api/websocket'
 import { initExpressApp } from './app'
 import { httpPort } from './config'
 import { initTcpServer } from './devices/vlight/tcp'
@@ -20,7 +21,12 @@ process.on('unhandledRejection', err => {
 
 // actual initialization
 
-const initialization = [initExpressApp(), initUdpMulticast(), initTcpServer()]
+const initialization = [
+  initExpressApp(),
+  initWebSocketApi(),
+  initUdpMulticast(),
+  initTcpServer(),
+]
 
 Promise.all(initialization).then(() =>
   logInfo(`vLight started on http://127.0.0.1:${httpPort}`)

@@ -6,7 +6,7 @@ import { removeFromMutableArray } from '../../util/array'
 import { logInfo } from '../../util/log'
 import { getAddressString } from '../../util/network'
 
-import { getUniverseMessage } from './protocol'
+import { getBinaryUniverseMessage } from './protocol'
 
 const sockets: Socket[] = []
 
@@ -22,7 +22,7 @@ function handleConnection(socket: Socket) {
   socket.on('end', () => disconnectSocket(socket))
   socket.on('error', () => disconnectSocket(socket))
 
-  socket.write(getUniverseMessage(getUniverse()))
+  socket.write(getBinaryUniverseMessage(getUniverse()))
 }
 
 export async function initTcpServer() {
