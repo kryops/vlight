@@ -1,7 +1,7 @@
 import { getApiChannelMessage } from '../api/protocol'
 import { broadcastToSockets } from '../api/websocket'
 import { universeSize } from '../config'
-import { broadcastChannelToDevices } from '../devices/vlight'
+import { broadcastChannelToDevices } from '../devices'
 
 const universe = Buffer.alloc(universeSize)
 

@@ -27,6 +27,11 @@ Start in production mode:
 > yarn start:prod
 ```
 
+## DMX Interfaces
+
+- ArtNet
+- Custom Binary protocol
+
 ## Documentation
 
 [vLight Client Protocol via REST/WebSocket](./backend/src/api/README.md)

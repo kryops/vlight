@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
+    "baseUrl": "node_modules",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
@@ -17,7 +17,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "@vlight/api": ["shared/types/api"]
+      "@vlight/*": ["../shared/types/*"],
+      "*": ["*", "../@types/*"]
     },
     "resolveJsonModule": true,
     "strict": true

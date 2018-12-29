@@ -3,6 +3,7 @@ import sourceMapSupport from 'source-map-support'
 import { initWebSocketApi } from './api/websocket'
 import { initExpressApp } from './app'
 import { httpPort } from './config'
+import { initArtNetServer } from './devices/artnet'
 import { initTcpServer } from './devices/vlight/tcp'
 import { initUdpMulticast } from './devices/vlight/udp'
 import { logError, logInfo } from './util/log'
@@ -26,6 +27,7 @@ const initialization = [
   initWebSocketApi(),
   initUdpMulticast(),
   initTcpServer(),
+  initArtNetServer(),
 ]
 
 Promise.all(initialization).then(() =>

@@ -4,10 +4,10 @@
 
 import { broadcastToSockets } from '../../src/api/websocket'
 import { universeSize } from '../../src/config'
-import { broadcastChannelToDevices } from '../../src/devices/vlight'
+import { broadcastChannelToDevices } from '../../src/devices'
 import { getUniverse, setChannel } from '../../src/universe'
 
-jest.mock('../../src/devices/vlight')
+jest.mock('../../src/devices')
 jest.mock('../../src/api/websocket')
 
 describe('universe/index', () => {

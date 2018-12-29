@@ -8,6 +8,7 @@
   "private": true,
   "scripts": {
     "clean": "rimraf backend/dist frontend/dist",
+    "build": "yarn run clean && yarn build:backend && yarn build:frontend",
     "build:backend": "tsc -p ./backend/src",
     "build:frontend": "cross-env NODE_ENV=production && webpack --config frontend/webpack.config.ts --env.production",
     "client:tcp": "ts-node backend/clients/vlight-tcp.ts",
@@ -15,7 +16,7 @@
     "frontend:analyze": "webpack --config frontend/webpack.config.ts --env.production --env.analyze",
     "lint": "tslint --project . && tsc -p ./frontend && tsc -p ./backend",
     "postinstall": "rimraf node_modules/.cache",
-    "prepare": "yarn run clean && yarn build:backend && yarn build:frontend",
+    "prepare": "yarn lint && yarn test && yarn build",
     "start": "nodemon",
     "start:prod": "cross-env NODE_ENV=production && node .",
     "test": "jest"
@@ -65,6 +66,7 @@
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
     "@babel/runtime": "^7.2.0",
+    "artnet": "^1.4.0",
     "compression": "^1.7.3",
     "core-js": "^2.6.1",
     "express": "^4.16.4",

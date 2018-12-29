@@ -18,6 +18,10 @@ export const webpackConfiguration = (env: Env = {}) => {
   const isProduction = !!env.production
   const analyze = !!env.analyze
 
+  if (process.env.NODE_ENV === undefined) {
+    process.env.NODE_ENV = isProduction ? 'production' : 'development'
+  }
+
   const configuration: Configuration = {
     entry: [
       join(__dirname, 'src/index.tsx'),
