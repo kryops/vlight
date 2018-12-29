@@ -1,4 +1,4 @@
-import { ApiChannelMessage, ApiUniverseMessage } from './types'
+import { ApiChannelMessage, ApiUniverseMessage } from '@vlight/api'
 
 export function getApiChannelMessage(
   channel: number,

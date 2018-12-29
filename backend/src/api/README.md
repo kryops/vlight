@@ -32,4 +32,4 @@ Error Response:
 
 ## Protocol / Messages
 
-See the TypeScript definitions under [types.d.ts](./types.d.ts)
+See the TypeScript definitions under [shared/types/api.d.ts](../../../shared/types/api.d.ts)

@@ -1,7 +1,7 @@
+import { ApiInMessage } from '@vlight/api'
+
 import { setChannel } from '../universe'
 import { logError } from '../util/log'
-
-import { ApiInMessage } from './types'
 
 export function handleApiMessage(message: ApiInMessage) {
   switch (message.type) {

@@ -1,3 +1,4 @@
+import { ApiOutMessage } from '@vlight/api'
 import ws from 'ws'
 
 import { httpServer } from '../app'
@@ -7,7 +8,6 @@ import { logInfo } from '../util/log'
 
 import { handleApiMessage } from '.'
 import { getApiUniverseMessage } from './protocol'
-import { ApiOutMessage } from './types'
 
 const sockets: ws[] = []
 
