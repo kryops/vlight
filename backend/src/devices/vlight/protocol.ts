@@ -15,6 +15,17 @@ export function getBinaryChannelMessage(
   return Buffer.from([0xfb, channel - 501, value])
 }
 
+export function getMultipleBinaryChannelMessages(
+  universe: Buffer,
+  channels: number[]
+): Buffer {
+  return Buffer.concat(
+    channels.map(channel =>
+      getBinaryChannelMessage(channel, universe[channel - 1])
+    )
+  )
+}
+
 export function getBinaryUniverseMessage(universe: Buffer): Buffer {
   if (universe.length === universeSize) {
     return Buffer.concat([universePrefix, universe], universeSize + 1)

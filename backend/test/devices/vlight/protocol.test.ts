@@ -6,6 +6,7 @@ import { universeSize } from '../../../src/config'
 import {
   getBinaryChannelMessage,
   getBinaryUniverseMessage,
+  getMultipleBinaryChannelMessages,
 } from '../../../src/devices/vlight/protocol'
 
 describe('devices/vlight/protocol', () => {
@@ -27,6 +28,15 @@ describe('devices/vlight/protocol', () => {
     )
     expect(getBinaryChannelMessage(502, 250)).toEqual(
       Buffer.from([0xfb, 0x01, 0xfa])
+    )
+  })
+
+  it('getMultipleBinaryChannelMessages', () => {
+    const universe = Buffer.from([0, 1, 2, 3])
+    const channels = [1, 3, 4]
+    const message = Buffer.from([0x00, 0x00, 0x02, 0x02, 0x03, 0x03])
+    expect(getMultipleBinaryChannelMessages(universe, channels)).toEqual(
+      message
     )
   })
 

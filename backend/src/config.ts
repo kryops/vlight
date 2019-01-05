@@ -7,6 +7,8 @@ export const udpPort = 43234
 export const udpMulticastAddress = '224.0.0.244'
 export const udpUniverseInterval = 1000
 
+export const devicesFlushInterval = 20
+
 export const artnetHost = '255.255.255.255'
 
 // application config

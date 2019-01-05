@@ -4,8 +4,7 @@ import { initWebSocketApi } from './api/websocket'
 import { initExpressApp } from './app'
 import { httpPort } from './config'
 import { initArtNetServer } from './devices/artnet'
-import { initTcpServer } from './devices/vlight/tcp'
-import { initUdpMulticast } from './devices/vlight/udp'
+import { initVlightDevices } from './devices/vlight'
 import { logError, logInfo } from './util/log'
 
 sourceMapSupport.install()
@@ -25,8 +24,7 @@ process.on('unhandledRejection', err => {
 const initialization = [
   initExpressApp(),
   initWebSocketApi(),
-  initUdpMulticast(),
-  initTcpServer(),
+  initVlightDevices(),
   initArtNetServer(),
 ]
 
