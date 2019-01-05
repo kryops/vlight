@@ -2,13 +2,13 @@
  * @jest-environment node
  */
 
-import { broadcastToSockets } from '../../src/api/websocket'
+import { broadcastChannelToSockets } from '../../src/api'
 import { universeSize } from '../../src/config'
 import { broadcastChannelToDevices } from '../../src/devices'
 import { getUniverse, setChannel } from '../../src/universe'
 
 jest.mock('../../src/devices')
-jest.mock('../../src/api/websocket')
+jest.mock('../../src/api')
 
 describe('universe/index', () => {
   it('changes values', () => {
@@ -19,11 +19,7 @@ describe('universe/index', () => {
     expect(getUniverse()).toEqual(mockUniverse)
 
     expect(broadcastChannelToDevices).toHaveBeenCalledWith(1, 255)
-    expect(broadcastToSockets).toHaveBeenCalledWith({
-      type: 'channel',
-      channel: 1,
-      value: 255,
-    })
+    expect(broadcastChannelToSockets).toHaveBeenCalledWith(1)
   })
 
   it('throws on invalid channels', () => {

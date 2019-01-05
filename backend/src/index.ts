@@ -1,6 +1,6 @@
 import sourceMapSupport from 'source-map-support'
 
-import { initWebSocketApi } from './api/websocket'
+import { initApi } from './api'
 import { initExpressApp } from './app'
 import { httpPort } from './config'
 import { initArtNetServer } from './devices/artnet'
@@ -23,7 +23,7 @@ process.on('unhandledRejection', err => {
 
 const initialization = [
   initExpressApp(),
-  initWebSocketApi(),
+  initApi(),
   initVlightDevices(),
   initArtNetServer(),
 ]

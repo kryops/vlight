@@ -1,13 +1,18 @@
 import { ApiChannelMessage, ApiUniverseMessage } from '@vlight/api'
 
-export function getApiChannelMessage(
-  channel: number,
-  value: number
+export function getApiChannelsMessage(
+  universe: Buffer,
+  channels: number[]
 ): ApiChannelMessage {
   return {
-    type: 'channel',
-    channel,
-    value,
+    type: 'channels',
+    channels: channels.reduce(
+      (obj, channel) => {
+        obj[channel] = universe[channel - 1]
+        return obj
+      },
+      {} as ApiChannelMessage['channels']
+    ),
   }
 }
 

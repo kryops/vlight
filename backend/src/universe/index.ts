@@ -1,5 +1,4 @@
-import { getApiChannelMessage } from '../api/protocol'
-import { broadcastToSockets } from '../api/websocket'
+import { broadcastChannelToSockets } from '../api'
 import { universeSize } from '../config'
 import { broadcastChannelToDevices } from '../devices'
 
@@ -21,5 +20,5 @@ export function setChannel(channel: number, value: number) {
   universe[channel - 1] = value
 
   broadcastChannelToDevices(channel, value)
-  broadcastToSockets(getApiChannelMessage(channel, value))
+  broadcastChannelToSockets(channel)
 }

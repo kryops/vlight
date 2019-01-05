@@ -1,9 +1,11 @@
 // Both ingoing + outgoing
 
 export interface ApiChannelMessage {
-  type: 'channel'
-  channel: number
-  value: number
+  type: 'channels'
+  channels: {
+    // starting at 1
+    [channel: number]: number
+  }
 }
 
 // Incoming messages

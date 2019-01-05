@@ -8,6 +8,9 @@ import { initUdpMulticast, sendUdpMulticastMessage } from './udp'
 const changedChannels: Set<number> = new Set<number>()
 
 function flushVlightDevices() {
+  if (changedChannels.size === 0) {
+    return
+  }
   const message = getMultipleBinaryChannelMessages(
     getUniverse(),
     Array.from(changedChannels)

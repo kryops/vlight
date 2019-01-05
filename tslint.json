@@ -3,6 +3,7 @@
   "rules": {
     "interface-name": false,
     "no-implicit-dependencies": [true, "dev", ["@vlight/api"]],
+    "no-object-literal-type-assertion": false,
     "no-switch-case-fall-through": true,
     "object-literal-sort-keys": false,
     "ordered-imports": [

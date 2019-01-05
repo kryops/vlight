@@ -5,7 +5,7 @@ jest.mock('../../src/universe')
 
 describe('api/index', () => {
   it('handleApiMessage', () => {
-    handleApiMessage({ type: 'channel', channel: 1, value: 200 })
+    handleApiMessage({ type: 'channels', channels: { 1: 200 } })
     expect(setChannel).toHaveBeenCalledWith(1, 200)
   })
 })

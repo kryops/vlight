@@ -21,7 +21,7 @@ function sendSocketMessage(socket: ws, message: ApiOutMessage) {
   socket.send(binaryMessage)
 }
 
-export async function initWebSocketApi() {
+export async function initWebSocketServer() {
   const wsServer = new ws.Server({ server: httpServer, path: '/ws' })
   wsServer.on('connection', socket => {
     logInfo('Socket connected')
