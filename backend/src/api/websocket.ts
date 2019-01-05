@@ -4,7 +4,7 @@ import ws from 'ws'
 import { httpServer } from '../app'
 import { getUniverse } from '../universe'
 import { removeFromMutableArray } from '../util/array'
-import { logInfo } from '../util/log'
+import { logInfo, logTrace } from '../util/log'
 
 import { handleApiMessage } from '.'
 import { getApiUniverseMessage } from './protocol'
@@ -17,8 +17,8 @@ function removeSocket(socket: ws) {
 }
 
 function sendSocketMessage(socket: ws, message: ApiOutMessage) {
-  const binaryMessage = Buffer.from(JSON.stringify(message))
-  socket.send(binaryMessage)
+  const messageString = JSON.stringify(message)
+  socket.send(messageString)
 }
 
 export async function initWebSocketServer() {
@@ -38,6 +38,7 @@ export async function initWebSocketServer() {
 }
 
 export function broadcastToSockets(message: ApiOutMessage) {
-  const binaryMessage = Buffer.from(JSON.stringify(message))
-  sockets.forEach(socket => socket.send(binaryMessage))
+  logTrace('broadcast WebSocket message', message)
+  const messageString = JSON.stringify(message)
+  sockets.forEach(socket => socket.send(messageString))
 }

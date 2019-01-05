@@ -2,6 +2,7 @@ import { createSocket, Socket } from 'dgram'
 
 import { udpMulticastAddress, udpPort, udpUniverseInterval } from '../../config'
 import { getUniverse } from '../../universe'
+import { logTrace } from '../../util/log'
 
 import { getBinaryUniverseMessage } from './protocol'
 
@@ -25,6 +26,10 @@ export async function initUdpMulticast() {
 
 export function sendUdpMulticastMessage(message: Buffer) {
   if (udpSocket !== undefined) {
+    // ignore the periodic universe messages
+    if (message.length !== 513) {
+      logTrace('broadcast vLight UDP message', message)
+    }
     udpSocket.send(message, udpPort)
   }
 }

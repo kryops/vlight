@@ -3,7 +3,7 @@ import { createServer, Socket } from 'net'
 import { tcpPort } from '../../config'
 import { getUniverse } from '../../universe'
 import { removeFromMutableArray } from '../../util/array'
-import { logInfo } from '../../util/log'
+import { logInfo, logTrace } from '../../util/log'
 import { getAddressString } from '../../util/network'
 
 import { getBinaryUniverseMessage } from './protocol'
@@ -31,5 +31,6 @@ export async function initTcpServer() {
 }
 
 export function sendTcpBroadcastMessage(message: Buffer) {
+  logTrace('broadcast vLight TCP message', message)
   sockets.forEach(socket => socket.write(message))
 }

@@ -2,7 +2,7 @@ import { ApiInMessage } from '@vlight/api'
 
 import { socketFlushInterval } from '../config'
 import { getUniverse, setChannel } from '../universe'
-import { logError } from '../util/log'
+import { logError, logTrace } from '../util/log'
 
 import { getApiChannelsMessage } from './protocol'
 import { broadcastToSockets, initWebSocketServer } from './websocket'
@@ -24,6 +24,8 @@ function flushWebSockets() {
 }
 
 export function handleApiMessage(message: ApiInMessage) {
+  logTrace('Incoming API message', message)
+
   switch (message.type) {
     case 'channels':
       for (const [channel, value] of Object.entries(message.channels)) {

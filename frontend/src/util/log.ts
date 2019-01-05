@@ -9,6 +9,8 @@ function noop() {
 export const logTrace = isDevelopment
   ? (...args: any) => console.log(...args)
   : noop
-export const logInfo = (...args: any) => console.log(...args)
+export const logInfo = isDevelopment
+  ? (...args: any) => console.log(...args)
+  : noop
 export const logWarn = (...args: any) => console.warn(...args)
 export const logError = (...args: any) => console.error(...args)
