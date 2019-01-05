@@ -1,4 +1,4 @@
-import { broadcastChannelToDevices } from '../../src/devices'
+import { broadcastUniverseChannelToDevices } from '../../src/devices'
 import { broadcastArtNetChannel } from '../../src/devices/artnet'
 import { setChannelChanged } from '../../src/devices/vlight'
 
@@ -7,7 +7,7 @@ jest.mock('../../src/devices/vlight/index')
 
 describe('devices/index', () => {
   it('broadcastChannel', () => {
-    broadcastChannelToDevices(2, 2)
+    broadcastUniverseChannelToDevices(2, 2)
     expect(setChannelChanged).toHaveBeenCalledWith(2)
     expect(broadcastArtNetChannel).toHaveBeenCalledWith(2, 2)
   })

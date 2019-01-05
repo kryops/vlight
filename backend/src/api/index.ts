@@ -1,26 +1,32 @@
 import { ApiInMessage } from '@vlight/api'
 
-import { socketFlushInterval } from '../config'
-import { getUniverse, setChannel } from '../universe'
+import {
+  multiChannelUniverseFlushThreshold,
+  socketFlushInterval,
+} from '../config'
+import { getDmxUniverse, setChannel } from '../universe'
 import { logError, logTrace } from '../util/log'
 
-import { getApiChannelsMessage } from './protocol'
+import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
 import { broadcastToSockets, initWebSocketServer } from './websocket'
 
-const changedChannels: Set<number> = new Set<number>()
+const changedUninverseChannels: Set<number> = new Set<number>()
 
 function flushWebSockets() {
-  if (changedChannels.size === 0) {
+  if (changedUninverseChannels.size === 0) {
     return
   }
-  const message = getApiChannelsMessage(
-    getUniverse(),
-    Array.from(changedChannels)
-  )
+  const message =
+    changedUninverseChannels.size < multiChannelUniverseFlushThreshold
+      ? getApiUniverseDeltaMessage(
+          getDmxUniverse(),
+          Array.from(changedUninverseChannels)
+        )
+      : getApiUniverseMessage(getDmxUniverse())
 
   broadcastToSockets(message)
 
-  changedChannels.clear()
+  changedUninverseChannels.clear()
 }
 
 export function handleApiMessage(message: ApiInMessage) {
@@ -31,6 +37,8 @@ export function handleApiMessage(message: ApiInMessage) {
       for (const [channel, value] of Object.entries(message.channels)) {
         setChannel(+channel, value)
       }
+
+      broadcastToSockets(message)
       break
 
     default:
@@ -38,8 +46,8 @@ export function handleApiMessage(message: ApiInMessage) {
   }
 }
 
-export function broadcastChannelToSockets(channel: number) {
-  changedChannels.add(channel)
+export function broadcastUniverseChannelToSockets(channel: number) {
+  changedUninverseChannels.add(channel)
 }
 
 export async function initApi() {

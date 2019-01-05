@@ -1,19 +1,22 @@
 import { ApiOutMessage } from '@vlight/api'
 import React, { Component } from 'react'
 
-import { isDevelopment } from './config'
-import { UniverseContext } from './context'
-import { logError, logTrace } from './util/log'
+import { ChannelUniverseContext, DmxUniverseContext } from '../context'
+import { logError, logTrace } from '../util/log'
+
+import { setSocket } from '.'
 
 interface State {
   connecting: boolean
-  universe?: number[]
+  universe: number[] | undefined
+  channels: number[] | undefined
 }
 
 export class ApiWrapper extends Component<{}, State> {
   state = {
     connecting: true,
     universe: undefined,
+    channels: undefined,
   }
 
   socket: WebSocket | undefined
@@ -22,9 +25,7 @@ export class ApiWrapper extends Component<{}, State> {
     const socket = new WebSocket(`ws://${window.location.host}/ws`)
 
     this.socket = socket
-    if (isDevelopment) {
-      ;(window as any).socket = socket
-    }
+    setSocket(socket)
 
     socket.onopen = () => this.setState({ connecting: false })
 
@@ -50,17 +51,32 @@ export class ApiWrapper extends Component<{}, State> {
     logTrace('WebSocket message', message)
 
     switch (message.type) {
+      case 'state':
+        const { universe, channels } = message
+        this.setState({ universe, channels })
+        break
+
       case 'universe':
-        this.setState({ universe: message.universe })
+        this.setState({ channels: message.universe })
+        break
+
+      case 'universe-delta':
+        this.setState(state => {
+          const newUniverse = [...(state.universe || [])]
+          for (const channel of Object.keys(message.channels)) {
+            newUniverse[+channel - 1] = message.channels[channel as any]
+          }
+          return { universe: newUniverse }
+        })
         break
 
       case 'channels':
         this.setState(state => {
-          const universe = [...(state.universe || [])]
+          const newChannels = [...(state.channels || [])]
           for (const channel of Object.keys(message.channels)) {
-            universe[+channel] = message.channels[channel as any]
+            newChannels[+channel - 1] = message.channels[channel as any]
           }
-          return { universe }
+          return { channels: newChannels }
         })
         break
 
@@ -77,16 +93,19 @@ export class ApiWrapper extends Component<{}, State> {
     if (this.socket) {
       this.socket.close()
     }
+    setSocket(undefined)
   }
 
   render() {
     if (this.state.connecting) {
-      return null
+      return <div>Loading...</div>
     }
     return (
-      <UniverseContext.Provider value={this.state.universe}>
-        {this.props.children}
-      </UniverseContext.Provider>
+      <DmxUniverseContext.Provider value={this.state.universe}>
+        <ChannelUniverseContext.Provider value={this.state.channels}>
+          {this.props.children}
+        </ChannelUniverseContext.Provider>
+      </DmxUniverseContext.Provider>
     )
   }
 }

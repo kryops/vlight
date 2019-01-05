@@ -1,5 +1,9 @@
 import React from 'react'
 
-export const UniverseContext = React.createContext<number[] | undefined>(
+export const DmxUniverseContext = React.createContext<number[] | undefined>(
+  undefined
+)
+
+export const ChannelUniverseContext = React.createContext<number[] | undefined>(
   undefined
 )

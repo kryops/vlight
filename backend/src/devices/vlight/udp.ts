@@ -1,7 +1,7 @@
 import { createSocket, Socket } from 'dgram'
 
 import { udpMulticastAddress, udpPort, udpUniverseInterval } from '../../config'
-import { getUniverse } from '../../universe'
+import { getDmxUniverse } from '../../universe'
 import { logTrace } from '../../util/log'
 
 import { getBinaryUniverseMessage } from './protocol'
@@ -10,7 +10,7 @@ let udpSocket: Socket
 
 export async function initUdpMulticast() {
   setInterval(() => {
-    sendUdpMulticastMessage(getBinaryUniverseMessage(getUniverse()))
+    sendUdpMulticastMessage(getBinaryUniverseMessage(getDmxUniverse()))
   }, udpUniverseInterval)
 
   await new Promise(resolve => {

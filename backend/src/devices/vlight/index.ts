@@ -1,7 +1,13 @@
-import { devicesFlushInterval } from '../../config'
-import { getUniverse } from '../../universe'
+import {
+  devicesFlushInterval,
+  multiChannelUniverseFlushThreshold,
+} from '../../config'
+import { getDmxUniverse } from '../../universe'
 
-import { getMultipleBinaryChannelMessages } from './protocol'
+import {
+  getBinaryUniverseMessage,
+  getMultipleBinaryChannelMessages,
+} from './protocol'
 import { initTcpServer, sendTcpBroadcastMessage } from './tcp'
 import { initUdpMulticast, sendUdpMulticastMessage } from './udp'
 
@@ -11,10 +17,14 @@ function flushVlightDevices() {
   if (changedChannels.size === 0) {
     return
   }
-  const message = getMultipleBinaryChannelMessages(
-    getUniverse(),
-    Array.from(changedChannels)
-  )
+
+  const message =
+    changedChannels.size < multiChannelUniverseFlushThreshold
+      ? getMultipleBinaryChannelMessages(
+          getDmxUniverse(),
+          Array.from(changedChannels)
+        )
+      : getBinaryUniverseMessage(getDmxUniverse())
 
   sendTcpBroadcastMessage(message)
   sendUdpMulticastMessage(message)

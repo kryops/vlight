@@ -2,10 +2,10 @@
  * @jest-environment node
  */
 
-import { broadcastChannelToSockets } from '../../src/api'
+import { broadcastUniverseChannelToSockets } from '../../src/api'
 import { universeSize } from '../../src/config'
-import { broadcastChannelToDevices } from '../../src/devices'
-import { getUniverse, setChannel } from '../../src/universe'
+import { broadcastUniverseChannelToDevices } from '../../src/devices'
+import { getDmxUniverse, setChannel } from '../../src/universe'
 
 jest.mock('../../src/devices')
 jest.mock('../../src/api')
@@ -13,13 +13,27 @@ jest.mock('../../src/api')
 describe('universe/index', () => {
   it('changes values', () => {
     const mockUniverse = Buffer.alloc(universeSize)
-    expect(getUniverse()).toEqual(mockUniverse)
+    expect(getDmxUniverse()).toEqual(mockUniverse)
+
+    // higher value
     setChannel(1, 255)
     mockUniverse[0] = 255
-    expect(getUniverse()).toEqual(mockUniverse)
+    expect(getDmxUniverse()).toEqual(mockUniverse)
 
-    expect(broadcastChannelToDevices).toHaveBeenCalledWith(1, 255)
-    expect(broadcastChannelToSockets).toHaveBeenCalledWith(1)
+    expect(broadcastUniverseChannelToDevices).toHaveBeenCalledWith(1, 255)
+    expect(broadcastUniverseChannelToSockets).toHaveBeenCalledWith(1)
+
+    // lower value
+    setChannel(1, 200)
+    mockUniverse[0] = 200
+    expect(getDmxUniverse()).toEqual(mockUniverse)
+    expect(broadcastUniverseChannelToDevices).toHaveBeenLastCalledWith(1, 200)
+    expect(broadcastUniverseChannelToSockets).toHaveBeenLastCalledWith(1)
+
+    // same value
+    setChannel(1, 200)
+    expect(broadcastUniverseChannelToDevices).toHaveBeenCalledTimes(2)
+    expect(broadcastUniverseChannelToSockets).toHaveBeenCalledTimes(2)
   })
 
   it('throws on invalid channels', () => {

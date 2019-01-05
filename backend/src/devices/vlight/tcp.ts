@@ -1,7 +1,7 @@
 import { createServer, Socket } from 'net'
 
 import { tcpPort } from '../../config'
-import { getUniverse } from '../../universe'
+import { getDmxUniverse } from '../../universe'
 import { removeFromMutableArray } from '../../util/array'
 import { logInfo, logTrace } from '../../util/log'
 import { getAddressString } from '../../util/network'
@@ -22,7 +22,7 @@ function handleConnection(socket: Socket) {
   socket.on('end', () => disconnectSocket(socket))
   socket.on('error', () => disconnectSocket(socket))
 
-  socket.write(getBinaryUniverseMessage(getUniverse()))
+  socket.write(getBinaryUniverseMessage(getDmxUniverse()))
 }
 
 export async function initTcpServer() {

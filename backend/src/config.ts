@@ -11,6 +11,7 @@ export const artnetHost = '255.255.255.255'
 
 export const devicesFlushInterval = 20
 export const socketFlushInterval = 100
+export const multiChannelUniverseFlushThreshold = 200
 
 // application config
 export const universeSize = 512

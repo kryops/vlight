@@ -1,14 +1,14 @@
 import artnet, { Artnet } from 'artnet'
 
 import { artnetHost } from '../../config'
-import { getUniverse } from '../../universe'
+import { getDmxUniverse } from '../../universe'
 
 let server: Artnet
 
 export async function initArtNetServer() {
   server = artnet({ host: artnetHost })
 
-  server.set(Array.from(getUniverse()))
+  server.set(Array.from(getDmxUniverse()))
 }
 
 export function broadcastArtNetChannel(channel: number, value: number) {
