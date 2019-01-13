@@ -1,5 +1,7 @@
+import ExtractCssPlugin from 'extract-css-chunks-webpack-plugin'
 import ForkCheckerPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import { join } from 'path'
 import {
   Configuration,
@@ -44,6 +46,33 @@ export const webpackConfiguration = (env: Env = {}) => {
             cacheDirectory: true,
           },
         },
+        {
+          test: /\.s?css$/,
+          exclude: /node_modules/,
+          use: [
+            ExtractCssPlugin.loader,
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: true,
+                modules: true,
+                localIdentName: '[name]_[local]-[hash:base64:5]',
+              },
+            },
+            {
+              loader: 'resolve-url-loader',
+              options: {
+                sourceMap: true,
+              },
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: true,
+              },
+            },
+          ],
+        },
       ],
     },
     resolve: {
@@ -60,12 +89,27 @@ export const webpackConfiguration = (env: Env = {}) => {
       new HtmlWebpackPlugin({
         template: join(__dirname, 'index.html'),
       }),
+      new ExtractCssPlugin({
+        cssModules: true,
+        hot: !isProduction,
+      }),
 
       // development
       !isProduction && new HotModuleReplacementPlugin(),
       !isProduction &&
         new ForkCheckerPlugin({
           tsconfig: join(__dirname, 'tsconfig.json'),
+        }),
+
+      // production
+      isProduction &&
+        new OptimizeCssAssetsPlugin({
+          cssProcessorOptions: {
+            map: {
+              inline: false,
+              annotation: true,
+            },
+          },
         }),
 
       // analyze
