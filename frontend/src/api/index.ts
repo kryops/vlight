@@ -1,7 +1,16 @@
 import { ApiInMessage } from '@vlight/api'
+import React from 'react'
 
 import { isDevelopment } from '../config'
 import { logWarn } from '../util/log'
+
+export const DmxUniverseContext = React.createContext<number[] | undefined>(
+  undefined
+)
+
+export const ChannelUniverseContext = React.createContext<number[] | undefined>(
+  undefined
+)
 
 let socket: WebSocket | undefined
 

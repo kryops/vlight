@@ -42,6 +42,8 @@
     "@types/react-dom": "^16.0.11",
     "@types/react-hot-loader": "^4.1.0",
     "@types/source-map-support": "^0.4.1",
+    "@types/stacktrace-js": "^0.0.32",
+    "@types/terser-webpack-plugin": "^1.2.0",
     "@types/webpack": "^4.4.22",
     "@types/webpack-bundle-analyzer": "^2.13.0",
     "@types/webpack-dev-middleware": "^2.0.2",
@@ -83,6 +85,8 @@
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "source-map-support": "^0.5.9",
+    "stacktrace-js": "^2.0.0",
+    "terser-webpack-plugin": "^1.2.1",
     "tslib": "^1.9.3",
     "ws": "^6.1.2"
   }

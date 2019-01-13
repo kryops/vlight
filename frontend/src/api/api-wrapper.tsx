@@ -1,7 +1,7 @@
 import { ApiOutMessage } from '@vlight/api'
 import React, { Component } from 'react'
 
-import { ChannelUniverseContext, DmxUniverseContext } from '../context'
+import { ChannelUniverseContext, DmxUniverseContext } from '../api'
 import { logError, logTrace } from '../util/log'
 
 import { setSocket } from '.'

@@ -3,6 +3,7 @@ import ForkCheckerPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import { join } from 'path'
+import TerserPlugin from 'terser-webpack-plugin'
 import {
   Configuration,
   DefinePlugin,
@@ -115,6 +116,21 @@ export const webpackConfiguration = (env: Env = {}) => {
       // analyze
       analyze && new BundleAnalyzerPlugin(),
     ].filter(Boolean) as Plugin[],
+
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          cache: true,
+          parallel: true,
+          sourceMap: true,
+          terserOptions: {
+            mangle: true,
+            ie8: false,
+            sourceMap: true,
+          },
+        }),
+      ],
+    },
   }
   return configuration
 }
