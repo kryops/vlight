@@ -1,0 +1,35 @@
+$baseline: 4px;
+$fontSize: 16px;
+
+$background: #000c15;
+
+$primary: #0084db;
+$success: #1ed246;
+$error: #d21e1e;
+$warn: #eea300;
+$text: #ddd;
+$icon: #fff;
+
+@function primary($percent) {
+  @return mix($primary, $background, $percent);
+}
+
+@function success($percent) {
+  @return mix($success, $background, $percent);
+}
+
+@function error($percent) {
+  @return mix($error, $background, $percent);
+}
+
+@function warn($percent) {
+  @return mix($warn, $background, $percent);
+}
+
+@function text($percent) {
+  @return mix($text, $background, $percent);
+}
+
+@function icon($percent) {
+  @return mix($icon, $background, $percent);
+}
