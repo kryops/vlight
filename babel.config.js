@@ -1,3 +1,5 @@
+const isTest = process.env.NODE_ENV === 'test'
+
 module.exports = function(api) {
   api.cache(true)
 
@@ -6,7 +8,7 @@ module.exports = function(api) {
       [
         '@babel/preset-env',
         {
-          modules: false,
+          modules: isTest ? 'commonjs' : false,
           useBuiltIns: 'entry',
         },
       ],
@@ -19,7 +21,7 @@ module.exports = function(api) {
       [
         '@babel/plugin-transform-runtime',
         {
-          useESModules: true,
+          useESModules: !isTest,
         },
       ],
 
