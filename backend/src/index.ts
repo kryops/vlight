@@ -25,6 +25,7 @@ const initialization = [
   initExpressApp(),
   initApi(),
   initVlightDevices(),
+  // initUsbDmxDevices(),
   initArtNetServer(),
 ]
 
