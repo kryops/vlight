@@ -9,6 +9,9 @@ export const udpUniverseInterval = 1000
 
 export const artnetHost = '255.255.255.255'
 
+export const usbDmxVid = 1204
+export const usbDmxPid = 3871
+
 export const devicesFlushInterval = 20
 export const socketFlushInterval = 100
 export const multiChannelUniverseFlushThreshold = 200

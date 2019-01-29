@@ -32,7 +32,7 @@ function flushVlightDevices() {
   changedChannels.clear()
 }
 
-export function setChannelChanged(channel: number) {
+export function setChannelChangedForVlightDevices(channel: number) {
   changedChannels.add(channel)
 }
 

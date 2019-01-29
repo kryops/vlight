@@ -1,44 +1,127 @@
-import { HID } from 'node-hid'
+import { Device, devices, HID } from 'node-hid'
+import { platform } from 'os'
+import usbDetection from 'usb-detection'
+
+import {
+  devicesFlushInterval,
+  universeSize,
+  usbDmxPid,
+  usbDmxVid,
+} from '../../config'
+import { getDmxUniverse } from '../../universe'
+import { removeFromMutableArray } from '../../util/array'
+import { logError, logInfo, logWarn } from '../../util/log'
+
+import { blockSize, getChannelBlockMessage, getModeMessage } from './protocol'
+
+interface HIDWithInfo extends HID {
+  info: Device
+}
+
+const onWindows = platform() === 'win32'
+const changedBlocks: Set<number> = new Set<number>()
+const usbDmxDevices: HIDWithInfo[] = []
+
+function doWrite(device: HIDWithInfo, message: number[]) {
+  const messageToSend = onWindows
+    ? [0, ...message] // https://github.com/node-hid/node-hid#prepend-byte-to-hid_write
+    : message
+
+  try {
+    device.write(messageToSend)
+  } catch (e) {
+    logError('Error writing to UsbDmx device, disconnecting...', e)
+    device.close()
+    removeFromMutableArray(usbDmxDevices, device)
+  }
+}
+
+function flushUsbDmxDevices() {
+  if (changedBlocks.size === 0) {
+    return
+  }
+
+  for (const block of changedBlocks) {
+    const message = getChannelBlockMessage(getDmxUniverse(), block)
+    usbDmxDevices.forEach(device => doWrite(device, message))
+  }
+
+  changedBlocks.clear()
+}
+
+function flushUniverse(device: HIDWithInfo) {
+  const numberOfBlocks = Math.ceil(universeSize / blockSize)
+  for (let block = 0; block < numberOfBlocks; block++) {
+    doWrite(device, getChannelBlockMessage(getDmxUniverse(), block))
+  }
+}
+
+function connectUsbDmxDevices() {
+  devices()
+    .filter(
+      deviceInfo =>
+        deviceInfo.vendorId === usbDmxVid &&
+        deviceInfo.productId === usbDmxPid &&
+        (!deviceInfo.path ||
+          !usbDmxDevices.find(other => other.info.path === deviceInfo.path))
+    )
+    .forEach(deviceInfo => {
+      try {
+        const device: HIDWithInfo = new HID(usbDmxVid, usbDmxPid) as HIDWithInfo
+
+        device.info = deviceInfo
+
+        logInfo('UsbDmx device connected:', deviceInfo.path)
+
+        doWrite(device, getModeMessage())
+        flushUniverse(device)
+
+        usbDmxDevices.push(device)
+
+        device.on('error', e => {
+          logWarn('UsbDmx device error, disconnecting:', e)
+          removeFromMutableArray(usbDmxDevices, device)
+        })
+      } catch (e) {
+        logWarn('Error connecting UsbDmx device:', e)
+      }
+    })
+}
+
+function disconnectUsbDmxDevices() {
+  const paths = devices()
+    .filter(
+      deviceInfo =>
+        deviceInfo.vendorId === usbDmxVid &&
+        deviceInfo.productId === usbDmxPid &&
+        deviceInfo.path
+    )
+    .map(device => device.path!)
+
+  usbDmxDevices
+    .filter(device => device.info.path && !paths.includes(device.info.path))
+    .forEach(device => {
+      logInfo('UsbDmx device disconnected:', device.info.path)
+      device.close()
+      removeFromMutableArray(usbDmxDevices, device)
+    })
+}
+
+export function setChannelChangedForUsbDmxDevices(channel: number) {
+  const block = Math.floor(channel / blockSize)
+  changedBlocks.add(block)
+}
 
 export async function initUsbDmxDevices() {
-  // TODO
-  // console.log('DEVICES', hid.devices())
+  usbDetection.on(`add:${usbDmxVid}:${usbDmxPid}`, connectUsbDmxDevices)
+  usbDetection.on(`remove:${usbDmxVid}:${usbDmxPid}`, disconnectUsbDmxDevices)
+  usbDetection.startMonitoring()
 
-  const device = new HID(1204, 3871)
+  setInterval(flushUsbDmxDevices, devicesFlushInterval)
 
-  console.log(device)
-
-  setMode(device)
-
-  setInterval(() => {
-    setChannel(device)
-  }, 20)
+  connectUsbDmxDevices()
 }
 
-function setMode(device: HID) {
-  const foobar = new Array(34).fill(0)
-  foobar[0] = 16
-  // Modes:
-  // 0: Do nothing - Standby
-  // 1: DMX In -> DMX Out
-  // 2: PC Out -> DMX Out
-  // 3: DMX In + PC Out -> DMX Out
-  // 4: DMX In -> PC In
-  // 5: DMX In -> DMX Out & DMX In -> PC In
-  // 6: PC Out -> DMX Out & DMX In -> PC In
-  // 7: DMX In + PC Out -> DMX Out & DMX In -> PC In
-  foobar[1] = 2
-  device.write(foobar)
-}
-
-let value = 0
-
-function setChannel(device: HID) {
-  value = (value + 1) % 255
-  const foobar = new Array(34).fill(0)
-  foobar[0] = 0
-  // blocks of 32 channels
-  foobar[1] = 0
-  foobar[2] = value
-  device.write(foobar)
-}
+process.on('exit', () => {
+  usbDetection.stopMonitoring()
+})

@@ -89,6 +89,7 @@
     "source-map-support": "^0.5.10",
     "stacktrace-js": "^2.0.0",
     "tslib": "^1.9.3",
+    "usb-detection": "^4.1.0",
     "ws": "^6.1.3"
   }
 }

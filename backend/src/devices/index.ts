@@ -1,10 +1,12 @@
 import { broadcastArtNetChannel } from './artnet'
-import { setChannelChanged } from './vlight'
+import { setChannelChangedForUsbDmxDevices } from './usbdmx'
+import { setChannelChangedForVlightDevices } from './vlight'
 
 export function broadcastUniverseChannelToDevices(
   channel: number,
   value: number
 ) {
   broadcastArtNetChannel(channel, value)
-  setChannelChanged(channel)
+  setChannelChangedForVlightDevices(channel)
+  setChannelChangedForUsbDmxDevices(channel)
 }

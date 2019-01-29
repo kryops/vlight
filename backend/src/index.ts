@@ -4,6 +4,7 @@ import { initApi } from './api'
 import { initExpressApp } from './app'
 import { httpPort } from './config'
 import { initArtNetServer } from './devices/artnet'
+import { initUsbDmxDevices } from './devices/usbdmx'
 import { initVlightDevices } from './devices/vlight'
 import { logError, logInfo } from './util/log'
 
@@ -25,7 +26,7 @@ const initialization = [
   initExpressApp(),
   initApi(),
   initVlightDevices(),
-  // initUsbDmxDevices(),
+  initUsbDmxDevices(),
   initArtNetServer(),
 ]
 
