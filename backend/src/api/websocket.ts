@@ -9,7 +9,7 @@ import { logInfo, logTrace } from '../util/log'
 import { handleApiMessage } from '.'
 import { getApiStateMessage } from './protocol'
 
-const sockets: ws[] = []
+export const sockets: ws[] = []
 
 function removeSocket(socket: ws) {
   logInfo('Socket disconnected')
@@ -41,6 +41,9 @@ export async function initWebSocketServer() {
 }
 
 export function broadcastToSockets(message: ApiOutMessage) {
+  if (!sockets.length) {
+    return
+  }
   logTrace('broadcast WebSocket message', message)
   const messageString = JSON.stringify(message)
   sockets.forEach(socket => socket.send(messageString))

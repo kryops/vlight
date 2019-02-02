@@ -8,12 +8,12 @@ import { getDmxUniverse, setChannel } from '../universe'
 import { logError, logTrace } from '../util/log'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
-import { broadcastToSockets, initWebSocketServer } from './websocket'
+import { broadcastToSockets, initWebSocketServer, sockets } from './websocket'
 
 const changedUninverseChannels: Set<number> = new Set<number>()
 
 function flushWebSockets() {
-  if (changedUninverseChannels.size === 0) {
+  if (!sockets.length || changedUninverseChannels.size === 0) {
     return
   }
   const message =
@@ -47,6 +47,9 @@ export function handleApiMessage(message: ApiInMessage) {
 }
 
 export function broadcastUniverseChannelToSockets(channel: number) {
+  if (!sockets.length) {
+    return
+  }
   changedUninverseChannels.add(channel)
 }
 

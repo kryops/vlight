@@ -2,7 +2,7 @@ import { ApiOutMessage } from '@vlight/api'
 import React, { Component } from 'react'
 
 import { ChannelUniverseContext, DmxUniverseContext } from '../api'
-import { logError, logTrace } from '../util/log'
+import { logError, logInfo, logTrace, logWarn } from '../util/log'
 
 import { setSocket } from '.'
 
@@ -27,7 +27,10 @@ export class ApiWrapper extends Component<{}, State> {
     this.socket = socket
     setSocket(socket)
 
-    socket.onopen = () => this.setState({ connecting: false })
+    socket.onopen = () => {
+      logInfo('WebSocket connection established')
+      this.setState({ connecting: false })
+    }
 
     socket.onmessage = event => {
       try {
@@ -39,6 +42,7 @@ export class ApiWrapper extends Component<{}, State> {
     }
 
     socket.onclose = () => {
+      logWarn('WebSocket connection was closed, reconnecting...')
       this.setState({ connecting: true }, () => {
         setTimeout(() => this.connectWebSocket(), 1000)
       })

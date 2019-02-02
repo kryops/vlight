@@ -1,5 +1,6 @@
 import {
   devicesFlushInterval,
+  enableVLightDevices,
   multiChannelUniverseFlushThreshold,
 } from '../../config'
 import { getDmxUniverse } from '../../universe'
@@ -33,10 +34,18 @@ function flushVlightDevices() {
 }
 
 export function setChannelChangedForVlightDevices(channel: number) {
+  if (!enableVLightDevices) {
+    return
+  }
+
   changedChannels.add(channel)
 }
 
 export async function initVlightDevices() {
+  if (!enableVLightDevices) {
+    return
+  }
+
   await Promise.all([initTcpServer(), initUdpMulticast()])
 
   setInterval(flushVlightDevices, devicesFlushInterval)

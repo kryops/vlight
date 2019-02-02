@@ -28,7 +28,7 @@ export const webpackConfiguration = (env: Env = {}) => {
   const configuration: Configuration = {
     entry: [
       join(__dirname, 'src/index.tsx'),
-      !isProduction && 'webpack-hot-middleware/client',
+      !isProduction && 'webpack-hot-middleware/client?reload=true',
     ].filter(Boolean) as string[],
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? 'source-map' : 'cheap-module-source-map',

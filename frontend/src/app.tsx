@@ -30,24 +30,29 @@ const App: React.SFC = () => (
           <ChannelUniverseContext.Consumer>
             {universe =>
               universe && (
-                <div>Channels: {JSON.stringify(universe!.slice(0, 50))}</div>
+                <>
+                  <div>Channels: {JSON.stringify(universe!.slice(0, 50))}</div>
+                  {[1, 2, 3, 4, 5, 6].map(i => (
+                    <div className={foo} key={i}>
+                      Channel {i}:
+                      <input
+                        type="number"
+                        value={universe[i - 1]}
+                        onChange={e =>
+                          sendApiMessage({
+                            type: 'channels',
+                            channels: { [i]: +e.target.value },
+                          })
+                        }
+                      />
+                    </div>
+                  ))}
+                </>
               )
             }
           </ChannelUniverseContext.Consumer>
         </div>
-        <div className={foo}>
-          Channel 1:
-          <input
-            type="number"
-            defaultValue={'0'}
-            onChange={e =>
-              sendApiMessage({
-                type: 'channels',
-                channels: { 1: +e.target.value },
-              })
-            }
-          />
-        </div>
+
         <LazyLoader />
       </Suspense>
     </ApiWrapper>

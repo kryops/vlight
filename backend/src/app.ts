@@ -4,7 +4,8 @@ import { createServer } from 'http'
 import { join } from 'path'
 
 import { handleApiMessage } from './api'
-import { httpPort, isDevelopment } from './config'
+import { httpPort } from './config'
+import { isDevelopment } from './env'
 
 export const expressApp = express()
 export const httpServer = createServer(expressApp)

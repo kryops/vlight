@@ -31,6 +31,9 @@ export async function initTcpServer() {
 }
 
 export function sendTcpBroadcastMessage(message: Buffer) {
+  if (!sockets.length) {
+    return
+  }
   logTrace('broadcast vLight TCP message', message)
   sockets.forEach(socket => socket.write(message))
 }
