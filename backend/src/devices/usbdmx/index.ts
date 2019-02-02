@@ -1,5 +1,4 @@
-import { Device, devices, HID } from 'node-hid'
-import { platform } from 'os'
+import { Device, HID } from 'node-hid'
 import usbDetection from 'usb-detection'
 
 import {
@@ -8,34 +7,23 @@ import {
   usbDmxPid,
   usbDmxVid,
 } from '../../config'
+import { onWindows } from '../../env'
 import { getDmxUniverse } from '../../universe'
-import { removeFromMutableArray } from '../../util/array'
-import { logError, logInfo, logWarn } from '../../util/log'
+import { delay } from '../../util/util'
 
+import {
+  connectUsbDmxDevices,
+  disconnectUsbDmxDevices,
+  writeToUsbDmxDevice,
+} from './connection'
 import { blockSize, getChannelBlockMessage, getModeMessage } from './protocol'
 
-interface HIDWithInfo extends HID {
+export interface HIDWithInfo extends HID {
   info: Device
 }
 
-const onWindows = platform() === 'win32'
 const changedBlocks: Set<number> = new Set<number>()
-const usbDmxDevices: HIDWithInfo[] = []
-
-function doWrite(device: HIDWithInfo, message: number[]) {
-  const messageToSend =
-    onWindows && message[0] !== 0
-      ? [0, ...message] // https://github.com/node-hid/node-hid#prepend-byte-to-hid_write
-      : message
-
-  try {
-    device.write(messageToSend)
-  } catch (e) {
-    logError('Error writing to UsbDmx device, disconnecting...', e)
-    device.close()
-    removeFromMutableArray(usbDmxDevices, device)
-  }
-}
+export const usbDmxDevices: HIDWithInfo[] = []
 
 function flushUsbDmxDevices() {
   if (changedBlocks.size === 0) {
@@ -44,7 +32,7 @@ function flushUsbDmxDevices() {
 
   for (const block of changedBlocks) {
     const message = getChannelBlockMessage(getDmxUniverse(), block)
-    usbDmxDevices.forEach(device => doWrite(device, message))
+    usbDmxDevices.forEach(device => writeToUsbDmxDevice(device, message))
   }
 
   changedBlocks.clear()
@@ -53,68 +41,18 @@ function flushUsbDmxDevices() {
 function flushUniverse(device: HIDWithInfo) {
   const numberOfBlocks = Math.ceil(universeSize / blockSize)
   for (let block = 0; block < numberOfBlocks; block++) {
-    doWrite(device, getChannelBlockMessage(getDmxUniverse(), block))
+    writeToUsbDmxDevice(device, getChannelBlockMessage(getDmxUniverse(), block))
   }
-}
-
-function connectUsbDmxDevices() {
-  devices()
-    .filter(
-      deviceInfo =>
-        deviceInfo.vendorId === usbDmxVid &&
-        deviceInfo.productId === usbDmxPid &&
-        (!deviceInfo.path ||
-          !usbDmxDevices.find(other => other.info.path === deviceInfo.path))
-    )
-    .forEach(deviceInfo => {
-      try {
-        const device: HIDWithInfo = deviceInfo.path
-          ? (new HID(deviceInfo.path) as HIDWithInfo)
-          : (new HID(usbDmxVid, usbDmxPid) as HIDWithInfo)
-
-        device.info = deviceInfo
-
-        logInfo('UsbDmx device connected:', deviceInfo.path)
-
-        initDevice(device)
-      } catch (e) {
-        logWarn('Error connecting UsbDmx device:', e)
-      }
-    })
 }
 
 async function initDevice(device: HIDWithInfo) {
   if (onWindows) {
-    await new Promise(resolve => setTimeout(resolve, 100))
+    await delay(100)
   }
-  doWrite(device, getModeMessage())
+  writeToUsbDmxDevice(device, getModeMessage())
   flushUniverse(device)
 
   usbDmxDevices.push(device)
-
-  device.on('error', e => {
-    logWarn('UsbDmx device error, disconnecting:', e)
-    removeFromMutableArray(usbDmxDevices, device)
-  })
-}
-
-function disconnectUsbDmxDevices() {
-  const paths = devices()
-    .filter(
-      deviceInfo =>
-        deviceInfo.vendorId === usbDmxVid &&
-        deviceInfo.productId === usbDmxPid &&
-        deviceInfo.path
-    )
-    .map(device => device.path!)
-
-  usbDmxDevices
-    .filter(device => device.info.path && !paths.includes(device.info.path))
-    .forEach(device => {
-      logInfo('UsbDmx device disconnected:', device.info.path)
-      device.close()
-      removeFromMutableArray(usbDmxDevices, device)
-    })
 }
 
 export function setChannelChangedForUsbDmxDevices(channel: number) {
@@ -122,14 +60,18 @@ export function setChannelChangedForUsbDmxDevices(channel: number) {
   changedBlocks.add(block)
 }
 
-export async function initUsbDmxDevices() {
-  usbDetection.on(`add:${usbDmxVid}:${usbDmxPid}`, connectUsbDmxDevices)
+export function initUsbDmxDevices() {
+  usbDetection.on(`add:${usbDmxVid}:${usbDmxPid}`, async () => {
+    // linux seems to need a bit of time here
+    await delay(100)
+    connectUsbDmxDevices(initDevice)
+  })
   usbDetection.on(`remove:${usbDmxVid}:${usbDmxPid}`, disconnectUsbDmxDevices)
   usbDetection.startMonitoring()
 
   setInterval(flushUsbDmxDevices, devicesFlushInterval)
 
-  connectUsbDmxDevices()
+  connectUsbDmxDevices(initDevice)
 }
 
 process.on('exit', () => {
