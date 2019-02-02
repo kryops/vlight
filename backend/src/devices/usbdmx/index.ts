@@ -23,9 +23,10 @@ const changedBlocks: Set<number> = new Set<number>()
 const usbDmxDevices: HIDWithInfo[] = []
 
 function doWrite(device: HIDWithInfo, message: number[]) {
-  const messageToSend = onWindows
-    ? [0, ...message] // https://github.com/node-hid/node-hid#prepend-byte-to-hid_write
-    : message
+  const messageToSend =
+    onWindows && message[0] !== 0
+      ? [0, ...message] // https://github.com/node-hid/node-hid#prepend-byte-to-hid_write
+      : message
 
   try {
     device.write(messageToSend)
@@ -67,25 +68,34 @@ function connectUsbDmxDevices() {
     )
     .forEach(deviceInfo => {
       try {
-        const device: HIDWithInfo = new HID(usbDmxVid, usbDmxPid) as HIDWithInfo
+        const device: HIDWithInfo = deviceInfo.path
+          ? (new HID(deviceInfo.path) as HIDWithInfo)
+          : (new HID(usbDmxVid, usbDmxPid) as HIDWithInfo)
 
         device.info = deviceInfo
 
         logInfo('UsbDmx device connected:', deviceInfo.path)
 
-        doWrite(device, getModeMessage())
-        flushUniverse(device)
-
-        usbDmxDevices.push(device)
-
-        device.on('error', e => {
-          logWarn('UsbDmx device error, disconnecting:', e)
-          removeFromMutableArray(usbDmxDevices, device)
-        })
+        initDevice(device)
       } catch (e) {
         logWarn('Error connecting UsbDmx device:', e)
       }
     })
+}
+
+async function initDevice(device: HIDWithInfo) {
+  if (onWindows) {
+    await new Promise(resolve => setTimeout(resolve, 100))
+  }
+  doWrite(device, getModeMessage())
+  flushUniverse(device)
+
+  usbDmxDevices.push(device)
+
+  device.on('error', e => {
+    logWarn('UsbDmx device error, disconnecting:', e)
+    removeFromMutableArray(usbDmxDevices, device)
+  })
 }
 
 function disconnectUsbDmxDevices() {

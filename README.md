@@ -7,6 +7,8 @@
 - [Node.js](https://nodejs.org/en/)
 - [Yarn](https://yarnpkg.com/lang/en/)
 
+Build tools for native Node.js addons are also needed depending on your platform.
+
 ## Getting Started
 
 Install and setup:
@@ -27,9 +29,16 @@ Start in production mode:
 > yarn start:prod
 ```
 
+### Windows Notes
+
+The automatic installation of the Visual Studio Build tools does not include all features that are necessary to compile this project's addons. Find them under "Control Panel > Software / Apps & Features" and change the installation to contain the following features:
+
+- Visual C++ ATL for x86 and x64
+
 ## DMX Interfaces
 
 - ArtNet
+- USB for [FX5](https://fx5.de/) and [Digital Enlightenment](http://www.digital-enlightenment.de/)
 - Custom Binary protocol
 
 ## Documentation
