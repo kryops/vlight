@@ -1,0 +1,10 @@
+@import '../variables';
+
+.x {
+  display: flex;
+  height: 100%;
+}
+
+.content {
+  padding: $baseline * 6;
+}

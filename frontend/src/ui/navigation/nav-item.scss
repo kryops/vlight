@@ -1,0 +1,23 @@
+@import '../../variables';
+
+.x {
+  padding: $baseline * 3;
+  text-align: center;
+  cursor: pointer;
+
+  &:hover {
+    background: primary(10%);
+
+    & .iconPath {
+      fill: $icon;
+    }
+  }
+}
+
+.xActive {
+  background: primary(20%);
+
+  &:hover {
+    background: primary(20%);
+  }
+}

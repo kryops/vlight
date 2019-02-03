@@ -7,18 +7,17 @@ import {
   sendApiMessage,
 } from './api'
 import { ApiWrapper } from './api/api-wrapper'
-import styles from './app.scss'
+import './global.scss'
+import { MainContainer } from './ui/main-container'
 import { ErrorBoundary } from './util/error-boundary'
-
-const { foo } = styles
 
 const LazyLoader = React.lazy(() => import('./experiment/lazy/lazy'))
 
 const App: React.SFC = () => (
   <ErrorBoundary>
-    <ApiWrapper>
-      <Suspense fallback={false}>
-        <div>
+    <Suspense fallback={false}>
+      <ApiWrapper>
+        <MainContainer>
           Hello :-)
           <DmxUniverseContext.Consumer>
             {universe =>
@@ -33,7 +32,7 @@ const App: React.SFC = () => (
                 <>
                   <div>Channels: {JSON.stringify(universe!.slice(0, 50))}</div>
                   {[1, 2, 3, 4, 5, 6].map(i => (
-                    <div className={foo} key={i}>
+                    <div key={i}>
                       Channel {i}:
                       <input
                         type="number"
@@ -51,11 +50,10 @@ const App: React.SFC = () => (
               )
             }
           </ChannelUniverseContext.Consumer>
-        </div>
-
-        <LazyLoader />
-      </Suspense>
-    </ApiWrapper>
+          <LazyLoader />
+        </MainContainer>
+      </ApiWrapper>
+    </Suspense>
   </ErrorBoundary>
 )
 

@@ -1,0 +1,27 @@
+@import '../../variables';
+
+.x {
+  width: $baseline * 6;
+  height: $baseline * 6;
+  display: block;
+}
+
+.path100 {
+  fill: $icon;
+}
+
+.path50 {
+  fill: icon(50%);
+}
+
+.path20 {
+  fill: icon(20%);
+}
+
+.path10 {
+  fill: icon(10%);
+}
+
+.path5 {
+  fill: icon(5%);
+}

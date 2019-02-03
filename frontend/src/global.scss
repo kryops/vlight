@@ -3,6 +3,7 @@
 :global {
   html,
   body {
+    height: 100%;
     background: $background;
     color: text(100);
     margin: 0;
@@ -11,8 +12,8 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
       Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
   }
-}
 
-.foo {
-  color: blue;
+  #root {
+    height: 100%;
+  }
 }

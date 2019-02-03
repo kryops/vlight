@@ -1,0 +1,7 @@
+@import '../../variables';
+
+.x {
+  flex: 0 0 auto;
+  width: $baseline * 12;
+  background: primary(5%);
+}
