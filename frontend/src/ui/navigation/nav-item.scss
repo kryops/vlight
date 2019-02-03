@@ -1,9 +1,9 @@
 @import '../../variables';
 
 .x {
+  display: block;
   padding: $baseline * 3;
   text-align: center;
-  cursor: pointer;
 
   &:hover {
     background: primary(10%);

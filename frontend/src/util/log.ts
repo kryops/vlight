@@ -1,9 +1,8 @@
-import { isDevelopment } from '../env'
-
 // tslint:disable no-console
 
-export const shouldLogTrace = isDevelopment
-export const shouldLogInfo = shouldLogTrace || isDevelopment
+export const shouldLogTrace = process.env.NODE_ENV === 'development'
+export const shouldLogInfo =
+  shouldLogTrace || process.env.NODE_ENV === 'development'
 
 function noop(..._: any[]) {
   // do nothing

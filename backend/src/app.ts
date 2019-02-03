@@ -1,4 +1,5 @@
 import compression from 'compression'
+import history from 'connect-history-api-fallback'
 import express from 'express'
 import { createServer } from 'http'
 import { join } from 'path'
@@ -11,6 +12,8 @@ export const expressApp = express()
 export const httpServer = createServer(expressApp)
 
 export async function initExpressApp() {
+  expressApp.use(history())
+
   expressApp.post('/api', express.json(), (req, res) => {
     if (req.body && req.body.type) {
       handleApiMessage(req.body)
@@ -21,7 +24,8 @@ export async function initExpressApp() {
   })
 
   if (isDevelopment) {
-    import('./development').then(dev => dev.applyDevMiddleware(expressApp))
+    const dev = await import('./development')
+    dev.applyDevMiddleware(expressApp)
   } else {
     expressApp.use(compression())
     expressApp.use(express.static(join(__dirname, '../../frontend/dist')))

@@ -11,6 +11,7 @@ import {
   Plugin,
 } from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import WebpackPwaManifest from 'webpack-pwa-manifest'
 
 interface Env {
   analyze?: any
@@ -93,6 +94,13 @@ export const webpackConfiguration = (env: Env = {}) => {
       new ExtractCssPlugin({
         cssModules: true,
         hot: !isProduction,
+      }),
+      new WebpackPwaManifest({
+        name: 'vLight',
+        description: 'Virtual Light Controller',
+        display: 'standalone',
+        background_color: '#000c15',
+        ios: true,
       }),
 
       // development

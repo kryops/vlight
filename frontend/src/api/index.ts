@@ -1,7 +1,6 @@
 import { ApiInMessage } from '@vlight/api'
 import React from 'react'
 
-import { isDevelopment } from '../env'
 import { logTrace, logWarn } from '../util/log'
 
 export const DmxUniverseContext = React.createContext<number[] | undefined>(
@@ -26,7 +25,7 @@ export function sendApiMessage(message: ApiInMessage) {
 export function setSocket(newSocket: WebSocket | undefined) {
   socket = newSocket
 
-  if (isDevelopment) {
+  if (process.env.NODE_ENV === 'development') {
     ;(window as any).socket = socket
   }
 }

@@ -1,5 +1,5 @@
-import cx from 'classnames'
-import React, { memo } from 'react'
+import React from 'react'
+import { NavLink } from 'react-router-dom'
 
 import { Icon } from '../icons/icon'
 
@@ -10,13 +10,11 @@ const { x, iconPath, xActive } = styles
 export interface Props {
   icon: string
   label: string
-  active?: boolean
+  to: string
 }
 
-const _NavItem: React.SFC<Props> = ({ icon, label, active }) => (
-  <div className={cx(x, active && xActive)} title={label}>
+export const NavItem: React.SFC<Props> = ({ icon, label, to }) => (
+  <NavLink to={to} title={label} className={x} activeClassName={xActive}>
     <Icon icon={icon} percent={50} pathClassName={iconPath} />
-  </div>
+  </NavLink>
 )
-
-export const NavItem = memo(_NavItem)
