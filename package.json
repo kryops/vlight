@@ -90,6 +90,7 @@
     "node-hid": "^0.7.6",
     "react": "16.8.0-alpha.1",
     "react-dom": "16.8.0-alpha.1",
+    "react-router": "4.4.0-beta.6",
     "react-router-dom": "4.4.0-beta.6",
     "source-map-support": "^0.5.10",
     "stacktrace-js": "^2.0.0",

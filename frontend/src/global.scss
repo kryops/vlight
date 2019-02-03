@@ -14,10 +14,13 @@
 
     // remove 300ms click delay
     touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
   a {
     cursor: pointer;
+    color: text(100);
+    text-decoration: none;
   }
 
   #root {

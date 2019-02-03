@@ -5,16 +5,18 @@ import { Icon } from '../icons/icon'
 
 import styles from './nav-item.scss'
 
-const { x, iconPath, xActive } = styles
+const { x, iconPath, xActive, navLabel } = styles
 
 export interface Props {
+  to: string
   icon: string
   label: string
-  to: string
+  showLabel?: boolean
 }
 
-export const NavItem: React.SFC<Props> = ({ icon, label, to }) => (
+export const NavItem: React.SFC<Props> = ({ to, icon, label, showLabel }) => (
   <NavLink to={to} title={label} className={x} activeClassName={xActive}>
-    <Icon icon={icon} percent={50} pathClassName={iconPath} />
+    <Icon icon={icon} opacity={50} pathClassName={iconPath} />
+    {showLabel && <span className={navLabel}>{label}</span>}
   </NavLink>
 )

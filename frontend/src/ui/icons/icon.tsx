@@ -9,15 +9,15 @@ const { x, path100 } = styles
 
 export interface Props {
   icon: string
-  percent?: ColorPercentage
+  opacity?: ColorPercentage
   pathClassName?: string
 }
 
-const _Icon: React.SFC<Props> = ({ icon, percent = 100, pathClassName }) => (
+const _Icon: React.SFC<Props> = ({ icon, opacity = 100, pathClassName }) => (
   <svg viewBox="0 0 24 24" className={x}>
     <path
       d={icon}
-      className={cx(styles['path' + percent] || path100, pathClassName)}
+      className={cx(styles['path' + opacity] || path100, pathClassName)}
     />
   </svg>
 )

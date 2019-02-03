@@ -1,19 +1,19 @@
 import React from 'react'
 import { hot } from 'react-hot-loader/root'
-import { BrowserRouter } from 'react-router-dom'
 
 import { ApiWrapper } from './api/api-wrapper'
 import './global.scss'
 import { MainContainer } from './ui/main/main-container'
 import { ErrorBoundary } from './util/error-boundary'
+import { RouterWithContext } from './util/router-with-context'
 
 const App: React.SFC = () => (
   <ErrorBoundary>
-    <BrowserRouter>
+    <RouterWithContext>
       <ApiWrapper>
         <MainContainer />
       </ApiWrapper>
-    </BrowserRouter>
+    </RouterWithContext>
   </ErrorBoundary>
 )
 

@@ -1,9 +1,9 @@
 @import '../../variables';
 
 .x {
-  display: block;
+  display: flex;
   padding: $baseline * 3;
-  text-align: center;
+  align-items: center;
 
   &:hover {
     background: primary(10%);
@@ -20,4 +20,9 @@
   &:hover {
     background: primary(20%);
   }
+}
+
+.navLabel {
+  padding-left: $baseline * 2;
+  padding-right: $baseline * 4;
 }
