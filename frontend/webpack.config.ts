@@ -40,6 +40,11 @@ export const webpackConfiguration = (env: Env = {}) => {
     },
     module: {
       rules: [
+        (!isProduction && {
+          test: /\.js$/,
+          include: /node_modules/,
+          loader: 'react-hot-loader/webpack',
+        }) as any,
         {
           test: /\.tsx?$/,
           exclude: /node_modules/,
@@ -75,7 +80,7 @@ export const webpackConfiguration = (env: Env = {}) => {
             },
           ],
         },
-      ],
+      ].filter(Boolean),
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.mjs', '.js', '.json'],
