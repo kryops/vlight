@@ -10,6 +10,8 @@ $warn: #eea300;
 $text: #ddd;
 $icon: #fff;
 
+$zNavigation: 10;
+
 @function primary($percent) {
   @return mix($primary, $background, $percent);
 }

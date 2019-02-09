@@ -1,0 +1,30 @@
+@import '../../variables';
+
+$width: $baseline * 12;
+// !! affects fader.tsx !!
+$height: $baseline * 60;
+$faderHeight: $width * 1.25;
+
+.x {
+  position: relative;
+  width: $width;
+  height: $height;
+  margin: $baseline * 1.5;
+}
+
+.track {
+  position: absolute;
+  top: $faderHeight / 2;
+  left: $width / 3;
+  background: icon(20%);
+  width: $width / 3;
+  height: $height - $faderHeight;
+}
+
+.button {
+  position: relative;
+  width: $width;
+  height: $width * 1.2;
+  background: primary(20%);
+  z-index: 2;
+}

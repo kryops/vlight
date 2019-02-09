@@ -5,6 +5,7 @@ import {
   DmxUniverseContext,
   sendApiMessage,
 } from '../../api'
+import { Fader } from '../../ui/controls/fader'
 
 const _ChannelsPage: React.SFC = () => (
   <div>
@@ -14,25 +15,29 @@ const _ChannelsPage: React.SFC = () => (
       }
     </DmxUniverseContext.Consumer>
     <ChannelUniverseContext.Consumer>
-      {universe =>
-        universe && (
+      {channels =>
+        channels && (
           <>
-            <div>Channels: {JSON.stringify(universe!.slice(0, 50))}</div>
-            {[1, 2, 3, 4, 5, 6].map(i => (
-              <div key={i}>
-                Channel {i}:
-                <input
-                  type="number"
-                  value={universe[i - 1]}
-                  onChange={e =>
+            <div>Channels: {JSON.stringify(channels!.slice(0, 50))}</div>
+            <div style={{ display: 'flex' }}>
+              {[1, 2, 3, 4, 5, 6].map(i => (
+                <Fader
+                  key={i}
+                  value={channels![i - 1]}
+                  max={255}
+                  step={1}
+                  onChange={val => {
+                    if (val === channels![i - 1]) {
+                      return
+                    }
                     sendApiMessage({
                       type: 'channels',
-                      channels: { [i]: +e.target.value },
+                      channels: { [i]: val },
                     })
-                  }
+                  }}
                 />
-              </div>
-            ))}
+              ))}
+            </div>
           </>
         )
       }
