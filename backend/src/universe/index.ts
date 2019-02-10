@@ -78,6 +78,11 @@ export function setUniverseChannel(
   assertValidChannel(channel)
   const index = channel - 1
   const oldValue = universe[index]
+
+  if (oldValue === value) {
+    return false
+  }
+
   universe[index] = value
 
   const changed = computeDmxChannel(channel, value, oldValue)
@@ -86,6 +91,7 @@ export function setUniverseChannel(
     broadcastUniverseChannelToDevices(channel, value)
     broadcastUniverseChannelToSockets(channel)
   }
+  return true
 }
 
 /**

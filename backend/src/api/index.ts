@@ -38,11 +38,16 @@ export function handleApiMessage(message: ApiInMessage) {
 
   switch (message.type) {
     case 'channels':
+      let changed = false
       for (const [channel, value] of Object.entries(message.channels)) {
-        setUniverseChannel(channelUniverse, +channel, value)
+        if (setUniverseChannel(channelUniverse, +channel, value)) {
+          changed = true
+        }
       }
 
-      broadcastToSockets(message)
+      if (changed) {
+        broadcastToSockets(message)
+      }
       break
 
     default:

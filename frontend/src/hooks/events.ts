@@ -8,7 +8,8 @@ import {
 export function useGlobalEvents<T extends Event>(
   target: EventTarget,
   events: string[],
-  fn: (e: T) => void
+  fn: (e: T) => void,
+  shouldUpdate: any[] = []
 ) {
   useEffect(() => {
     const listener = (e: Event) => fn(e as T)
@@ -19,5 +20,5 @@ export function useGlobalEvents<T extends Event>(
         removeGlobalEventListener(target, event, listener)
       )
     }
-  }, [])
+  }, shouldUpdate)
 }
