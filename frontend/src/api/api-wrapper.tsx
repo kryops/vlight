@@ -1,7 +1,8 @@
-import { ApiOutMessage } from '@vlight/api'
+import { ApiInMessage, ApiOutMessage } from '@vlight/api'
 import React, { Component } from 'react'
 
 import { ChannelUniverseContext, DmxUniverseContext } from '../api'
+import { socketProcessingInterval } from '../config'
 import { logError, logInfo, logTrace, logWarn } from '../util/log'
 
 import { setSocket } from '.'
@@ -12,6 +13,41 @@ interface State {
   channels: number[] | undefined
 }
 
+function processDelta(
+  universe: number[] | undefined,
+  message: { [channel: number]: number }
+) {
+  const newUniverse = [...(universe || [])]
+  for (const [channel, value] of Object.entries(message)) {
+    newUniverse[+channel - 1] = value
+  }
+  return newUniverse
+}
+
+function processApiMessage(message: ApiOutMessage, state: Partial<State>) {
+  switch (message.type) {
+    case 'state':
+      state.universe = message.universe
+      state.channels = message.channels
+      break
+
+    case 'universe':
+      state.universe = message.universe
+      break
+
+    case 'universe-delta':
+      state.universe = processDelta(state.universe, message.channels)
+      break
+
+    case 'channels':
+      state.channels = processDelta(state.channels, message.channels)
+      break
+
+    default:
+      logError('Invalid API message received:', message)
+  }
+}
+
 export class ApiWrapper extends Component<{}, State> {
   state = {
     connecting: true,
@@ -20,6 +56,8 @@ export class ApiWrapper extends Component<{}, State> {
   }
 
   socket: WebSocket | undefined
+  interval: number | undefined
+  messageQueue: ApiInMessage[] = []
 
   connectWebSocket() {
     const socket = new WebSocket(`ws://${window.location.host}/ws`)
@@ -35,7 +73,8 @@ export class ApiWrapper extends Component<{}, State> {
     socket.onmessage = event => {
       try {
         const message = JSON.parse(event.data)
-        this.handleApiMessage(message)
+        logTrace('WebSocket message', message)
+        this.messageQueue.push(message)
       } catch (e) {
         logError('WebSocket message parse error', e, 'message was:', event.data)
       }
@@ -51,46 +90,29 @@ export class ApiWrapper extends Component<{}, State> {
     socket.onerror = e => logError('WebSocket error', e)
   }
 
-  handleApiMessage(message: ApiOutMessage) {
-    logTrace('WebSocket message', message)
-
-    switch (message.type) {
-      case 'state':
-        const { universe, channels } = message
-        this.setState({ universe, channels })
-        break
-
-      case 'universe':
-        this.setState({ channels: message.universe })
-        break
-
-      case 'universe-delta':
-        this.setState(state => {
-          const newUniverse = [...(state.universe || [])]
-          for (const channel of Object.keys(message.channels)) {
-            newUniverse[+channel - 1] = message.channels[channel as any]
-          }
-          return { universe: newUniverse }
-        })
-        break
-
-      case 'channels':
-        this.setState(state => {
-          const newChannels = [...(state.channels || [])]
-          for (const channel of Object.keys(message.channels)) {
-            newChannels[+channel - 1] = message.channels[channel as any]
-          }
-          return { channels: newChannels }
-        })
-        break
-
-      default:
-        logError('Invalid API message received:', message)
+  processMessageQueue() {
+    if (!this.messageQueue.length) {
+      return
     }
+
+    logTrace(`Processing ${this.messageQueue.length} WebSocket messages`)
+
+    const newState: Pick<State, keyof State> = { ...this.state }
+
+    for (const message of this.messageQueue) {
+      processApiMessage(message, newState)
+    }
+
+    this.messageQueue = []
+    this.setState(newState)
   }
 
   componentDidMount() {
     this.connectWebSocket()
+    this.interval = window.setInterval(
+      () => this.processMessageQueue(),
+      socketProcessingInterval
+    )
   }
 
   componentWillUnmount() {
@@ -98,6 +120,7 @@ export class ApiWrapper extends Component<{}, State> {
       this.socket.close()
     }
     setSocket(undefined)
+    window.clearInterval(this.interval)
   }
 
   render() {

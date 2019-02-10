@@ -7,7 +7,7 @@ export interface ApiChannelMessage {
   type: 'channels'
   channels: {
     // starting at 1
-    [channel: number]: number
+    [channel: string]: number
   }
 }
 
@@ -42,7 +42,7 @@ export interface ApiUniverseDeltaMessage {
   type: 'universe-delta'
   channels: {
     // starting at 1
-    [channel: number]: number
+    [channel: string]: number
   }
 }
 

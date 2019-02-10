@@ -2,12 +2,14 @@ import { broadcastUniverseChannelToSockets } from '../api'
 import { universeSize } from '../config'
 import { broadcastUniverseChannelToDevices } from '../devices'
 
+export type Universe = Buffer
+
 const dmxUniverse = createUniverse()
 export const channelUniverse = createUniverse()
 
-const universes: Buffer[] = [channelUniverse]
+const universes: Universe[] = [channelUniverse]
 
-function createUniverse() {
+function createUniverse(): Universe {
   return Buffer.alloc(universeSize)
 }
 
@@ -17,31 +19,68 @@ function assertValidChannel(channel: number) {
   }
 }
 
-function computeDmxChannel(channel: number): boolean {
-  const index = channel - 1
-  const currentValue = dmxUniverse[index]
-  const newValue = Math.max(...universes.map(universe => universe[index]))
-
-  if (newValue === currentValue) {
+function computeDmxChannel(
+  channel: number,
+  newUniverseValue: number,
+  oldUniverseValue: number
+): boolean {
+  if (newUniverseValue === oldUniverseValue) {
     return false
   }
 
-  dmxUniverse[index] = newValue
-  return true
-}
-
-function updateDmxChannel(channel: number, value: number) {
   const index = channel - 1
   const currentDmxValue = dmxUniverse[index]
 
-  let changed = false
-
-  if (currentDmxValue < value) {
-    changed = true
-    dmxUniverse[index] = value
-  } else if (currentDmxValue > value) {
-    changed = computeDmxChannel(channel)
+  if (newUniverseValue === currentDmxValue) {
+    return false
   }
+
+  // no change because another universe has the highest value
+  if (
+    oldUniverseValue < currentDmxValue &&
+    newUniverseValue < currentDmxValue
+  ) {
+    return false
+  }
+
+  if (newUniverseValue > currentDmxValue) {
+    dmxUniverse[index] = newUniverseValue
+    return true
+  }
+
+  let newDmxValue = newUniverseValue
+
+  for (const universe of universes) {
+    const universeValue = universe[index]
+    // shortcut: If any universe is set to 255, the overall value will not have changed.
+    // value can't be 255 here, as that would have been >= currentValue
+    if (universeValue === 255) {
+      return false
+    }
+    if (universeValue > newDmxValue) {
+      newDmxValue = universeValue
+    }
+  }
+
+  if (newDmxValue === currentDmxValue) {
+    return false
+  }
+
+  dmxUniverse[index] = newDmxValue
+  return true
+}
+
+export function setUniverseChannel(
+  universe: Buffer,
+  channel: number,
+  value: number
+) {
+  assertValidChannel(channel)
+  const index = channel - 1
+  const oldValue = universe[index]
+  universe[index] = value
+
+  const changed = computeDmxChannel(channel, value, oldValue)
 
   if (changed) {
     broadcastUniverseChannelToDevices(channel, value)
@@ -49,15 +88,10 @@ function updateDmxChannel(channel: number, value: number) {
   }
 }
 
+/**
+ * Export as function instead of the variable directly
+ * so we can add blackout/swop features later
+ */
 export function getDmxUniverse(): Buffer {
   return dmxUniverse
-}
-
-export function setChannel(channel: number, value: number) {
-  assertValidChannel(channel)
-
-  const index = channel - 1
-  channelUniverse[index] = value
-
-  updateDmxChannel(channel, value)
 }

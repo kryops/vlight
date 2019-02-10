@@ -4,7 +4,11 @@ import {
   multiChannelUniverseFlushThreshold,
   socketFlushInterval,
 } from '../config'
-import { getDmxUniverse, setChannel } from '../universe'
+import {
+  channelUniverse,
+  getDmxUniverse,
+  setUniverseChannel,
+} from '../universe'
 import { logError, logTrace } from '../util/log'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
@@ -35,7 +39,7 @@ export function handleApiMessage(message: ApiInMessage) {
   switch (message.type) {
     case 'channels':
       for (const [channel, value] of Object.entries(message.channels)) {
-        setChannel(+channel, value)
+        setUniverseChannel(channelUniverse, +channel, value)
       }
 
       broadcastToSockets(message)
