@@ -6,7 +6,8 @@ import { httpPort } from './config'
 import { initArtNetServer } from './devices/artnet'
 import { initUsbDmxDevices } from './devices/usbdmx'
 import { initVlightDevices } from './devices/vlight'
-import { logError, logInfo } from './util/log'
+import { isDevelopment } from './env'
+import { logError, logInfo, logWarn } from './util/log'
 
 sourceMapSupport.install()
 
@@ -19,6 +20,15 @@ process.on('uncaughtException', err => {
 process.on('unhandledRejection', err => {
   logError('UNHANDLED REJECTION', err)
 })
+
+// ...except for when we actually want to kill it
+
+if (!isDevelopment) {
+  process.on('SIGINT', () => {
+    logWarn('SIGINT received, exiting...')
+    process.exit()
+  })
+}
 
 // actual initialization
 

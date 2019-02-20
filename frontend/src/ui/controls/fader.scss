@@ -27,4 +27,7 @@ $faderHeight: $width * 1.25;
   height: $width * 1.2;
   background: primary(20%);
   z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

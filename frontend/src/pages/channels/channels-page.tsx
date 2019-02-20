@@ -1,48 +1,44 @@
-import React, { memo } from 'react'
+import React, { memo, useContext } from 'react'
 
-import {
-  ChannelUniverseContext,
-  DmxUniverseContext,
-  sendApiMessage,
-} from '../../api'
+import { ChannelUniverseContext, sendApiMessage } from '../../api'
 import { Fader } from '../../ui/controls/fader'
+import { createRangeArray } from '../../util/array'
 
-const _ChannelsPage: React.SFC = () => (
-  <div>
-    <DmxUniverseContext.Consumer>
-      {universe =>
-        universe && <div>DMX: {JSON.stringify(universe!.slice(0, 50))}</div>
-      }
-    </DmxUniverseContext.Consumer>
-    <ChannelUniverseContext.Consumer>
-      {channels =>
-        channels && (
-          <>
-            <div>Channels: {JSON.stringify(channels!.slice(0, 50))}</div>
-            <div style={{ display: 'flex' }}>
-              {[1, 2, 3, 4, 5, 6].map(i => (
-                <Fader
-                  key={i}
-                  value={channels![i - 1]}
-                  max={255}
-                  step={1}
-                  onChange={val => {
-                    if (val === channels![i - 1]) {
-                      return
-                    }
-                    sendApiMessage({
-                      type: 'channels',
-                      channels: { [i]: val },
-                    })
-                  }}
-                />
-              ))}
-            </div>
-          </>
-        )
-      }
-    </ChannelUniverseContext.Consumer>
-  </div>
-)
+import styles from './channels-page.scss'
+
+const { x } = styles
+
+const _ChannelsPage: React.SFC = () => {
+  const channels = useContext(ChannelUniverseContext)
+  if (!channels) {
+    return null
+  }
+
+  // TODO add paging / virtual scrolling?
+  const allChannels = createRangeArray(1, 96)
+
+  return (
+    <div className={x}>
+      {allChannels.map(i => (
+        <Fader
+          key={i}
+          value={channels![i - 1]}
+          max={255}
+          step={1}
+          label={i.toString()}
+          onChange={val => {
+            if (val === channels![i - 1]) {
+              return
+            }
+            sendApiMessage({
+              type: 'channels',
+              channels: { [i]: val },
+            })
+          }}
+        />
+      ))}
+    </div>
+  )
+}
 
 export default memo(_ChannelsPage)

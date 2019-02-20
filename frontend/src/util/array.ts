@@ -10,3 +10,11 @@ export function removeFromMutableArray<T>(arr: T[], el: T) {
     arr.splice(index, 1)
   }
 }
+
+export function createRangeArray(min: number, max: number): number[] {
+  const arr: number[] = []
+  for (let i = min; i <= max; i++) {
+    arr.push(i)
+  }
+  return arr
+}

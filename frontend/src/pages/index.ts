@@ -1,5 +1,6 @@
 import { channelsPageNavItem } from './channels'
 import { testPageNavItem } from './test'
+import { universePageNavItem, universePageRoute } from './universe'
 
 export interface NavItemEntry {
   route: string
@@ -9,6 +10,9 @@ export interface NavItemEntry {
 }
 
 export const mainNavigationItems: NavItemEntry[] = [
+  universePageNavItem,
   channelsPageNavItem,
   testPageNavItem,
 ]
+
+export const entryRoute = universePageRoute

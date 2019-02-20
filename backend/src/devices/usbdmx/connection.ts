@@ -84,3 +84,11 @@ export function writeToUsbDmxDevice(device: HIDWithInfo, message: number[]) {
     removeFromMutableArray(usbDmxDevices, device)
   }
 }
+
+process.on('exit', () => {
+  try {
+    usbDmxDevices.forEach(device => device.close())
+  } catch {
+    // do nothing
+  }
+})

@@ -14,6 +14,7 @@ export interface Props {
   min?: number
   max?: number
   step?: number
+  label?: string
   onChange: (value: number) => void
 }
 
@@ -22,6 +23,7 @@ const _Fader: React.SFC<Props> = ({
   min = 0,
   max = 100,
   step,
+  label,
   onChange,
 }) => {
   const trackRef = useRef<HTMLDivElement>(null)
@@ -57,7 +59,9 @@ const _Fader: React.SFC<Props> = ({
       onUp={() => (touchActive.current = false)}
     >
       <div className={track} ref={trackRef} />
-      <div className={button} style={{ transform: `translateY(${y}px)` }} />
+      <div className={button} style={{ transform: `translateY(${y}px)` }}>
+        {label}
+      </div>
     </Touchable>
   )
 }
