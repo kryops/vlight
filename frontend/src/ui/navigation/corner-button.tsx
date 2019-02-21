@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 
 import { ColorPercentage } from '../../types'
 import { Icon } from '../icons/icon'
@@ -14,7 +14,7 @@ export interface Props {
   onClick: () => void
 }
 
-export const CornerButton: React.SFC<Props> = ({
+const _CornerButton: React.SFC<Props> = ({
   icon,
   tooltip,
   opacity,
@@ -23,4 +23,12 @@ export const CornerButton: React.SFC<Props> = ({
   <div title={tooltip} className={x} onClick={onClick}>
     <Icon icon={icon} opacity={opacity || 20} />
   </div>
+)
+
+export const CornerButton = memo(
+  _CornerButton,
+  (prev, next) =>
+    prev.icon === next.icon &&
+    prev.tooltip === next.tooltip &&
+    prev.opacity === next.opacity
 )

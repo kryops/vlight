@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react'
+import React, { memo, useRef, useState } from 'react'
 
+import { ensureBetween, roundToStep } from '../../util/number'
 import { getTouchEventOffset } from '../../util/touch'
 import { Touchable } from '../helpers/touchable'
 
@@ -42,16 +43,9 @@ const _Fader: React.SFC<Props> = ({
         if (!offset) {
           return
         }
-        let fraction = 1 - offset.yFraction
-        if (fraction < 0) {
-          fraction = 0
-        } else if (fraction > 1) {
-          fraction = 1
-        }
+        const fraction = ensureBetween(1 - offset.yFraction, 0, 1)
         const newRawValue = min + fraction * (max - min)
-        const roundedValue = step
-          ? Math.round(newRawValue / step) * step
-          : rawValue
+        const roundedValue = roundToStep(newRawValue, step)
         setRawValue(newRawValue)
         onChange(roundedValue)
       }}
@@ -66,4 +60,8 @@ const _Fader: React.SFC<Props> = ({
   )
 }
 
-export const Fader = React.memo(_Fader)
+export const Fader = memo(
+  _Fader,
+  // other values should not change without changing the key
+  (prev, next) => prev.value === next.value && prev.label === next.label
+)
