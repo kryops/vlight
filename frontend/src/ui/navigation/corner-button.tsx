@@ -1,6 +1,7 @@
 import React, { memo } from 'react'
 
 import { ColorPercentage } from '../../types'
+import { compareWithoutFunctions } from '../../util/react'
 import { Icon } from '../icons/icon'
 
 import styles from './corner-button.scss'
@@ -25,10 +26,4 @@ const _CornerButton: React.SFC<Props> = ({
   </div>
 )
 
-export const CornerButton = memo(
-  _CornerButton,
-  (prev, next) =>
-    prev.icon === next.icon &&
-    prev.tooltip === next.tooltip &&
-    prev.opacity === next.opacity
-)
+export const CornerButton = memo(_CornerButton, compareWithoutFunctions)
