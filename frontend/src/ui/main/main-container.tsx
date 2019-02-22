@@ -1,5 +1,5 @@
 import cx from 'classnames'
-import React, { memo, Suspense, useState } from 'react'
+import React, { memo, Suspense, useCallback, useState } from 'react'
 
 import { useRouterLocationChanged } from '../../hooks/router'
 import { RoutesOutlet } from '../../pages/routes-outlet'
@@ -18,7 +18,7 @@ const _MainContainer: React.SFC = () => {
   const [nav, setNav] = useState(alwaysShowNav)
   const locationChanged = useRouterLocationChanged()
 
-  const toggleNav = () => setNav(!nav)
+  const toggleNav = useCallback(() => setNav(!nav), [nav])
 
   if (locationChanged && !alwaysShowNav) {
     setNav(false)
