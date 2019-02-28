@@ -4,7 +4,7 @@ import React, { memo, useContext } from 'react'
 import { DmxUniverseContext } from '../../api'
 import { Bar } from '../../ui/controls/bar'
 
-const container = css`
+const universePage = css`
   display: flex;
   flex-wrap: wrap;
 `
@@ -17,7 +17,7 @@ const _UniversePage: React.SFC = () => {
 
   return (
     <>
-      <div className={container}>
+      <div className={universePage}>
         {universe.map((value, index) => (
           <Bar
             key={index}

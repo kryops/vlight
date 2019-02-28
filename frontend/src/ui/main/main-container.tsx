@@ -1,4 +1,5 @@
 import cx from 'classnames'
+import { css } from 'linaria'
 import React, { memo, Suspense, useCallback, useState } from 'react'
 
 import { useRouterLocationChanged } from '../../hooks/router'
@@ -6,10 +7,35 @@ import { RoutesOutlet } from '../../pages/routes-outlet'
 import { iconClose, iconMenu } from '../icons'
 import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
+import { backgroundColor, baselinePx, zNavigation } from '../styles'
 
-import styles from './main-container.scss'
+const mainContainer = css`
+  display: flex;
+  height: 100%;
+`
 
-const { x, content, contentBlurred, overlay } = styles
+const content = css`
+  flex: 1 1 auto;
+  padding: ${baselinePx * 6}px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: auto;
+`
+
+const content_blurred = css`
+  filter: blur(2px);
+`
+
+const overlay = css`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: ${backgroundColor};
+  opacity: 0.5;
+  z-index: ${zNavigation};
+`
 
 const navBreakpoint = 768
 const alwaysShowNav = window.innerWidth >= navBreakpoint
@@ -27,7 +53,7 @@ const _MainContainer: React.SFC = () => {
   const navOverlayed = nav && !alwaysShowNav
 
   return (
-    <div className={x}>
+    <div className={mainContainer}>
       {navOverlayed && <div className={overlay} onClick={toggleNav} />}
       {nav && (
         <Navigation showLabels={!alwaysShowNav} floating={!alwaysShowNav} />
@@ -35,11 +61,11 @@ const _MainContainer: React.SFC = () => {
       {!alwaysShowNav && (
         <CornerButton
           icon={nav ? iconClose : iconMenu}
-          opacity={nav ? 50 : 20}
+          shade={nav ? 1 : 2}
           onClick={toggleNav}
         />
       )}
-      <div className={cx(content, navOverlayed && contentBlurred)}>
+      <div className={cx(content, navOverlayed && content_blurred)}>
         <Suspense fallback={false}>
           <RoutesOutlet />
         </Suspense>

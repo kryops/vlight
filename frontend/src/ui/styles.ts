@@ -1,7 +1,5 @@
 import { mix } from 'polished'
 
-// !!! SCSS references in _variables.scss
-
 export const baselinePx = 4
 export const fontSizePx = 16
 
@@ -16,11 +14,11 @@ const warnColor = '#eea300'
 const textColor = '#ddd'
 const iconColor = '#fff'
 
-const colorLevels = [1, 0.5, 0.2, 0.1, 0.05]
+const colorShades = [1, 0.5, 0.2, 0.1, 0.05]
 
 function colorLevelFactory(color: string) {
   return function colorLevel(level: number): string {
-    return mix(colorLevels[level] || 1, color, backgroundColor)
+    return mix(colorShades[level] || 1, color, backgroundColor)
   }
 }
 

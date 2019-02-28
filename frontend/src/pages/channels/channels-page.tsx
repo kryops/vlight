@@ -1,12 +1,14 @@
+import { css } from 'linaria'
 import React, { memo, useContext } from 'react'
 
 import { ChannelUniverseContext, sendApiMessage } from '../../api'
 import { Fader } from '../../ui/controls/fader'
 import { createRangeArray } from '../../util/array'
 
-import styles from './channels-page.scss'
-
-const { x } = styles
+const channelsPage = css`
+  display: flex;
+  flex-wrap: wrap;
+`
 
 const _ChannelsPage: React.SFC = () => {
   const channels = useContext(ChannelUniverseContext)
@@ -15,10 +17,10 @@ const _ChannelsPage: React.SFC = () => {
   }
 
   // TODO add paging / virtual scrolling?
-  const allChannels = createRangeArray(1, 96)
+  const allChannels = createRangeArray(1, 512)
 
   return (
-    <div className={x}>
+    <div className={channelsPage}>
       {allChannels.map(i => (
         <Fader
           key={i}

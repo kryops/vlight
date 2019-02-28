@@ -3,11 +3,11 @@ import React, { memo } from 'react'
 
 import { baselinePx, primaryShade } from '../styles'
 
-const barStyle = css`
+const bar = css`
   border: 1px solid ${primaryShade(1)};
 `
 
-const labelStyle = css`
+const barLabel = css`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,8 +22,8 @@ export interface Props {
 }
 
 const _Bar: React.SFC<Props> = ({ value }) => (
-  <div className={barStyle}>
-    <div className={labelStyle}>{value}</div>
+  <div className={bar}>
+    <div className={barLabel}>{value}</div>
   </div>
 )
 

@@ -1,12 +1,27 @@
 import cx from 'classnames'
+import { css } from 'linaria'
 import React, { memo } from 'react'
 
 import { mainNavigationItems } from '../../pages'
+import { primaryShade, zNavigation } from '../styles'
 
 import { NavItem } from './nav-item'
-import styles from './navigation.scss'
 
-const { x, xFloating } = styles
+const navigation = css`
+  flex: 0 0 auto;
+  height: 100%;
+  overflow: auto;
+  overflow-x: hidden;
+  background: ${primaryShade(4)};
+`
+
+const navigation_floating = css`
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: ${zNavigation};
+  box-shadow: 2px 0 10px icon(10%);
+`
 
 export interface Props {
   showLabels?: boolean
@@ -14,7 +29,7 @@ export interface Props {
 }
 
 const _Navigation: React.SFC<Props> = ({ showLabels, floating }) => (
-  <div className={cx(x, floating && xFloating)}>
+  <div className={cx(navigation, floating && navigation_floating)}>
     {mainNavigationItems.map(({ route, icon, label }) => (
       <NavItem
         key={route}

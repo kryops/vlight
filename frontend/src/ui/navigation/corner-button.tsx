@@ -1,28 +1,30 @@
+import { css } from 'linaria'
 import React, { memo } from 'react'
 
-import { ColorPercentage } from '../../types'
+import { ColorShade } from '../../types'
 import { compareWithoutFunctions } from '../../util/react'
 import { Icon } from '../icons/icon'
+import { baselinePx, zNavigation } from '../styles'
 
-import styles from './corner-button.scss'
-
-const { x } = styles
+const cornerButton = css`
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  z-index: ${zNavigation};
+  padding: ${baselinePx * 3}px;
+  cursor: pointer;
+`
 
 export interface Props {
   icon: string
   tooltip?: string
-  opacity?: ColorPercentage
+  shade?: ColorShade
   onClick: () => void
 }
 
-const _CornerButton: React.SFC<Props> = ({
-  icon,
-  tooltip,
-  opacity,
-  onClick,
-}) => (
-  <div title={tooltip} className={x} onClick={onClick}>
-    <Icon icon={icon} opacity={opacity || 20} />
+const _CornerButton: React.SFC<Props> = ({ icon, tooltip, shade, onClick }) => (
+  <div title={tooltip} className={cornerButton} onClick={onClick}>
+    <Icon icon={icon} shade={shade === undefined ? 2 : shade} />
   </div>
 )
 

@@ -1,13 +1,14 @@
 import cx from 'classnames'
+import { css } from 'linaria'
 import React, { useRef } from 'react'
 
 import { NormalizedTouchEvent, normalizeTouchEvent } from '../../util/touch'
 
-import styles from './touchable.scss'
-
-const { x } = styles
-
 const pointerEventSupport = 'PointerEvent' in window
+
+const touchable = css`
+  touch-action: none;
+`
 
 export type TouchEventListener = (
   e: NormalizedTouchEvent<HTMLDivElement>
@@ -72,7 +73,7 @@ export const Touchable = React.forwardRef<
 
   return (
     <div
-      className={cx(x, className)}
+      className={cx(touchable, className)}
       ref={ref}
       onPointerDown={
         pointerEventSupport

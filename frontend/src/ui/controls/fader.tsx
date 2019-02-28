@@ -1,14 +1,46 @@
+import { css } from 'linaria'
 import React, { memo, useRef, useState } from 'react'
 
 import { ensureBetween, roundToStep } from '../../util/number'
 import { getTouchEventOffset } from '../../util/touch'
 import { Touchable } from '../helpers/touchable'
+import { baselinePx, iconShade, primaryShade } from '../styles'
 
-import styles from './fader.scss'
+const faderWidth = baselinePx * 12
+const faderHeight = baselinePx * 60
 
-const { x, track, button } = styles
+const buttonHeight = faderWidth * 1.25
 
-const trackHeight = 180 // !! also in fader.scss !!
+const trackWidth = faderWidth / 3
+const trackMargin = (faderWidth - trackWidth) / 2
+const trackHeight = faderHeight - buttonHeight
+
+const fader = css`
+  position: relative;
+  width: ${faderWidth}px;
+  height: ${faderHeight}px;
+  margin: ${baselinePx * 1.5}px;
+`
+
+const track = css`
+  position: absolute;
+  top: ${buttonHeight / 2}px;
+  left: ${trackMargin}px;
+  background: ${iconShade(2)};
+  width: ${trackWidth}px;
+  height: ${trackHeight}px;
+`
+
+const button = css`
+  position: relative;
+  width: ${faderWidth};
+  height: ${buttonHeight}px;
+  background: ${primaryShade(2)};
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
 
 export interface Props {
   value: number
@@ -37,7 +69,7 @@ const _Fader: React.SFC<Props> = ({
 
   return (
     <Touchable
-      className={x}
+      className={fader}
       onTouch={e => {
         const offset = getTouchEventOffset(e, trackRef)
         if (!offset) {
