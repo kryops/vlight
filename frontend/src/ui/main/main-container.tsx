@@ -9,6 +9,8 @@ import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
 import { backgroundColor, baselinePx, zNavigation } from '../styles'
 
+import { LoadingScreen } from './loading-screen'
+
 const mainContainer = css`
   display: flex;
   height: 100%;
@@ -66,7 +68,7 @@ const _MainContainer: React.SFC = () => {
         />
       )}
       <div className={cx(content, navOverlayed && content_blurred)}>
-        <Suspense fallback={false}>
+        <Suspense fallback={<LoadingScreen />}>
           <RoutesOutlet />
         </Suspense>
       </div>

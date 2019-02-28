@@ -2,11 +2,13 @@ import {
   mdiClose,
   mdiFlaskOutline,
   mdiLightbulbOnOutline,
+  mdiLoading,
   mdiMenu,
   mdiTuneVertical,
   mdiWhiteBalanceSunny,
 } from '@mdi/js'
 
+export const iconLoading = mdiLoading
 export const iconMenu = mdiMenu
 export const iconClose = mdiClose
 

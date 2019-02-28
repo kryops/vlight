@@ -33,11 +33,17 @@ const pathShades = [path0, path1, path2, path3, path4]
 export interface Props {
   icon: string
   shade?: ColorShade
+  className?: string
   pathClassName?: string
 }
 
-const _Icon: React.SFC<Props> = ({ icon, shade = 0, pathClassName }) => (
-  <svg viewBox="0 0 24 24" className={iconSvg}>
+const _Icon: React.SFC<Props> = ({
+  icon,
+  shade = 0,
+  className,
+  pathClassName,
+}) => (
+  <svg viewBox="0 0 24 24" className={cx(iconSvg, className)}>
     <path
       d={icon}
       className={cx(pathShades[shade] || pathShades[0], pathClassName)}

@@ -3,6 +3,7 @@ import React, { useRef, useState } from 'react'
 
 import { ChannelUniverseContext, DmxUniverseContext } from '../api'
 import { useWebSocket } from '../hooks/websocket'
+import { LoadingScreen } from '../ui/main/loading-screen'
 
 import { ApiState, processApiMessages } from './processing'
 
@@ -22,7 +23,7 @@ export const ApiWrapper: React.SFC = ({ children }) => {
   })
 
   if (connecting) {
-    return <div>Loading...</div>
+    return <LoadingScreen />
   }
 
   return (
