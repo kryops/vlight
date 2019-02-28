@@ -14,6 +14,7 @@ module.exports = function(api) {
       ],
       '@babel/preset-react',
       '@babel/preset-typescript',
+      'linaria/babel',
     ],
     plugins: [
       'react-hot-loader/babel',

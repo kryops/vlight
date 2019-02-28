@@ -1,6 +1,13 @@
+import { css } from 'linaria'
 import React, { memo, useContext } from 'react'
 
 import { DmxUniverseContext } from '../../api'
+import { Bar } from '../../ui/controls/bar'
+
+const container = css`
+  display: flex;
+  flex-wrap: wrap;
+`
 
 const _UniversePage: React.SFC = () => {
   const universe = useContext(DmxUniverseContext)
@@ -10,7 +17,16 @@ const _UniversePage: React.SFC = () => {
 
   return (
     <>
-      <div>DMX Universe: {JSON.stringify(universe!.slice(0, 50))}</div>
+      <div className={container}>
+        {universe.map((value, index) => (
+          <Bar
+            key={index}
+            value={value}
+            max={255}
+            label={(index + 1).toString()}
+          />
+        ))}
+      </div>
     </>
   )
 }

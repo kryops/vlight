@@ -4,6 +4,8 @@
     "esbenp.prettier-vscode",
     "eg2.tslint",
     "msjsdiag.debugger-for-chrome",
-    "christian-kohler.npm-intellisense"
+    "christian-kohler.npm-intellisense",
+    "mgmcdermott.vscode-language-babel",
+    "jpoissonnier.vscode-styled-components"
   ]
 }

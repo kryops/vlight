@@ -3,6 +3,7 @@ import ForkCheckerPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import { join } from 'path'
+import stylis from 'stylis'
 import TerserPlugin from 'terser-webpack-plugin'
 import {
   Configuration,
@@ -17,6 +18,12 @@ interface Env {
   analyze?: any
   production?: any
 }
+
+// sass-loader workaround
+process.env.UV_THREADPOOL_SIZE = '20'
+
+// linaria CSS options
+stylis.set({ prefix: false })
 
 export const webpackConfiguration = (env: Env = {}) => {
   const isProduction = !!env.production
@@ -48,13 +55,23 @@ export const webpackConfiguration = (env: Env = {}) => {
         {
           test: /\.tsx?$/,
           exclude: /node_modules/,
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          },
+          use: [
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true,
+              },
+            },
+            {
+              loader: 'linaria/loader',
+              options: {
+                sourceMap: true,
+              },
+            },
+          ],
         },
         {
-          test: /\.s?css$/,
+          test: /\.scss$/,
           exclude: /node_modules/,
           use: [
             ExtractCssPlugin.loader,
@@ -79,6 +96,21 @@ export const webpackConfiguration = (env: Env = {}) => {
               },
             },
           ],
+        },
+        {
+          test: /\.css$/,
+          exclude: /node_modules/,
+          use: [
+            !isProduction && 'css-hot-loader',
+            ExtractCssPlugin.loader,
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: true,
+                modules: false,
+              },
+            },
+          ].filter(Boolean),
         },
       ].filter(Boolean),
     },
@@ -143,6 +175,12 @@ export const webpackConfiguration = (env: Env = {}) => {
           },
         }),
       ],
+      splitChunks: {
+        chunks: 'all',
+        cacheGroups: {
+          vendors: false,
+        },
+      },
     },
   }
   return configuration
