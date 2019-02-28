@@ -16,7 +16,7 @@ const mainContainer = css`
 
 const content = css`
   flex: 1 1 auto;
-  padding: ${baselinePx * 6}px;
+  padding: ${baselinePx * 4}px;
   height: 100%;
   box-sizing: border-box;
   overflow: auto;

@@ -1,4 +1,4 @@
-import { ensureBetween, roundToStep } from '../../src/util/number'
+import { ensureBetween, getFraction, roundToStep } from '../../src/util/number'
 
 describe('util/number', () => {
   describe('ensureBetween', () => {
@@ -34,6 +34,25 @@ describe('util/number', () => {
       expect(roundToStep(15, 5)).toBe(15)
       expect(roundToStep(3.4, 0.1)).toBeCloseTo(3.4, 1)
       expect(roundToStep(3.41, 0.1)).toBeCloseTo(3.4, 1)
+    })
+  })
+
+  describe('getFraction', () => {
+    it('should return fraction between 0 and 1', () => {
+      expect(getFraction(1, 0, 2)).toBe(0.5)
+      expect(getFraction(2, 1, 3)).toBe(0.5)
+      expect(getFraction(0, 0, 2)).toBe(0)
+      expect(getFraction(2, 0, 2)).toBe(1)
+      expect(getFraction(0.4, 0, 1)).toBe(0.4)
+    })
+    it('should return fraction greater than 1', () => {
+      expect(getFraction(3, 0, 2)).toBe(1.5)
+      expect(getFraction(3, 1, 2)).toBe(2)
+    })
+    it('should return fraction smaller than 0', () => {
+      expect(getFraction(-1, 0, 2)).toBe(-0.5)
+      expect(getFraction(0.5, 1, 2)).toBe(-0.5)
+      expect(getFraction(-1, 1, 2)).toBe(-2)
     })
   })
 })

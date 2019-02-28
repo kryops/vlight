@@ -3,11 +3,19 @@ import React, { memo, useContext } from 'react'
 
 import { ChannelUniverseContext, sendApiMessage } from '../../api'
 import { Fader } from '../../ui/controls/fader'
+import { baselinePx } from '../../ui/styles'
 import { createRangeArray } from '../../util/array'
 
 const channelsPage = css`
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
+  margin-right: ${baselinePx * 8}px; // to allow scrolling
+
+  &::after {
+    content: '';
+    flex: auto;
+  }
 `
 
 const _ChannelsPage: React.SFC = () => {

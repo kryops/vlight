@@ -3,10 +3,25 @@ import React, { memo, useContext } from 'react'
 
 import { DmxUniverseContext } from '../../api'
 import { Bar } from '../../ui/controls/bar'
+import { baselinePx } from '../../ui/styles'
 
 const universePage = css`
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
+
+  &::after {
+    content: '';
+    flex: auto;
+  }
+`
+
+const barSize = baselinePx * 12
+
+const universeBar = css`
+  width: ${barSize}px;
+  height: ${barSize}px;
+  margin: ${baselinePx}px;
 `
 
 const _UniversePage: React.SFC = () => {
@@ -24,6 +39,7 @@ const _UniversePage: React.SFC = () => {
             value={value}
             max={255}
             label={(index + 1).toString()}
+            className={universeBar}
           />
         ))}
       </div>
