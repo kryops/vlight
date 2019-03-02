@@ -1,3 +1,5 @@
+import { MasterData } from './entities'
+
 // Both ingoing + outgoing
 
 /**
@@ -23,8 +25,14 @@ export type ApiInMessage = ApiChannelMessage
  */
 export interface ApiStateMessage {
   type: 'state'
+  masterData: MasterData
   universe: number[]
   channels: number[]
+}
+
+export interface ApiMasterDataMessage {
+  type: 'masterdata'
+  masterData: MasterData
 }
 
 /**
@@ -48,6 +56,7 @@ export interface ApiUniverseDeltaMessage {
 
 export type ApiOutMessage =
   | ApiStateMessage
+  | ApiMasterDataMessage
   | ApiUniverseMessage
   | ApiUniverseDeltaMessage
   | ApiChannelMessage

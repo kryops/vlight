@@ -1,7 +1,12 @@
 import { ApiInMessage } from '@vlight/api'
+import { MasterData } from '@vlight/entities'
 import React from 'react'
 
 import { logTrace, logWarn } from '../util/log'
+
+export const MasterDataContext = React.createContext<MasterData | undefined>(
+  undefined
+)
 
 export const DmxUniverseContext = React.createContext<number[] | undefined>(
   undefined

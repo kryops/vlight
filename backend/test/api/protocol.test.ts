@@ -1,9 +1,14 @@
 import {
+  getApiMasterDataMessage,
   getApiStateMessage,
   getApiUniverseDeltaMessage,
   getApiUniverseMessage,
 } from '../../src/api/protocol'
 import { universeSize } from '../../src/config'
+
+jest.mock('../../src/database', () => ({
+  masterData: { foo: 'bar' },
+}))
 
 describe('api/protocol', () => {
   it('getApiStateMessage', () => {
@@ -11,8 +16,16 @@ describe('api/protocol', () => {
     const channels = Buffer.alloc(universeSize)
     expect(getApiStateMessage(universe, channels)).toEqual({
       type: 'state',
+      masterData: { foo: 'bar' },
       universe: Array.from(universe),
       channels: Array.from(channels),
+    })
+  })
+
+  it('getApiMasterDataMessage', () => {
+    expect(getApiMasterDataMessage()).toEqual({
+      type: 'masterdata',
+      masterData: { foo: 'bar' },
     })
   })
 

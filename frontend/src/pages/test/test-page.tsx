@@ -1,5 +1,17 @@
-import React, { memo } from 'react'
+import React, { memo, useContext } from 'react'
 
-const _TestPage: React.SFC = () => <div>Test Page</div>
+import { MasterDataContext } from '../../api'
+
+const _TestPage: React.SFC = () => {
+  const masterData = useContext(MasterDataContext)
+
+  return (
+    <div>
+      <h2>Test Page</h2>
+      <h3>Master data</h3>
+      <pre>{JSON.stringify(masterData, null, 2)}</pre>
+    </div>
+  )
+}
 
 export default memo(_TestPage)

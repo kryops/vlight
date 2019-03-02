@@ -1,8 +1,9 @@
 import sourceMapSupport from 'source-map-support'
 
 import { initApi } from './api'
-import { initExpressApp } from './app'
+import { httpServer, initExpressApp } from './app'
 import { httpPort } from './config'
+import { initDatabase } from './database'
 import { initArtNetServer } from './devices/artnet'
 import { initUsbDmxDevices } from './devices/usbdmx'
 import { initVlightDevices } from './devices/vlight'
@@ -32,14 +33,23 @@ if (!isDevelopment) {
 
 // actual initialization
 
-const initialization = [
-  initExpressApp(),
-  initApi(),
-  initVlightDevices(),
-  initUsbDmxDevices(),
-  initArtNetServer(),
-]
+async function init() {
+  await initDatabase()
 
-Promise.all(initialization).then(() =>
-  logInfo(`vLight started on http://127.0.0.1:${httpPort}`)
-)
+  await Promise.all([
+    initExpressApp(),
+    initApi(),
+    initVlightDevices(),
+    initUsbDmxDevices(),
+    initArtNetServer(),
+  ])
+
+  return new Promise(resolve =>
+    httpServer.listen(httpPort, () => {
+      logInfo(`vLight started on http://127.0.0.1:${httpPort}`)
+      resolve()
+    })
+  )
+}
+
+init()

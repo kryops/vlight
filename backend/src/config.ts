@@ -1,16 +1,36 @@
 import { isDevelopment } from './env'
 
-// tslint:disable-next-line no-var-requires
-const userConfig: { [key: string]: any } = require('../../config/vlight-config')
+export interface VLightConfiguration {
+  httpPort: number
+  enableVLightDevices: boolean
+  tcpPort: number
+  udpPort: number
+  udpMulticastAddress: string
+  udpUniverseInterval: number
+  enableArtNetDevices: boolean
+  artnetHost: string
+  enableUsbDmxDevices: boolean
+  usbDmxVid: number
+  usbDmxPid: number
+  devicesFlushInterval: number
+  socketFlushInterval: number
+  multiChannelUniverseFlushThreshold: number
+  logLevel: LogLevel
+  universeSize: number
+}
 
-function c(key: string, defaultValue: boolean): boolean
-function c(key: string, defaultValue: string): string
-function c(key: string, defaultValue: number): number
-function c<T>(key: string, defaultValue: T): T
+// tslint:disable no-var-requires
+const userConfig: Partial<
+  VLightConfiguration
+> = require('../../config/vlight-config')
+// tslint:enable no-var-requires
 
-function c<T>(key: string, defaultValue: T): T {
+function c<T extends keyof VLightConfiguration>(
+  key: T,
+  defaultValue: VLightConfiguration[T]
+): VLightConfiguration[T] {
   const userValue = userConfig[key]
-  return userValue !== undefined ? userValue : defaultValue
+  return userValue !== undefined ? userValue! : defaultValue
 }
 
 // technical config
@@ -38,10 +58,7 @@ export const multiChannelUniverseFlushThreshold = c(
 
 export type LogLevel = 'trace' | 'info' | 'warn' | 'error'
 
-export const logLevel = c<LogLevel>(
-  'logLevel',
-  isDevelopment ? 'trace' : 'info'
-)
+export const logLevel = c('logLevel', isDevelopment ? 'trace' : 'info')
 
 // application config
 export const universeSize = c('universeSize', 512)

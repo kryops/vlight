@@ -1,8 +1,10 @@
 import { ApiOutMessage } from '@vlight/api'
+import { MasterData } from '@vlight/entities'
 
 import { logError, logTrace } from '../util/log'
 
 export interface ApiState {
+  masterData: MasterData | undefined
   universe: number[] | undefined
   channels: number[] | undefined
 }
@@ -21,8 +23,13 @@ function processChannelDeltaMap(
 function processApiMessage(message: ApiOutMessage, state: ApiState) {
   switch (message.type) {
     case 'state':
+      state.masterData = message.masterData
       state.universe = message.universe
       state.channels = message.channels
+      break
+
+    case 'masterdata':
+      state.masterData = message.masterData
       break
 
     case 'universe':

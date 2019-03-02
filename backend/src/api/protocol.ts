@@ -1,8 +1,11 @@
 import {
+  ApiMasterDataMessage,
   ApiStateMessage,
   ApiUniverseDeltaMessage,
   ApiUniverseMessage,
 } from '@vlight/api'
+
+import { masterData } from '../database'
 
 export function getApiStateMessage(
   universe: Buffer,
@@ -10,8 +13,16 @@ export function getApiStateMessage(
 ): ApiStateMessage {
   return {
     type: 'state',
+    masterData,
     universe: Array.from(universe),
     channels: Array.from(channels),
+  }
+}
+
+export function getApiMasterDataMessage(): ApiMasterDataMessage {
+  return {
+    type: 'masterdata',
+    masterData,
   }
 }
 

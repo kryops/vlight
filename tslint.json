@@ -4,7 +4,11 @@
     "interface-name": false,
     "member-access": false,
     "member-ordering": false,
-    "no-implicit-dependencies": [true, "dev", ["@vlight/api"]],
+    "no-implicit-dependencies": [
+      true,
+      "dev",
+      ["@vlight/api", "@vlight/entities"]
+    ],
     "no-object-literal-type-assertion": false,
     "no-switch-case-fall-through": true,
     "object-literal-sort-keys": false,
