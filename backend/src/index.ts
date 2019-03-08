@@ -8,6 +8,7 @@ import { initArtNetServer } from './devices/artnet'
 import { initUsbDmxDevices } from './devices/usbdmx'
 import { initVlightDevices } from './devices/vlight'
 import { isDevelopment } from './env'
+import { initChannels } from './universe/channels'
 import { logError, logInfo, logWarn } from './util/log'
 
 sourceMapSupport.install()
@@ -42,6 +43,7 @@ async function init() {
     initVlightDevices(),
     initUsbDmxDevices(),
     initArtNetServer(),
+    initChannels(),
   ])
 
   return new Promise(resolve =>

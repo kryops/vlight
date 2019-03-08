@@ -1,5 +1,6 @@
 import { handleApiMessage } from '../../src/api'
-import { channelUniverse, setUniverseChannel } from '../../src/universe'
+import { setUniverseChannel } from '../../src/universe'
+import { channelUniverse } from '../../src/universe/channels'
 
 jest.mock('../../src/universe')
 

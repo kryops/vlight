@@ -2,6 +2,7 @@ import { css } from 'linaria'
 import React, { memo, useContext } from 'react'
 
 import { ChannelUniverseContext, sendApiMessage } from '../../api'
+import { getUniverseIndex } from '../../api/util'
 import { Fader } from '../../ui/controls/fader'
 import { baselinePx } from '../../ui/styles'
 import { createRangeArray } from '../../util/array'
@@ -32,12 +33,12 @@ const _ChannelsPage: React.SFC = () => {
       {allChannels.map(i => (
         <Fader
           key={i}
-          value={channels![i - 1]}
+          value={channels![getUniverseIndex(i)]}
           max={255}
           step={1}
           label={i.toString()}
           onChange={val => {
-            if (val === channels![i - 1]) {
+            if (val === channels![getUniverseIndex(i)]) {
               return
             }
             sendApiMessage({

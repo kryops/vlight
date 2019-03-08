@@ -10,3 +10,10 @@ export function removeFromMutableArray<T>(arr: T[], el: T) {
     arr.splice(index, 1)
   }
 }
+
+export function addToMutableArray<T>(arr: T[], el: T) {
+  if (arr.includes(el)) {
+    return
+  }
+  arr.push(el)
+}

@@ -1,17 +1,13 @@
 import { broadcastUniverseChannelToSockets } from '../api'
 import { universeSize } from '../config'
 import { broadcastUniverseChannelToDevices } from '../devices'
+import { addToMutableArray, removeFromMutableArray } from '../util/array'
 
 export type Universe = Buffer
 
 const dmxUniverse = createUniverse()
-export const channelUniverse = createUniverse()
 
-const universes: Universe[] = [channelUniverse]
-
-function createUniverse(): Universe {
-  return Buffer.alloc(universeSize)
-}
+const universes: Universe[] = []
 
 function assertValidChannel(channel: number) {
   if (channel < 1 || channel > universeSize) {
@@ -28,7 +24,7 @@ function computeDmxChannel(
     return false
   }
 
-  const index = channel - 1
+  const index = getUniverseIndex(channel)
   const currentDmxValue = dmxUniverse[index]
 
   if (newUniverseValue === currentDmxValue) {
@@ -76,7 +72,7 @@ export function setUniverseChannel(
   value: number
 ) {
   assertValidChannel(channel)
-  const index = channel - 1
+  const index = getUniverseIndex(channel)
   const oldValue = universe[index]
 
   if (oldValue === value) {
@@ -85,9 +81,9 @@ export function setUniverseChannel(
 
   universe[index] = value
 
-  const changed = computeDmxChannel(channel, value, oldValue)
+  const changedDmx = computeDmxChannel(channel, value, oldValue)
 
-  if (changed) {
+  if (changedDmx) {
     broadcastUniverseChannelToDevices(channel, value)
     broadcastUniverseChannelToSockets(channel)
   }
@@ -100,4 +96,22 @@ export function setUniverseChannel(
  */
 export function getDmxUniverse(): Buffer {
   return dmxUniverse
+}
+
+export function createUniverse(): Universe {
+  return Buffer.alloc(universeSize)
+}
+
+export function addUniverse(universe: Universe) {
+  addToMutableArray(universes, universe)
+  universe.forEach((value, index) => computeDmxChannel(index, value, 0))
+}
+
+export function removeUniverse(universe: Universe) {
+  removeFromMutableArray(universes, universe)
+  universe.forEach((value, index) => computeDmxChannel(index, 0, value))
+}
+
+export function getUniverseIndex(channel: number) {
+  return channel - 1
 }

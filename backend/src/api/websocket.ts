@@ -2,7 +2,8 @@ import { ApiOutMessage } from '@vlight/api'
 import ws from 'ws'
 
 import { httpServer } from '../app'
-import { channelUniverse, getDmxUniverse } from '../universe'
+import { getDmxUniverse } from '../universe'
+import { channelUniverse } from '../universe/channels'
 import { removeFromMutableArray } from '../util/array'
 import { logInfo, logTrace } from '../util/log'
 

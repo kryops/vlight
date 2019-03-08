@@ -4,11 +4,8 @@ import {
   multiChannelUniverseFlushThreshold,
   socketFlushInterval,
 } from '../config'
-import {
-  channelUniverse,
-  getDmxUniverse,
-  setUniverseChannel,
-} from '../universe'
+import { getDmxUniverse } from '../universe'
+import { setChannel } from '../universe/channels'
 import { logError, logTrace } from '../util/log'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
@@ -40,7 +37,7 @@ export function handleApiMessage(message: ApiInMessage) {
     case 'channels':
       let changed = false
       for (const [channel, value] of Object.entries(message.channels)) {
-        if (setUniverseChannel(channelUniverse, +channel, value)) {
+        if (setChannel(+channel, value)) {
           changed = true
         }
       }

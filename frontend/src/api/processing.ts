@@ -3,6 +3,8 @@ import { MasterData } from '@vlight/entities'
 
 import { logError, logTrace } from '../util/log'
 
+import { getUniverseIndex } from './util'
+
 export interface ApiState {
   masterData: MasterData | undefined
   universe: number[] | undefined
@@ -15,7 +17,7 @@ function processChannelDeltaMap(
 ) {
   const newUniverse = [...(universe || [])]
   for (const [channel, value] of Object.entries(message)) {
-    newUniverse[+channel - 1] = value
+    newUniverse[getUniverseIndex(+channel)] = value
   }
   return newUniverse
 }

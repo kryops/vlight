@@ -6,6 +6,7 @@ import {
 } from '@vlight/api'
 
 import { masterData } from '../database'
+import { getUniverseIndex } from '../universe'
 
 export function getApiStateMessage(
   universe: Buffer,
@@ -41,7 +42,7 @@ export function getApiUniverseDeltaMessage(
     type: 'universe-delta',
     channels: channels.reduce(
       (obj, channel) => {
-        obj[channel] = universe[channel - 1]
+        obj[channel] = universe[getUniverseIndex(channel)]
         return obj
       },
       {} as ApiUniverseDeltaMessage['channels']

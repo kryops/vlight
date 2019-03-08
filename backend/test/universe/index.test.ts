@@ -5,16 +5,15 @@
 import { broadcastUniverseChannelToSockets } from '../../src/api'
 import { universeSize } from '../../src/config'
 import { broadcastUniverseChannelToDevices } from '../../src/devices'
-import {
-  channelUniverse,
-  getDmxUniverse,
-  setUniverseChannel,
-} from '../../src/universe'
+import { getDmxUniverse, setUniverseChannel } from '../../src/universe'
+import { channelUniverse, initChannels } from '../../src/universe/channels'
 
 jest.mock('../../src/devices')
 jest.mock('../../src/api')
 
 describe('universe/index', () => {
+  beforeAll(() => initChannels())
+
   it('changes values', () => {
     const mockUniverse = Buffer.alloc(universeSize)
     expect(getDmxUniverse()).toEqual(mockUniverse)
