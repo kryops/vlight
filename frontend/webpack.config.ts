@@ -1,6 +1,6 @@
-import ExtractCssPlugin from 'extract-css-chunks-webpack-plugin'
 import ForkCheckerPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import ExtractCssPlugin from 'mini-css-extract-plugin'
 import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
 import { join } from 'path'
 import stylis from 'stylis'
@@ -128,10 +128,7 @@ export const webpackConfiguration = (env: Env = {}) => {
       new HtmlWebpackPlugin({
         template: join(__dirname, 'index.html'),
       }),
-      new ExtractCssPlugin({
-        cssModules: true,
-        hot: !isProduction,
-      }),
+      new ExtractCssPlugin(),
       new WebpackPwaManifest({
         name: 'vLight',
         description: 'Virtual Light Controller',
