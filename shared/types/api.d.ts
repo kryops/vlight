@@ -1,21 +1,23 @@
-import { MasterData } from './entities'
+import { Dictionary, FixtureState, MasterData } from './entities'
 
 // Both ingoing + outgoing
 
-/**
- * Set one or multiple channels
- */
+/** Set one or multiple channels */
 export interface ApiChannelMessage {
   type: 'channels'
-  channels: {
-    // starting at 1
-    [channel: string]: number
-  }
+  channels: Dictionary<number> // starting at 1
+}
+
+/** Change the state of a fixture */
+export interface ApiFixtureStateMessage {
+  type: 'fixture'
+  id: number
+  state: FixtureState
 }
 
 // Incoming messages
 
-export type ApiInMessage = ApiChannelMessage
+export type ApiInMessage = ApiChannelMessage | ApiFixtureStateMessage
 
 // Outgoing messages
 
@@ -28,6 +30,7 @@ export interface ApiStateMessage {
   masterData: MasterData
   universe: number[]
   channels: number[]
+  fixtures: Dictionary<FixtureState>
 }
 
 export interface ApiMasterDataMessage {
@@ -35,23 +38,16 @@ export interface ApiMasterDataMessage {
   masterData: MasterData
 }
 
-/**
- * Contains the whole DMX universe
- */
+/** Contains the whole DMX universe */
 export interface ApiUniverseMessage {
   type: 'universe'
   universe: number[]
 }
 
-/**
- * Contains an object with changed DMX channels
- */
+/** Contains an object with changed DMX channels */
 export interface ApiUniverseDeltaMessage {
   type: 'universe-delta'
-  channels: {
-    // starting at 1
-    [channel: string]: number
-  }
+  channels: Dictionary<number> // starting at 1
 }
 
 export type ApiOutMessage =
@@ -60,3 +56,4 @@ export type ApiOutMessage =
   | ApiUniverseMessage
   | ApiUniverseDeltaMessage
   | ApiChannelMessage
+  | ApiFixtureStateMessage

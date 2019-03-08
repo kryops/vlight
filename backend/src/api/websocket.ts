@@ -2,13 +2,11 @@ import { ApiOutMessage } from '@vlight/api'
 import ws from 'ws'
 
 import { httpServer } from '../app'
-import { getDmxUniverse } from '../universe'
-import { channelUniverse } from '../universe/channels'
 import { removeFromMutableArray } from '../util/array'
 import { logInfo, logTrace } from '../util/log'
 
 import { handleApiMessage } from '.'
-import { getApiStateMessage } from './protocol'
+import { getFullState } from './messages'
 
 export const sockets: ws[] = []
 
@@ -34,10 +32,7 @@ export async function initWebSocketServer() {
     socket.on('close', () => removeSocket(socket))
     socket.on('error', () => removeSocket(socket))
 
-    sendSocketMessage(
-      socket,
-      getApiStateMessage(getDmxUniverse(), channelUniverse)
-    )
+    sendSocketMessage(socket, getFullState())
   })
 }
 

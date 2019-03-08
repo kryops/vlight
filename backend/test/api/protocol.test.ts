@@ -1,4 +1,7 @@
+import { FixtureState } from '@vlight/entities'
+
 import {
+  getApiFixtureStateMessage,
   getApiMasterDataMessage,
   getApiStateMessage,
   getApiUniverseDeltaMessage,
@@ -14,11 +17,15 @@ describe('api/protocol', () => {
   it('getApiStateMessage', () => {
     const universe = Buffer.alloc(universeSize)
     const channels = Buffer.alloc(universeSize)
-    expect(getApiStateMessage(universe, channels)).toEqual({
+    const fixtures = {
+      '2': { on: true, channels: { r: 100 } },
+    }
+    expect(getApiStateMessage(universe, channels, fixtures)).toEqual({
       type: 'state',
       masterData: { foo: 'bar' },
       universe: Array.from(universe),
       channels: Array.from(channels),
+      fixtures,
     })
   })
 
@@ -46,6 +53,20 @@ describe('api/protocol', () => {
         3: 2,
         4: 3,
       },
+    })
+  })
+
+  it('getApiFixtureStateMessage', () => {
+    const state: FixtureState = {
+      on: true,
+      channels: {
+        r: 100,
+      },
+    }
+    expect(getApiFixtureStateMessage(1, state)).toEqual({
+      type: 'fixture',
+      id: 1,
+      state,
     })
   })
 })

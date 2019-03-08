@@ -1,22 +1,26 @@
 import {
+  ApiFixtureStateMessage,
   ApiMasterDataMessage,
   ApiStateMessage,
   ApiUniverseDeltaMessage,
   ApiUniverseMessage,
 } from '@vlight/api'
+import { Dictionary, FixtureState } from '@vlight/entities'
 
 import { masterData } from '../database'
 import { getUniverseIndex } from '../universe'
 
 export function getApiStateMessage(
   universe: Buffer,
-  channels: Buffer
+  channels: Buffer,
+  fixtures: Dictionary<FixtureState>
 ): ApiStateMessage {
   return {
     type: 'state',
     masterData,
     universe: Array.from(universe),
     channels: Array.from(channels),
+    fixtures,
   }
 }
 
@@ -47,5 +51,16 @@ export function getApiUniverseDeltaMessage(
       },
       {} as ApiUniverseDeltaMessage['channels']
     ),
+  }
+}
+
+export function getApiFixtureStateMessage(
+  id: number,
+  state: FixtureState
+): ApiFixtureStateMessage {
+  return {
+    type: 'fixture',
+    id,
+    state,
   }
 }

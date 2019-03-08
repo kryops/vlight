@@ -6,6 +6,7 @@ import {
 } from '../config'
 import { getDmxUniverse } from '../universe'
 import { setChannel } from '../universe/channels'
+import { setFixtureState } from '../universe/fixtures'
 import { logError, logTrace } from '../util/log'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
@@ -33,22 +34,27 @@ function flushWebSockets() {
 export function handleApiMessage(message: ApiInMessage) {
   logTrace('Incoming API message', message)
 
+  let changed = false
+
   switch (message.type) {
     case 'channels':
-      let changed = false
       for (const [channel, value] of Object.entries(message.channels)) {
         if (setChannel(+channel, value)) {
           changed = true
         }
       }
+      break
 
-      if (changed) {
-        broadcastToSockets(message)
-      }
+    case 'fixture':
+      changed = setFixtureState(message.id, message.state)
       break
 
     default:
       logError('Invalid API message', message)
+  }
+
+  if (changed) {
+    broadcastToSockets(message)
   }
 }
 
