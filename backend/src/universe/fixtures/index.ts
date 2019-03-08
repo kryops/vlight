@@ -2,6 +2,7 @@ import { FixtureState } from '@vlight/entities'
 
 import { addUniverse, createUniverse, setUniverseChannel, Universe } from '..'
 import { fixtures, fixtureTypes } from '../../database'
+import { logWarn } from '../../util/log'
 
 import { mapFixtureStateToChannels } from './mapping'
 
@@ -22,10 +23,12 @@ function updateUniverseForFixture(id: number): boolean {
   const state = fixtureStates.get(id) || getInitialFixtureState()
   const fixture = fixtures.get(id)
   if (!fixture) {
+    logWarn('no fixture found for ID', id)
     return false
   }
   const fixtureType = fixtureTypes.get(fixture.type)
   if (!fixtureType) {
+    logWarn('no fixtureType found for', fixture)
     return false
   }
   const channel = fixture.channel

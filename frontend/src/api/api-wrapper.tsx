@@ -1,14 +1,15 @@
 import { ApiOutMessage } from '@vlight/api'
-import React, { useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 
-import {
-  ChannelUniverseContext,
-  DmxUniverseContext,
-  MasterDataContext,
-} from '../api'
 import { useWebSocket } from '../hooks/websocket'
 import { LoadingScreen } from '../ui/main/loading-screen'
 
+import {
+  AppState,
+  AppStateContext,
+  DmxUniverseContext,
+  MasterDataContext,
+} from './index'
 import { ApiState, processApiMessages } from './processing'
 
 export const ApiWrapper: React.SFC = ({ children }) => {
@@ -18,6 +19,7 @@ export const ApiWrapper: React.SFC = ({ children }) => {
     masterData: undefined,
     universe: undefined,
     channels: undefined,
+    fixtures: {},
   })
   const [apiState, setApiState] = useState<ApiState>(ref.current)
 
@@ -27,6 +29,11 @@ export const ApiWrapper: React.SFC = ({ children }) => {
     setApiState(newState)
   })
 
+  const appState = useMemo<AppState>(
+    () => ({ channels: apiState.channels || [], fixtures: apiState.fixtures }),
+    [apiState.channels, apiState.fixtures]
+  )
+
   if (connecting || apiState.masterData === undefined) {
     return <LoadingScreen />
   }
@@ -34,9 +41,9 @@ export const ApiWrapper: React.SFC = ({ children }) => {
   return (
     <MasterDataContext.Provider value={apiState.masterData}>
       <DmxUniverseContext.Provider value={apiState.universe}>
-        <ChannelUniverseContext.Provider value={apiState.channels}>
+        <AppStateContext.Provider value={appState}>
           {children}
-        </ChannelUniverseContext.Provider>
+        </AppStateContext.Provider>
       </DmxUniverseContext.Provider>
     </MasterDataContext.Provider>
   )

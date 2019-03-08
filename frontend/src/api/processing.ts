@@ -1,5 +1,5 @@
 import { ApiOutMessage } from '@vlight/api'
-import { MasterData } from '@vlight/entities'
+import { Dictionary, FixtureState, MasterData } from '@vlight/entities'
 
 import { logError, logTrace } from '../util/log'
 
@@ -9,6 +9,7 @@ export interface ApiState {
   masterData: MasterData | undefined
   universe: number[] | undefined
   channels: number[] | undefined
+  fixtures: Dictionary<FixtureState>
 }
 
 function processChannelDeltaMap(
@@ -28,6 +29,7 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
       state.masterData = message.masterData
       state.universe = message.universe
       state.channels = message.channels
+      state.fixtures = message.fixtures
       break
 
     case 'masterdata':
@@ -44,6 +46,13 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
 
     case 'channels':
       state.channels = processChannelDeltaMap(state.channels, message.channels)
+      break
+
+    case 'fixture':
+      state.fixtures = {
+        ...state.fixtures,
+        [message.id]: message.state,
+      }
       break
 
     default:

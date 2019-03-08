@@ -55,6 +55,8 @@ export function handleApiMessage(message: ApiInMessage) {
 
   if (changed) {
     broadcastToSockets(message)
+  } else {
+    logTrace('Skipping broadcast of non-changing message', message)
   }
 }
 

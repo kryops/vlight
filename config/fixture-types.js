@@ -3,7 +3,7 @@ const fixtureTypes = [
   {
     id: 1,
     name: 'Generic',
-    mappping: ['m'],
+    mapping: ['m'],
   },
   {
     id: 2,
