@@ -1,7 +1,13 @@
-import { DbEntity, Fixture, FixtureType, MasterData } from '@vlight/entities'
+import {
+  DbEntity,
+  Fixture,
+  FixtureType,
+  IdType,
+  MasterData,
+} from '@vlight/entities'
 
-export const fixtureTypes: Map<number, FixtureType> = new Map()
-export const fixtures: Map<number, Fixture> = new Map()
+export const fixtureTypes: Map<IdType, FixtureType> = new Map()
+export const fixtures: Map<IdType, Fixture> = new Map()
 export const masterData: MasterData = {
   fixtureTypes: [],
   fixtures: [],
@@ -9,7 +15,7 @@ export const masterData: MasterData = {
 
 function initEntity<T extends DbEntity>(
   arr: T[],
-  map: Map<number, T>,
+  map: Map<IdType, T>,
   fileName: string
 ) {
   const entries: T[] = require('../../../config/' + fileName)

@@ -5,7 +5,7 @@ import {
   ApiUniverseDeltaMessage,
   ApiUniverseMessage,
 } from '@vlight/api'
-import { Dictionary, FixtureState } from '@vlight/entities'
+import { Dictionary, FixtureState, IdType } from '@vlight/entities'
 
 import { masterData } from '../database'
 import { getUniverseIndex } from '../universe'
@@ -55,7 +55,7 @@ export function getApiUniverseDeltaMessage(
 }
 
 export function getApiFixtureStateMessage(
-  id: number,
+  id: IdType,
   state: FixtureState
 ): ApiFixtureStateMessage {
   return {

@@ -1,4 +1,4 @@
-import { Dictionary, FixtureState, MasterData } from './entities'
+import { Dictionary, FixtureState, IdType, MasterData } from './entities'
 
 // Both ingoing + outgoing
 
@@ -11,7 +11,7 @@ export interface ApiChannelMessage {
 /** Change the state of a fixture */
 export interface ApiFixtureStateMessage {
   type: 'fixture'
-  id: number
+  id: IdType
   state: FixtureState
 }
 

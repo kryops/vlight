@@ -63,9 +63,9 @@ describe('api/protocol', () => {
         r: 100,
       },
     }
-    expect(getApiFixtureStateMessage(1, state)).toEqual({
+    expect(getApiFixtureStateMessage('1', state)).toEqual({
       type: 'fixture',
-      id: 1,
+      id: '1',
       state,
     })
   })

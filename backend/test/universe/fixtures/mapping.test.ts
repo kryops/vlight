@@ -5,12 +5,12 @@ import { mapFixtureStateToChannels } from '../../../src/universe/fixtures/mappin
 describe('universe/fixtures/mapping', () => {
   describe('mapFixtureStateToChannels', () => {
     const fixtureTypeWithMaster: FixtureType = {
-      id: 1,
+      id: '1',
       name: 'foo',
       mapping: ['r', 'g', 'b', 'm'],
     }
     const fixtureTypeWithoutMaster: FixtureType = {
-      id: 2,
+      id: '2',
       name: 'bar',
       mapping: ['r', 'g', 'b', 'a'],
     }

@@ -1,5 +1,5 @@
 import { ApiChannelMessage, ApiFixtureStateMessage } from '@vlight/api'
-import { FixtureState } from '@vlight/entities'
+import { FixtureState, IdType } from '@vlight/entities'
 
 export function getApiChannelMessage(
   channel: number,
@@ -14,7 +14,7 @@ export function getApiChannelMessage(
 }
 
 export function getApiFixtureStateMessage(
-  id: number,
+  id: IdType,
   state: FixtureState
 ): ApiFixtureStateMessage {
   return {

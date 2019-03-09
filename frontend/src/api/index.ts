@@ -1,5 +1,5 @@
 import { ApiInMessage } from '@vlight/api'
-import { FixtureState } from '@vlight/entities'
+import { FixtureState, IdType } from '@vlight/entities'
 
 import { logTrace, logWarn } from '../util/log'
 
@@ -28,6 +28,6 @@ export function setChannel(channel: number, value: number) {
   sendApiMessage(getApiChannelMessage(channel, value))
 }
 
-export function setFixtureState(id: number, state: FixtureState) {
+export function setFixtureState(id: IdType, state: FixtureState) {
   sendApiMessage(getApiFixtureStateMessage(id, state))
 }

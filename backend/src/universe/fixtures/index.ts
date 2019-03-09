@@ -1,4 +1,4 @@
-import { FixtureState } from '@vlight/entities'
+import { FixtureState, IdType } from '@vlight/entities'
 
 import { addUniverse, createUniverse, setUniverseChannel, Universe } from '..'
 import { fixtures, fixtureTypes } from '../../database'
@@ -8,7 +8,7 @@ import { mapFixtureStateToChannels } from './mapping'
 
 let fixtureUniverse: Universe
 
-export const fixtureStates: Map<number, FixtureState> = new Map()
+export const fixtureStates: Map<IdType, FixtureState> = new Map()
 
 function getInitialFixtureState(): FixtureState {
   return {
@@ -19,7 +19,7 @@ function getInitialFixtureState(): FixtureState {
   }
 }
 
-function updateUniverseForFixture(id: number): boolean {
+function updateUniverseForFixture(id: IdType): boolean {
   const state = fixtureStates.get(id) || getInitialFixtureState()
   const fixture = fixtures.get(id)
   if (!fixture) {
@@ -54,7 +54,7 @@ export function initFixtures() {
   addUniverse(fixtureUniverse)
 }
 
-export function setFixtureState(id: number, state: FixtureState) {
+export function setFixtureState(id: IdType, state: FixtureState) {
   fixtureStates.set(id, state)
   return updateUniverseForFixture(id)
 }

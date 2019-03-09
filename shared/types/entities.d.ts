@@ -1,5 +1,7 @@
+export type IdType = string
+
 export interface DbEntity {
-  id: number
+  id: IdType
 }
 
 export interface Dictionary<T> {
@@ -12,7 +14,7 @@ export interface FixtureType extends DbEntity {
 }
 
 export interface Fixture extends DbEntity {
-  type: number
+  type: IdType
   channel: number
   name?: string
 }
