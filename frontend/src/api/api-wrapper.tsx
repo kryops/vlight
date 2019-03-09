@@ -9,7 +9,7 @@ import {
   AppStateContext,
   DmxUniverseContext,
   MasterDataContext,
-} from './index'
+} from './context'
 import { ApiState, processApiMessages } from './processing'
 
 export const ApiWrapper: React.SFC = ({ children }) => {

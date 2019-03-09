@@ -1,6 +1,6 @@
 import React, { memo, useContext } from 'react'
 
-import { MasterDataContext } from '../../api'
+import { MasterDataContext } from '../../api/context'
 
 const _TestPage: React.SFC = () => {
   const masterData = useContext(MasterDataContext)

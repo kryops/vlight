@@ -8,6 +8,7 @@ import { getDmxUniverse } from '../universe'
 import { setChannel } from '../universe/channels'
 import { setFixtureState } from '../universe/fixtures'
 import { logError, logTrace } from '../util/log'
+import { assertNever } from '../util/typescript'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
 import { broadcastToSockets, initWebSocketServer, sockets } from './websocket'
@@ -50,6 +51,7 @@ export function handleApiMessage(message: ApiInMessage) {
       break
 
     default:
+      assertNever(message)
       logError('Invalid API message', message)
   }
 

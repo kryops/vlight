@@ -1,26 +1,9 @@
 import { ApiInMessage } from '@vlight/api'
-import { Dictionary, FixtureState, MasterData } from '@vlight/entities'
-import React from 'react'
+import { FixtureState } from '@vlight/entities'
 
 import { logTrace, logWarn } from '../util/log'
 
-export interface AppState {
-  channels: number[]
-  fixtures: Dictionary<FixtureState>
-}
-
-export const MasterDataContext = React.createContext<MasterData | undefined>(
-  undefined
-)
-
-export const DmxUniverseContext = React.createContext<number[] | undefined>(
-  undefined
-)
-
-export const AppStateContext = React.createContext<AppState>({
-  channels: [],
-  fixtures: {},
-})
+import { getApiChannelMessage, getApiFixtureStateMessage } from './protocol'
 
 let socket: WebSocket | undefined
 
@@ -39,4 +22,12 @@ export function setSocket(newSocket: WebSocket | undefined) {
   if (process.env.NODE_ENV === 'development') {
     ;(window as any).socket = socket
   }
+}
+
+export function setChannel(channel: number, value: number) {
+  sendApiMessage(getApiChannelMessage(channel, value))
+}
+
+export function setFixtureState(id: number, state: FixtureState) {
+  sendApiMessage(getApiFixtureStateMessage(id, state))
 }

@@ -1,7 +1,7 @@
 import { css } from 'linaria'
 import React, { memo, useContext } from 'react'
 
-import { DmxUniverseContext } from '../../api'
+import { DmxUniverseContext } from '../../api/context'
 import { Bar } from '../../ui/controls/bar'
 import { baselinePx } from '../../ui/styles'
 

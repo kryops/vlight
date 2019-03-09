@@ -11,7 +11,7 @@ import {
 import { onWindows } from '../../env'
 import { getDmxUniverse } from '../../universe'
 import { logTrace, shouldLogTrace } from '../../util/log'
-import { delay } from '../../util/util'
+import { delay } from '../../util/time'
 
 import {
   connectUsbDmxDevices,

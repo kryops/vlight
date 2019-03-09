@@ -61,7 +61,7 @@ const _Fader: React.SFC<Props> = ({
 }) => {
   const trackRef = useRef<HTMLDivElement>(null)
   const touchActive = useRef<boolean>(false)
-  const [rawValue, setRawValue] = useState(min)
+  const [rawValue, setRawValue] = useState(value)
 
   const valueToUse = touchActive.current ? rawValue : value
   const currentFraction = (valueToUse - min) / (max - min)
@@ -77,8 +77,11 @@ const _Fader: React.SFC<Props> = ({
         }
         const fraction = ensureBetween(1 - offset.yFraction, 0, 1)
         const newRawValue = min + fraction * (max - min)
-        const roundedValue = roundToStep(newRawValue, step)
+        if (newRawValue === valueToUse) {
+          return
+        }
         setRawValue(newRawValue)
+        const roundedValue = roundToStep(newRawValue, step)
         onChange(roundedValue)
       }}
       onDown={() => (touchActive.current = true)}
