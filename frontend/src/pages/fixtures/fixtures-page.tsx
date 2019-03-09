@@ -1,47 +1,28 @@
-import { Fixture } from '@vlight/entities'
+import { css } from 'linaria'
 import React, { memo } from 'react'
 
-import { setFixtureState } from '../../api'
-import { updateFixtureState } from '../../api/fixture'
-import { fixtureTypes } from '../../api/masterdata'
-import { useAppState, useMasterData } from '../../hooks/api'
-import { Widget } from '../../ui/containers/widget'
+import { useMasterData } from '../../hooks/api'
+import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
+import { baselinePx } from '../../ui/styles'
+import { FixtureWidget } from '../../widgets/fixture'
 
-function getFixtureName(fixture: Fixture): string {
-  if (fixture.name) {
-    return `${fixture.channel} ${fixture.name}`
-  }
+const fixturesPage = css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: stretch;
+  margin: -${baselinePx}px;
+  margin-right: ${baselinePx * 8}px; // to allow scrolling
 
-  const fixtureType = fixtureTypes.get(fixture.type)
-  if (!fixtureType) {
-    return `${fixture.channel}`
-  }
-
-  return `${fixture.channel} ${fixtureType.name}`
-}
+  ${flexEndSpacer}
+`
 
 const _FixturesPage: React.SFC = () => {
   const { fixtures } = useMasterData()
-  const { fixtures: fixtureStates } = useAppState()
 
   return (
-    <div>
+    <div className={fixturesPage}>
       {fixtures.map(fixture => (
-        <Widget key={fixture.id} title={getFixtureName(fixture)}>
-          <pre>{JSON.stringify(fixtureStates[fixture.id], null, 2)}</pre>
-          <a
-            onClick={() =>
-              setFixtureState(
-                fixture.id,
-                updateFixtureState(fixtureStates[fixture.id], {
-                  on: !fixtureStates[fixture.id].on,
-                })
-              )
-            }
-          >
-            Toggle
-          </a>
-        </Widget>
+        <FixtureWidget key={fixture.id} fixture={fixture} />
       ))}
     </div>
   )

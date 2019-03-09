@@ -3,7 +3,11 @@ interface CompareProps {
 }
 
 /**
- * Does a shallow comparison on two React `props` objects, but ignores functions
+ * Does a shallow comparison on two React `props` objects, but ignores functions.
+ *
+ * NOTE: Beware that this can provoke stale state values if the callbacks access
+ * outside variables!
+ *
  * @param a
  * @param b
  * @return {boolean} `true` if a and b are equal, `false` otherwise

@@ -4,7 +4,8 @@ import React, { memo } from 'react'
 import { setChannel } from '../../api'
 import { getUniverseIndex } from '../../api/util'
 import { useAppState } from '../../hooks/api'
-import { Fader } from '../../ui/controls/fader'
+import { PureDangerousFader } from '../../ui/controls/fader'
+import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
 import { createRangeArray } from '../../util/array'
 
@@ -14,10 +15,7 @@ const channelsPage = css`
   justify-content: space-between;
   margin-right: ${baselinePx * 8}px; // to allow scrolling
 
-  &::after {
-    content: '';
-    flex: auto;
-  }
+  ${flexEndSpacer}
 `
 
 const _ChannelsPage: React.SFC = () => {
@@ -29,7 +27,7 @@ const _ChannelsPage: React.SFC = () => {
   return (
     <div className={channelsPage}>
       {allChannels.map(i => (
-        <Fader
+        <PureDangerousFader
           key={i}
           value={channels![getUniverseIndex(i)] || 0}
           max={255}

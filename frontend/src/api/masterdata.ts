@@ -9,10 +9,21 @@ import {
 /*
  * Convenience access to the master data.
  * Always combine with `useMasterData()` to get correct re-renders!
+ * In React components, access through `userMasterDataMaps()`
  */
 
-export const fixtures: Map<IdType, Fixture> = new Map()
+export interface MasterDataMaps {
+  fixtureTypes: Map<IdType, FixtureType>
+  fixtures: Map<IdType, Fixture>
+}
+
 export const fixtureTypes: Map<IdType, FixtureType> = new Map()
+export const fixtures: Map<IdType, Fixture> = new Map()
+
+export const masterDataMaps: MasterDataMaps = {
+  fixtureTypes,
+  fixtures,
+}
 
 function updateMapWithArray<T extends DbEntity>(map: Map<IdType, T>, arr: T[]) {
   map.clear()
@@ -22,6 +33,6 @@ function updateMapWithArray<T extends DbEntity>(map: Map<IdType, T>, arr: T[]) {
 }
 
 export function updateMasterData(masterData: MasterData) {
-  updateMapWithArray(fixtures, masterData.fixtures)
   updateMapWithArray(fixtureTypes, masterData.fixtureTypes)
+  updateMapWithArray(fixtures, masterData.fixtures)
 }

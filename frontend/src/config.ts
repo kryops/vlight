@@ -1,1 +1,2 @@
-export const socketProcessingInterval = 100
+export const socketProcessingInterval = 50 // = 20 fps
+

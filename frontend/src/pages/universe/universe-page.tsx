@@ -3,6 +3,7 @@ import React, { memo } from 'react'
 
 import { useDmxUniverse } from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'
+import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
 
 const universePage = css`
@@ -10,10 +11,7 @@ const universePage = css`
   flex-wrap: wrap;
   justify-content: space-between;
 
-  &::after {
-    content: '';
-    flex: auto;
-  }
+  ${flexEndSpacer}
 `
 
 const barSize = baselinePx * 12

@@ -2,7 +2,6 @@ import { css } from 'linaria'
 import React, { memo } from 'react'
 
 import { ColorShade } from '../../types'
-import { compareWithoutFunctions } from '../../util/react'
 import { Icon } from '../icons/icon'
 import { baselinePx, zNavigation } from '../styles'
 
@@ -28,4 +27,4 @@ const _CornerButton: React.SFC<Props> = ({ icon, tooltip, shade, onClick }) => (
   </div>
 )
 
-export const CornerButton = memo(_CornerButton, compareWithoutFunctions)
+export const CornerButton = memo(_CornerButton)

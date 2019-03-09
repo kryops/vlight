@@ -17,6 +17,7 @@ const trackHeight = faderHeight - buttonHeight
 
 const fader = css`
   position: relative;
+  flex: 0 0 auto;
   width: ${faderWidth}px;
   height: ${faderHeight}px;
   margin: ${baselinePx * 1.5}px;
@@ -95,8 +96,17 @@ const _Fader: React.SFC<Props> = ({
   )
 }
 
-export const Fader = memo(
+export const Fader = memo(_Fader)
+
+/**
+ * Use this variant in situations where you render lots of faders
+ * and can't use `useCallback()` to memoize callbacks (e.g. in loops),
+ * but you need optimal performance.
+ *
+ * NOTE: You cannot access state variables from the `onChange` handler
+ * directly, you have to access them through a `ref`
+ */
+export const PureDangerousFader = memo(
   _Fader,
-  // other values should not change without changing the key
   (prev, next) => prev.value === next.value && prev.label === next.label
 )

@@ -1,3 +1,4 @@
+// import ExtractCssPlugin from 'extract-css-chunks-webpack-plugin'
 import ForkCheckerPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ExtractCssPlugin from 'mini-css-extract-plugin'
@@ -101,8 +102,16 @@ export const webpackConfiguration = (env: Env = {}) => {
           test: /\.css$/,
           exclude: /node_modules/,
           use: [
-            !isProduction && 'css-hot-loader',
-            ExtractCssPlugin.loader,
+            !isProduction && {
+              loader: 'css-hot-loader',
+              options: {
+                cssModule: true, // to reload the JS file as well
+                reloadAll: true, // desperate times call for desperate measures
+              },
+            },
+            {
+              loader: ExtractCssPlugin.loader,
+            },
             {
               loader: 'css-loader',
               options: {
