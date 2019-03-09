@@ -1,9 +1,9 @@
-import React, { memo, useContext } from 'react'
+import React, { memo } from 'react'
 
-import { MasterDataContext } from '../../api/context'
+import { useMasterData } from '../../hooks/api'
 
 const _TestPage: React.SFC = () => {
-  const masterData = useContext(MasterDataContext)
+  const masterData = useMasterData()
 
   return (
     <div>

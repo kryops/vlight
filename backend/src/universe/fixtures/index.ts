@@ -54,7 +54,8 @@ export function initFixtures() {
   addUniverse(fixtureUniverse)
 }
 
-export function setFixtureState(id: IdType, state: FixtureState) {
+export function setFixtureState(id: IdType, state: FixtureState): boolean {
   fixtureStates.set(id, state)
-  return updateUniverseForFixture(id)
+  updateUniverseForFixture(id)
+  return true
 }

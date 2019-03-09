@@ -1,7 +1,7 @@
 import { css } from 'linaria'
-import React, { memo, useContext } from 'react'
+import React, { memo } from 'react'
 
-import { DmxUniverseContext } from '../../api/context'
+import { useDmxUniverse } from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'
 import { baselinePx } from '../../ui/styles'
 
@@ -25,10 +25,7 @@ const universeBar = css`
 `
 
 const _UniversePage: React.SFC = () => {
-  const universe = useContext(DmxUniverseContext)
-  if (!universe) {
-    return null
-  }
+  const universe = useDmxUniverse()
 
   return (
     <>

@@ -4,6 +4,7 @@ import { Dictionary, FixtureState, MasterData } from '@vlight/entities'
 import { logError, logTrace } from '../util/log'
 import { assertNever } from '../util/typescript'
 
+import { updateMasterData } from './masterdata'
 import { getUniverseIndex } from './util'
 
 export interface ApiState {
@@ -31,10 +32,12 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
       state.universe = message.universe
       state.channels = message.channels
       state.fixtures = message.fixtures
+      updateMasterData(message.masterData)
       break
 
     case 'masterdata':
       state.masterData = message.masterData
+      updateMasterData(message.masterData)
       break
 
     case 'universe':
