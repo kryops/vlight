@@ -1,7 +1,12 @@
 import React, { memo } from 'react'
 
 export const ColorPickerBackground = memo(() => (
-  <svg viewBox="0 0 256 256" preserveAspectRatio="none">
+  <svg
+    viewBox="0 0 256 256"
+    height="100%"
+    width="100%"
+    preserveAspectRatio="none"
+  >
     <defs>
       <linearGradient
         id="linearGradientWhite"

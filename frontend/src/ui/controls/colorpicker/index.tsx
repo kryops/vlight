@@ -4,7 +4,7 @@ import React, { memo, useRef } from 'react'
 
 import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
 import { Touchable } from '../../helpers/touchable'
-import { baselinePx, iconShade } from '../../styles'
+import { baselinePx, iconShade, primaryShade } from '../../styles'
 
 import { ColorPickerBackground } from './background'
 import {
@@ -12,14 +12,43 @@ import {
   colorPickerFractionToColor,
   colorPresets,
   colorToCss,
+  getPositionFromColor,
   isSameColor,
 } from './util'
 
 const colorPickerWidth = baselinePx * 60
-const colorPresetMarginPx = 2
+const positionMarkerSize = baselinePx * 6
+const colorPresetMargin = 2
 
 const container = css`
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
   width: ${colorPickerWidth}px;
+  margin: ${baselinePx * 1.5}px;
+`
+
+const colorPicker = css`
+  position: relative;
+  margin-bottom: 2px;
+  height: 0; // to make the SVG not scale beyond the max-height
+  flex-grow: 1;
+`
+
+const markerContainer = css`
+  position: absolute;
+  top: ${positionMarkerSize / 2}px;
+  right: ${positionMarkerSize / 2}px;
+  bottom: ${positionMarkerSize / 2}px;
+  left: ${positionMarkerSize / 2}px;
+`
+
+const positionMarker = css`
+  position: absolute;
+  width: ${positionMarkerSize - 4}px;
+  height: ${positionMarkerSize - 4}px;
+  margin: -${positionMarkerSize / 2}px;
+  border: 2px solid ${primaryShade(0)};
 `
 
 const colorPresetBar = css`
@@ -30,7 +59,7 @@ const colorPresetBar = css`
 
 const colorPreset = css`
   flex: 1 1 auto;
-  margin-left: ${colorPresetMarginPx}px;
+  margin-left: ${colorPresetMargin}px;
   padding: 2px;
 
   $:first-child {
@@ -56,11 +85,12 @@ const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
   const lastColorRef = useRef<ColorPickerColor>(currentColor)
   lastColorRef.current = currentColor
 
-  // TODO display current color
+  const position = getPositionFromColor(currentColor)
 
   return (
     <div className={container}>
       <Touchable
+        className={colorPicker}
         ref={touchRef}
         onTouch={event => {
           const offset = getTouchEventOffset(event, touchRef)
@@ -79,6 +109,17 @@ const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
         }}
       >
         <ColorPickerBackground />
+        {position && (
+          <div className={markerContainer}>
+            <div
+              className={positionMarker}
+              style={{
+                top: `${position.y * 100}%`,
+                left: `${position.x * 100}%`,
+              }}
+            />
+          </div>
+        )}
       </Touchable>
       <div className={colorPresetBar}>
         {colorPresets.map((presetColor, index) => (

@@ -1,4 +1,4 @@
-import { FixtureState } from '@vlight/entities'
+import { Dictionary, FixtureState } from '@vlight/entities'
 
 import { ChannelMapping } from '../../../api/enums'
 import { ensureBetween } from '../../../util/number'
@@ -17,12 +17,12 @@ export const colorPickerColors: string[] = [
 
 export const colorPresets: ColorPickerColor[] = [
   { r: 255, g: 0, b: 0 },
-  { r: 0, g: 255, b: 0 },
-  { r: 0, g: 0, b: 255 },
-  { r: 255, g: 255, b: 255 },
   { r: 255, g: 255, b: 0 },
-  { r: 255, g: 0, b: 255 },
+  { r: 0, g: 255, b: 0 },
   { r: 0, g: 255, b: 255 },
+  { r: 0, g: 0, b: 255 },
+  { r: 255, g: 0, b: 255 },
+  { r: 255, g: 255, b: 255 },
 ]
 
 export function colorPickerPossible(mapping: string[]) {
@@ -41,16 +41,23 @@ export function colorToCss({ r, b, g }: ColorPickerColor): string {
 
 function normalizeColors(colors: number[]) {
   const maxValue = Math.max(...colors)
+  if (maxValue === 0) {
+    return colors.map(_ => 255)
+  }
   const factor = 255 / maxValue
   return colors.map(c => Math.round(c * factor))
+}
+
+function colorObjectToArray(obj: ColorPickerColor | Dictionary<number>) {
+  return (colorPickerColors as Array<keyof ColorPickerColor>).map(
+    c => obj[c] || 0
+  )
 }
 
 export function fixtureStateToColor(
   fixtureState: FixtureState
 ): ColorPickerColor {
-  const [r, g, b] = normalizeColors(
-    colorPickerColors.map(c => fixtureState.channels[c] || 0)
-  )
+  const [r, g, b] = normalizeColors(colorObjectToArray(fixtureState.channels))
   return {
     r,
     g,
@@ -58,7 +65,7 @@ export function fixtureStateToColor(
   }
 }
 
-function getSingleColorFromXFraction(x: number, colorOffset: number) {
+function getSingleColorFromXFraction(x: number, colorOffset: number): number {
   if (x <= colorOffset || x >= colorOffset + 2 / 3) {
     return 0
   }
@@ -88,4 +95,39 @@ export function colorPickerFractionToColor(
     g,
     b,
   }
+}
+
+export function getPositionFromColor(
+  color: ColorPickerColor
+): { x: number; y: number } | null {
+  const originalColors = colorObjectToArray(color)
+  const lightness = Math.min(...originalColors)
+  const y = 1 - lightness / 255
+  if (lightness === 255) {
+    return { x: 0, y: 0 }
+  }
+  const [r, g, b] = normalizeColors(originalColors.map(c => c - lightness))
+  let x = 0
+  if (r === 255) {
+    if (g) {
+      x = g / 255 / 6
+    } else if (b) {
+      x = 1 - b / 255 / 6
+    }
+  } else if (g === 255) {
+    // tslint:disable-next-line:prefer-conditional-expression
+    if (r) {
+      x = 2 / 6 - r / 255 / 6
+    } else {
+      x = 2 / 6 + b / 255 / 6
+    }
+  } else if (b === 255) {
+    // tslint:disable-next-line:prefer-conditional-expression
+    if (g) {
+      x = 4 / 6 - g / 255 / 6
+    } else {
+      x = 4 / 6 + r / 255 / 6
+    }
+  }
+  return { x, y }
 }
