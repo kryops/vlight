@@ -1,5 +1,7 @@
 import { RefObject } from 'react'
 
+import { ensureBetween } from './number'
+
 export interface NormalizedTouchEvent<T extends HTMLElement = HTMLElement> {
   type: string
   clientX: number
@@ -58,4 +60,21 @@ export function getTouchEventOffset(
   const yFraction = y / height
 
   return { x, y, xFraction, yFraction, width, height }
+}
+
+export function getFractionWithMargin(
+  offset: OffsetCoordinates,
+  margin: number
+) {
+  const x = ensureBetween(
+    (offset.x - margin) / (offset.width - margin * 2),
+    0,
+    1
+  )
+  const y = ensureBetween(
+    (offset.y - margin) / (offset.height - margin * 2),
+    0,
+    1
+  )
+  return { x, y }
 }

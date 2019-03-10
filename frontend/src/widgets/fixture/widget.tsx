@@ -3,7 +3,13 @@ import { css } from 'linaria'
 import React, { memo } from 'react'
 
 import { changeFixtureState } from '../../api'
+import { ChannelMapping } from '../../api/enums'
 import { Widget } from '../../ui/containers/widget'
+import { ColorPicker } from '../../ui/controls/colorpicker'
+import {
+  colorPickerColors,
+  fixtureStateToColor,
+} from '../../ui/controls/colorpicker/util'
 import { Fader } from '../../ui/controls/fader'
 import { baselinePx } from '../../ui/styles'
 
@@ -18,12 +24,15 @@ export function getFixtureName(
 }
 
 const turnedOff = css`
-  opacity: 0.2;
+  & > * {
+    opacity: 0.4;
+  }
 `
 
 const faderContainer = css`
   display: flex;
   justify-content: center;
+  align-items: stretch;
   overflow-x: auto;
   max-width: 100%;
   padding-bottom: ${baselinePx * 8}px; // horizontal scrolling
@@ -40,6 +49,35 @@ const _StatelessFixtureWidget: React.SFC<StatelessProps> = ({
   fixtureType,
   fixtureState,
 }) => {
+  const hasColorPicker = colorPickerColors.every(c =>
+    fixtureType.mapping.includes(c)
+  )
+
+  const { r, g, b } = fixtureStateToColor(fixtureState)
+
+  const fadersToRender = fixtureType.mapping.filter(
+    c =>
+      c !== ChannelMapping.master &&
+      (!hasColorPicker || !colorPickerColors.includes(c))
+  )
+
+  const renderFader = (channelType: string) => (
+    <Fader
+      key={channelType}
+      max={255}
+      step={1}
+      label={channelType.toUpperCase()}
+      value={fixtureState.channels[channelType] || 0}
+      onChange={value =>
+        changeFixtureState(fixture.id, fixtureState, {
+          channels: {
+            [channelType]: value,
+          },
+        })
+      }
+    />
+  )
+
   return (
     <Widget
       key={fixture.id}
@@ -57,22 +95,20 @@ const _StatelessFixtureWidget: React.SFC<StatelessProps> = ({
       className={fixtureState.on ? undefined : turnedOff}
     >
       <div className={faderContainer}>
-        {fixtureType.mapping.map(channelType => (
-          <Fader
-            key={channelType}
-            max={255}
-            step={1}
-            label={channelType.toUpperCase()}
-            value={fixtureState.channels[channelType] || 0}
-            onChange={value =>
+        {renderFader('m')}
+        {hasColorPicker && (
+          <ColorPicker
+            r={r}
+            g={g}
+            b={b}
+            onChange={color =>
               changeFixtureState(fixture.id, fixtureState, {
-                channels: {
-                  [channelType]: value,
-                },
+                channels: { ...color },
               })
             }
           />
-        ))}
+        )}
+        {fadersToRender.map(renderFader)}
       </div>
     </Widget>
   )

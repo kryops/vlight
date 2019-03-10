@@ -71,8 +71,8 @@ const _Fader: React.SFC<Props> = ({
   return (
     <Touchable
       className={fader}
-      onTouch={e => {
-        const offset = getTouchEventOffset(e, trackRef)
+      onTouch={event => {
+        const offset = getTouchEventOffset(event, trackRef)
         if (!offset) {
           return
         }
