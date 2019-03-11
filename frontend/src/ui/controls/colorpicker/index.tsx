@@ -9,11 +9,12 @@ import { baselinePx, iconShade, primaryShade } from '../../styles'
 import { ColorPickerBackground } from './background'
 import {
   ColorPickerColor,
-  colorPickerFractionToColor,
+  ColorPickerPosition,
   colorPresets,
   colorToCss,
-  getPositionFromColor,
+  colorToPosition,
   isSameColor,
+  positionToColor,
 } from './util'
 
 const colorPickerWidth = baselinePx * 60
@@ -81,11 +82,17 @@ export interface Props {
 
 const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
   const touchRef = useRef<HTMLDivElement>(null)
-  const currentColor: ColorPickerColor = { r, g, b }
-  const lastColorRef = useRef<ColorPickerColor>(currentColor)
-  lastColorRef.current = currentColor
 
-  const position = getPositionFromColor(currentColor)
+  const currentColor: ColorPickerColor = { r, g, b }
+  const positionFromColor = colorToPosition(currentColor)
+
+  const lastPositionRef = useRef<ColorPickerPosition>(positionFromColor)
+
+  const position =
+    lastPositionRef.current &&
+    isSameColor(currentColor, positionToColor(lastPositionRef.current))
+      ? lastPositionRef.current
+      : positionFromColor
 
   return (
     <div className={container}>
@@ -98,28 +105,29 @@ const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
             return
           }
           const { x, y } = getFractionWithMargin(offset, 4)
-          const newColor = colorPickerFractionToColor(x, y)
+          const newPosition = { x, y }
+          const newColor = positionToColor(newPosition)
           if (
-            lastColorRef.current &&
-            isSameColor(lastColorRef.current, newColor)
+            lastPositionRef.current &&
+            isSameColor(positionToColor(lastPositionRef.current), newColor)
           ) {
             return
           }
+          lastPositionRef.current = newPosition
           onChange(newColor)
         }}
       >
         <ColorPickerBackground />
-        {position && (
-          <div className={markerContainer}>
-            <div
-              className={positionMarker}
-              style={{
-                top: `${position.y * 100}%`,
-                left: `${position.x * 100}%`,
-              }}
-            />
-          </div>
-        )}
+        <div className={markerContainer}>
+          <div
+            className={positionMarker}
+            style={{
+              top: `${position.y * 100}%`,
+              left: `${position.x * 100}%`,
+              background: colorToCss(currentColor),
+            }}
+          />
+        </div>
       </Touchable>
       <div className={colorPresetBar}>
         {colorPresets.map((presetColor, index) => (

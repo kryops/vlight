@@ -9,6 +9,11 @@ export interface ColorPickerColor {
   b: number
 }
 
+export interface ColorPickerPosition {
+  x: number
+  y: number
+}
+
 export const colorPickerColors: string[] = [
   ChannelMapping.red,
   ChannelMapping.green,
@@ -39,16 +44,23 @@ export function colorToCss({ r, b, g }: ColorPickerColor): string {
   return `rgb(${r}, ${g}, ${b})`
 }
 
-function normalizeColors(colors: number[]) {
-  const maxValue = Math.max(...colors)
-  if (maxValue === 0) {
-    return colors.map(_ => 255)
-  }
-  const factor = 255 / maxValue
-  return colors.map(c => Math.round(c * factor))
+function mapColor(
+  color: ColorPickerColor,
+  fn: (c: number) => number
+): ColorPickerColor {
+  return { r: fn(color.r), g: fn(color.g), b: fn(color.b) }
 }
 
-function colorObjectToArray(obj: ColorPickerColor | Dictionary<number>) {
+function normalizeColor(color: ColorPickerColor): ColorPickerColor {
+  const maxValue = Math.max(...colorToArray(color))
+  if (maxValue === 0) {
+    return mapColor(color, () => 255)
+  }
+  const factor = 255 / maxValue
+  return mapColor(color, c => Math.round(c * factor))
+}
+
+function colorToArray(obj: ColorPickerColor | Dictionary<number>) {
   return (colorPickerColors as Array<keyof ColorPickerColor>).map(
     c => obj[c] || 0
   )
@@ -57,39 +69,72 @@ function colorObjectToArray(obj: ColorPickerColor | Dictionary<number>) {
 export function fixtureStateToColor(
   fixtureState: FixtureState
 ): ColorPickerColor {
-  const [r, g, b] = normalizeColors(colorObjectToArray(fixtureState.channels))
-  return {
-    r,
-    g,
-    b,
-  }
+  const { r, g, b } = fixtureState.channels
+  return normalizeColor({
+    r: r || 0,
+    g: g || 0,
+    b: b || 0,
+  })
 }
 
-function getSingleColorFromXFraction(x: number, colorOffset: number): number {
-  if (x <= colorOffset || x >= colorOffset + 2 / 3) {
-    return 0
+function xFractionToColor(x: number): ColorPickerColor {
+  let r = 0
+  let g = 0
+  let b = 0
+
+  if (x <= 1 / 6) {
+    r = 255
+    g = Math.round(x * 6 * 255)
+  } else if (x <= 2 / 6) {
+    g = 255
+    r = Math.round(255 - (x - 1 / 6) * 6 * 255)
+  } else if (x <= 3 / 6) {
+    g = 255
+    b = Math.round((x - 2 / 6) * 6 * 255)
+  } else if (x <= 4 / 6) {
+    b = 255
+    g = Math.round(255 - (x - 3 / 6) * 6 * 255)
+  } else if (x <= 5 / 6) {
+    b = 255
+    r = Math.round((x - 4 / 6) * 6 * 255)
+  } else {
+    r = 255
+    // never let it fall to 0 so the marker does not want to jump to the left
+    // (at least in the bottom half of the picker)
+    b = ensureBetween(Math.round(255 - (x - 5 / 6) * 6 * 255), 1, 255)
   }
-  if (x >= colorOffset + 1 / 6 && x <= colorOffset + 1 / 2) {
-    return 255
-  }
-  if (x < colorOffset + 1 / 6) {
-    return (x - colorOffset) * 6 * 255
-  }
-  return 255 - (x - colorOffset - 1 / 2) * 6 * 255
+
+  return { r, g, b }
 }
 
-export function colorPickerFractionToColor(
-  x: number,
-  y: number
-): ColorPickerColor {
+function colorToXFraction(color: ColorPickerColor): number {
+  const { r, g, b } = color
+  if (r === 255) {
+    if (g === 0 && b === 0) {
+      return 0
+    }
+    return g !== 0 ? g / 255 / 6 : 1 - b / 255 / 6
+  }
+  if (g === 255) {
+    return r !== 0 ? 2 / 6 - r / 255 / 6 : 2 / 6 + b / 255 / 6
+  }
+  if (b === 255) {
+    return g !== 0 ? 4 / 6 - g / 255 / 6 : 4 / 6 + r / 255 / 6
+  }
+  return 0
+}
+
+export function positionToColor({
+  x,
+  y,
+}: ColorPickerPosition): ColorPickerColor {
   const lightness = Math.round(ensureBetween(1 - y, 0, 1) * 255)
 
-  const [r, g, b] = normalizeColors([
-    getSingleColorFromXFraction(x, -1 / 3) +
-      getSingleColorFromXFraction(x, 2 / 3),
-    getSingleColorFromXFraction(x, 0),
-    getSingleColorFromXFraction(x, 1 / 3),
-  ]).map(c => lightness + Math.round((255 - lightness) * (c / 255)))
+  const rawColor = xFractionToColor(x)
+
+  const [r, g, b] = colorToArray(rawColor).map(
+    c => lightness + Math.round((255 - lightness) * (c / 255))
+  )
   return {
     r,
     g,
@@ -97,37 +142,13 @@ export function colorPickerFractionToColor(
   }
 }
 
-export function getPositionFromColor(
-  color: ColorPickerColor
-): { x: number; y: number } | null {
-  const originalColors = colorObjectToArray(color)
-  const lightness = Math.min(...originalColors)
+export function colorToPosition(color: ColorPickerColor): ColorPickerPosition {
+  const lightness = Math.min(...colorToArray(color))
   const y = 1 - lightness / 255
   if (lightness === 255) {
     return { x: 0, y: 0 }
   }
-  const [r, g, b] = normalizeColors(originalColors.map(c => c - lightness))
-  let x = 0
-  if (r === 255) {
-    if (g) {
-      x = g / 255 / 6
-    } else if (b) {
-      x = 1 - b / 255 / 6
-    }
-  } else if (g === 255) {
-    // tslint:disable-next-line:prefer-conditional-expression
-    if (r) {
-      x = 2 / 6 - r / 255 / 6
-    } else {
-      x = 2 / 6 + b / 255 / 6
-    }
-  } else if (b === 255) {
-    // tslint:disable-next-line:prefer-conditional-expression
-    if (g) {
-      x = 4 / 6 - g / 255 / 6
-    } else {
-      x = 4 / 6 + r / 255 / 6
-    }
-  }
+  const normalizedColor = normalizeColor(mapColor(color, c => c - lightness))
+  const x = colorToXFraction(normalizedColor)
   return { x, y }
 }

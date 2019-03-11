@@ -25,7 +25,7 @@ export function mapFixtureStateToChannels(
     }
 
     const rawValue = state.channels[channelType] || 0
-    return hasMasterChannel
+    return hasMasterChannel || channelType === ChannelMapping.master
       ? rawValue
       : Math.round(rawValue * (masterChannelValue / 255))
   })

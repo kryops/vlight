@@ -1,16 +1,28 @@
-import { FixtureState, IdType } from '@vlight/entities'
+import { FixtureState, FixtureType, IdType } from '@vlight/entities'
 
 import { addUniverse, createUniverse, setUniverseChannel, Universe } from '..'
 import { fixtures, fixtureTypes } from '../../database'
 import { logWarn } from '../../util/log'
 
-import { mapFixtureStateToChannels } from './mapping'
+import { ChannelMapping, mapFixtureStateToChannels } from './mapping'
 
 let fixtureUniverse: Universe
 
 export const fixtureStates: Map<IdType, FixtureState> = new Map()
 
-function getInitialFixtureState(): FixtureState {
+function getInitialFixtureState(fixtureType?: FixtureType): FixtureState {
+  const colors = [ChannelMapping.red, ChannelMapping.green, ChannelMapping.blue]
+  if (fixtureType && colors.every(c => fixtureType.mapping.includes(c))) {
+    return {
+      on: false,
+      channels: {
+        m: 255,
+        r: 255,
+        g: 255,
+        b: 255,
+      },
+    }
+  }
   return {
     on: false,
     channels: {
@@ -20,7 +32,6 @@ function getInitialFixtureState(): FixtureState {
 }
 
 function updateUniverseForFixture(id: IdType): boolean {
-  const state = fixtureStates.get(id) || getInitialFixtureState()
   const fixture = fixtures.get(id)
   if (!fixture) {
     logWarn('no fixture found for ID', id)
@@ -31,6 +42,7 @@ function updateUniverseForFixture(id: IdType): boolean {
     logWarn('no fixtureType found for', fixture)
     return false
   }
+  const state = fixtureStates.get(id) || getInitialFixtureState(fixtureType)
   const channel = fixture.channel
 
   let changed = false
@@ -47,8 +59,8 @@ function updateUniverseForFixture(id: IdType): boolean {
 export function initFixtures() {
   fixtureUniverse = createUniverse()
 
-  for (const [id] of fixtures) {
-    fixtureStates.set(id, getInitialFixtureState())
+  for (const [id, { type }] of fixtures) {
+    fixtureStates.set(id, getInitialFixtureState(fixtureTypes.get(type)))
   }
 
   addUniverse(fixtureUniverse)
