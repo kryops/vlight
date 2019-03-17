@@ -11,7 +11,7 @@
     "clean": "rimraf backend/dist frontend/dist node_modules/.cache .linaria-cache",
     "build": "yarn run clean && yarn build:backend && yarn build:frontend",
     "build:backend": "tsc -p ./backend/src",
-    "build:frontend": "cross-env NODE_ENV=production && webpack --config frontend/webpack.config.ts --env.production  --progress",
+    "build:frontend": "cross-env NODE_ENV=production && webpack --config frontend/webpack.config.ts --env.production --progress",
     "build:frontend:dev": "webpack --config frontend/webpack.config.ts --progress",
     "client:tcp": "ts-node backend/clients/vlight-tcp.ts",
     "client:udp": "ts-node backend/clients/vlight-udp.ts",

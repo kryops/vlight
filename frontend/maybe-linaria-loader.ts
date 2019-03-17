@@ -1,4 +1,4 @@
-import { getRemainingRequest, stringifyRequest } from 'loader-utils'
+import { getRemainingRequest } from 'loader-utils'
 import { loader } from 'webpack'
 
 function maybeLinariaLoader(
@@ -10,10 +10,10 @@ function maybeLinariaLoader(
       0,
       this.request.indexOf(__filename)
     )
-    return `export * from ${stringifyRequest(
-      this,
-      `!${precedingRequest}linaria/loader!${getRemainingRequest(this)}`
-    )};\n`
+    const newSource = `module.exports = require('!${precedingRequest}${require.resolve(
+      'linaria/loader'
+    )}!${getRemainingRequest(this)}');\n`
+    return newSource
   }
   return source
 }

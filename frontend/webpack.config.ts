@@ -36,6 +36,7 @@ export const webpackConfiguration = (env: Env = {}) => {
 
   const configuration: Configuration = {
     entry: [
+      isProduction && join(__dirname, 'src/polyfills.ts'),
       join(__dirname, 'src/index.tsx'),
       !isProduction && 'webpack-hot-middleware/client?reload=true',
     ].filter(Boolean) as string[],
@@ -57,56 +58,21 @@ export const webpackConfiguration = (env: Env = {}) => {
           test: /\.tsx?$/,
           exclude: /node_modules/,
           use: [
-            {
-              loader: '@sucrase/webpack-loader',
-              options: {
-                transforms: ['jsx', 'typescript', 'react-hot-loader'],
-              },
-            },
+            isProduction
+              ? {
+                  loader: 'babel-loader',
+                  options: {
+                    cacheDirectory: true,
+                  },
+                }
+              : {
+                  loader: '@sucrase/webpack-loader',
+                  options: {
+                    transforms: ['jsx', 'typescript', 'react-hot-loader'],
+                  },
+                },
             {
               loader: join(__dirname, './maybe-linaria-loader.ts'),
-            },
-            /*
-            {
-              loader: 'babel-loader',
-              options: {
-                cacheDirectory: true,
-              },
-            },
-            
-            {
-              loader: 'linaria/loader',
-              options: {
-                sourceMap: true,
-              },
-            },
-            */
-          ],
-        },
-        {
-          test: /\.scss$/,
-          exclude: /node_modules/,
-          use: [
-            ExtractCssPlugin.loader,
-            {
-              loader: 'css-loader',
-              options: {
-                sourceMap: true,
-                modules: true,
-                localIdentName: '[name]_[local]-[hash:base64:5]',
-              },
-            },
-            {
-              loader: 'resolve-url-loader',
-              options: {
-                sourceMap: true,
-              },
-            },
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: true,
-              },
             },
           ],
         },
@@ -136,7 +102,7 @@ export const webpackConfiguration = (env: Env = {}) => {
       ].filter(Boolean),
     },
     resolve: {
-      extensions: ['.ts', '.tsx', '.mjs', '.js', '.json'],
+      extensions: ['.ts', '.tsx', '.js'],
     },
     stats: 'minimal',
     performance: false,
