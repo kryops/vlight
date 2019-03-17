@@ -58,17 +58,29 @@ export const webpackConfiguration = (env: Env = {}) => {
           exclude: /node_modules/,
           use: [
             {
+              loader: '@sucrase/webpack-loader',
+              options: {
+                transforms: ['jsx', 'typescript', 'react-hot-loader'],
+              },
+            },
+            {
+              loader: join(__dirname, './maybe-linaria-loader.ts'),
+            },
+            /*
+            {
               loader: 'babel-loader',
               options: {
                 cacheDirectory: true,
               },
             },
+            
             {
               loader: 'linaria/loader',
               options: {
                 sourceMap: true,
               },
             },
+            */
           ],
         },
         {
@@ -145,13 +157,12 @@ export const webpackConfiguration = (env: Env = {}) => {
         background_color: '#000c15',
         ios: true,
       }),
+      new ForkCheckerPlugin({
+        tsconfig: join(__dirname, 'tsconfig.json'),
+      }),
 
       // development
       !isProduction && new HotModuleReplacementPlugin(),
-      !isProduction &&
-        new ForkCheckerPlugin({
-          tsconfig: join(__dirname, 'tsconfig.json'),
-        }),
 
       // production
       isProduction &&
