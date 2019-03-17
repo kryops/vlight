@@ -58,21 +58,28 @@ export const webpackConfiguration = (env: Env = {}) => {
           test: /\.tsx?$/,
           exclude: /node_modules/,
           use: [
-            isProduction
-              ? {
-                  loader: 'babel-loader',
-                  options: {
-                    cacheDirectory: true,
-                  },
-                }
-              : {
-                  loader: '@sucrase/webpack-loader',
-                  options: {
-                    transforms: ['jsx', 'typescript', 'react-hot-loader'],
-                  },
-                },
+            {
+              loader: 'babel-loader',
+              options: {
+                cacheDirectory: true,
+              },
+            },
+            /*
+            {
+              loader: '@sucrase/webpack-loader',
+              options: {
+                transforms: ['jsx', 'typescript', 'react-hot-loader'],
+              },
+            },
             {
               loader: join(__dirname, './maybe-linaria-loader.ts'),
+            },
+            */
+            {
+              loader: 'linaria/loader',
+              options: {
+                sourceMap: true,
+              },
             },
           ],
         },
