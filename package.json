@@ -21,6 +21,8 @@
     "postinstall": "rimraf node_modules/.cache .linaria-cache",
     "prepare": "yarn build",
     "start": "nodemon",
+    "start:frontend": "webpack-dev-server --config frontend/webpack.config.ts",
+    "start:both": "concurrently 'nodemon' 'webpack-dev-server --config frontend/webpack.config.ts'",
     "start:prod": "cross-env NODE_ENV=production && node .",
     "test": "jest"
   },

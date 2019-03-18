@@ -31,6 +31,7 @@ export const webpackConfiguration = (env: Env = {}) => {
   const isProduction = !!env.production
   const analyze = !!env.analyze
   const profile = !!env.profile
+  const isDevServer = process.env.DEV_SERVER === 'true'
 
   if (process.env.NODE_ENV === undefined) {
     process.env.NODE_ENV = isProduction ? 'production' : 'development'
@@ -40,7 +41,9 @@ export const webpackConfiguration = (env: Env = {}) => {
     entry: [
       isProduction && join(__dirname, 'src/polyfills.ts'),
       join(__dirname, 'src/index.tsx'),
-      !isProduction && 'webpack-hot-middleware/client?reload=true',
+      !isProduction &&
+        isDevServer &&
+        'webpack-hot-middleware/client?reload=true',
     ].filter(Boolean) as string[],
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? 'source-map' : 'cheap-module-source-map',
@@ -106,6 +109,26 @@ export const webpackConfiguration = (env: Env = {}) => {
     },
     stats: profile ? 'normal' : 'minimal',
     performance: false,
+    devServer: {
+      publicPath: '/',
+      hot: true,
+      stats: 'minimal',
+      port: 8001,
+      open: true,
+      clientLogLevel: 'error',
+      disableHostCheck: true,
+      historyApiFallback: true,
+      overlay: true,
+      proxy: {
+        '/api': {
+          target: 'http://localhost:8000/',
+        },
+        '/ws': {
+          target: 'ws://localhost:8000/',
+          ws: true,
+        },
+      },
+    },
     plugins: [
       new DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(

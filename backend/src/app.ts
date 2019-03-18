@@ -5,7 +5,7 @@ import { createServer } from 'http'
 import { join } from 'path'
 
 import { handleApiMessage } from './api'
-import { isDevelopment } from './env'
+import { devServer, isDevelopment } from './env'
 
 export const expressApp = express()
 export const httpServer = createServer(expressApp)
@@ -22,7 +22,7 @@ export async function initExpressApp() {
     }
   })
 
-  if (isDevelopment) {
+  if (isDevelopment && devServer) {
     const dev = await import('./development')
     dev.applyDevMiddleware(expressApp)
   } else {
