@@ -5,6 +5,25 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "webpack",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/node_modules/webpack/bin/webpack.js",
+      "args": [
+        "--project",
+        "--config",
+        "frontend/webpack.config.ts",
+        "--progress",
+        "--env.profile"
+      ],
+      "runtimeArgs": ["--nolazy"],
+      "cwd": "${workspaceRoot}",
+      "protocol": "inspector",
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    {
       "name": "Backend (ts-node)",
       "type": "node",
       "request": "launch",

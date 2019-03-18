@@ -18,6 +18,7 @@ import WebpackPwaManifest from 'webpack-pwa-manifest'
 interface Env {
   analyze?: any
   production?: any
+  profile?: any
 }
 
 // sass-loader workaround
@@ -29,6 +30,7 @@ stylis.set({ prefix: false })
 export const webpackConfiguration = (env: Env = {}) => {
   const isProduction = !!env.production
   const analyze = !!env.analyze
+  const profile = !!env.profile
 
   if (process.env.NODE_ENV === undefined) {
     process.env.NODE_ENV = isProduction ? 'production' : 'development'
@@ -51,7 +53,7 @@ export const webpackConfiguration = (env: Env = {}) => {
       rules: [
         (!isProduction && {
           test: /\.js$/,
-          include: /node_modules/,
+          include: /node_modules\/react-dom/,
           loader: 'react-hot-loader/webpack',
         }) as any,
         {
@@ -64,18 +66,9 @@ export const webpackConfiguration = (env: Env = {}) => {
                 cacheDirectory: true,
               },
             },
-            /*
+            'thread-loader',
             {
-              loader: '@sucrase/webpack-loader',
-              options: {
-                transforms: ['jsx', 'typescript', 'react-hot-loader'],
-              },
-            },
-            {
-              loader: join(__dirname, './maybe-linaria-loader.ts'),
-            },
-            */
-            {
+              // TODO this is pretty slow - can we reduce its impact?
               loader: 'linaria/loader',
               options: {
                 sourceMap: true,
@@ -84,7 +77,7 @@ export const webpackConfiguration = (env: Env = {}) => {
           ],
         },
         {
-          test: /\.css$/,
+          test: /\.linaria\.css$/,
           exclude: /node_modules/,
           use: [
             !isProduction && {
@@ -106,12 +99,12 @@ export const webpackConfiguration = (env: Env = {}) => {
             },
           ].filter(Boolean),
         },
-      ].filter(Boolean),
+      ].filter(Boolean) as any,
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
     },
-    stats: 'minimal',
+    stats: profile ? 'normal' : 'minimal',
     performance: false,
     plugins: [
       new DefinePlugin({
@@ -130,9 +123,10 @@ export const webpackConfiguration = (env: Env = {}) => {
         background_color: '#000c15',
         ios: true,
       }),
-      new ForkCheckerPlugin({
-        tsconfig: join(__dirname, 'tsconfig.json'),
-      }),
+      !profile &&
+        new ForkCheckerPlugin({
+          tsconfig: join(__dirname, 'tsconfig.json'),
+        }),
 
       // development
       !isProduction && new HotModuleReplacementPlugin(),
@@ -173,6 +167,13 @@ export const webpackConfiguration = (env: Env = {}) => {
       },
     },
   }
+
+  if (profile) {
+    const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
+    const smp = new SpeedMeasurePlugin()
+    return smp.wrap(configuration)
+  }
+
   return configuration
 }
 
