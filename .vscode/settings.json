@@ -1,7 +1,9 @@
 {
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
-  "prettier.tslintIntegration": true,
+  "eslint.autoFixOnSave": true,
+  "eslint.validate": ["typescript", "typescriptreact"],
+  "prettier.eslintIntegration": true,
   "tslint.alwaysShowRuleFailuresAsWarnings": true,
   "typescript.preferences.quoteStyle": "single",
   "typescript.tsdk": "node_modules/typescript/lib"

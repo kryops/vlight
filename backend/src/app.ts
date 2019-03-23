@@ -1,8 +1,9 @@
+import { createServer } from 'http'
+import { join } from 'path'
+
 import compression from 'compression'
 import history from 'connect-history-api-fallback'
 import express from 'express'
-import { createServer } from 'http'
-import { join } from 'path'
 
 import { handleApiMessage } from './api'
 import { devServer, isDevelopment } from './env'

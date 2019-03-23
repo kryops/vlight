@@ -1,5 +1,3 @@
-// tslint:disable no-console
-
 export const shouldLogTrace = process.env.NODE_ENV === 'development'
 export const shouldLogInfo =
   shouldLogTrace || process.env.NODE_ENV === 'development'

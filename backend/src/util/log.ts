@@ -1,7 +1,5 @@
 import { logLevel } from '../config'
 
-// tslint:disable no-console
-
 export const shouldLogTrace = logLevel === 'trace'
 export const shouldLogInfo = shouldLogTrace || logLevel === 'info'
 export const shouldLogWarn = shouldLogInfo || logLevel === 'warn'

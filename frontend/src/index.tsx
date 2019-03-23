@@ -1,5 +1,3 @@
-// tslint:disable ordered-imports
-
 import React from 'react'
 import { render } from 'react-dom'
 
