@@ -5,6 +5,7 @@ import { socketProcessingInterval } from '../config'
 import { logError, logInfo, logTrace, logWarn } from '../util/log'
 
 import { useInterval } from './interval'
+import { useCurrentRef } from './ref'
 
 interface InstanceRef<T> {
   socket: WebSocket | undefined
@@ -12,31 +13,27 @@ interface InstanceRef<T> {
 }
 
 export function useWebSocket<T>(
-  /**
-   * **NOTE**: If you have to use any variables from outside
-   * here, define them via `useRef()`!
-   * State variables will be stale because we never re-run the effect!
-   */
   messageQueueHandler: (messages: T[]) => void
 ): boolean {
-  const instance = useRef<InstanceRef<T>>({
+  const handlerRef = useCurrentRef(messageQueueHandler)
+  const instanceRef = useRef<InstanceRef<T>>({
     socket: undefined,
     messageQueue: [],
   })
   const [connecting, setConnecting] = useState(true)
 
   useInterval(() => {
-    if (!instance.current.messageQueue.length) {
+    if (!instanceRef.current.messageQueue.length) {
       return
     }
-    messageQueueHandler(instance.current.messageQueue)
-    instance.current.messageQueue = []
+    handlerRef.current(instanceRef.current.messageQueue)
+    instanceRef.current.messageQueue = []
   }, socketProcessingInterval)
 
   useEffect(function connectWebSocket() {
     const socket = new WebSocket(`ws://${window.location.host}/ws`)
 
-    instance.current.socket = socket
+    instanceRef.current.socket = socket
     setSocket(socket)
 
     socket.onopen = () => {
@@ -48,7 +45,7 @@ export function useWebSocket<T>(
       try {
         const message = JSON.parse(event.data)
         logTrace('WebSocket message', message)
-        instance.current.messageQueue.push(message)
+        instanceRef.current.messageQueue.push(message)
       } catch (e) {
         logError('WebSocket message parse error', e, 'message was:', event.data)
       }
@@ -66,7 +63,7 @@ export function useWebSocket<T>(
       socket.close()
       setSocket(undefined)
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return connecting
 }

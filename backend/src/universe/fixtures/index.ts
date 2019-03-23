@@ -1,6 +1,7 @@
 import { FixtureState, FixtureType, IdType } from '@vlight/entities'
 
 import { addUniverse, createUniverse, setUniverseChannel, Universe } from '..'
+
 import { fixtures, fixtureTypes } from '../../database'
 import { logWarn } from '../../util/log'
 

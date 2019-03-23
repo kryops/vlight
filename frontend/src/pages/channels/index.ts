@@ -1,6 +1,7 @@
 import { lazy } from 'react'
 
 import { NavItemEntry } from '..'
+
 import { iconFader } from '../../ui/icons'
 
 export const ChannelsPage = lazy(() =>

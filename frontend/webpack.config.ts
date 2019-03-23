@@ -1,9 +1,10 @@
 // import ExtractCssPlugin from 'extract-css-chunks-webpack-plugin'
+import { join } from 'path'
+
 import ForkCheckerPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ExtractCssPlugin from 'mini-css-extract-plugin'
 import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
-import { join } from 'path'
 import stylis from 'stylis'
 import TerserPlugin from 'terser-webpack-plugin'
 import {
@@ -195,6 +196,7 @@ export const webpackConfiguration = (env: Env = {}) => {
   }
 
   if (profile) {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
     const smp = new SpeedMeasurePlugin()
     return smp.wrap(configuration)

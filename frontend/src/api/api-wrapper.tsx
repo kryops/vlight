@@ -1,5 +1,5 @@
 import { ApiOutMessage } from '@vlight/api'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import { useWebSocket } from '../hooks/websocket'
 import { LoadingScreen } from '../ui/main/loading-screen'
@@ -13,19 +13,15 @@ import {
 import { ApiState, processApiMessages } from './processing'
 
 export const ApiWrapper: React.SFC = ({ children }) => {
-  // we need to use a ref here because using the state variable
-  // in the socket message handler will always give us the initial value
-  const ref = useRef<ApiState>({
+  const [apiState, setApiState] = useState<ApiState>({
     masterData: undefined,
     universe: undefined,
     channels: undefined,
     fixtures: {},
   })
-  const [apiState, setApiState] = useState<ApiState>(ref.current)
 
   const connecting = useWebSocket<ApiOutMessage>(messages => {
-    const newState = processApiMessages(messages, ref.current)
-    ref.current = newState
+    const newState = processApiMessages(messages, apiState)
     setApiState(newState)
   })
 

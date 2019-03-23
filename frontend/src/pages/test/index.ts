@@ -1,6 +1,7 @@
 import { lazy } from 'react'
 
 import { NavItemEntry } from '..'
+
 import { iconExperiment } from '../../ui/icons'
 
 export const TestPage = lazy(() =>

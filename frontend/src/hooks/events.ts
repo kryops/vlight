@@ -5,14 +5,16 @@ import {
   removeGlobalEventListener,
 } from '../util/events'
 
+import { useCurrentRef } from './ref'
+
 export function useGlobalEvents<T extends Event>(
   target: EventTarget,
   events: string[],
-  fn: (e: T) => void,
-  shouldUpdate: any[] = []
+  fn: (e: T) => void
 ) {
+  const fnRef = useCurrentRef(fn)
   useEffect(() => {
-    const listener = (e: Event) => fn(e as T)
+    const listener = (e: Event) => fnRef.current(e as T)
     events.forEach(event => addGlobalEventListener(target, event, listener))
 
     return () => {
@@ -20,5 +22,5 @@ export function useGlobalEvents<T extends Event>(
         removeGlobalEventListener(target, event, listener)
       )
     }
-  }, shouldUpdate)
+  }, [target, fnRef, ...events]) // eslint-disable-line react-hooks/exhaustive-deps
 }

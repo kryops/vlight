@@ -1,6 +1,7 @@
 import { lazy } from 'react'
 
 import { NavItemEntry } from '..'
+
 import { iconLight } from '../../ui/icons'
 
 export const FixturesPage = lazy(() =>

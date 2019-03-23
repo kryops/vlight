@@ -5,8 +5,9 @@ import { httpServer } from '../app'
 import { removeFromMutableArray } from '../util/array'
 import { logInfo, logTrace } from '../util/log'
 
-import { handleApiMessage } from '.'
 import { getFullState } from './messages'
+
+import { handleApiMessage } from '.'
 
 export const sockets: ws[] = []
 

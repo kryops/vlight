@@ -1,17 +1,14 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 
-export function useInterval(
-  fn: () => void,
-  ms: number,
-  shouldUpdate: any[] = []
-) {
-  const instance = useRef<number | undefined>(undefined)
+import { useCurrentRef } from './ref'
 
+export function useInterval(fn: () => void, ms: number) {
+  const fnRef = useCurrentRef(fn)
   useEffect(() => {
-    instance.current = window.setInterval(fn, ms)
+    const interval = window.setInterval(() => fnRef.current(), ms)
 
     return () => {
-      window.clearInterval(instance.current)
+      window.clearInterval(interval)
     }
-  }, shouldUpdate)
+  }, [fnRef, ms])
 }

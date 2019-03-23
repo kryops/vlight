@@ -35,7 +35,7 @@ export function colorPickerPossible(mapping: string[]) {
 }
 
 export function isSameColor(c1: ColorPickerColor, c2: ColorPickerColor) {
-  return (colorPickerColors as Array<keyof ColorPickerColor>).every(
+  return (colorPickerColors as (keyof ColorPickerColor)[]).every(
     c => (c1[c] || 0) === (c2[c] || 0)
   )
 }
@@ -61,9 +61,7 @@ function normalizeColor(color: ColorPickerColor): ColorPickerColor {
 }
 
 function colorToArray(obj: ColorPickerColor | Dictionary<number>) {
-  return (colorPickerColors as Array<keyof ColorPickerColor>).map(
-    c => obj[c] || 0
-  )
+  return (colorPickerColors as (keyof ColorPickerColor)[]).map(c => obj[c] || 0)
 }
 
 export function fixtureStateToColor(

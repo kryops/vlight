@@ -1,6 +1,7 @@
 import { lazy } from 'react'
 
 import { NavItemEntry } from '..'
+
 import { iconSun } from '../../ui/icons'
 
 export const UniversePage = lazy(() =>

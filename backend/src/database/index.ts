@@ -18,6 +18,7 @@ function initEntity<T extends DbEntity>(
   map: Map<IdType, T>,
   fileName: string
 ) {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   const entries: T[] = require('../../../config/' + fileName)
 
   for (const entry of entries) {
