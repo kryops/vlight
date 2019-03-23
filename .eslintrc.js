@@ -7,6 +7,7 @@ module.exports = {
     'prettier/@typescript-eslint',
     'plugin:import/typescript',
     'plugin:prettier/recommended',
+    'prettier/react',
   ],
   parserOptions: {
     ecmaVersion: 2018,
@@ -30,6 +31,7 @@ module.exports = {
         'newlines-between': 'always',
       },
     ],
+    'prettier/prettier': 'warn',
     'react/display-name': 'off',
     'react/prop-types': 'off',
     'react-hooks/rules-of-hooks': 'error',
