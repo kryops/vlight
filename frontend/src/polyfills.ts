@@ -1,1 +1,2 @@
-import '@babel/polyfill'
+// tslint:disable-next-line: no-submodule-imports
+import 'core-js/es'

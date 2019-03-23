@@ -1,5 +1,4 @@
 import React from 'react'
-import { fromError } from 'stacktrace-js'
 
 import { logError } from './log'
 
@@ -27,7 +26,10 @@ export class ErrorBoundary extends React.Component<{}, State> {
 
     let stackTrace = error.stack
     try {
-      stackTrace = (await fromError(error)).map(x => x.toString()).join('\n')
+      const stacktraceJs = await import('stacktrace-js')
+      stackTrace = (await stacktraceJs.fromError(error))
+        .map(x => x.toString())
+        .join('\n')
     } catch {
       // do nothing
     }

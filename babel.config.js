@@ -10,6 +10,7 @@ module.exports = function(api) {
         {
           modules: isTest ? 'commonjs' : false,
           useBuiltIns: 'entry',
+          corejs: 3,
         },
       ],
       '@babel/preset-react',

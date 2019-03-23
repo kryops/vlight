@@ -106,6 +106,9 @@ export const webpackConfiguration = (env: Env = {}) => {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
+      alias: {
+        'core-js': 'core-js3',
+      },
     },
     stats: profile ? 'normal' : 'minimal',
     performance: false,
