@@ -29,7 +29,7 @@ const barCornerLabel = css`
   left: ${baselinePx}px;
   bottom: ${baselinePx / 2}px;
   font-size: ${fontSizePx * 0.65}px;
-  color: ${textShade(1)}
+  color: ${textShade(0)}
   z-index: 2;
 `
 
@@ -49,6 +49,7 @@ export interface Props {
   max?: number
   label?: string
   cornerLabel?: string
+  color?: string
   className?: string
 }
 
@@ -58,11 +59,15 @@ const _Bar: React.SFC<Props> = ({
   value,
   min = 0,
   max = 1,
+  color,
   className,
 }) => {
   const fraction = ensureBetween(getFraction(value, min, max), 0, 1)
   return (
-    <div className={cx(bar, className)}>
+    <div
+      className={cx(bar, className)}
+      style={color ? { borderBottomColor: color } : undefined}
+    >
       <div className={barLabel}>{label}</div>
       {cornerLabel && <div className={barCornerLabel}>{cornerLabel}</div>}
       {fraction > 0 && (

@@ -8,7 +8,7 @@ import { Bar } from '../../ui/controls/bar'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
 
-import { getFixtureAtChannel } from './util'
+import { getFixtureAtChannel, getEffectiveFixtureColor } from './util'
 
 const universePage = css`
   display: flex;
@@ -45,13 +45,21 @@ const _UniversePage: React.SFC = () => {
       <div className={universePage}>
         {universe.map((value, index) => {
           const fixture = fixturesAtIndex[index]
+          const fixtureType = fixture
+            ? fixtureTypes.get(fixture.type)
+            : undefined
 
           const isConnected = fixture && fixture === fixturesAtIndex[index + 1]
 
           const fixtureName =
-            fixture && fixture.channel === index + 1
-              ? fixture.name || fixtureTypes.get(fixture.type)!.name
+            fixture && fixtureType && fixture.channel === index + 1
+              ? fixture.name || fixtureType.name
               : undefined
+
+          const fixtureColor =
+            fixture &&
+            fixtureType &&
+            getEffectiveFixtureColor(fixture, fixtureType, universe)
 
           return (
             <Bar
@@ -60,6 +68,7 @@ const _UniversePage: React.SFC = () => {
               max={255}
               label={(index + 1).toString()}
               cornerLabel={fixtureName}
+              color={fixtureColor}
               className={cx(universeBar, {
                 [universeBar_connected]: isConnected,
               })}
