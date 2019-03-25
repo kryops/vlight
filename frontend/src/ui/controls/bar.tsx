@@ -3,7 +3,13 @@ import { css } from 'linaria'
 import React, { memo } from 'react'
 
 import { ensureBetween, getFraction } from '../../util/number'
-import { baselinePx, iconShade, primaryShade } from '../styles'
+import {
+  baselinePx,
+  iconShade,
+  primaryShade,
+  fontSizePx,
+  textShade,
+} from '../styles'
 
 const bar = css`
   position: relative;
@@ -15,6 +21,15 @@ const bar = css`
 `
 
 const barLabel = css`
+  z-index: 2;
+`
+
+const barCornerLabel = css`
+  position: absolute;
+  left: ${baselinePx}px;
+  bottom: ${baselinePx / 2}px;
+  font-size: ${fontSizePx * 0.65}px;
+  color: ${textShade(1)}
   z-index: 2;
 `
 
@@ -33,11 +48,13 @@ export interface Props {
   min?: number
   max?: number
   label?: string
+  cornerLabel?: string
   className?: string
 }
 
 const _Bar: React.SFC<Props> = ({
   label,
+  cornerLabel,
   value,
   min = 0,
   max = 1,
@@ -47,6 +64,7 @@ const _Bar: React.SFC<Props> = ({
   return (
     <div className={cx(bar, className)}>
       <div className={barLabel}>{label}</div>
+      {cornerLabel && <div className={barCornerLabel}>{cornerLabel}</div>}
       {fraction > 0 && (
         <div
           className={barLevel}

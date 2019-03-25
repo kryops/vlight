@@ -2,6 +2,7 @@ import React, { memo, useMemo } from 'react'
 import { css } from 'linaria'
 import cx from 'classnames'
 
+import { fixtureTypes } from '../../api/masterdata'
 import { useDmxUniverse, useMasterData } from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
@@ -43,16 +44,22 @@ const _UniversePage: React.SFC = () => {
     <>
       <div className={universePage}>
         {universe.map((value, index) => {
-          const isConnected =
-            index < fixturesAtIndex.length - 1 &&
-            fixturesAtIndex[index] &&
-            fixturesAtIndex[index] === fixturesAtIndex[index + 1]
+          const fixture = fixturesAtIndex[index]
+
+          const isConnected = fixture && fixture === fixturesAtIndex[index + 1]
+
+          const fixtureName =
+            fixture && fixture.channel === index + 1
+              ? fixture.name || fixtureTypes.get(fixture.type)!.name
+              : undefined
+
           return (
             <Bar
               key={index}
               value={value}
               max={255}
               label={(index + 1).toString()}
+              cornerLabel={fixtureName}
               className={cx(universeBar, {
                 [universeBar_connected]: isConnected,
               })}
