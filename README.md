@@ -9,6 +9,14 @@
 
 Build tools for native Node.js addons are also needed depending on your platform.
 
+### Docker
+
+You can also build and run this project through Docker (in a Linux container):
+
+```
+> ./docker.sh
+```
+
 ## Getting Started
 
 Install and setup:
