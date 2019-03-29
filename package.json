@@ -17,7 +17,7 @@
     "client:tcp": "ts-node backend/clients/vlight-tcp.ts",
     "client:udp": "ts-node backend/clients/vlight-udp.ts",
     "docker:build": "docker build -t kryops/vlight .",
-    "docker:run": "docker run --privileged -p 8000:8000 -it --init kryops/vlight",
+    "docker:run": "docker run --rm --privileged -p 8000:8000 -v $(pwd)/config:/usr/src/app/config -it --init kryops/vlight",
     "docker": "run-s docker:build docker:run",
     "frontend:analyze": "webpack --config frontend/webpack.config.ts --env.production --env.analyze",
     "lint": "eslint 'frontend/**/*.@(ts|tsx)' 'backend/**/*.ts' && tsc -p ./frontend && tsc -p ./backend",
