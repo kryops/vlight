@@ -12,8 +12,10 @@ COPY . .
 
 RUN apk --no-cache --virtual .gyp add python make g++ \
   && yarn \
+  && yarn --prod --offline --ignore-scripts \
   && yarn cache clean \
-  && apk del .gyp
+  && apk del .gyp \
+  && rm -rf .linaria-cache node_modules/.cache
 
 EXPOSE 8000
 

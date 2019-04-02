@@ -25,6 +25,7 @@ module.exports = {
     '@typescript-eslint/no-object-literal-type-assertion': 'off',
     '@typescript-eslint/no-unused-vars': 'off',
     '@typescript-eslint/no-use-before-define': ['error', { functions: false }],
+    'import/no-extraneous-dependencies': ['error'],
     'import/order': [
       'error',
       {

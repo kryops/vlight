@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+
 import { Express } from 'express'
 import webpack from 'webpack'
 import webpackDevMiddleware from 'webpack-dev-middleware'

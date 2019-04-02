@@ -9,9 +9,12 @@
 assets
 backend/dist
 backend/test
+coverage
+docker-build.sh
+docker-run.sh
 frontend/dist
 frontend/test
-coverage
+jest.config.js
 LICENSE.md
 node_modules
 nodemon.json
