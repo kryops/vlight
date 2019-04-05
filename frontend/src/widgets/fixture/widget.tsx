@@ -31,11 +31,18 @@ const turnedOff = css`
 
 const faderContainer = css`
   display: flex;
-  justify-content: center;
   align-items: stretch;
   overflow-x: auto;
   max-width: 100%;
   padding-bottom: ${baselinePx * 8}px; // horizontal scrolling
+
+  // justify-content: center does not work with overflow
+  & > :first-child {
+    margin-left: auto;
+  }
+  & > :last-child {
+    margin-right: auto;
+  }
 `
 
 interface StatelessProps {

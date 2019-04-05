@@ -4,11 +4,13 @@ import React from 'react'
 
 import { baselinePx, primaryShade } from '../styles'
 
+const widgetMargin = baselinePx
+
 const widget = css`
   flex: 1 1 auto;
-  max-width: 100%;
+  max-width: calc(100% - ${widgetMargin * 2}px);
   border: 1px solid ${primaryShade(2)};
-  margin: ${baselinePx}px;
+  margin: ${widgetMargin}px;
 `
 const headline = css`
   padding: ${baselinePx * 2}px;

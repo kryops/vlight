@@ -17,7 +17,7 @@ import {
   positionToColor,
 } from './util'
 
-const colorPickerWidth = baselinePx * 60
+const colorPickerWidth = baselinePx * 54
 const positionMarkerSize = baselinePx * 6
 const colorPresetMargin = 2
 
@@ -27,6 +27,7 @@ const container = css`
   justify-content: stretch;
   width: ${colorPickerWidth}px;
   margin: ${baselinePx * 1.5}px;
+  flex: 0 0 auto;
 `
 
 const colorPicker = css`
@@ -63,7 +64,7 @@ const colorPreset = css`
   margin-left: ${colorPresetMargin}px;
   padding: 2px;
 
-  $:first-child {
+  &:first-child {
     margin-left: 0;
   }
 `
