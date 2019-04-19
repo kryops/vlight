@@ -56,8 +56,8 @@ export const webpackConfiguration = (env: Env = {}) => {
     module: {
       rules: [
         (!isProduction && {
-          test: /\.js$/,
-          include: /node_modules\/react-dom/,
+          test: /\.jsx?$/,
+          include: /node_modules/,
           loader: 'react-hot-loader/webpack',
         }) as any,
         {
