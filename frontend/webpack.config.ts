@@ -84,15 +84,12 @@ export const webpackConfiguration = (env: Env = {}) => {
           test: /\.linaria\.css$/,
           exclude: /node_modules/,
           use: [
-            !isProduction && {
-              loader: 'css-hot-loader',
-              options: {
-                cssModule: true, // to reload the JS file as well
-                reloadAll: true, // desperate times call for desperate measures
-              },
-            },
             {
               loader: ExtractCssPlugin.loader,
+              options: {
+                hmr: true,
+                reloadAll: true,
+              },
             },
             {
               loader: 'css-loader',

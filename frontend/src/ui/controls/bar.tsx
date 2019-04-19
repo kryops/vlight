@@ -29,7 +29,7 @@ const barCornerLabel = css`
   left: ${baselinePx}px;
   bottom: ${baselinePx / 2}px;
   font-size: ${fontSizePx * 0.65}px;
-  color: ${textShade(0)}
+  color: ${textShade(0)};
   z-index: 2;
 `
 
