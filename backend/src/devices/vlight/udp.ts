@@ -2,7 +2,7 @@ import { createSocket, Socket } from 'dgram'
 
 import { udpMulticastAddress, udpPort, udpUniverseInterval } from '../../config'
 import { getDmxUniverse } from '../../universe'
-import { logTrace } from '../../util/log'
+import { logTrace, logError } from '../../util/log'
 
 import { getBinaryUniverseMessage } from './protocol'
 
@@ -18,7 +18,11 @@ export async function initUdpMulticast() {
     udpSocket.bind(udpPort, () => {
       udpSocket.setBroadcast(true)
       udpSocket.setMulticastTTL(4)
-      udpSocket.addMembership(udpMulticastAddress)
+      try {
+        udpSocket.addMembership(udpMulticastAddress)
+      } catch (e) {
+        logError('Could not bind UDP multicast socket:', e)
+      }
       resolve()
     })
   })
