@@ -10,7 +10,7 @@ import {
 } from '../../config'
 import { onWindows } from '../../env'
 import { getDmxUniverse } from '../../universe'
-import { logTrace, shouldLogTrace } from '../../util/log'
+import { logTrace, shouldLogTrace, logWarn, logInfo } from '../../util/log'
 import { delay } from '../../util/time'
 
 import {
@@ -26,6 +26,11 @@ export interface HIDWithInfo extends HID {
 
 const changedBlocks: Set<number> = new Set<number>()
 export const usbDmxDevices: HIDWithInfo[] = []
+/**
+ * Devices that aren't plugged into power try to connect, but then fail receiving
+ * messages. We ban them, and clear the list periodically to retry
+ */
+export const bannedDevices = new Set<string>()
 
 function flushUsbDmxDevices() {
   if (!usbDmxDevices.length || changedBlocks.size === 0) {
@@ -43,21 +48,42 @@ function flushUsbDmxDevices() {
   changedBlocks.clear()
 }
 
-function flushUniverse(device: HIDWithInfo) {
+function flushUniverse(device: HIDWithInfo): boolean {
   const numberOfBlocks = Math.ceil(universeSize / blockSize)
   for (let block = 0; block < numberOfBlocks; block++) {
-    writeToUsbDmxDevice(device, getChannelBlockMessage(getDmxUniverse(), block))
+    if (
+      !writeToUsbDmxDevice(
+        device,
+        getChannelBlockMessage(getDmxUniverse(), block)
+      )
+    ) {
+      return false
+    }
   }
+  return true
 }
 
 async function initDevice(device: HIDWithInfo) {
   if (onWindows) {
     await delay(100)
   }
-  writeToUsbDmxDevice(device, getModeMessage())
-  flushUniverse(device)
+  const success =
+    writeToUsbDmxDevice(device, getModeMessage()) && flushUniverse(device)
 
-  usbDmxDevices.push(device)
+  if (success) {
+    usbDmxDevices.push(device)
+  } else if (device.info.path) {
+    logWarn(`Adding ${device.info.path} to banned UsbDmx devices`)
+    bannedDevices.add(device.info.path)
+  }
+}
+
+function clearBannedDevices() {
+  if (!bannedDevices.size) return
+
+  logInfo('Clearing banned UsbDmx devices')
+  bannedDevices.clear()
+  connectUsbDmxDevices(initDevice)
 }
 
 export function setChannelChangedForUsbDmxDevices(channel: number) {
@@ -83,6 +109,7 @@ export function initUsbDmxDevices() {
   usbDetection.startMonitoring()
 
   setInterval(flushUsbDmxDevices, devicesFlushInterval)
+  setInterval(clearBannedDevices, 30000)
 
   connectUsbDmxDevices(initDevice)
 }

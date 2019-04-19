@@ -5,7 +5,7 @@ import { onWindows } from '../../env'
 import { removeFromMutableArray } from '../../util/array'
 import { logError, logInfo, logWarn } from '../../util/log'
 
-import { HIDWithInfo, usbDmxDevices } from '.'
+import { HIDWithInfo, usbDmxDevices, bannedDevices } from '.'
 
 function connectWithFallback(deviceInfo: Device) {
   if (deviceInfo.path) {
@@ -30,7 +30,8 @@ export function connectUsbDmxDevices(callback: (device: HIDWithInfo) => void) {
         deviceInfo.vendorId === usbDmxVid &&
         deviceInfo.productId === usbDmxPid &&
         (!deviceInfo.path ||
-          !usbDmxDevices.find(other => other.info.path === deviceInfo.path))
+          (!usbDmxDevices.find(other => other.info.path === deviceInfo.path) &&
+            !bannedDevices.has(deviceInfo.path)))
     )
     .forEach(deviceInfo => {
       try {
@@ -70,7 +71,10 @@ export function disconnectUsbDmxDevices() {
     })
 }
 
-export function writeToUsbDmxDevice(device: HIDWithInfo, message: number[]) {
+export function writeToUsbDmxDevice(
+  device: HIDWithInfo,
+  message: number[]
+): boolean {
   const messageToSend =
     onWindows && message[0] !== 0
       ? [0, ...message] // https://github.com/node-hid/node-hid#prepend-byte-to-hid_write
@@ -82,7 +86,10 @@ export function writeToUsbDmxDevice(device: HIDWithInfo, message: number[]) {
     logError('Error writing to UsbDmx device, disconnecting...', e)
     device.close()
     removeFromMutableArray(usbDmxDevices, device)
+    return false
   }
+
+  return true
 }
 
 process.on('exit', () => {
