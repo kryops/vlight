@@ -1,7 +1,7 @@
 # https://nodejs.org/de/docs/guides/nodejs-docker-webapp/
 # https://docs.docker.com/engine/reference/builder/
 
-FROM node:11-alpine
+FROM node:12-alpine
 
 WORKDIR /usr/src/app
 
@@ -10,7 +10,7 @@ RUN apk --no-cache add linux-headers eudev-dev libusb-dev
 
 COPY . .
 
-RUN apk --no-cache --virtual .gyp add python make g++ \
+RUN apk --no-cache --virtual .gyp add python make g++ git \
   && yarn \
   && yarn --prod --offline --ignore-scripts \
   && yarn cache clean \
