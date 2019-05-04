@@ -4,6 +4,7 @@ import {
   FixtureType,
   IdType,
   MasterData,
+  FixtureGroup,
 } from '@vlight/entities'
 
 /*
@@ -15,14 +16,17 @@ import {
 export interface MasterDataMaps {
   fixtureTypes: Map<IdType, FixtureType>
   fixtures: Map<IdType, Fixture>
+  fixtureGroups: Map<IdType, FixtureGroup>
 }
 
 export const fixtureTypes: Map<IdType, FixtureType> = new Map()
 export const fixtures: Map<IdType, Fixture> = new Map()
+export const fixtureGroups: Map<IdType, FixtureGroup> = new Map()
 
 export const masterDataMaps: MasterDataMaps = {
   fixtureTypes,
   fixtures,
+  fixtureGroups,
 }
 
 function updateMapWithArray<T extends DbEntity>(map: Map<IdType, T>, arr: T[]) {
@@ -35,4 +39,5 @@ function updateMapWithArray<T extends DbEntity>(map: Map<IdType, T>, arr: T[]) {
 export function updateMasterData(masterData: MasterData) {
   updateMapWithArray(fixtureTypes, masterData.fixtureTypes)
   updateMapWithArray(fixtures, masterData.fixtures)
+  updateMapWithArray(fixtureGroups, masterData.fixtureGroups)
 }

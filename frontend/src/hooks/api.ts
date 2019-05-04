@@ -14,6 +14,7 @@ export const useMasterData = (): MasterData => {
     return {
       fixtures: [],
       fixtureTypes: [],
+      fixtureGroups: [],
     }
   }
   return masterData

@@ -11,6 +11,7 @@ import { isDevelopment } from './env'
 import { initChannels } from './universe/channels'
 import { initFixtures } from './universe/fixtures'
 import { logError, logInfo, logWarn } from './util/log'
+import { initFixtureGroups } from './universe/fixture-groups'
 
 sourceMapSupport.install()
 
@@ -46,6 +47,7 @@ async function init() {
     initArtNetServer(),
     initChannels(),
     initFixtures(),
+    initFixtureGroups(),
   ])
 
   return new Promise(resolve =>

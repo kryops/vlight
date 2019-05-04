@@ -13,7 +13,8 @@ import { getUniverseIndex } from '../universe'
 export function getApiStateMessage(
   universe: Buffer,
   channels: Buffer,
-  fixtures: Dictionary<FixtureState>
+  fixtures: Dictionary<FixtureState>,
+  fixtureGroups: Dictionary<FixtureState>
 ): ApiStateMessage {
   return {
     type: 'state',
@@ -21,6 +22,7 @@ export function getApiStateMessage(
     universe: Array.from(universe),
     channels: Array.from(channels),
     fixtures,
+    fixtureGroups,
   }
 }
 

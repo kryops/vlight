@@ -1,49 +1,40 @@
-import { FixtureState, FixtureType, IdType } from '@vlight/entities'
+import { FixtureState, IdType } from '@vlight/entities'
 
 import { addUniverse, createUniverse, setUniverseChannel, Universe } from '..'
 
 import { fixtures, fixtureTypes } from '../../database'
 import { logWarn } from '../../util/log'
 
-import { ChannelMapping, mapFixtureStateToChannels } from './mapping'
+import { mapFixtureStateToChannels, getInitialFixtureState } from './mapping'
 
 let fixtureUniverse: Universe
 
 export const fixtureStates: Map<IdType, FixtureState> = new Map()
 
-function getInitialFixtureState(fixtureType?: FixtureType): FixtureState {
-  const colors = [ChannelMapping.red, ChannelMapping.green, ChannelMapping.blue]
-  if (fixtureType && colors.every(c => fixtureType.mapping.includes(c))) {
-    return {
-      on: false,
-      channels: {
-        m: 255,
-        r: 255,
-        g: 255,
-        b: 255,
-      },
-    }
-  }
-  return {
-    on: false,
-    channels: {
-      m: 255,
-    },
-  }
+export function initFixtures() {
+  fixtureUniverse = createUniverse()
+
+  fixtures.forEach(({ id, type }) => {
+    const fixtureType = fixtureTypes.get(type)
+
+    fixtureStates.set(
+      id,
+      getInitialFixtureState(fixtureType && fixtureType.mapping)
+    )
+  })
+
+  addUniverse(fixtureUniverse)
 }
 
-function updateUniverseForFixture(id: IdType): boolean {
+export function setFixtureState(id: IdType, state: FixtureState): boolean {
   const fixture = fixtures.get(id)
   if (!fixture) {
     logWarn('no fixture found for ID', id)
     return false
   }
-  const fixtureType = fixtureTypes.get(fixture.type)
-  if (!fixtureType) {
-    logWarn('no fixtureType found for', fixture)
-    return false
-  }
-  const state = fixtureStates.get(id) || getInitialFixtureState(fixtureType)
+  fixtureStates.set(id, state)
+
+  const fixtureType = fixtureTypes.get(fixture.type)!
   const channel = fixture.channel
 
   let changed = false
@@ -55,20 +46,4 @@ function updateUniverseForFixture(id: IdType): boolean {
   })
 
   return changed
-}
-
-export function initFixtures() {
-  fixtureUniverse = createUniverse()
-
-  for (const [id, { type }] of fixtures) {
-    fixtureStates.set(id, getInitialFixtureState(fixtureTypes.get(type)))
-  }
-
-  addUniverse(fixtureUniverse)
-}
-
-export function setFixtureState(id: IdType, state: FixtureState): boolean {
-  fixtureStates.set(id, state)
-  updateUniverseForFixture(id)
-  return true
 }

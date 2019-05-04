@@ -1,6 +1,7 @@
 import { Fixture } from '@vlight/entities'
 
 import { arrayRange } from '../util/array'
+import { logWarn } from '../util/log'
 
 import { fixtureTypes } from '.'
 
@@ -19,13 +20,21 @@ function computeChannel(type: string, baseChannel: number, index: number) {
 }
 
 function processFixture(fixture: Fixture): Fixture | Fixture[] {
-  if (!fixture.count || fixture.count === 1) {
+  const { id, type, channel, name, count } = fixture
+
+  const fixtureType = fixtureTypes.get(type)
+  if (!fixtureType) {
+    logWarn(
+      `No fixtureType ${type} found for fixture ${id} / ${name}, skipping...`
+    )
+    return []
+  }
+
+  if (!count || count === 1) {
     return fixture
   }
 
-  const { id, type, channel, name } = fixture
-
-  return arrayRange(1, fixture.count, index => ({
+  return arrayRange(1, count, index => ({
     id: replaceIndex(id, index),
     name: replaceIndex(name, index),
     type,

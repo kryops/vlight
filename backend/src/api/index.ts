@@ -9,6 +9,7 @@ import { setChannel } from '../universe/channels'
 import { setFixtureState } from '../universe/fixtures'
 import { logError, logTrace } from '../util/log'
 import { assertNever } from '../util/typescript'
+import { setFixtureGroupState } from '../universe/fixture-groups'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
 import { broadcastToSockets, initWebSocketServer, sockets } from './websocket'
@@ -47,7 +48,13 @@ export function handleApiMessage(message: ApiInMessage) {
       break
 
     case 'fixture':
-      changed = setFixtureState(message.id, message.state)
+      setFixtureState(message.id, message.state)
+      changed = true // always broadcast
+      break
+
+    case 'fixture-group':
+      setFixtureGroupState(message.id, message.state)
+      changed = true // always broadcast
       break
 
     default:

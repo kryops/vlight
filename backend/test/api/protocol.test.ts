@@ -20,12 +20,18 @@ describe('api/protocol', () => {
     const fixtures = {
       '2': { on: true, channels: { r: 100 } },
     }
-    expect(getApiStateMessage(universe, channels, fixtures)).toEqual({
+    const fixtureGroups = {
+      '2': { on: true, channels: { r: 100 } },
+    }
+    expect(
+      getApiStateMessage(universe, channels, fixtures, fixtureGroups)
+    ).toEqual({
       type: 'state',
       masterData: { foo: 'bar' },
       universe: Array.from(universe),
       channels: Array.from(channels),
       fixtures,
+      fixtureGroups,
     })
   })
 

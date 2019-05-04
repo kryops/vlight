@@ -30,3 +30,24 @@ export function mapFixtureStateToChannels(
       : Math.round(rawValue * (masterChannelValue / 255))
   })
 }
+
+export function getInitialFixtureState(mapping?: string[]): FixtureState {
+  const colors = [ChannelMapping.red, ChannelMapping.green, ChannelMapping.blue]
+  if (mapping && colors.every(c => mapping.includes(c))) {
+    return {
+      on: false,
+      channels: {
+        m: 255,
+        r: 255,
+        g: 255,
+        b: 255,
+      },
+    }
+  }
+  return {
+    on: false,
+    channels: {
+      m: 255,
+    },
+  }
+}

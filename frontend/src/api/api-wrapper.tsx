@@ -18,6 +18,7 @@ export const ApiWrapper: React.SFC = ({ children }) => {
     universe: undefined,
     channels: undefined,
     fixtures: {},
+    fixtureGroups: {},
   })
 
   const connecting = useWebSocket<ApiOutMessage>(messages => {

@@ -12,6 +12,7 @@ export interface ApiState {
   universe: number[] | undefined
   channels: number[] | undefined
   fixtures: Dictionary<FixtureState>
+  fixtureGroups: Dictionary<FixtureState>
 }
 
 function processChannelDeltaMap(
@@ -32,6 +33,7 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
       state.universe = message.universe
       state.channels = message.channels
       state.fixtures = message.fixtures
+      state.fixtureGroups = message.fixtureGroups
       updateMasterData(message.masterData)
       break
 
@@ -55,6 +57,13 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
     case 'fixture':
       state.fixtures = {
         ...state.fixtures,
+        [message.id]: message.state,
+      }
+      break
+
+    case 'fixture-group':
+      state.fixtureGroups = {
+        ...state.fixtureGroups,
         [message.id]: message.state,
       }
       break

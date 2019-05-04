@@ -4,6 +4,7 @@ import {
   FixtureType,
   IdType,
   MasterData,
+  FixtureGroup,
 } from '@vlight/entities'
 
 import { processFixtures } from './fixtures'
@@ -15,7 +16,7 @@ export const masterData: MasterData = {
 }
 export const fixtureTypes: Map<IdType, FixtureType> = new Map()
 export const fixtures: Map<IdType, Fixture> = new Map()
-export const fixtureGroups: Map<IdType, Fixture> = new Map()
+export const fixtureGroups: Map<IdType, FixtureGroup> = new Map()
 
 const masterDataToMaps = {
   fixtureTypes,

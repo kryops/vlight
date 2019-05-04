@@ -15,9 +15,19 @@ export interface ApiFixtureStateMessage {
   state: FixtureState
 }
 
+/** Change the state of a fixture group */
+export interface ApiFixtureGroupStateMessage {
+  type: 'fixture-group'
+  id: IdType
+  state: FixtureState
+}
+
 // Incoming messages
 
-export type ApiInMessage = ApiChannelMessage | ApiFixtureStateMessage
+export type ApiInMessage =
+  | ApiChannelMessage
+  | ApiFixtureStateMessage
+  | ApiFixtureGroupStateMessage
 
 // Outgoing messages
 
@@ -31,6 +41,7 @@ export interface ApiStateMessage {
   universe: number[]
   channels: number[]
   fixtures: Dictionary<FixtureState>
+  fixtureGroups: Dictionary<FixtureState>
 }
 
 export interface ApiMasterDataMessage {
@@ -57,3 +68,4 @@ export type ApiOutMessage =
   | ApiUniverseDeltaMessage
   | ApiChannelMessage
   | ApiFixtureStateMessage
+  | ApiFixtureGroupStateMessage

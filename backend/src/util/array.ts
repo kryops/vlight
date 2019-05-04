@@ -23,11 +23,18 @@ export function arrayRange<T>(
   max: number,
   cb: (index: number) => T
 ): T[] {
-  const entries: T[] = new Array(max - min + 1)
-
+  const entries: T[] = []
   for (let index = min; index <= max; index++) {
     entries.push(cb(index))
   }
 
   return entries
 }
+
+export function arrayUnique<T>(arr: T[]): T[] {
+  return arr.filter((el, index) => arr.indexOf(el) === index)
+}
+
+export const boolFilter: <T>(
+  x: T | null | undefined | false | '' | 0
+) => x is T = Boolean as any

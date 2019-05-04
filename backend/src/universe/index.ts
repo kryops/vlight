@@ -104,12 +104,16 @@ export function createUniverse(): Universe {
 
 export function addUniverse(universe: Universe) {
   addToMutableArray(universes, universe)
-  universe.forEach((value, index) => computeDmxChannel(index, value, 0))
+  if (universe.some(x => x !== 0)) {
+    universe.forEach((value, index) => computeDmxChannel(index, value, 0))
+  }
 }
 
 export function removeUniverse(universe: Universe) {
   removeFromMutableArray(universes, universe)
-  universe.forEach((value, index) => computeDmxChannel(index, 0, value))
+  if (universe.some(x => x !== 0)) {
+    universe.forEach((value, index) => computeDmxChannel(index, 0, value))
+  }
 }
 
 export function getUniverseIndex(channel: number) {
