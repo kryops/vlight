@@ -20,9 +20,15 @@ export interface Fixture extends DbEntity {
   count?: number
 }
 
+export interface FixtureGroup extends DbEntity {
+  name: string
+  fixtures: string[]
+}
+
 export interface MasterData {
   fixtureTypes: FixtureType[]
   fixtures: Fixture[]
+  fixtureGroups: FixtureGroup[]
 }
 
 export interface FixtureState {

@@ -11,13 +11,16 @@ import { processFixtures } from './fixtures'
 export const masterData: MasterData = {
   fixtureTypes: [],
   fixtures: [],
+  fixtureGroups: [],
 }
 export const fixtureTypes: Map<IdType, FixtureType> = new Map()
 export const fixtures: Map<IdType, Fixture> = new Map()
+export const fixtureGroups: Map<IdType, Fixture> = new Map()
 
 const masterDataToMaps = {
   fixtureTypes,
   fixtures,
+  fixtureGroups,
 }
 
 function initEntity<T extends DbEntity>(
@@ -49,4 +52,5 @@ export async function initDatabase() {
   initEntity('fixtureTypes', 'fixture-types')
   // depends on fixtureTypes
   initEntity('fixtures', 'fixtures', processFixtures)
+  initEntity('fixtureGroups', 'fixture-groups')
 }
