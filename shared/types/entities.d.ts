@@ -17,6 +17,7 @@ export interface Fixture extends DbEntity {
   type: IdType
   channel: number
   name?: string
+  count?: number
 }
 
 export interface MasterData {

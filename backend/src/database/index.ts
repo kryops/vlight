@@ -6,28 +6,47 @@ import {
   MasterData,
 } from '@vlight/entities'
 
-export const fixtureTypes: Map<IdType, FixtureType> = new Map()
-export const fixtures: Map<IdType, Fixture> = new Map()
+import { processFixtures } from './fixtures'
+
 export const masterData: MasterData = {
   fixtureTypes: [],
   fixtures: [],
 }
+export const fixtureTypes: Map<IdType, FixtureType> = new Map()
+export const fixtures: Map<IdType, Fixture> = new Map()
+
+const masterDataToMaps = {
+  fixtureTypes,
+  fixtures,
+}
 
 function initEntity<T extends DbEntity>(
-  arr: T[],
-  map: Map<IdType, T>,
-  fileName: string
+  type: keyof MasterData,
+  fileName: string,
+  preprocessor?: (entries: T[]) => T[]
 ) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const entries: T[] = require('../../../config/' + fileName)
+  const rawEntries: T[] = require('../../../config/' + fileName)
+
+  const entries = preprocessor ? preprocessor(rawEntries) : rawEntries
+
+  fillEntity(type, entries as any)
+}
+
+export function fillEntity<T extends keyof MasterData>(
+  type: T,
+  entries: MasterData[T]
+) {
+  masterData[type] = entries
+  const map = masterDataToMaps[type]
 
   for (const entry of entries) {
-    arr.push(entry)
-    map.set(entry.id, entry)
+    map.set(entry.id, entry as any)
   }
 }
 
 export async function initDatabase() {
-  initEntity(masterData.fixtureTypes, fixtureTypes, 'fixture-types')
-  initEntity(masterData.fixtures, fixtures, 'fixtures')
+  initEntity('fixtureTypes', 'fixture-types')
+  // depends on fixtureTypes
+  initEntity('fixtures', 'fixtures', processFixtures)
 }

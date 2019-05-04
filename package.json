@@ -6,6 +6,9 @@
   "author": "Michael Strobel <michael@kryops.de>",
   "license": "MIT",
   "private": true,
+  "engines": {
+    "node": ">=11.0.0"
+  },
   "scripts": {
     "all": "yarn lint && yarn test && yarn build",
     "clean": "rimraf backend/dist frontend/dist node_modules/.cache .linaria-cache",

@@ -17,3 +17,17 @@ export function addToMutableArray<T>(arr: T[], el: T) {
   }
   arr.push(el)
 }
+
+export function arrayRange<T>(
+  min: number,
+  max: number,
+  cb: (index: number) => T
+): T[] {
+  const entries: T[] = new Array(max - min + 1)
+
+  for (let index = min; index <= max; index++) {
+    entries.push(cb(index))
+  }
+
+  return entries
+}
