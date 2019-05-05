@@ -22,9 +22,6 @@ interface Env {
   profile?: any
 }
 
-// sass-loader workaround
-process.env.UV_THREADPOOL_SIZE = '20'
-
 // linaria CSS options
 stylis.set({ prefix: false })
 
