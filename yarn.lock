@@ -7009,9 +7009,10 @@ node-gyp@^3.8.0:
     tar "^2.0.0"
     which "1"
 
-"node-hid@https://github.com/kryops/node-hid#fe0eb09f5208b3ff049873d966645cd1f745b4aa":
+node-hid@^0.7.8:
   version "0.7.8"
-  resolved "https://github.com/kryops/node-hid#fe0eb09f5208b3ff049873d966645cd1f745b4aa"
+  resolved "https://registry.yarnpkg.com/node-hid/-/node-hid-0.7.8.tgz#30d9bf0c79c912f39958ba139a9498f1693b3931"
+  integrity sha512-79Z9hw/pqIDp0kxvb353ivGgslo4i0hYQTcCqfRFxIJSO2gF9VtPla5uQY/9jTcDlON5O5YaqxbdH+8bs+m+1Q==
   dependencies:
     bindings "^1.5.0"
     nan "^2.13.2"
