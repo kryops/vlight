@@ -70,7 +70,7 @@ export function setUniverseChannel(
   universe: Buffer,
   channel: number,
   value: number
-) {
+): boolean {
   assertValidChannel(channel)
   const index = getUniverseIndex(channel)
   const oldValue = universe[index]
@@ -80,6 +80,8 @@ export function setUniverseChannel(
   }
 
   universe[index] = value
+
+  if (!universes.includes(universe)) return true
 
   const changedDmx = computeDmxChannel(channel, value, oldValue)
 
