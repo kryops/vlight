@@ -27,7 +27,7 @@ function c<T extends keyof VLightConfiguration>(
   key: T,
   defaultValue: VLightConfiguration[T]
 ): VLightConfiguration[T] {
-  const userValue = userConfig[key]
+  const userValue = userConfig[key] as VLightConfiguration[T] | undefined
   return userValue !== undefined ? userValue! : defaultValue
 }
 
