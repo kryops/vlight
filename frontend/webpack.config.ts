@@ -67,9 +67,7 @@ export const webpackConfiguration = (env: Env = {}) => {
                 cacheDirectory: true,
               },
             },
-            'thread-loader',
             {
-              // TODO this is pretty slow - can we reduce its impact?
               loader: 'linaria/loader',
               options: {
                 sourceMap: true,
