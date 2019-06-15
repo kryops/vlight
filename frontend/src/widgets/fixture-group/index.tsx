@@ -1,8 +1,8 @@
 import { FixtureGroup } from '@vlight/entities'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { fixtureTypes, fixtures } from '../../api/masterdata'
-import { useAppState } from '../../hooks/api'
+import { useAppState, useMasterData } from '../../hooks/api'
 import { isTruthy, isUnique } from '../../util/validation'
 import { flat } from '../../util/array'
 
@@ -14,10 +14,8 @@ export interface Props {
 
 export const FixtureGroupWidget: React.SFC<Props> = ({ group }) => {
   const appState = useAppState()
+  const masterData = useMasterData()
   const groupState = appState.fixtureGroups[group.id]
-  if (!groupState) {
-    return null
-  }
 
   const groupFixtures = group.fixtures
     .map(id => fixtures.get(id))
@@ -26,9 +24,15 @@ export const FixtureGroupWidget: React.SFC<Props> = ({ group }) => {
     .map(({ type }) => fixtureTypes.get(type))
     .filter(isTruthy)
     .filter(isUnique)
-  const groupMapping = flat(
-    groupFixtureTypes.map(({ mapping }) => mapping)
-  ).filter(isUnique)
+  const groupMapping = useMemo(
+    () =>
+      flat(groupFixtureTypes.map(({ mapping }) => mapping)).filter(isUnique),
+    [group, masterData] // eslint-disable-line
+  )
+
+  if (!groupState) {
+    return null
+  }
 
   return (
     <StatelessFixtureGroupWidget
