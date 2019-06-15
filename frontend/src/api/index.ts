@@ -4,7 +4,11 @@ import { FixtureState, IdType } from '@vlight/entities'
 import { logTrace, logWarn } from '../util/log'
 
 import { updateFixtureState } from './fixture'
-import { getApiChannelMessage, getApiFixtureStateMessage } from './protocol'
+import {
+  getApiChannelMessage,
+  getApiFixtureStateMessage,
+  getApiFixtureGroupStateMessage,
+} from './protocol'
 
 let socket: WebSocket | undefined
 
@@ -33,6 +37,10 @@ export function setFixtureState(id: IdType, state: FixtureState) {
   sendApiMessage(getApiFixtureStateMessage(id, state))
 }
 
+export function setFixtureGroupState(id: IdType, state: FixtureState) {
+  sendApiMessage(getApiFixtureGroupStateMessage(id, state))
+}
+
 export function changeFixtureState(
   id: IdType,
   oldState: FixtureState,
@@ -40,5 +48,15 @@ export function changeFixtureState(
 ) {
   sendApiMessage(
     getApiFixtureStateMessage(id, updateFixtureState(oldState, newState))
+  )
+}
+
+export function changeFixtureGroupState(
+  id: IdType,
+  oldState: FixtureState,
+  newState: Partial<FixtureState>
+) {
+  sendApiMessage(
+    getApiFixtureGroupStateMessage(id, updateFixtureState(oldState, newState))
   )
 }

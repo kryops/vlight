@@ -1,7 +1,8 @@
+import { universePageNavItem, universePageRoute } from './universe'
 import { channelsPageNavItem } from './channels'
 import { fixturesPageNavItem } from './fixtures'
+import { fixtureGroupsPageNavItem } from './fixture-groups'
 import { testPageNavItem } from './test'
-import { universePageNavItem, universePageRoute } from './universe'
 
 export interface NavItemEntry {
   route: string
@@ -14,6 +15,7 @@ export const mainNavigationItems: NavItemEntry[] = [
   universePageNavItem,
   channelsPageNavItem,
   fixturesPageNavItem,
+  fixtureGroupsPageNavItem,
   testPageNavItem,
 ]
 

@@ -27,8 +27,12 @@ export const ApiWrapper: React.SFC = ({ children }) => {
   })
 
   const appState = useMemo<AppState>(
-    () => ({ channels: apiState.channels || [], fixtures: apiState.fixtures }),
-    [apiState.channels, apiState.fixtures]
+    () => ({
+      channels: apiState.channels || [],
+      fixtures: apiState.fixtures,
+      fixtureGroups: apiState.fixtureGroups,
+    }),
+    [apiState.channels, apiState.fixtures, apiState.fixtureGroups]
   )
 
   if (connecting || apiState.masterData === undefined) {
