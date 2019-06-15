@@ -1,5 +1,7 @@
-import React, { memo } from 'react'
+import React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
+
+import { memoInProduction } from '../util/development'
 
 import { entryRoute, mainNavigationItems } from '.'
 
@@ -12,4 +14,4 @@ const _RoutesOutlet: React.SFC = () => (
   </Switch>
 )
 
-export const RoutesOutlet = memo(_RoutesOutlet)
+export const RoutesOutlet = memoInProduction(_RoutesOutlet)

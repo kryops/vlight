@@ -52,11 +52,6 @@ export const webpackConfiguration = (env: Env = {}) => {
     },
     module: {
       rules: [
-        (!isProduction && {
-          test: /\.jsx?$/,
-          include: /node_modules/,
-          loader: 'react-hot-loader/webpack',
-        }) as any,
         {
           test: /\.tsx?$/,
           exclude: /node_modules/,
@@ -99,6 +94,11 @@ export const webpackConfiguration = (env: Env = {}) => {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
+      alias: isProduction
+        ? {}
+        : {
+            'react-dom': '@hot-loader/react-dom',
+          },
     },
     stats: profile ? 'normal' : 'minimal',
     performance: false,

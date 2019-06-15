@@ -5,6 +5,7 @@ import { ensureBetween, roundToStep } from '../../util/number'
 import { getTouchEventOffset } from '../../util/touch'
 import { Touchable } from '../helpers/touchable'
 import { baselinePx, iconShade, primaryShade } from '../styles'
+import { memoInProduction } from '../../util/development'
 
 const faderWidth = baselinePx * 12
 const faderHeight = baselinePx * 60
@@ -96,7 +97,7 @@ const _Fader: React.SFC<Props> = ({
   )
 }
 
-export const Fader = memo(_Fader)
+export const Fader = memoInProduction(_Fader)
 
 /**
  * Use this variant in situations where you render lots of faders

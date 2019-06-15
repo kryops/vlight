@@ -1,9 +1,10 @@
 import { css } from 'linaria'
-import React, { memo } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { Icon } from '../icons/icon'
 import { baselinePx, iconShade, primaryShade } from '../styles'
+import { memoInProduction } from '../../util/development'
 
 const iconPath = css``
 
@@ -53,4 +54,4 @@ const _NavItem: React.SFC<Props> = ({ to, icon, label, showLabel }) => (
   </NavLink>
 )
 
-export const NavItem = memo(_NavItem)
+export const NavItem = memoInProduction(_NavItem)

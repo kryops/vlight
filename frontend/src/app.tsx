@@ -1,5 +1,5 @@
-import React, { StrictMode } from 'react'
 import { hot } from 'react-hot-loader/root'
+import React, { StrictMode } from 'react'
 
 import { ApiWrapper } from './api/api-wrapper'
 import './ui/global-styles'

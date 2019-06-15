@@ -1,6 +1,6 @@
 import { Fixture, FixtureState, FixtureType } from '@vlight/entities'
 import { css } from 'linaria'
-import React, { memo } from 'react'
+import React from 'react'
 
 import { changeFixtureState } from '../../api'
 import { ChannelMapping } from '../../api/enums'
@@ -12,6 +12,7 @@ import {
 } from '../../ui/controls/colorpicker/util'
 import { Fader } from '../../ui/controls/fader'
 import { baselinePx } from '../../ui/styles'
+import { memoInProduction } from '../../util/development'
 
 export function getFixtureName(
   fixture: Fixture,
@@ -121,4 +122,4 @@ const _StatelessFixtureWidget: React.SFC<StatelessProps> = ({
   )
 }
 
-export const StatelessFixtureWidget = memo(_StatelessFixtureWidget)
+export const StatelessFixtureWidget = memoInProduction(_StatelessFixtureWidget)

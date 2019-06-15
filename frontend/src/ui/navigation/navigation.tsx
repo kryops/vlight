@@ -1,9 +1,10 @@
 import cx from 'classnames'
 import { css } from 'linaria'
-import React, { memo } from 'react'
+import React from 'react'
 
 import { mainNavigationItems } from '../../pages'
 import { primaryShade, zNavigation } from '../styles'
+import { memoInProduction } from '../../util/development'
 
 import { NavItem } from './nav-item'
 
@@ -42,4 +43,4 @@ const _Navigation: React.SFC<Props> = ({ showLabels, floating }) => (
   </div>
 )
 
-export const Navigation = memo(_Navigation)
+export const Navigation = memoInProduction(_Navigation)

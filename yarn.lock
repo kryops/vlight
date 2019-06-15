@@ -790,6 +790,16 @@
   resolved "https://registry.yarnpkg.com/@emotion/memoize/-/memoize-0.7.1.tgz#e93c13942592cf5ef01aa8297444dc192beee52f"
   integrity sha512-Qv4LTqO11jepd5Qmlp3M1YEjBumoTHcHFdgPTQ+sFlIL5myi/7xu/POwP7IRu6odBdmLXdtIs1D6TuW6kbwbbg==
 
+"@hot-loader/react-dom@^16.8.6":
+  version "16.8.6"
+  resolved "https://registry.yarnpkg.com/@hot-loader/react-dom/-/react-dom-16.8.6.tgz#7923ba27db1563a7cc48d4e0b2879a140df461ea"
+  integrity sha512-+JHIYh33FVglJYZAUtRjfT5qZoT2mueJGNzU5weS2CVw26BgbxGKSujlJhO85BaRbg8sqNWyW1hYBILgK3ZCgA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+    scheduler "^0.13.6"
+
 "@jest/console@^24.7.1":
   version "24.7.1"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.7.1.tgz#32a9e42535a97aedfe037e725bd67e954b459545"
@@ -2844,6 +2854,11 @@ core-js@^3.0.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.1.3.tgz#95700bca5f248f5f78c0ec63e784eca663ec4138"
   integrity sha512-PWZ+ZfuaKf178BIAg+CRsljwjIMRV8MY00CbZczkR6Zk5LfkSkjGoaab3+bqRQWVITNZxQB7TFYz+CFcyuamvA==
 
+core-js@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.1.4.tgz#3a2837fc48e582e1ae25907afcd6cf03b0cc7a07"
+  integrity sha512-YNZN8lt82XIMLnLirj9MhKDFZHalwzzrL9YLt6eb0T5D0EDl4IQ90IGkua8mHbnxNrkj1d8hbdizMc0Qmg1WnQ==
+
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
@@ -3639,10 +3654,10 @@ escodegen@^1.9.1:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-prettier@^4.2.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-4.3.0.tgz#c55c1fcac8ce4518aeb77906984e134d9eb5a4f0"
-  integrity sha512-sZwhSTHVVz78+kYD3t5pCWSYEdVSBR0PXnwjDRsUs8ytIrK8PLXw+6FKp8r3Z7rx4ZszdetWlXYKOHoUrrwPlA==
+eslint-config-prettier@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-5.0.0.tgz#f7a94b2b8ae7cbf25842c36fa96c6d32cd0a697c"
+  integrity sha512-c17Aqiz5e8LEqoc/QPmYnaxQFAHTx2KlCZBPxXXjEMmNchOLnV/7j0HoPZuC+rL/tDC9bazUYOKJW9bOhftI/w==
   dependencies:
     get-stdin "^6.0.0"
 
@@ -8220,10 +8235,10 @@ react-dom@^16.8.6:
     prop-types "^15.6.2"
     scheduler "^0.13.6"
 
-react-hot-loader@^4.8.4:
-  version "4.11.0"
-  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.11.0.tgz#6a453ae4a2c96a2bd780dd9a763e07e4df535fb7"
-  integrity sha512-EXwYmn+7bU9GgidYjx36IfX1t9/mZlKN8TuGXW6C4J2fEL6cKh4QUtpY/toZe9QBoKMot7UfksFKzl7Wq2qJ+w==
+react-hot-loader@^4.11.1:
+  version "4.11.1"
+  resolved "https://registry.yarnpkg.com/react-hot-loader/-/react-hot-loader-4.11.1.tgz#2cabbd0f1c8a44c28837b86d6ce28521e6d9a8ac"
+  integrity sha512-HAC0UedYzM3mD+ZaQHesntFO0yi2ftOV4ZMMRTj43E4GvW5sQqYTPvur+6J7EaH3MDr/RqjDKXyCqKepV8+y7w==
   dependencies:
     fast-levenshtein "^2.0.6"
     global "^4.3.0"
@@ -9912,10 +9927,10 @@ tryer@^1.0.0:
   resolved "https://registry.yarnpkg.com/tryer/-/tryer-1.0.1.tgz#f2c85406800b9b0f74c9f7465b81eaad241252f8"
   integrity sha512-c3zayb8/kWWpycWYg87P71E1S1ZL6b6IJxfb5fvsUgsf0S2MVGaDhDXXjDMpdCpfWXqptc+4mXwmiy1ypXqRAA==
 
-ts-node@^8.1.0:
-  version "8.2.0"
-  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.2.0.tgz#4a89754b00560bb24cd54526e1685fa38c45f240"
-  integrity sha512-m8XQwUurkbYqXrKqr3WHCW310utRNvV5OnRVeISeea7LoCWVcdfeB/Ntl8JYWFh+WRoUAdBgESrzKochQt7sMw==
+ts-node@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-8.3.0.tgz#e4059618411371924a1fb5f3b125915f324efb57"
+  integrity sha512-dyNS/RqyVTDcmNM4NIBAeDMpsAdaQ+ojdf0GOLqE6nwJOgzEkdRNzJywhDfwnuvB10oa6NLVG1rUJQCpRN7qoQ==
   dependencies:
     arg "^4.1.0"
     diff "^4.0.1"

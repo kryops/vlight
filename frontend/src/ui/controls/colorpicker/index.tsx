@@ -5,6 +5,7 @@ import React, { memo, useRef } from 'react'
 import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
 import { Touchable } from '../../helpers/touchable'
 import { baselinePx, iconShade, primaryShade } from '../../styles'
+import { memoInProduction } from '../../../util/development'
 
 import { ColorPickerBackground } from './background'
 import {
@@ -146,4 +147,4 @@ const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
   )
 }
 
-export const ColorPicker = memo(_ColorPicker)
+export const ColorPicker = memoInProduction(_ColorPicker)

@@ -1,6 +1,7 @@
-import React, { memo } from 'react'
+import React from 'react'
 
 import { useMasterData } from '../../hooks/api'
+import { memoInProduction } from '../../util/development'
 
 const _TestPage: React.SFC = () => {
   const masterData = useMasterData()
@@ -14,4 +15,4 @@ const _TestPage: React.SFC = () => {
   )
 }
 
-export default memo(_TestPage)
+export default memoInProduction(_TestPage)

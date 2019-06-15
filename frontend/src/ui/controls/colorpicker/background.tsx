@@ -1,6 +1,8 @@
-import React, { memo } from 'react'
+import React from 'react'
 
-export const ColorPickerBackground = memo(() => (
+import { memoInProduction } from '../../../util/development'
+
+export const ColorPickerBackground = memoInProduction(() => (
   <svg
     viewBox="0 0 256 256"
     height="100%"

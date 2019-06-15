@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import { css } from 'linaria'
-import React, { memo } from 'react'
+import React from 'react'
 
 import { ensureBetween, getFraction } from '../../util/number'
 import {
@@ -10,6 +10,7 @@ import {
   fontSizePx,
   textShade,
 } from '../styles'
+import { memoInProduction } from '../../util/development'
 
 const bar = css`
   position: relative;
@@ -87,4 +88,4 @@ const _Bar: React.SFC<Props> = ({
   )
 }
 
-export const Bar = memo(_Bar)
+export const Bar = memoInProduction(_Bar)

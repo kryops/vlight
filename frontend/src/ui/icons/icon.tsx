@@ -1,9 +1,10 @@
 import cx from 'classnames'
 import { css } from 'linaria'
-import React, { memo } from 'react'
+import React from 'react'
 
 import { ColorShade } from '../../types'
 import { baselinePx, iconShade } from '../styles'
+import { memoInProduction } from '../../util/development'
 
 const iconSize = baselinePx * 6
 
@@ -51,4 +52,4 @@ const _Icon: React.SFC<Props> = ({
   </svg>
 )
 
-export const Icon = memo(_Icon)
+export const Icon = memoInProduction(_Icon)

@@ -1,1 +1,2 @@
-export const socketProcessingInterval = 50 // = 20 fps
+export const socketProcessingInterval =
+  process.env.NODE_ENV === 'production' ? 50 : 100 // = 10/20 fps

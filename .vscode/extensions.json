@@ -2,7 +2,7 @@
   "recommendations": [
     "EditorConfig.EditorConfig",
     "esbenp.prettier-vscode",
-    "ms-vscode.vscode-typescript-tslint-plugin",
+    "dbaeumer.vscode-eslint",
     "msjsdiag.debugger-for-chrome",
     "christian-kohler.npm-intellisense",
     "mgmcdermott.vscode-language-babel",

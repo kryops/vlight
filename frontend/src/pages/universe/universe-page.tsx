@@ -7,6 +7,7 @@ import { useDmxUniverse, useMasterData } from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
+import { memoInProduction } from '../../util/development'
 
 import { getFixtureAtChannel, getEffectiveFixtureColor } from './util'
 
@@ -80,4 +81,4 @@ const _UniversePage: React.SFC = () => {
   )
 }
 
-export default memo(_UniversePage)
+export default memoInProduction(_UniversePage)

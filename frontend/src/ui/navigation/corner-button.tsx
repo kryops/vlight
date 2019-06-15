@@ -1,9 +1,10 @@
 import { css } from 'linaria'
-import React, { memo } from 'react'
+import React from 'react'
 
 import { ColorShade } from '../../types'
 import { Icon } from '../icons/icon'
 import { baselinePx, zNavigation } from '../styles'
+import { memoInProduction } from '../../util/development'
 
 const cornerButton = css`
   position: absolute;
@@ -27,4 +28,4 @@ const _CornerButton: React.SFC<Props> = ({ icon, tooltip, shade, onClick }) => (
   </div>
 )
 
-export const CornerButton = memo(_CornerButton)
+export const CornerButton = memoInProduction(_CornerButton)

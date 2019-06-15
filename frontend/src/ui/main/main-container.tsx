@@ -8,6 +8,7 @@ import { iconClose, iconMenu } from '../icons'
 import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
 import { backgroundColor, baselinePx, zNavigation } from '../styles'
+import { memoInProduction } from '../../util/development'
 
 import { LoadingScreen } from './loading-screen'
 
@@ -76,4 +77,4 @@ const _MainContainer: React.SFC = () => {
   )
 }
 
-export const MainContainer = memo(_MainContainer)
+export const MainContainer = memoInProduction(_MainContainer)

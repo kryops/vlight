@@ -1,10 +1,11 @@
 import { css } from 'linaria'
-import React, { memo } from 'react'
+import React from 'react'
 
 import { useMasterData } from '../../hooks/api'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
 import { FixtureWidget } from '../../widgets/fixture'
+import { memoInProduction } from '../../util/development'
 
 const fixturesPage = css`
   display: flex;
@@ -28,4 +29,4 @@ const _FixturesPage: React.SFC = () => {
   )
 }
 
-export default memo(_FixturesPage)
+export default memoInProduction(_FixturesPage)

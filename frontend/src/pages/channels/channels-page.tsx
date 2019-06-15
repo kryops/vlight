@@ -1,5 +1,5 @@
 import { css } from 'linaria'
-import React, { memo } from 'react'
+import React from 'react'
 
 import { setChannel } from '../../api'
 import { getUniverseIndex } from '../../api/util'
@@ -8,6 +8,7 @@ import { PureDangerousFader } from '../../ui/controls/fader'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
 import { createRangeArray } from '../../util/array'
+import { memoInProduction } from '../../util/development'
 
 const channelsPage = css`
   display: flex;
@@ -40,4 +41,4 @@ const _ChannelsPage: React.SFC = () => {
   )
 }
 
-export default memo(_ChannelsPage)
+export default memoInProduction(_ChannelsPage)

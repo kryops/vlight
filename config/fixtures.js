@@ -19,7 +19,7 @@ const fixtures = [
     id: 'rgb#',
     name: 'RGB Multi #',
     type: 'rgb',
-    channel: 10,
+    channel: 11,
     count: 4,
   },
 ]
