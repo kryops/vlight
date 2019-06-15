@@ -1,8 +1,8 @@
 import { IdType, FixtureState, FixtureGroup, Fixture } from '@vlight/entities'
 
 import { fixtureGroups, fixtures, fixtureTypes } from '../database'
-import { boolFilter, arrayUnique } from '../util/array'
 import { logWarn } from '../util/log'
+import { isUnique, isTruthy } from '../util/validation'
 
 import {
   getInitialFixtureState,
@@ -21,18 +21,16 @@ const universes: Map<IdType, Universe> = new Map()
 export const fixtureGroupStates: Map<IdType, FixtureState> = new Map()
 
 function getAllFixturesOfGroup(fixtureGroup: FixtureGroup): Fixture[] {
-  return fixtureGroup.fixtures.map(id => fixtures.get(id)).filter(boolFilter)
+  return fixtureGroup.fixtures.map(id => fixtures.get(id)).filter(isTruthy)
 }
 
 function getFixtureGroupMapping(fixtureGroup: FixtureGroup) {
-  return arrayUnique(
-    getAllFixturesOfGroup(fixtureGroup)
-      .map(fixture => {
-        const fixtureType = fixtureTypes.get(fixture.type)
-        return fixtureType ? fixtureType.mapping : []
-      })
-      .flat()
-  )
+  return getAllFixturesOfGroup(fixtureGroup)
+    .flatMap(fixture => {
+      const fixtureType = fixtureTypes.get(fixture.type)
+      return fixtureType ? fixtureType.mapping : []
+    })
+    .filter(isUnique)
 }
 
 function initFixtureGroup(fixtureGroup: FixtureGroup) {

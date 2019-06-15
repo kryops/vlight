@@ -2,8 +2,6 @@ import {
   addToMutableArray,
   removeFromMutableArray,
   arrayRange,
-  arrayUnique,
-  boolFilter,
 } from '../../src/util/array'
 
 describe('util/array', () => {
@@ -31,20 +29,5 @@ describe('util/array', () => {
 
   it('arrayRange', () => {
     expect(arrayRange(1, 3, x => x + 1)).toEqual([2, 3, 4])
-  })
-
-  it('arrayUnique', () => {
-    expect(arrayUnique([1, 2, 3, 2, 3, 4, 5, 3])).toEqual([1, 2, 3, 4, 5])
-  })
-
-  it('boolFilter', () => {
-    expect(boolFilter(true)).toBe(true)
-    expect(boolFilter('x')).toBe(true)
-    expect(boolFilter(1)).toBe(true)
-    expect(boolFilter(false)).toBe(false)
-    expect(boolFilter(undefined)).toBe(false)
-    expect(boolFilter(null)).toBe(false)
-    expect(boolFilter('')).toBe(false)
-    expect(boolFilter(0)).toBe(false)
   })
 })

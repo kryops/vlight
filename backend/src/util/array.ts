@@ -30,11 +30,3 @@ export function arrayRange<T>(
 
   return entries
 }
-
-export function arrayUnique<T>(arr: T[]): T[] {
-  return arr.filter((el, index) => arr.indexOf(el) === index)
-}
-
-export const boolFilter: <T>(
-  x: T | null | undefined | false | '' | 0
-) => x is T = Boolean as any
