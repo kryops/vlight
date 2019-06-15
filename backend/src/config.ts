@@ -48,7 +48,7 @@ export const usbDmxVid = c('usbDmxVid', 1204)
 export const usbDmxPid = c('usbDmxPid', 3871)
 
 export const devicesFlushInterval = c('devicesFlushInterval', 20)
-export const socketFlushInterval = c('socketFlushInterval', 100)
+export const socketFlushInterval = c('socketFlushInterval', 50)
 export const multiChannelUniverseFlushThreshold = c(
   'multiChannelUniverseFlushThreshold',
   200

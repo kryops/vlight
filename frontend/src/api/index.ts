@@ -1,7 +1,7 @@
 import { ApiInMessage } from '@vlight/api'
 import { FixtureState, IdType } from '@vlight/entities'
 
-import { logTrace, logWarn } from '../util/log'
+import { logTrace } from '../util/log'
 
 import { updateFixtureState } from './fixture'
 import {
@@ -9,24 +9,15 @@ import {
   getApiFixtureStateMessage,
   getApiFixtureGroupStateMessage,
 } from './protocol'
+// @ts-ignore
+import ApiWorker, { ApiWorkerCommand } from './worker/api.worker'
 
-let socket: WebSocket | undefined
+export const apiWorker: Worker = new ApiWorker()
 
 export function sendApiMessage(message: ApiInMessage) {
   logTrace('Sending WebSocket message', message)
-  if (!socket) {
-    logWarn('Tried to send socket message but was not connected', message)
-  } else {
-    socket.send(JSON.stringify(message))
-  }
-}
-
-export function setSocket(newSocket: WebSocket | undefined) {
-  socket = newSocket
-
-  if (process.env.NODE_ENV === 'development') {
-    ;(window as any).socket = socket
-  }
+  const command: ApiWorkerCommand = { type: 'message', message }
+  apiWorker.postMessage(command)
 }
 
 export function setChannel(channel: number, value: number) {

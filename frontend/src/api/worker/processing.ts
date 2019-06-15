@@ -1,11 +1,9 @@
 import { ApiOutMessage } from '@vlight/api'
 import { Dictionary, FixtureState, MasterData } from '@vlight/entities'
 
-import { logError, logTrace } from '../util/log'
-import { assertNever } from '../util/typescript'
-
-import { updateMasterData } from './masterdata'
-import { getUniverseIndex } from './util'
+import { logError, logTrace } from '../../util/log'
+import { assertNever } from '../../util/typescript'
+import { getUniverseIndex } from '../util'
 
 export interface ApiState {
   masterData: MasterData | undefined
@@ -34,12 +32,10 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
       state.channels = message.channels
       state.fixtures = message.fixtures
       state.fixtureGroups = message.fixtureGroups
-      updateMasterData(message.masterData)
       break
 
     case 'masterdata':
       state.masterData = message.masterData
-      updateMasterData(message.masterData)
       break
 
     case 'universe':

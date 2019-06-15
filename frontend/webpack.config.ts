@@ -49,9 +49,14 @@ export const webpackConfiguration = (env: Env = {}) => {
     output: {
       path: join(__dirname, 'dist'),
       publicPath: '/',
+      globalObject: 'this', // support web workers
     },
     module: {
       rules: [
+        {
+          test: /\.worker\.ts$/,
+          use: { loader: 'worker-loader' },
+        },
         {
           test: /\.tsx?$/,
           exclude: /node_modules/,

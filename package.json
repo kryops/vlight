@@ -116,7 +116,8 @@
     "webpack-dev-middleware": "^3.6.2",
     "webpack-dev-server": "^3.3.1",
     "webpack-hot-middleware": "^2.24.4",
-    "webpack-pwa-manifest": "^4.0.0"
+    "webpack-pwa-manifest": "^4.0.0",
+    "worker-loader": "^2.0.0"
   },
   "dependencies": {
     "artnet": "^1.4.0",

@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { setSocket } from '../api'
 import { socketProcessingInterval } from '../config'
 import { logError, logInfo, logTrace, logWarn } from '../util/log'
 
@@ -34,7 +33,7 @@ export function useWebSocket<T>(
     const socket = new WebSocket(`ws://${window.location.host}/ws`)
 
     instanceRef.current.socket = socket
-    setSocket(socket)
+    // setSocket(socket)
 
     socket.onopen = () => {
       logInfo('WebSocket connection established')
@@ -61,7 +60,7 @@ export function useWebSocket<T>(
 
     return () => {
       socket.close()
-      setSocket(undefined)
+      // setSocket(undefined)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
