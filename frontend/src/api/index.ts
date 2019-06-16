@@ -2,6 +2,7 @@ import { ApiInMessage } from '@vlight/api'
 import { FixtureState, IdType } from '@vlight/entities'
 
 import { logTrace } from '../util/log'
+import { socketProcessingInterval, useSocketUpdateThrottling } from '../config'
 
 import { updateFixtureState } from './fixture'
 import {
@@ -50,4 +51,45 @@ export function changeFixtureGroupState(
   sendApiMessage(
     getApiFixtureGroupStateMessage(id, updateFixtureState(oldState, newState))
   )
+}
+
+export function initApiWorker() {
+  if (!useSocketUpdateThrottling) return
+
+  const updateMessage: ApiWorkerCommand = { type: 'update' }
+
+  let lastUpdate = Date.now()
+  let lastSecond = Math.floor(lastUpdate / 1000)
+  let updatesPerSecond = 0
+
+  const requestUpdate = () => {
+    const now = Date.now()
+    // limit to 20fps
+    if (now - lastUpdate < 50) return
+    apiWorker.postMessage(updateMessage)
+    const currentSecond = Math.floor(now / 1000)
+    if (currentSecond !== lastSecond) {
+      logTrace(`API request throttling at ${updatesPerSecond} fps`)
+      if (currentSecond !== lastSecond + 1) {
+        logTrace('API request throttling skipped multiple seconds')
+      }
+      lastSecond = currentSecond
+      updatesPerSecond = 0
+    }
+    updatesPerSecond++
+    lastUpdate = now
+  }
+
+  if ('requestIdleCallback' in window) {
+    const requestIdleUpdate = () => {
+      requestUpdate()
+      window.requestIdleCallback!(requestIdleUpdate)
+    }
+    window.requestIdleCallback!(requestIdleUpdate)
+
+    // backup: We want at least 1 fps even if we're busy
+    setInterval(requestUpdate, 1000)
+  } else {
+    setInterval(requestUpdate, socketProcessingInterval)
+  }
 }
