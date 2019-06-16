@@ -23,13 +23,14 @@ export function normalizeTouchEvent<T extends HTMLElement = HTMLElement>(
   }
 
   const touchEvent = e as React.TouchEvent<T>
-  const touch = touchEvent.targetTouches.length
-    ? touchEvent.targetTouches[0]
-    : touchEvent.changedTouches[0]
+  const touch =
+    touchEvent.targetTouches && touchEvent.targetTouches.length
+      ? touchEvent.targetTouches[0]
+      : touchEvent.changedTouches && touchEvent.changedTouches[0]
   return {
     type: e.type,
-    clientX: touch.clientX,
-    clientY: touch.clientY,
+    clientX: touch && touch.clientX,
+    clientY: touch && touch.clientY,
     originalEvent: e,
   }
 }
