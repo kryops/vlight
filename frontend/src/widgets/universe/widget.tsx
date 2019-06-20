@@ -1,17 +1,24 @@
-import React, { memo, useMemo } from 'react'
-import { css } from 'linaria'
 import cx from 'classnames'
+import { css } from 'linaria'
+import React, { useMemo } from 'react'
+import { MasterData } from '@vlight/entities'
 
-import { fixtureTypes } from '../../api/masterdata'
-import { useDmxUniverse, useMasterData } from '../../hooks/api'
-import { Bar } from '../../ui/controls/bar'
+import { Widget } from '../../ui/containers/widget'
+import { memoInProduction } from '../../util/development'
+import { createRangeArray } from '../../util/array'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
-import { memoInProduction } from '../../util/development'
+import {
+  getFixtureAtChannel,
+  getEffectiveFixtureColor,
+} from '../../pages/universe/util'
+import { getUniverseIndex } from '../../api/util'
+import { fixtureTypes } from '../../api/masterdata'
+import { Bar } from '../../ui/controls/bar'
 
-import { getFixtureAtChannel, getEffectiveFixtureColor } from './util'
+const barRows = 3
 
-const universePage = css`
+const container = css`
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start; /* so the universeBar_connected margins work */
@@ -31,20 +38,38 @@ const universeBar_connected = css`
   margin-right: ${-1.25 * baselinePx}px;
 `
 
-const _UniversePage: React.SFC = () => {
-  const universe = useDmxUniverse()
-  const masterData = useMasterData()
+interface StatelessProps {
+  universe: number[]
+  masterData: MasterData
+  from: number
+  to: number
+  title?: string
+}
 
+const _StatelessUniverseWidget: React.SFC<StatelessProps> = ({
+  universe,
+  masterData,
+  from,
+  to,
+  title,
+}) => {
   const fixturesAtIndex = useMemo(() => {
     return universe.map((_, index) =>
       getFixtureAtChannel(masterData, index + 1)
     )
   }, [masterData]) // eslint-disable-line react-hooks/exhaustive-deps
+  const range = createRangeArray(from, to)
+  // try to wrap it in a few rows to fit in with other widgets
+  const maxWidth = Math.round(
+    Math.ceil(range.length / barRows) * (barSize + 6 * baselinePx)
+  )
 
   return (
-    <>
-      <div className={universePage}>
-        {universe.map((value, index) => {
+    <Widget title={title || `Universe ${from} - ${to}`}>
+      <div className={container} style={{ maxWidth: maxWidth + 'px' }}>
+        {range.map(channel => {
+          const index = getUniverseIndex(channel)
+          const value = universe[index]
           const fixture = fixturesAtIndex[index]
           const fixtureType = fixture
             ? fixtureTypes.get(fixture.type)
@@ -77,8 +102,10 @@ const _UniversePage: React.SFC = () => {
           )
         })}
       </div>
-    </>
+    </Widget>
   )
 }
 
-export default memoInProduction(_UniversePage)
+export const StatelessUniverseWidget = memoInProduction(
+  _StatelessUniverseWidget
+)

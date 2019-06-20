@@ -25,6 +25,7 @@ const _TestPage: React.SFC = () => {
       <h2>Test Page</h2>
       <h3>Widgets</h3>
       <div className={widgetContainer}>
+        <DynamicWidget config={{ type: 'universe', from: 1, to: 22 }} />
         <DynamicWidget config={{ type: 'channels', from: 1, to: 8 }} />
         <DynamicWidget config={{ type: 'channels', from: 1, to: 4 }} />
         <DynamicWidget config={{ type: 'fixture', id: 'rgb' }} />

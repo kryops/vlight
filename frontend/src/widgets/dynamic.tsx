@@ -4,12 +4,12 @@ import { WidgetConfig } from '@vlight/entities'
 import { useMasterData } from '../hooks/api'
 import { fixtures, fixtureGroups } from '../api/masterdata'
 import { assertNever } from '../util/typescript'
-import { logError } from '../util/log'
 import { memoInProduction } from '../util/development'
 
-import { FixtureGroupWidget } from './fixture-group'
-import { FixtureWidget } from './fixture'
+import { UniverseWidget } from './universe'
 import { ChannelsWidget } from './channels'
+import { FixtureWidget } from './fixture'
+import { FixtureGroupWidget } from './fixture-group'
 
 export interface Props {
   config: WidgetConfig
@@ -20,8 +20,13 @@ const _DynamicWidget: React.SFC<Props> = ({ config }) => {
 
   switch (config.type) {
     case 'universe':
-      logError('Channels widget not supported yet!')
-      return null
+      return (
+        <UniverseWidget
+          from={config.from}
+          to={config.to}
+          title={config.title}
+        />
+      )
 
     case 'channels':
       return (

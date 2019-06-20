@@ -3,7 +3,7 @@ import React from 'react'
 
 import { setChannel } from '../../api'
 import { Widget } from '../../ui/containers/widget'
-import { Fader } from '../../ui/controls/fader'
+import { PureDangerousFader } from '../../ui/controls/fader'
 import { baselinePx } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { createRangeArray } from '../../util/array'
@@ -44,7 +44,7 @@ const _StatelessChannelsWidget: React.SFC<StatelessProps> = ({
     <Widget title={title || `Channels ${from} - ${to}`}>
       <div className={faderContainer}>
         {range.map(channel => (
-          <Fader
+          <PureDangerousFader
             key={channel}
             max={255}
             step={1}
