@@ -14,6 +14,8 @@ export interface ColorPickerPosition {
   y: number
 }
 
+const black = { r: 0, g: 0, b: 0 }
+
 export const colorPickerColors: string[] = [
   ChannelMapping.red,
   ChannelMapping.green,
@@ -21,6 +23,7 @@ export const colorPickerColors: string[] = [
 ]
 
 export const colorPresets: ColorPickerColor[] = [
+  { r: 0, g: 0, b: 0 },
   { r: 255, g: 0, b: 0 },
   { r: 255, g: 255, b: 0 },
   { r: 0, g: 255, b: 0 },
@@ -54,7 +57,7 @@ function mapColor(
 function normalizeColor(color: ColorPickerColor): ColorPickerColor {
   const maxValue = Math.max(...colorToArray(color))
   if (maxValue === 0) {
-    return mapColor(color, () => 255)
+    return black
   }
   const factor = 255 / maxValue
   return mapColor(color, c => Math.round(c * factor))
@@ -122,10 +125,13 @@ function colorToXFraction(color: ColorPickerColor): number {
   return 0
 }
 
-export function positionToColor({
-  x,
-  y,
-}: ColorPickerPosition): ColorPickerColor {
+export function positionToColor(
+  position: ColorPickerPosition | null
+): ColorPickerColor {
+  if (position === null) return black
+
+  const { x, y } = position
+
   const lightness = Math.round(ensureBetween(1 - y, 0, 1) * 255)
 
   const rawColor = xFractionToColor(x)
@@ -140,8 +146,13 @@ export function positionToColor({
   }
 }
 
-export function colorToPosition(color: ColorPickerColor): ColorPickerPosition {
-  const lightness = Math.min(...colorToArray(color))
+export function colorToPosition(
+  color: ColorPickerColor
+): ColorPickerPosition | null {
+  const colorArray = colorToArray(color)
+  if (Math.max(...colorArray) === 0) return null
+
+  const lightness = Math.min(...colorArray)
   const y = 1 - lightness / 255
   if (lightness === 255) {
     return { x: 0, y: 0 }

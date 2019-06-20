@@ -88,7 +88,7 @@ const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
   const currentColor: ColorPickerColor = { r, g, b }
   const positionFromColor = colorToPosition(currentColor)
 
-  const lastPositionRef = useRef<ColorPickerPosition>(positionFromColor)
+  const lastPositionRef = useRef<ColorPickerPosition | null>(positionFromColor)
 
   const position =
     lastPositionRef.current &&
@@ -120,16 +120,18 @@ const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
         }}
       >
         <ColorPickerBackground />
-        <div className={markerContainer}>
-          <div
-            className={positionMarker}
-            style={{
-              top: `${position.y * 100}%`,
-              left: `${position.x * 100}%`,
-              background: colorToCss(currentColor),
-            }}
-          />
-        </div>
+        {position && (
+          <div className={markerContainer}>
+            <div
+              className={positionMarker}
+              style={{
+                top: `${position.y * 100}%`,
+                left: `${position.x * 100}%`,
+                background: colorToCss(currentColor),
+              }}
+            />
+          </div>
+        )}
       </Touchable>
       <div className={colorPresetBar}>
         {colorPresets.map((presetColor, index) => (
