@@ -1,5 +1,5 @@
 import { Fixture } from '@vlight/entities'
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 
 import { fixtureTypes } from '../../api/masterdata'
 import { useAppState } from '../../hooks/api'
@@ -14,6 +14,9 @@ export const FixtureWidget: React.SFC<Props> = ({ fixture }) => {
   const appState = useAppState()
   const fixtureType = fixtureTypes.get(fixture.type)
   const fixtureState = appState.fixtures[fixture.id]
+  const [colorPicker, setColorPicker] = useState(true)
+  const toggleColorPicker = useCallback(() => setColorPicker(prev => !prev), [])
+
   if (!fixtureState || !fixtureType) {
     return null
   }
@@ -23,6 +26,8 @@ export const FixtureWidget: React.SFC<Props> = ({ fixture }) => {
       fixture={fixture}
       fixtureType={fixtureType}
       fixtureState={fixtureState}
+      colorPicker={colorPicker}
+      toggleColorPicker={toggleColorPicker}
     />
   )
 }

@@ -13,6 +13,16 @@ import {
 import { Fader } from '../../ui/controls/fader'
 import { baselinePx } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
+import { iconColorPicker } from '../../ui/icons'
+import { Icon } from '../../ui/icons/icon'
+
+const title = css`
+  display: flex;
+
+  & > :first-child {
+    flex-grow: 1;
+  }
+`
 
 const turnedOff = css`
   & > * {
@@ -40,14 +50,21 @@ interface StatelessProps {
   group: FixtureGroup
   groupMapping: string[]
   groupState: FixtureState
+  colorPicker?: boolean
+  toggleColorPicker?: () => void
 }
 
 const _StatelessFixtureGroupWidget: React.SFC<StatelessProps> = ({
   group,
   groupMapping,
   groupState,
+  colorPicker,
+  toggleColorPicker,
 }) => {
-  const hasColorPicker = colorPickerColors.every(c => groupMapping.includes(c))
+  const colorPickerCapable = colorPickerColors.every(c =>
+    groupMapping.includes(c)
+  )
+  const hasColorPicker = colorPicker && colorPickerCapable
 
   const { r, g, b } = fixtureStateToColor(groupState)
 
@@ -71,6 +88,11 @@ const _StatelessFixtureGroupWidget: React.SFC<StatelessProps> = ({
           },
         })
       }
+      colorPicker={
+        colorPickerCapable &&
+        !colorPicker &&
+        colorPickerColors.includes(channelType)
+      }
     />
   )
 
@@ -78,15 +100,24 @@ const _StatelessFixtureGroupWidget: React.SFC<StatelessProps> = ({
     <Widget
       key={group.id}
       title={
-        <a
-          onClick={() =>
-            changeFixtureGroupState(group.id, groupState, {
-              on: !groupState.on,
-            })
-          }
-        >
-          {group.name || group.id} {!groupState.on && '[OFF]'}
-        </a>
+        <div className={title}>
+          <a
+            onClick={() =>
+              changeFixtureGroupState(group.id, groupState, {
+                on: !groupState.on,
+              })
+            }
+          >
+            {group.name || group.id} {!groupState.on && '[OFF]'}
+          </a>
+          {colorPickerCapable && (
+            <Icon
+              icon={iconColorPicker}
+              onClick={toggleColorPicker}
+              shade={colorPicker ? 1 : 2}
+            />
+          )}
+        </div>
       }
       className={groupState.on ? undefined : turnedOff}
     >

@@ -13,6 +13,8 @@ import {
 import { Fader } from '../../ui/controls/fader'
 import { baselinePx } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
+import { Icon } from '../../ui/icons/icon'
+import { iconColorPicker } from '../../ui/icons'
 
 export function getFixtureName(
   fixture: Fixture,
@@ -23,6 +25,14 @@ export function getFixtureName(
   }
   return `${fixture.channel} ${fixtureType.name}`
 }
+
+const title = css`
+  display: flex;
+
+  & > :first-child {
+    flex-grow: 1;
+  }
+`
 
 const turnedOff = css`
   & > * {
@@ -50,16 +60,21 @@ interface StatelessProps {
   fixture: Fixture
   fixtureType: FixtureType
   fixtureState: FixtureState
+  colorPicker?: boolean
+  toggleColorPicker?: () => void
 }
 
 const _StatelessFixtureWidget: React.SFC<StatelessProps> = ({
   fixture,
   fixtureType,
   fixtureState,
+  colorPicker = true,
+  toggleColorPicker,
 }) => {
-  const hasColorPicker = colorPickerColors.every(c =>
+  const colorPickerCapable = colorPickerColors.every(c =>
     fixtureType.mapping.includes(c)
   )
+  const hasColorPicker = colorPicker && colorPickerCapable
 
   const { r, g, b } = fixtureStateToColor(fixtureState)
 
@@ -83,6 +98,11 @@ const _StatelessFixtureWidget: React.SFC<StatelessProps> = ({
           },
         })
       }
+      colorPicker={
+        colorPickerCapable &&
+        !colorPicker &&
+        colorPickerColors.includes(channelType)
+      }
     />
   )
 
@@ -90,15 +110,24 @@ const _StatelessFixtureWidget: React.SFC<StatelessProps> = ({
     <Widget
       key={fixture.id}
       title={
-        <a
-          onClick={() =>
-            changeFixtureState(fixture.id, fixtureState, {
-              on: !fixtureState.on,
-            })
-          }
-        >
-          {getFixtureName(fixture, fixtureType)} {!fixtureState.on && '[OFF]'}
-        </a>
+        <div className={title}>
+          <a
+            onClick={() =>
+              changeFixtureState(fixture.id, fixtureState, {
+                on: !fixtureState.on,
+              })
+            }
+          >
+            {getFixtureName(fixture, fixtureType)} {!fixtureState.on && '[OFF]'}
+          </a>
+          {colorPickerCapable && (
+            <Icon
+              icon={iconColorPicker}
+              onClick={toggleColorPicker}
+              shade={colorPicker ? 1 : 2}
+            />
+          )}
+        </div>
       }
       className={fixtureState.on ? undefined : turnedOff}
     >

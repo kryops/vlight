@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import { css } from 'linaria'
-import React, { memo, useRef } from 'react'
+import React, { useRef } from 'react'
 
 import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
 import { Touchable } from '../../helpers/touchable'

@@ -36,6 +36,7 @@ export interface Props {
   shade?: ColorShade
   className?: string
   pathClassName?: string
+  onClick?: () => void
 }
 
 const _Icon: React.SFC<Props> = ({
@@ -43,8 +44,9 @@ const _Icon: React.SFC<Props> = ({
   shade = 0,
   className,
   pathClassName,
+  onClick,
 }) => (
-  <svg viewBox="0 0 24 24" className={cx(iconSvg, className)}>
+  <svg viewBox="0 0 24 24" className={cx(iconSvg, className)} onClick={onClick}>
     <path
       d={icon}
       className={cx(pathShades[shade] || pathShades[0], pathClassName)}

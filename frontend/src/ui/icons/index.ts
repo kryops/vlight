@@ -7,6 +7,7 @@ import {
   mdiTuneVertical,
   mdiWhiteBalanceSunny,
   mdiGroup,
+  mdiPaletteOutline,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -18,3 +19,4 @@ export const iconFader = mdiTuneVertical
 export const iconLight = mdiLightbulbOnOutline
 export const iconGroup = mdiGroup
 export const iconExperiment = mdiFlaskOutline
+export const iconColorPicker = mdiPaletteOutline

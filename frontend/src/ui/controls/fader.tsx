@@ -1,3 +1,4 @@
+import cx from 'classnames'
 import { css } from 'linaria'
 import React, { memo, useRef, useState } from 'react'
 
@@ -22,6 +23,11 @@ const fader = css`
   width: ${faderWidth}px;
   height: ${faderHeight}px;
   margin: ${baselinePx * 1.5}px;
+`
+
+const colorPickerFader = css`
+  margin-left: ${baselinePx * 3.5}px;
+  margin-right: ${baselinePx * 3.5}px;
 `
 
 const track = css`
@@ -51,6 +57,7 @@ export interface Props {
   step?: number
   label?: string
   onChange: (value: number) => void
+  colorPicker?: boolean
 }
 
 const _Fader: React.SFC<Props> = ({
@@ -60,6 +67,7 @@ const _Fader: React.SFC<Props> = ({
   step,
   label,
   onChange,
+  colorPicker,
 }) => {
   const trackRef = useRef<HTMLDivElement>(null)
   const touchActive = useRef<boolean>(false)
@@ -71,7 +79,7 @@ const _Fader: React.SFC<Props> = ({
 
   return (
     <Touchable
-      className={fader}
+      className={cx(fader, { [colorPickerFader]: colorPicker })}
       onTouch={event => {
         const offset = getTouchEventOffset(event, trackRef)
         if (!offset) {

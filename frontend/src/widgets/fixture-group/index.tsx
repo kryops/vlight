@@ -1,5 +1,5 @@
 import { FixtureGroup } from '@vlight/entities'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState, useCallback } from 'react'
 
 import { fixtureTypes, fixtures } from '../../api/masterdata'
 import { useAppState, useMasterData } from '../../hooks/api'
@@ -16,6 +16,8 @@ export const FixtureGroupWidget: React.SFC<Props> = ({ group }) => {
   const appState = useAppState()
   const masterData = useMasterData()
   const groupState = appState.fixtureGroups[group.id]
+  const [colorPicker, setColorPicker] = useState(true)
+  const toggleColorPicker = useCallback(() => setColorPicker(prev => !prev), [])
 
   const groupFixtures = group.fixtures
     .map(id => fixtures.get(id))
@@ -39,6 +41,8 @@ export const FixtureGroupWidget: React.SFC<Props> = ({ group }) => {
       group={group}
       groupMapping={groupMapping}
       groupState={groupState}
+      colorPicker={colorPicker}
+      toggleColorPicker={toggleColorPicker}
     />
   )
 }
