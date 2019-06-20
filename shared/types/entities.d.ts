@@ -46,14 +46,14 @@ export interface UniverseWidgetConfig {
   type: 'universe'
   from: number
   to: number
-  title: string
+  title?: string
 }
 
 export interface ChannelsWidgetConfig {
   type: 'channels'
   from: number
   to: number
-  title: string
+  title?: string
 }
 
 export interface FixtureWidgetConfig {
