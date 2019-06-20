@@ -110,6 +110,13 @@ function sendApiMessage(message: ApiInMessage) {
     logWarn('Tried to send socket message but was not connected', message)
   } else {
     socket.send(JSON.stringify(message))
+
+    // Most messages get an immediate response, so we make sure
+    // the client gets it even when busy
+    setTimeout(() => {
+      processMessageQueue()
+      sendClientUpdate()
+    }, 50)
   }
 }
 
