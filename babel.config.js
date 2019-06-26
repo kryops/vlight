@@ -30,6 +30,9 @@ module.exports = function(api) {
       // stage-3
       '@babel/plugin-syntax-dynamic-import',
       ['@babel/plugin-proposal-class-properties', { loose: false }],
+
+      // optimization
+      '@babel/plugin-transform-react-constant-elements',
     ],
   }
 }
