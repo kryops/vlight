@@ -2,6 +2,11 @@
 // found in /backend/src/config.ts
 
 /** @type {import('../backend/src/config').VLightConfiguration} */
-const userConfig = {}
+const userConfig = {
+  // enableUsbDmxDevices: false,
+  // enableVLightDevices: false,
+  // enableArtNetDevices: true,
+  // artnetHost: '192.168.2.104',
+}
 
 module.exports = userConfig
