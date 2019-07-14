@@ -1,5 +1,4 @@
 import { Device, HID } from 'node-hid'
-import usbDetection from 'usb-detection'
 
 import {
   devicesFlushInterval,
@@ -95,10 +94,11 @@ export function setChannelChangedForUsbDmxDevices(channel: number) {
   changedBlocks.add(block)
 }
 
-export function initUsbDmxDevices() {
+export async function initUsbDmxDevices() {
   if (!enableUsbDmxDevices) {
     return
   }
+  const usbDetection: typeof import('usb-detection') = require('usb-detection') // eslint-disable-line
 
   usbDetection.on(`add:${usbDmxVid}:${usbDmxPid}`, async () => {
     // linux seems to need a bit of time here
@@ -111,11 +111,13 @@ export function initUsbDmxDevices() {
   setInterval(flushUsbDmxDevices, devicesFlushInterval)
   setInterval(clearBannedDevices, 30000)
 
-  connectUsbDmxDevices(initDevice)
+  await connectUsbDmxDevices(initDevice)
 }
 
 process.on('exit', () => {
+  if (!enableUsbDmxDevices) return
   try {
+    const usbDetection: typeof import('usb-detection') = require('usb-detection') // eslint-disable-line
     usbDetection.stopMonitoring()
   } catch {
     // do nothing

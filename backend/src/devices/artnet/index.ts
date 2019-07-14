@@ -1,4 +1,4 @@
-import artnet, { Artnet } from 'artnet'
+import { Artnet } from 'artnet'
 
 import { artnetHost, enableArtNetDevices } from '../../config'
 import { getDmxUniverse } from '../../universe'
@@ -10,6 +10,8 @@ export async function initArtNetServer() {
   if (!enableArtNetDevices) {
     return
   }
+
+  const artnet = require('artnet') // eslint-disable-line
 
   server = artnet({ host: artnetHost })
 

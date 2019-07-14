@@ -1,4 +1,4 @@
-import { Device, devices, HID } from 'node-hid'
+import { Device, HID } from 'node-hid'
 
 import { usbDmxPid, usbDmxVid } from '../../config'
 import { onWindows } from '../../env'
@@ -23,8 +23,13 @@ function connectWithFallback(deviceInfo: Device) {
   return new HID(usbDmxVid, usbDmxPid)
 }
 
-export function connectUsbDmxDevices(callback: (device: HIDWithInfo) => void) {
-  devices()
+export async function connectUsbDmxDevices(
+  callback: (device: HIDWithInfo) => void
+) {
+  const hid: typeof import('node-hid') = require('node-hid') // eslint-disable-line
+
+  hid
+    .devices()
     .filter(
       deviceInfo =>
         deviceInfo.vendorId === usbDmxVid &&
@@ -52,8 +57,10 @@ export function connectUsbDmxDevices(callback: (device: HIDWithInfo) => void) {
     })
 }
 
-export function disconnectUsbDmxDevices() {
-  const paths = devices()
+export async function disconnectUsbDmxDevices() {
+  const hid: typeof import('node-hid') = require('node-hid') // eslint-disable-line
+  const paths = hid
+    .devices()
     .filter(
       deviceInfo =>
         deviceInfo.vendorId === usbDmxVid &&

@@ -1,3 +1,5 @@
+const startTime = Date.now()
+
 import sourceMapSupport from 'source-map-support'
 
 import { initApi } from './api'
@@ -50,11 +52,11 @@ async function init() {
     initFixtureGroups(),
   ])
 
-  return new Promise(resolve =>
-    httpServer.listen(httpPort, () => {
-      logInfo(`vLight started on http://127.0.0.1:${httpPort}`)
-      resolve()
-    })
+  await new Promise(resolve => httpServer.listen(httpPort, resolve))
+
+  const startDuration = (Date.now() - startTime) / 1000
+  logInfo(
+    `vLight started on http://127.0.0.1:${httpPort} (took ${startDuration}s)`
   )
 }
 
