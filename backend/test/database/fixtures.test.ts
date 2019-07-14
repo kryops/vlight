@@ -1,4 +1,4 @@
-import { FixtureType } from '@vlight/entities'
+import { FixtureType, Fixture } from '@vlight/entities'
 
 import { processFixtures } from '../../src/database/fixtures'
 import { fillEntity } from '../../src/database'
@@ -16,7 +16,7 @@ describe('processFixtures', () => {
   })
 
   it('just returns single fixtures', () => {
-    const fixtures = [
+    const fixtures: Fixture[] = [
       {
         id: 'foo',
         type: 'bar',
@@ -27,7 +27,7 @@ describe('processFixtures', () => {
   })
 
   it('just returns single fixtures', () => {
-    const fixtures = [
+    const fixtures: Fixture[] = [
       {
         id: 'foo',
         type: 'bar',
@@ -38,7 +38,7 @@ describe('processFixtures', () => {
   })
 
   it('handles multi fixtures', () => {
-    const fixtures = [
+    const fixtures: Fixture[] = [
       {
         id: 'foo#',
         type: 'bar',
@@ -53,18 +53,21 @@ describe('processFixtures', () => {
         type: 'bar',
         name: 'Foo 1',
         channel: 1,
+        originalId: 'foo#',
       },
       {
         id: 'foo2',
         type: 'bar',
         name: 'Foo 2',
         channel: 4,
+        originalId: 'foo#',
       },
       {
         id: 'foo3',
         type: 'bar',
         name: 'Foo 3',
         channel: 7,
+        originalId: 'foo#',
       },
     ])
   })

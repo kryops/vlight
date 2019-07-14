@@ -20,10 +20,16 @@ export interface Fixture extends DbEntity {
   channel: number
   name?: string
   count?: number
+  originalId?: IdType
 }
 
 export interface FixtureGroup extends DbEntity {
   name: string
+  /**
+   * Also accepts
+   * - fixture names containing # -> maps all fixtures with this name originally configured
+   * - `type:foobar` -> maps all fixtures of type `foobar`
+   */
   fixtures: string[]
 }
 

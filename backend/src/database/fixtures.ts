@@ -36,6 +36,7 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
 
   return arrayRange(1, count, index => ({
     id: replaceIndex(id, index),
+    originalId: id,
     name: replaceIndex(name, index),
     type,
     channel: computeChannel(type, channel, index),
@@ -43,5 +44,5 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
 }
 
 export function processFixtures(fixtures: Fixture[]): Fixture[] {
-  return fixtures.map(processFixture).flat()
+  return fixtures.flatMap(processFixture)
 }

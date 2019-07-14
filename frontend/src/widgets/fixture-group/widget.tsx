@@ -108,7 +108,8 @@ const _StatelessFixtureGroupWidget: React.SFC<StatelessProps> = ({
               })
             }
           >
-            {group.name || group.id} {!groupState.on && '[OFF]'}
+            {group.name || group.id} ({group.fixtures.length}){' '}
+            {!groupState.on && '[OFF]'}
           </a>
           {colorPickerCapable && (
             <Icon

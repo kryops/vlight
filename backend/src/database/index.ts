@@ -8,6 +8,7 @@ import {
 } from '@vlight/entities'
 
 import { processFixtures } from './fixtures'
+import { processFixtureGroups } from './fixture-groups'
 
 export const masterData: MasterData = {
   fixtureTypes: [],
@@ -43,6 +44,7 @@ export function fillEntity<T extends keyof MasterData>(
 ) {
   masterData[type] = entries
   const map = masterDataToMaps[type]
+  map.clear()
 
   for (const entry of entries) {
     map.set(entry.id, entry as any)
@@ -53,5 +55,5 @@ export async function initDatabase() {
   initEntity('fixtureTypes', 'fixture-types')
   // depends on fixtureTypes
   initEntity('fixtures', 'fixtures', processFixtures)
-  initEntity('fixtureGroups', 'fixture-groups')
+  initEntity('fixtureGroups', 'fixture-groups', processFixtureGroups)
 }
