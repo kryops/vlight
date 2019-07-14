@@ -1,6 +1,6 @@
 import cx from 'classnames'
 import { css } from 'linaria'
-import React, { memo, Suspense, useCallback, useState } from 'react'
+import React, { Suspense, useCallback, useState } from 'react'
 
 import { useRouterLocationChanged } from '../../hooks/router'
 import { RoutesOutlet } from '../../pages/routes-outlet'
