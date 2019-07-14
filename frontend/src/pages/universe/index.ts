@@ -1,8 +1,7 @@
 import { lazy } from 'react'
 
-import { NavItemEntry } from '..'
-
 import { iconSun } from '../../ui/icons'
+import { NavItemEntry } from '../index'
 
 export const UniversePage = lazy(() =>
   import(/* webpackChunkName: "universe" */ './universe-page')

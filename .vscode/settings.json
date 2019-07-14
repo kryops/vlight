@@ -3,7 +3,8 @@
   "editor.tabSize": 2,
   "eslint.autoFixOnSave": true,
   "eslint.validate": ["typescript", "typescriptreact"],
-  "prettier.eslintIntegration": true,
+  // https://github.com/prettier/prettier-vscode/issues/672
+  "prettier.eslintIntegration": false,
   "typescript.preferences.quoteStyle": "single",
   "typescript.tsdk": "node_modules/typescript/lib"
 }

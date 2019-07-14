@@ -1,8 +1,7 @@
 import { lazy } from 'react'
 
-import { NavItemEntry } from '..'
-
 import { iconFader } from '../../ui/icons'
+import { NavItemEntry } from '../index'
 
 export const ChannelsPage = lazy(() =>
   import(/* webpackChunkName: "channels" */ './channels-page')

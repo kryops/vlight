@@ -2,7 +2,7 @@ import artnet, { Artnet } from 'artnet'
 
 import { artnetHost, enableArtNetDevices } from '../../config'
 import { getDmxUniverse } from '../../universe'
-import { logTrace } from '../../util/log';
+import { logTrace } from '../../util/log'
 
 let server: Artnet
 

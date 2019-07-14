@@ -1,8 +1,7 @@
 import { lazy } from 'react'
 
-import { NavItemEntry } from '..'
-
 import { iconLight } from '../../ui/icons'
+import { NavItemEntry } from '../index'
 
 export const FixturesPage = lazy(() =>
   import(/* webpackChunkName: "fixtures" */ './fixtures-page')

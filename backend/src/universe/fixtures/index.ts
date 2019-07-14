@@ -1,9 +1,13 @@
 import { FixtureState, IdType } from '@vlight/entities'
 
-import { addUniverse, createUniverse, setUniverseChannel, Universe } from '..'
-
 import { fixtures, fixtureTypes } from '../../database'
 import { logWarn } from '../../util/log'
+import {
+  addUniverse,
+  createUniverse,
+  setUniverseChannel,
+  Universe,
+} from '../index'
 
 import { mapFixtureStateToChannels, getInitialFixtureState } from './mapping'
 
