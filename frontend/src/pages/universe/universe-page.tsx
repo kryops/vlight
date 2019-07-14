@@ -1,9 +1,12 @@
-import React, { memo, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { css } from 'linaria'
 import cx from 'classnames'
 
-import { fixtureTypes } from '../../api/masterdata'
-import { useDmxUniverse, useMasterData } from '../../hooks/api'
+import {
+  useDmxUniverse,
+  useMasterData,
+  useMasterDataMaps,
+} from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
@@ -34,6 +37,7 @@ const universeBar_connected = css`
 const _UniversePage: React.SFC = () => {
   const universe = useDmxUniverse()
   const masterData = useMasterData()
+  const { fixtureTypes } = useMasterDataMaps()
 
   const fixturesAtIndex = useMemo(() => {
     return universe.map((_, index) =>

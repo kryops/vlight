@@ -56,9 +56,12 @@ export const ApiWrapper: React.SFC = ({ children }) => {
             }
           })
 
+          // update masterData maps here to sync with the masterData context update
+          if (message.state.masterData)
+            updateMasterData(message.state.masterData)
+
           return newState
         })
-        if (message.state.masterData) updateMasterData(message.state.masterData)
       }
       setConnecting(message.connecting)
     }

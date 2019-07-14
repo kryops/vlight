@@ -13,8 +13,8 @@ import {
   getEffectiveFixtureColor,
 } from '../../pages/universe/util'
 import { getUniverseIndex } from '../../api/util'
-import { fixtureTypes } from '../../api/masterdata'
 import { Bar } from '../../ui/controls/bar'
+import { useMasterDataMaps } from '../../hooks/api'
 
 const barRows = 3
 
@@ -53,6 +53,7 @@ const _StatelessUniverseWidget: React.SFC<StatelessProps> = ({
   to,
   title,
 }) => {
+  const { fixtureTypes } = useMasterDataMaps()
   const fixturesAtIndex = useMemo(() => {
     return universe.map((_, index) =>
       getFixtureAtChannel(masterData, index + 1)
