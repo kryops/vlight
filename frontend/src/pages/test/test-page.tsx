@@ -6,6 +6,7 @@ import { memoInProduction } from '../../util/development'
 import { DynamicWidget } from '../../widgets/dynamic'
 import { baselinePx } from '../../ui/styles'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
+import { Grid } from '../../ui/containers/grid'
 
 const widgetContainer = css`
   display: flex;
@@ -23,6 +24,31 @@ const _TestPage: React.SFC = () => {
   return (
     <div>
       <h2>Test Page</h2>
+      <Grid
+        headline="Gridddd"
+        cells={[
+          {
+            children: (
+              <>
+                <DynamicWidget config={{ type: 'universe', from: 1, to: 22 }} />
+                <DynamicWidget config={{ type: 'channels', from: 1, to: 8 }} />
+              </>
+            ),
+          },
+          {
+            children: (
+              <>
+                <DynamicWidget config={{ type: 'channels', from: 1, to: 3 }} />
+                <DynamicWidget config={{ type: 'channels', from: 1, to: 3 }} />
+              </>
+            ),
+            factor: 2,
+          },
+          {
+            children: '3',
+          },
+        ]}
+      />
       <h3>Widgets</h3>
       <div className={widgetContainer}>
         <DynamicWidget config={{ type: 'universe', from: 1, to: 22 }} />
