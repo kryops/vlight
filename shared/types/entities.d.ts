@@ -37,6 +37,7 @@ export interface MasterData {
   fixtureTypes: FixtureType[]
   fixtures: Fixture[]
   fixtureGroups: FixtureGroup[]
+  dynamicPages: DynamicPage[]
 }
 
 // State
@@ -77,3 +78,19 @@ export type WidgetConfig =
   | ChannelsWidgetConfig
   | FixtureWidgetConfig
   | FixtureGroupWidgetConfig
+
+export interface GridCellConfig {
+  factor?: number
+  widgets: WidgetConfig[]
+}
+
+export interface GridRowConfig {
+  headline?: string
+  cells: GridCellConfig[]
+}
+
+export interface DynamicPage extends DbEntity {
+  icon?: string
+  headline?: string
+  rows: GridRowConfig[]
+}

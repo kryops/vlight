@@ -5,6 +5,7 @@ import {
   IdType,
   MasterData,
   FixtureGroup,
+  DynamicPage,
 } from '@vlight/entities'
 
 import { processFixtures } from './fixtures'
@@ -14,15 +15,18 @@ export const masterData: MasterData = {
   fixtureTypes: [],
   fixtures: [],
   fixtureGroups: [],
+  dynamicPages: [],
 }
 export const fixtureTypes: Map<IdType, FixtureType> = new Map()
 export const fixtures: Map<IdType, Fixture> = new Map()
 export const fixtureGroups: Map<IdType, FixtureGroup> = new Map()
+export const dynamicPages: Map<IdType, DynamicPage> = new Map()
 
 const masterDataToMaps = {
   fixtureTypes,
   fixtures,
   fixtureGroups,
+  dynamicPages,
 }
 
 function initEntity<T extends DbEntity>(
@@ -56,4 +60,5 @@ export async function initDatabase() {
   // depends on fixtureTypes
   initEntity('fixtures', 'fixtures', processFixtures)
   initEntity('fixtureGroups', 'fixture-groups', processFixtureGroups)
+  initEntity('dynamicPages', 'dynamic-pages')
 }

@@ -15,6 +15,7 @@ export const useMasterData = (): MasterData => {
       fixtures: [],
       fixtureTypes: [],
       fixtureGroups: [],
+      dynamicPages: [],
     }
   }
   return masterData
