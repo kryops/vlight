@@ -6,14 +6,17 @@ import './ui/global-styles'
 import { MainContainer } from './ui/main/main-container'
 import { ErrorBoundary } from './util/error-boundary'
 import { RouterWithContext } from './util/router-with-context'
+import { SettingsWrapper } from './settings'
 
 const App: React.SFC = () => (
   <StrictMode>
     <ErrorBoundary>
       <RouterWithContext>
-        <ApiWrapper>
-          <MainContainer />
-        </ApiWrapper>
+        <SettingsWrapper>
+          <ApiWrapper>
+            <MainContainer />
+          </ApiWrapper>
+        </SettingsWrapper>
       </RouterWithContext>
     </ErrorBoundary>
   </StrictMode>

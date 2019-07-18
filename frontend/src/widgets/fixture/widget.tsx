@@ -36,7 +36,7 @@ const title = css`
 
 const turnedOff = css`
   & > * {
-    opacity: 0.4;
+    opacity: 0.6;
   }
 `
 

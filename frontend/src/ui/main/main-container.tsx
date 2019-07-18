@@ -7,14 +7,26 @@ import { RoutesOutlet } from '../../pages/routes-outlet'
 import { iconClose, iconMenu } from '../icons'
 import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
-import { backgroundColor, baselinePx, zNavigation } from '../styles'
+import {
+  backgroundColor,
+  baselinePx,
+  zNavigation,
+  backgroundColorLight,
+  textShadeLight,
+} from '../styles'
 import { memoInProduction } from '../../util/development'
+import { useSettings } from '../../hooks/settings'
 
 import { LoadingScreen } from './loading-screen'
 
 const mainContainer = css`
   display: flex;
   height: 100%;
+`
+
+const mainContainerLight = css`
+  background: ${backgroundColorLight};
+  color: ${textShadeLight(0)};
 `
 
 const content = css`
@@ -46,6 +58,7 @@ const alwaysShowNav = window.innerWidth >= navBreakpoint
 const _MainContainer: React.SFC = () => {
   const [nav, setNav] = useState(alwaysShowNav)
   const locationChanged = useRouterLocationChanged()
+  const { lightMode } = useSettings()
 
   const toggleNav = useCallback(() => setNav(!nav), [nav])
 
@@ -56,7 +69,7 @@ const _MainContainer: React.SFC = () => {
   const navOverlayed = nav && !alwaysShowNav
 
   return (
-    <div className={mainContainer}>
+    <div className={cx(mainContainer, { [mainContainerLight]: lightMode })}>
       {navOverlayed && <div className={overlay} onClick={toggleNav} />}
       {nav && (
         <Navigation showLabels={!alwaysShowNav} floating={!alwaysShowNav} />

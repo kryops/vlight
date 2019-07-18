@@ -9,6 +9,7 @@ import {
   mdiGroup,
   mdiPaletteOutline,
   mdiFileAccount,
+  mdiSettings,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -22,3 +23,4 @@ export const iconGroup = mdiGroup
 export const iconExperiment = mdiFlaskOutline
 export const iconColorPicker = mdiPaletteOutline
 export const iconDynamicPage = mdiFileAccount
+export const iconSettings = mdiSettings
