@@ -3,9 +3,10 @@ import { css } from 'linaria'
 import React from 'react'
 
 import { mainNavigationItems } from '../../pages'
-import { primaryShade, zNavigation } from '../styles'
+import { primaryShade, zNavigation, backgroundColorLight } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { useMasterData } from '../../hooks/api'
+import { useSettings } from '../../hooks/settings'
 import { dynamicPageRoute } from '../../pages/dynamic'
 import { iconDynamicPage } from '../icons'
 
@@ -17,6 +18,10 @@ const navigation = css`
   overflow: auto;
   overflow-x: hidden;
   background: ${primaryShade(4)};
+`
+
+const navigation_light = css`
+  background: ${backgroundColorLight};
 `
 
 const navigation_floating = css`
@@ -33,11 +38,18 @@ export interface Props {
 }
 
 const _Navigation: React.SFC<Props> = ({ showLabels, floating }) => {
+  const { lightMode } = useSettings()
   const masterData = useMasterData()
   const { dynamicPages } = masterData
 
   return (
-    <div className={cx(navigation, floating && navigation_floating)}>
+    <div
+      className={cx(
+        navigation,
+        floating && navigation_floating,
+        lightMode && navigation_light
+      )}
+    >
       {mainNavigationItems.map(({ route, icon, label }) => (
         <NavItem
           key={route}

@@ -5,6 +5,7 @@ import React, { useRef } from 'react'
 import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
 import { Touchable } from '../../helpers/touchable'
 import { baselinePx, iconShade, primaryShade } from '../../styles'
+import { useSettings } from '../../../hooks/settings'
 import { memoInProduction } from '../../../util/development'
 
 import { ColorPickerBackground } from './background'
@@ -36,6 +37,10 @@ const colorPicker = css`
   margin-bottom: 2px;
   height: 0; // to make the SVG not scale beyond the max-height
   flex-grow: 1;
+`
+
+const colorPicker_light = css`
+  border: 1px solid #555;
 `
 
 const markerContainer = css`
@@ -83,6 +88,7 @@ export interface Props {
 }
 
 const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
+  const { lightMode } = useSettings()
   const touchRef = useRef<HTMLDivElement>(null)
 
   const currentColor: ColorPickerColor = { r, g, b }
@@ -99,7 +105,7 @@ const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
   return (
     <div className={container}>
       <Touchable
-        className={colorPicker}
+        className={cx(colorPicker, lightMode && colorPicker_light)}
         ref={touchRef}
         onTouch={event => {
           const offset = getTouchEventOffset(event, touchRef)

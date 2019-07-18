@@ -1,10 +1,12 @@
 import { css } from 'linaria'
+import cx from 'classnames'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { Icon } from '../icons/icon'
 import { baselinePx, iconShade, primaryShade } from '../styles'
 import { memoInProduction } from '../../util/development'
+import { useSettings } from '../../hooks/settings'
 
 const iconPath = css``
 
@@ -30,6 +32,27 @@ const navItem_active = css`
   }
 `
 
+const navItem_light = css`
+  &:hover {
+    background: ${primaryShade(0)};
+
+    & .${iconPath} {
+      fill: ${iconShade(3)};
+    }
+  }
+`
+
+const navItem_active_light = css`
+  background: ${primaryShade(0)};
+  & .${iconPath} {
+    fill: ${iconShade(0)};
+  }
+
+  &:hover {
+    background: ${primaryShade(0)};
+  }
+`
+
 const navLabel = css`
   padding-left: ${baselinePx * 2}px;
   padding-right: ${baselinePx * 4}px;
@@ -42,16 +65,19 @@ export interface Props {
   showLabel?: boolean
 }
 
-const _NavItem: React.SFC<Props> = ({ to, icon, label, showLabel }) => (
-  <NavLink
-    to={to}
-    title={label}
-    className={navItem}
-    activeClassName={navItem_active}
-  >
-    <Icon icon={icon} shade={1} pathClassName={iconPath} />
-    {showLabel && <span className={navLabel}>{label}</span>}
-  </NavLink>
-)
+const _NavItem: React.SFC<Props> = ({ to, icon, label, showLabel }) => {
+  const { lightMode } = useSettings()
+  return (
+    <NavLink
+      to={to}
+      title={label}
+      className={cx(navItem, lightMode && navItem_light)}
+      activeClassName={lightMode ? navItem_active_light : navItem_active}
+    >
+      <Icon icon={icon} shade={1} pathClassName={iconPath} />
+      {showLabel && <span className={navLabel}>{label}</span>}
+    </NavLink>
+  )
+}
 
 export const NavItem = memoInProduction(_NavItem)

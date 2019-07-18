@@ -9,8 +9,10 @@ import {
   primaryShade,
   fontSizePx,
   textShade,
+  textShadeLight,
 } from '../styles'
 import { memoInProduction } from '../../util/development'
+import { useSettings } from '../../hooks/settings'
 
 const bar = css`
   position: relative;
@@ -32,6 +34,10 @@ const barCornerLabel = css`
   font-size: ${fontSizePx * 0.65}px;
   color: ${textShade(0)};
   z-index: 2;
+`
+
+const barCornerLabel_light = css`
+  color: ${textShadeLight(0)};
 `
 
 const barLevel = css`
@@ -63,6 +69,7 @@ const _Bar: React.SFC<Props> = ({
   color,
   className,
 }) => {
+  const { lightMode } = useSettings()
   const fraction = ensureBetween(getFraction(value, min, max), 0, 1)
   return (
     <div
@@ -70,7 +77,11 @@ const _Bar: React.SFC<Props> = ({
       style={color ? { borderBottomColor: color } : undefined}
     >
       <div className={barLabel}>{label}</div>
-      {cornerLabel && <div className={barCornerLabel}>{cornerLabel}</div>}
+      {cornerLabel && (
+        <div className={cx(barCornerLabel, lightMode && barCornerLabel_light)}>
+          {cornerLabel}
+        </div>
+      )}
       {fraction > 0 && (
         <div
           className={barLevel}

@@ -7,6 +7,7 @@ import { getTouchEventOffset } from '../../util/touch'
 import { Touchable } from '../helpers/touchable'
 import { baselinePx, iconShade, primaryShade } from '../styles'
 import { memoInProduction } from '../../util/development'
+import { useSettings } from '../../hooks/settings'
 
 const faderWidth = baselinePx * 12
 const faderHeight = baselinePx * 60
@@ -50,6 +51,10 @@ const button = css`
   justify-content: center;
 `
 
+const button_light = css`
+  color: #fff;
+`
+
 export interface Props {
   value: number
   min?: number
@@ -72,6 +77,7 @@ const _Fader: React.SFC<Props> = ({
   const trackRef = useRef<HTMLDivElement>(null)
   const touchActive = useRef<boolean>(false)
   const [rawValue, setRawValue] = useState(value)
+  const { lightMode } = useSettings()
 
   const valueToUse = touchActive.current ? rawValue : value
   const currentFraction = (valueToUse - min) / (max - min)
@@ -98,7 +104,10 @@ const _Fader: React.SFC<Props> = ({
       onUp={() => (touchActive.current = false)}
     >
       <div className={track} ref={trackRef} />
-      <div className={button} style={{ transform: `translateY(${y}px)` }}>
+      <div
+        className={cx(button, lightMode && button_light)}
+        style={{ transform: `translateY(${y}px)` }}
+      >
         {label}
       </div>
     </Touchable>

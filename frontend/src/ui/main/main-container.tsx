@@ -24,9 +24,13 @@ const mainContainer = css`
   height: 100%;
 `
 
-const mainContainerLight = css`
+const mainContainer_light = css`
   background: ${backgroundColorLight};
   color: ${textShadeLight(0)};
+
+  & a {
+    color: ${textShadeLight(0)};
+  }
 `
 
 const content = css`
@@ -69,7 +73,7 @@ const _MainContainer: React.SFC = () => {
   const navOverlayed = nav && !alwaysShowNav
 
   return (
-    <div className={cx(mainContainer, { [mainContainerLight]: lightMode })}>
+    <div className={cx(mainContainer, lightMode && mainContainer_light)}>
       {navOverlayed && <div className={overlay} onClick={toggleNav} />}
       {nav && (
         <Navigation showLabels={!alwaysShowNav} floating={!alwaysShowNav} />
