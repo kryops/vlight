@@ -136,7 +136,9 @@ export const webpackConfiguration = (env: Env = {}) => {
       new HtmlWebpackPlugin({
         template: join(__dirname, 'index.html'),
       }),
-      new ExtractCssPlugin(),
+      new ExtractCssPlugin({
+        ignoreOrder: true,
+      } as any),
       new WebpackPwaManifest({
         name: 'vLight',
         description: 'Virtual Light Controller',
