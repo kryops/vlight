@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- Persisting/reloading state
 - Dynamic reloading of master data changes
 - Memories/Scenes
   - Channel values

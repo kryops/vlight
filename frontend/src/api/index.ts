@@ -87,8 +87,8 @@ export function initApiWorker() {
     }
     window.requestIdleCallback!(requestIdleUpdate)
 
-    // backup: We want at least 1 fps even if we're busy
-    setInterval(requestUpdate, 1000)
+    // backup: We want at least 2 fps even if we're busy
+    setInterval(requestUpdate, 500)
   } else {
     setInterval(requestUpdate, socketProcessingInterval)
   }

@@ -45,6 +45,7 @@ export interface MasterData {
 export interface FixtureState {
   on: boolean
   channels: Dictionary<number>
+  initial?: boolean
 }
 
 // Widgets

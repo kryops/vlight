@@ -17,6 +17,7 @@ export interface VLightConfiguration {
   multiChannelUniverseFlushThreshold: number
   logLevel: LogLevel
   universeSize: number
+  statePersistenceFlushInterval: number
 }
 
 const userConfig: Partial<
@@ -60,3 +61,7 @@ export const logLevel = c('logLevel', isDevelopment ? 'trace' : 'info')
 
 // application config
 export const universeSize = c('universeSize', 512)
+export const statePersistenceFlushInterval = c(
+  'statePersistenceFlushInterval',
+  10000
+)

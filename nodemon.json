@@ -4,6 +4,6 @@
   },
   "ext": "ts,js",
   "exec": "sucrase-node ./backend/src/index.ts",
-  "ignore": ["**/*.test.ts"],
+  "ignore": ["**/*.test.ts", "config/state.js"],
   "watch": ["backend/src", "config/", "frontend/webpack.config.ts"]
 }

@@ -11,5 +11,6 @@ export function updateFixtureState(
       ...oldState.channels,
       ...newState.channels,
     },
+    initial: undefined, // reset initial state
   }
 }

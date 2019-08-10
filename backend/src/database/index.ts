@@ -10,6 +10,9 @@ import {
 
 import { processFixtures } from './fixtures'
 import { processFixtureGroups } from './fixture-groups'
+import { initPersistedState } from './state'
+
+export const relativeConfigDirectoryPath = '../../../config/'
 
 export const masterData: MasterData = {
   fixtureTypes: [],
@@ -35,7 +38,7 @@ function initEntity<T extends DbEntity>(
   preprocessor?: (entries: T[]) => T[]
 ) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const rawEntries: T[] = require('../../../config/' + fileName)
+  const rawEntries: T[] = require(relativeConfigDirectoryPath + fileName)
 
   const entries = preprocessor ? preprocessor(rawEntries) : rawEntries
 
@@ -61,4 +64,6 @@ export async function initDatabase() {
   initEntity('fixtures', 'fixtures', processFixtures)
   initEntity('fixtureGroups', 'fixture-groups', processFixtureGroups)
   initEntity('dynamicPages', 'dynamic-pages')
+
+  initPersistedState()
 }

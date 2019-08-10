@@ -35,6 +35,7 @@ export function getInitialFixtureState(mapping?: string[]): FixtureState {
   const colors = [ChannelMapping.red, ChannelMapping.green, ChannelMapping.blue]
   if (mapping && colors.every(c => mapping.includes(c))) {
     return {
+      initial: true,
       on: false,
       channels: {
         m: 255,
@@ -45,6 +46,7 @@ export function getInitialFixtureState(mapping?: string[]): FixtureState {
     }
   }
   return {
+    initial: true,
     on: false,
     channels: {
       m: 255,

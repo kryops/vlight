@@ -3,10 +3,9 @@
 
 /** @type {import('../backend/src/config').VLightConfiguration} */
 const userConfig = {
-  // enableUsbDmxDevices: false,
-  // enableVLightDevices: false,
-  // enableArtNetDevices: true,
-  // artnetHost: '192.168.2.104',
+  enableUsbDmxDevices: false,
+  enableVLightDevices: false,
+  enableArtNetDevices: false,
 }
 
 module.exports = userConfig

@@ -1,3 +1,5 @@
+import { getPersistedState } from '../database/state'
+
 import {
   addUniverse,
   createUniverse,
@@ -13,5 +15,8 @@ export function setChannel(channel: number, value: number) {
 
 export function initChannels() {
   channelUniverse = createUniverse()
+  for (const [index, value] of Object.entries(getPersistedState().channels)) {
+    channelUniverse[+index] = value
+  }
   addUniverse(channelUniverse)
 }
