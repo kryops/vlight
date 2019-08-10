@@ -7,9 +7,10 @@ import {
 import { getDmxUniverse } from '../universe'
 import { setChannel } from '../universe/channels'
 import { setFixtureState } from '../universe/fixtures'
+import { setFixtureGroupState } from '../universe/fixture-groups'
 import { logError, logTrace } from '../util/log'
 import { assertNever } from '../util/typescript'
-import { setFixtureGroupState } from '../universe/fixture-groups'
+import { howLong } from '../util/time'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
 import { broadcastToSockets, initWebSocketServer, sockets } from './websocket'
@@ -77,7 +78,9 @@ export function broadcastUniverseChannelToSockets(channel: number) {
 }
 
 export async function initApi() {
+  const start = Date.now()
   await initWebSocketServer()
 
   setInterval(flushWebSockets, socketFlushInterval)
+  howLong(start, 'initApi')
 }

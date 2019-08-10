@@ -3,6 +3,7 @@ import { FixtureState, IdType, Fixture } from '@vlight/entities'
 import { fixtures, fixtureTypes } from '../../database'
 import { getPersistedState } from '../../database/state'
 import { logWarn } from '../../util/log'
+import { howLong } from '../../util/time'
 import {
   addUniverse,
   createUniverse,
@@ -34,6 +35,7 @@ function setFixtureStateToUniverse(
 }
 
 export function initFixtures() {
+  const start = Date.now()
   fixtureUniverse = createUniverse()
 
   fixtures.forEach(fixture => {
@@ -48,6 +50,7 @@ export function initFixtures() {
   })
 
   addUniverse(fixtureUniverse)
+  howLong(start, 'initFixtures')
 }
 
 export function setFixtureState(id: IdType, state: FixtureState): boolean {

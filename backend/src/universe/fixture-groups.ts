@@ -3,6 +3,7 @@ import { IdType, FixtureState, FixtureGroup, Fixture } from '@vlight/entities'
 import { fixtureGroups, fixtures, fixtureTypes } from '../database'
 import { getPersistedState } from '../database/state'
 import { logWarn } from '../util/log'
+import { howLong } from '../util/time'
 import { isUnique, isTruthy } from '../util/validation'
 
 import {
@@ -68,7 +69,9 @@ function initFixtureGroup(fixtureGroup: FixtureGroup) {
 }
 
 export function initFixtureGroups() {
+  const start = Date.now()
   fixtureGroups.forEach(initFixtureGroup)
+  howLong(start, 'initFixtureGroups')
 }
 
 export function setFixtureGroupState(id: IdType, state: FixtureState): boolean {

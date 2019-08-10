@@ -10,7 +10,7 @@ import {
 import { onWindows } from '../../env'
 import { getDmxUniverse } from '../../universe'
 import { logTrace, shouldLogTrace, logWarn, logInfo } from '../../util/log'
-import { delay } from '../../util/time'
+import { delay, howLong } from '../../util/time'
 
 import {
   connectUsbDmxDevices,
@@ -98,6 +98,7 @@ export async function initUsbDmxDevices() {
   if (!enableUsbDmxDevices) {
     return
   }
+  const start = Date.now()
   const usbDetection: typeof import('usb-detection') = require('usb-detection') // eslint-disable-line
 
   usbDetection.on(`add:${usbDmxVid}:${usbDmxPid}`, async () => {
@@ -112,6 +113,8 @@ export async function initUsbDmxDevices() {
   setInterval(clearBannedDevices, 30000)
 
   await connectUsbDmxDevices(initDevice)
+
+  howLong(start, 'initUsbDmxDevices')
 }
 
 process.on('exit', () => {

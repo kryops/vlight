@@ -1,4 +1,5 @@
 import { getPersistedState } from '../database/state'
+import { howLong } from '../util/time'
 
 import {
   addUniverse,
@@ -14,9 +15,11 @@ export function setChannel(channel: number, value: number) {
 }
 
 export function initChannels() {
+  const start = Date.now()
   channelUniverse = createUniverse()
   for (const [index, value] of Object.entries(getPersistedState().channels)) {
     channelUniverse[+index] = value
   }
   addUniverse(channelUniverse)
+  howLong(start, 'initChannels')
 }

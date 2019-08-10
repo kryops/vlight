@@ -8,6 +8,8 @@ import {
   DynamicPage,
 } from '@vlight/entities'
 
+import { howLong } from '../util/time'
+
 import { processFixtures } from './fixtures'
 import { processFixtureGroups } from './fixture-groups'
 import { initPersistedState } from './state'
@@ -59,6 +61,7 @@ export function fillEntity<T extends keyof MasterData>(
 }
 
 export async function initDatabase() {
+  const start = Date.now()
   initEntity('fixtureTypes', 'fixture-types')
   // depends on fixtureTypes
   initEntity('fixtures', 'fixtures', processFixtures)
@@ -66,4 +69,5 @@ export async function initDatabase() {
   initEntity('dynamicPages', 'dynamic-pages')
 
   initPersistedState()
+  howLong(start, 'initDatabase')
 }

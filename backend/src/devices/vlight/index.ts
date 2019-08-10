@@ -4,6 +4,7 @@ import {
   multiChannelUniverseFlushThreshold,
 } from '../../config'
 import { getDmxUniverse } from '../../universe'
+import { howLong } from '../../util/time'
 
 import {
   getBinaryUniverseMessage,
@@ -46,7 +47,9 @@ export async function initVlightDevices() {
     return
   }
 
+  const start = Date.now()
   await Promise.all([initTcpServer(), initUdpMulticast()])
 
   setInterval(flushVlightDevices, devicesFlushInterval)
+  howLong(start, 'initVlightDevices')
 }
