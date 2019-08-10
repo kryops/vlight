@@ -19,7 +19,11 @@ export interface PersistedState {
 
 const stateConfigFileName = 'state'
 
-let persistedState: PersistedState
+let persistedState: PersistedState = {
+  channels: {},
+  fixtures: {},
+  fixtureGroups: {},
+}
 let persistedStateString: string
 
 function isNotInitialFixtureState({ initial }: FixtureState) {
@@ -62,11 +66,7 @@ export function initPersistedState() {
   try {
     persistedState = require(relativeConfigDirectoryPath + stateConfigFileName)
   } catch {
-    persistedState = {
-      channels: {},
-      fixtures: {},
-      fixtureGroups: {},
-    }
+    // do nothing
   }
 
   persistedStateString = serialize(persistedState)
