@@ -1,6 +1,6 @@
 import { FixtureType, Fixture } from '@vlight/entities'
 
-import { processFixtures } from '../../src/database/fixtures'
+import { processFixtures } from '../../src/database/entities/fixtures'
 import { fillEntity } from '../../src/database'
 
 describe('processFixtures', () => {

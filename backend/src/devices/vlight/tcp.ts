@@ -1,7 +1,7 @@
 import { createServer, Socket } from 'net'
 
 import { tcpPort } from '../../config'
-import { getDmxUniverse } from '../../universe'
+import { getDmxUniverse } from '../../services/universe'
 import { removeFromMutableArray } from '../../util/array'
 import { logInfo, logTrace } from '../../util/log'
 import { getAddressString } from '../../util/network'

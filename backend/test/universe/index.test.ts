@@ -4,9 +4,9 @@
 
 import { broadcastUniverseChannelToSockets } from '../../src/api'
 import { universeSize } from '../../src/config'
+import { channelUniverse, initChannels } from '../../src/controls/channels'
 import { broadcastUniverseChannelToDevices } from '../../src/devices'
-import { getDmxUniverse, setUniverseChannel } from '../../src/universe'
-import { channelUniverse, initChannels } from '../../src/universe/channels'
+import { getDmxUniverse, setUniverseChannel } from '../../src/services/universe'
 
 jest.mock('../../src/devices')
 jest.mock('../../src/api')

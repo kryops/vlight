@@ -1,8 +1,8 @@
 import { FixtureGroup } from '@vlight/entities'
 
-import { isUnique } from '../util/validation'
+import { isUnique } from '../../util/validation'
 
-import { masterData } from '.'
+import { masterData } from '..'
 
 const typeMarker = 'type:'
 const countMarker = '#'

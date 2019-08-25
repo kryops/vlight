@@ -3,13 +3,15 @@ import { FixtureState, IdType, Fixture } from '@vlight/entities'
 import { fixtures, fixtureTypes } from '../../database'
 import { getPersistedState } from '../../database/state'
 import { logWarn } from '../../util/log'
+import { dictionaryToMap } from '../../util/map'
 import { howLong } from '../../util/time'
 import {
   addUniverse,
   createUniverse,
   setUniverseChannel,
   Universe,
-} from '../index'
+  removeUniverse,
+} from '../../services/universe'
 
 import { mapFixtureStateToChannels, getInitialFixtureState } from './mapping'
 
@@ -34,20 +36,25 @@ function setFixtureStateToUniverse(
   return changed
 }
 
-export function initFixtures() {
-  const start = Date.now()
-  fixtureUniverse = createUniverse()
-
+function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
   fixtures.forEach(fixture => {
     const { id, type } = fixture
     const fixtureType = fixtureTypes.get(type)
     const state =
-      getPersistedState().fixtures[id] ||
+      oldFixtureStates.get(id) ||
       getInitialFixtureState(fixtureType && fixtureType.mapping)
 
     fixtureStates.set(id, state)
     setFixtureStateToUniverse(fixture, state)
   })
+}
+
+export function initFixtures() {
+  const start = Date.now()
+  fixtureUniverse = createUniverse()
+
+  const persistedState = dictionaryToMap(getPersistedState().fixtures)
+  setFixtureStatesFrom(persistedState)
 
   addUniverse(fixtureUniverse)
   howLong(start, 'initFixtures')
@@ -61,4 +68,15 @@ export function setFixtureState(id: IdType, state: FixtureState): boolean {
   }
   fixtureStates.set(id, state)
   return setFixtureStateToUniverse(fixture, state)
+}
+
+export function reloadFixtures() {
+  removeUniverse(fixtureUniverse)
+  fixtureUniverse.fill(0)
+  addUniverse(fixtureUniverse)
+
+  const oldFixtureStates = new Map(fixtureStates)
+  fixtureStates.clear()
+
+  setFixtureStatesFrom(oldFixtureStates)
 }

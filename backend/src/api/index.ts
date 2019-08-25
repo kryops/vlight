@@ -4,16 +4,17 @@ import {
   multiChannelUniverseFlushThreshold,
   socketFlushInterval,
 } from '../config'
-import { getDmxUniverse } from '../universe'
-import { setChannel } from '../universe/channels'
-import { setFixtureState } from '../universe/fixtures'
-import { setFixtureGroupState } from '../universe/fixture-groups'
+import { getDmxUniverse } from '../services/universe'
+import { setChannel } from '../controls/channels'
+import { setFixtureState } from '../controls/fixtures'
+import { setFixtureGroupState } from '../controls/fixture-groups'
 import { logError, logTrace } from '../util/log'
 import { assertNever } from '../util/typescript'
 import { howLong } from '../util/time'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
 import { broadcastToSockets, initWebSocketServer, sockets } from './websocket'
+import { getFullState } from './messages'
 
 const changedUninverseChannels: Set<number> = new Set<number>()
 
@@ -83,4 +84,9 @@ export async function initApi() {
 
   setInterval(flushWebSockets, socketFlushInterval)
   howLong(start, 'initApi')
+}
+
+export function broadcastApplicationStateToSockets() {
+  broadcastToSockets(getFullState())
+  changedUninverseChannels.clear()
 }

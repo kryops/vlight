@@ -66,6 +66,25 @@ function computeDmxChannel(
   return true
 }
 
+function computeAndBroadcastDmxChannel(
+  channel: number,
+  newUniverseValue: number,
+  oldUniverseValue: number
+): boolean {
+  const changedDmx = computeDmxChannel(
+    channel,
+    newUniverseValue,
+    oldUniverseValue
+  )
+
+  if (changedDmx) {
+    broadcastUniverseChannelToDevices(channel, newUniverseValue)
+    broadcastUniverseChannelToSockets(channel)
+  }
+
+  return changedDmx
+}
+
 export function setUniverseChannel(
   universe: Buffer,
   channel: number,
@@ -83,12 +102,8 @@ export function setUniverseChannel(
 
   if (!universes.includes(universe)) return true
 
-  const changedDmx = computeDmxChannel(channel, value, oldValue)
+  computeAndBroadcastDmxChannel(channel, value, oldValue)
 
-  if (changedDmx) {
-    broadcastUniverseChannelToDevices(channel, value)
-    broadcastUniverseChannelToSockets(channel)
-  }
   return true
 }
 
@@ -107,17 +122,33 @@ export function createUniverse(): Universe {
 export function addUniverse(universe: Universe) {
   addToMutableArray(universes, universe)
   if (universe.some(x => x !== 0)) {
-    universe.forEach((value, index) => computeDmxChannel(index, value, 0))
+    universe.forEach((value, index) =>
+      computeAndBroadcastDmxChannel(
+        getChannelFromUniverseIndex(index),
+        value,
+        0
+      )
+    )
   }
 }
 
 export function removeUniverse(universe: Universe) {
   removeFromMutableArray(universes, universe)
   if (universe.some(x => x !== 0)) {
-    universe.forEach((value, index) => computeDmxChannel(index, 0, value))
+    universe.forEach((value, index) =>
+      computeAndBroadcastDmxChannel(
+        getChannelFromUniverseIndex(index),
+        0,
+        value
+      )
+    )
   }
 }
 
 export function getUniverseIndex(channel: number) {
   return channel - 1
+}
+
+export function getChannelFromUniverseIndex(index: number) {
+  return index + 1
 }

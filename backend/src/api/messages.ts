@@ -1,10 +1,10 @@
 import { ApiStateMessage } from '@vlight/api'
 
-import { getDmxUniverse } from '../universe'
-import { channelUniverse } from '../universe/channels'
-import { fixtureStates } from '../universe/fixtures'
+import { getDmxUniverse } from '../services/universe'
+import { channelUniverse } from '../controls/channels'
+import { fixtureStates } from '../controls/fixtures'
+import { fixtureGroupStates } from '../controls/fixture-groups'
 import { mapToDictionary } from '../util/map'
-import { fixtureGroupStates } from '../universe/fixture-groups'
 
 import { getApiStateMessage } from './protocol'
 

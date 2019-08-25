@@ -1,8 +1,8 @@
 import { handleApiMessage } from '../../src/api'
-import { setUniverseChannel } from '../../src/universe'
-import { channelUniverse } from '../../src/universe/channels'
+import { channelUniverse } from '../../src/controls/channels'
+import { setUniverseChannel } from '../../src/services/universe'
 
-jest.mock('../../src/universe')
+jest.mock('../../src/services/universe')
 
 describe('api/index', () => {
   it('handleApiMessage', () => {

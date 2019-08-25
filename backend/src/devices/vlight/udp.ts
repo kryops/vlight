@@ -1,7 +1,7 @@
 import { createSocket, Socket } from 'dgram'
 
 import { udpMulticastAddress, udpPort, udpUniverseInterval } from '../../config'
-import { getDmxUniverse } from '../../universe'
+import { getDmxUniverse } from '../../services/universe'
 import { logTrace, logError } from '../../util/log'
 
 import { getBinaryUniverseMessage } from './protocol'

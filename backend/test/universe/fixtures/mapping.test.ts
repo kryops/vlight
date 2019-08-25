@@ -1,6 +1,6 @@
 import { FixtureState, FixtureType } from '@vlight/entities'
 
-import { mapFixtureStateToChannels } from '../../../src/universe/fixtures/mapping'
+import { mapFixtureStateToChannels } from '../../../src/controls/fixtures/mapping'
 
 describe('universe/fixtures/mapping', () => {
   describe('mapFixtureStateToChannels', () => {

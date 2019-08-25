@@ -8,7 +8,7 @@ import {
 import { Dictionary, FixtureState, IdType } from '@vlight/entities'
 
 import { masterData } from '../database'
-import { getUniverseIndex } from '../universe'
+import { getUniverseIndex } from '../services/universe'
 
 export function getApiStateMessage(
   universe: Buffer,

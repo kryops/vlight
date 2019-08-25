@@ -8,7 +8,7 @@ import {
   usbDmxVid,
 } from '../../config'
 import { onWindows } from '../../env'
-import { getDmxUniverse } from '../../universe'
+import { getDmxUniverse } from '../../services/universe'
 import { logTrace, shouldLogTrace, logWarn, logInfo } from '../../util/log'
 import { delay, howLong } from '../../util/time'
 

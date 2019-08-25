@@ -1,9 +1,9 @@
 import { Fixture } from '@vlight/entities'
 
-import { arrayRange } from '../util/array'
-import { logWarn } from '../util/log'
+import { arrayRange } from '../../util/array'
+import { logWarn } from '../../util/log'
 
-import { fixtureTypes } from '.'
+import { fixtureTypes } from '..'
 
 function replaceIndex<T extends string | undefined>(
   value: T,

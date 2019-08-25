@@ -5,15 +5,11 @@ import sourceMapSupport from 'source-map-support'
 import { initApi } from './api'
 import { httpServer, initExpressApp } from './app'
 import { httpPort } from './config'
+import { initControls } from './controls'
 import { initDatabase } from './database'
-import { initArtNetServer } from './devices/artnet'
-import { initUsbDmxDevices } from './devices/usbdmx'
-import { initVlightDevices } from './devices/vlight'
+import { initDevices } from './devices'
 import { isDevelopment } from './env'
-import { initChannels } from './universe/channels'
-import { initFixtures } from './universe/fixtures'
 import { logError, logInfo, logWarn } from './util/log'
-import { initFixtureGroups } from './universe/fixture-groups'
 
 sourceMapSupport.install()
 
@@ -44,12 +40,8 @@ async function init() {
   await Promise.all([
     initExpressApp(),
     initApi(),
-    initVlightDevices(),
-    initUsbDmxDevices(),
-    initArtNetServer(),
-    initChannels(),
-    initFixtures(),
-    initFixtureGroups(),
+    initControls(),
+    initDevices(),
   ])
 
   await new Promise(resolve => httpServer.listen(httpPort, resolve))

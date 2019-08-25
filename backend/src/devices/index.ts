@@ -1,6 +1,14 @@
-import { broadcastArtNetChannel } from './artnet'
-import { setChannelChangedForUsbDmxDevices } from './usbdmx'
-import { setChannelChangedForVlightDevices } from './vlight'
+import { broadcastArtNetChannel, initArtNetServer } from './artnet'
+import { setChannelChangedForUsbDmxDevices, initUsbDmxDevices } from './usbdmx'
+import { setChannelChangedForVlightDevices, initVlightDevices } from './vlight'
+
+export async function initDevices() {
+  await Promise.all([
+    initVlightDevices(),
+    initUsbDmxDevices(),
+    initArtNetServer(),
+  ])
+}
 
 export function broadcastUniverseChannelToDevices(
   channel: number,

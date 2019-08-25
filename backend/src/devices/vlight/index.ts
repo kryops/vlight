@@ -3,7 +3,7 @@ import {
   enableVLightDevices,
   multiChannelUniverseFlushThreshold,
 } from '../../config'
-import { getDmxUniverse } from '../../universe'
+import { getDmxUniverse } from '../../services/universe'
 import { howLong } from '../../util/time'
 
 import {

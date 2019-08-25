@@ -11,3 +11,9 @@ export function mapToDictionary<V>(
   }
   return dictionary
 }
+
+export function dictionaryToMap<V>(dictionary: {
+  [key: string]: V
+}): Map<string, V> {
+  return new Map(Object.entries(dictionary))
+}

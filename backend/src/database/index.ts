@@ -8,10 +8,11 @@ import {
   DynamicPage,
 } from '@vlight/entities'
 
+import { logError } from '../util/log'
 import { howLong } from '../util/time'
 
-import { processFixtures } from './fixtures'
-import { processFixtureGroups } from './fixture-groups'
+import { processFixtures } from './entities/fixtures'
+import { processFixtureGroups } from './entities/fixture-groups'
 import { initPersistedState } from './state'
 
 export const relativeConfigDirectoryPath = '../../../config/'
@@ -39,8 +40,11 @@ function initEntity<T extends DbEntity>(
   fileName: string,
   preprocessor?: (entries: T[]) => T[]
 ) {
+  const configPath = relativeConfigDirectoryPath + fileName
+  // enable reloading
+  delete require.cache[require.resolve(configPath)]
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const rawEntries: T[] = require(relativeConfigDirectoryPath + fileName)
+  const rawEntries: T[] = require(configPath)
 
   const entries = preprocessor ? preprocessor(rawEntries) : rawEntries
 
@@ -60,14 +64,29 @@ export function fillEntity<T extends keyof MasterData>(
   }
 }
 
-export async function initDatabase() {
-  const start = Date.now()
+function loadDatabase() {
   initEntity('fixtureTypes', 'fixture-types')
   // depends on fixtureTypes
   initEntity('fixtures', 'fixtures', processFixtures)
+  // depends on fixtures
   initEntity('fixtureGroups', 'fixture-groups', processFixtureGroups)
   initEntity('dynamicPages', 'dynamic-pages')
+}
 
+export async function initDatabase() {
+  const start = Date.now()
+  loadDatabase()
   initPersistedState()
   howLong(start, 'initDatabase')
+}
+
+export async function reloadDatabase() {
+  try {
+    loadDatabase()
+  } catch (error) {
+    logError(
+      'Error reloading database, the update may have only been partial!',
+      error
+    )
+  }
 }

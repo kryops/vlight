@@ -1,7 +1,7 @@
 import { FixtureType, Fixture, FixtureGroup } from '@vlight/entities'
 
 import { fillEntity } from '../../src/database'
-import { processFixtureGroups } from '../../src/database/fixture-groups'
+import { processFixtureGroups } from '../../src/database/entities/fixture-groups'
 
 describe('processFixtureGroups', () => {
   beforeAll(() => {

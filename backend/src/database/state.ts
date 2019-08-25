@@ -1,9 +1,9 @@
 import { Dictionary, FixtureState } from '@vlight/entities'
 
 import { mapToDictionary } from '../util/map'
-import { channelUniverse } from '../universe/channels'
-import { fixtureStates } from '../universe/fixtures'
-import { fixtureGroupStates } from '../universe/fixture-groups'
+import { channelUniverse } from '../controls/channels'
+import { fixtureStates } from '../controls/fixtures'
+import { fixtureGroupStates } from '../controls/fixture-groups'
 import { statePersistenceFlushInterval } from '../config'
 import { logTrace } from '../util/log'
 

@@ -1,12 +1,11 @@
-import { getPersistedState } from '../database/state'
-import { howLong } from '../util/time'
-
+import { getPersistedState } from '../../database/state'
 import {
   addUniverse,
   createUniverse,
   setUniverseChannel,
   Universe,
-} from './index'
+} from '../../services/universe'
+import { howLong } from '../../util/time'
 
 export let channelUniverse: Universe
 
