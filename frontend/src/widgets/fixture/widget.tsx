@@ -84,9 +84,9 @@ const _StatelessFixtureWidget: React.SFC<StatelessProps> = ({
       (!hasColorPicker || !colorPickerColors.includes(c))
   )
 
-  const renderFader = (channelType: string) => (
+  const renderFader = (channelType: string, index = 0) => (
     <Fader
-      key={channelType}
+      key={channelType + index}
       max={255}
       step={1}
       label={channelType.toUpperCase()}
