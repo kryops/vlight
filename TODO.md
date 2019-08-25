@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- colorpicker: Use local state when interacted with
 - Memories/Scenes
   - Channel values
   - Colors

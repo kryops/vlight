@@ -4,8 +4,9 @@ import React, { useRef } from 'react'
 
 import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
 import { Touchable } from '../../helpers/touchable'
-import { baselinePx, iconShade, primaryShade } from '../../styles'
+import { useDelayedState } from '../../../hooks/delayed-state'
 import { useSettings } from '../../../hooks/settings'
+import { baselinePx, iconShade, primaryShade } from '../../styles'
 import { memoInProduction } from '../../../util/development'
 
 import { ColorPickerBackground } from './background'
@@ -89,9 +90,12 @@ export interface Props {
 
 const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
   const { lightMode } = useSettings()
+  const [localColor, setLocalColor] = useDelayedState<ColorPickerColor | null>(
+    null
+  )
   const touchRef = useRef<HTMLDivElement>(null)
 
-  const currentColor: ColorPickerColor = { r, g, b }
+  const currentColor: ColorPickerColor = localColor || { r, g, b }
   const positionFromColor = colorToPosition(currentColor)
 
   const lastPositionRef = useRef<ColorPickerPosition | null>(positionFromColor)
@@ -122,8 +126,10 @@ const _ColorPicker: React.SFC<Props> = ({ r = 0, g = 0, b = 0, onChange }) => {
             return
           }
           lastPositionRef.current = newPosition
+          setLocalColor(newColor)
           onChange(newColor)
         }}
+        onUp={() => setLocalColor(null, true)}
       >
         <ColorPickerBackground />
         {position && (

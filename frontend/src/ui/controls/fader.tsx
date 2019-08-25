@@ -1,13 +1,14 @@
 import cx from 'classnames'
 import { css } from 'linaria'
-import React, { memo, useRef, useState } from 'react'
+import React, { memo, useRef } from 'react'
 
 import { ensureBetween, roundToStep } from '../../util/number'
 import { getTouchEventOffset } from '../../util/touch'
 import { Touchable } from '../helpers/touchable'
+import { useDelayedState } from '../../hooks/delayed-state'
+import { useSettings } from '../../hooks/settings'
 import { baselinePx, iconShade, primaryShade } from '../styles'
 import { memoInProduction } from '../../util/development'
-import { useSettings } from '../../hooks/settings'
 
 const faderWidth = baselinePx * 12
 const faderHeight = baselinePx * 60
@@ -75,11 +76,10 @@ const _Fader: React.SFC<Props> = ({
   colorPicker,
 }) => {
   const trackRef = useRef<HTMLDivElement>(null)
-  const touchActive = useRef<boolean>(false)
-  const [rawValue, setRawValue] = useState(value)
+  const [localValue, setLocalValue] = useDelayedState<number | null>(null)
   const { lightMode } = useSettings()
 
-  const valueToUse = touchActive.current ? rawValue : value
+  const valueToUse = localValue || value
   const currentFraction = (valueToUse - min) / (max - min)
   const y = Math.round(trackHeight - currentFraction * trackHeight)
 
@@ -96,12 +96,11 @@ const _Fader: React.SFC<Props> = ({
         if (newRawValue === valueToUse) {
           return
         }
-        setRawValue(newRawValue)
+        setLocalValue(newRawValue)
         const roundedValue = roundToStep(newRawValue, step)
         onChange(roundedValue)
       }}
-      onDown={() => (touchActive.current = true)}
-      onUp={() => (touchActive.current = false)}
+      onUp={() => setLocalValue(null, true)}
     >
       <div className={track} ref={trackRef} />
       <div
