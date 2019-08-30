@@ -1,0 +1,1 @@
+yarn upgrade --latest && rm yarn.lock && yarn
