@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": ">=11.0.0"
+    "node": ">=11.14.0"
   },
   "scripts": {
     "all": "yarn lint && yarn test && yarn build",
@@ -83,6 +83,7 @@
     "eslint": "^6.2.2",
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.0.1",
