@@ -6,6 +6,7 @@ import {
   MasterData,
   FixtureGroup,
   DynamicPage,
+  Memory,
 } from '@vlight/entities'
 
 import { logError } from '../util/log'
@@ -13,6 +14,7 @@ import { howLong } from '../util/time'
 
 import { processFixtures } from './entities/fixtures'
 import { processFixtureGroups } from './entities/fixture-groups'
+import { processMemories } from './entities/memories'
 import { initPersistedState } from './state'
 
 export const relativeConfigDirectoryPath = '../../../config/'
@@ -21,17 +23,20 @@ export const masterData: MasterData = {
   fixtureTypes: [],
   fixtures: [],
   fixtureGroups: [],
+  memories: [],
   dynamicPages: [],
 }
 export const fixtureTypes: Map<IdType, FixtureType> = new Map()
 export const fixtures: Map<IdType, Fixture> = new Map()
 export const fixtureGroups: Map<IdType, FixtureGroup> = new Map()
+export const memories: Map<IdType, Memory> = new Map()
 export const dynamicPages: Map<IdType, DynamicPage> = new Map()
 
 const masterDataToMaps = {
   fixtureTypes,
   fixtures,
   fixtureGroups,
+  memories,
   dynamicPages,
 }
 
@@ -70,6 +75,8 @@ function loadDatabase() {
   initEntity('fixtures', 'fixtures', processFixtures)
   // depends on fixtures
   initEntity('fixtureGroups', 'fixture-groups', processFixtureGroups)
+  // depends on fixtureGroups
+  initEntity('memories', 'memories', processMemories)
   initEntity('dynamicPages', 'dynamic-pages')
 }
 

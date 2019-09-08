@@ -5,6 +5,7 @@ import {
   IdType,
   MasterData,
   FixtureGroup,
+  Memory,
 } from '@vlight/entities'
 
 /*
@@ -13,20 +14,16 @@ import {
  * In React components, access through `userMasterDataMaps()`
  */
 
-export interface MasterDataMaps {
-  fixtureTypes: Map<IdType, FixtureType>
-  fixtures: Map<IdType, Fixture>
-  fixtureGroups: Map<IdType, FixtureGroup>
-}
-
 export const fixtureTypes: Map<IdType, FixtureType> = new Map()
 export const fixtures: Map<IdType, Fixture> = new Map()
 export const fixtureGroups: Map<IdType, FixtureGroup> = new Map()
+export const memories: Map<IdType, Memory> = new Map()
 
-export const masterDataMaps: MasterDataMaps = {
+export const masterDataMaps = {
   fixtureTypes,
   fixtures,
   fixtureGroups,
+  memories,
 }
 
 function updateMapWithArray<T extends DbEntity>(map: Map<IdType, T>, arr: T[]) {
@@ -37,7 +34,11 @@ function updateMapWithArray<T extends DbEntity>(map: Map<IdType, T>, arr: T[]) {
 }
 
 export function updateMasterData(masterData: MasterData) {
-  updateMapWithArray(fixtureTypes, masterData.fixtureTypes)
-  updateMapWithArray(fixtures, masterData.fixtures)
-  updateMapWithArray(fixtureGroups, masterData.fixtureGroups)
+  const keys = Object.keys(masterDataMaps) as Array<keyof typeof masterDataMaps>
+  for (const key of keys) {
+    updateMapWithArray<Unpacked<MasterData[typeof key]>>(
+      masterDataMaps[key],
+      masterData[key]
+    )
+  }
 }

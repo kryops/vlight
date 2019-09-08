@@ -1,9 +1,10 @@
-import { Dictionary, FixtureState } from '@vlight/entities'
+import { Dictionary, FixtureState, MemoryState } from '@vlight/entities'
 
 import { mapToDictionary } from '../util/map'
 import { channelUniverse } from '../controls/channels'
 import { fixtureStates } from '../controls/fixtures'
 import { fixtureGroupStates } from '../controls/fixture-groups'
+import { memoryStates } from '../controls/memories'
 import { statePersistenceFlushInterval } from '../config'
 import { logTrace } from '../util/log'
 
@@ -15,6 +16,7 @@ export interface PersistedState {
   channels: Dictionary<number>
   fixtures: Dictionary<FixtureState>
   fixtureGroups: Dictionary<FixtureState>
+  memories: Dictionary<MemoryState>
 }
 
 const stateConfigFileName = 'state'
@@ -23,10 +25,11 @@ let persistedState: PersistedState = {
   channels: {},
   fixtures: {},
   fixtureGroups: {},
+  memories: {},
 }
 let persistedStateString: string
 
-function isNotInitialFixtureState({ initial }: FixtureState) {
+function isNotInitialState({ initial }: FixtureState | MemoryState) {
   return !initial
 }
 
@@ -40,11 +43,9 @@ function getCurrentState(): PersistedState {
   )
   return {
     channels,
-    fixtures: mapToDictionary(fixtureStates, isNotInitialFixtureState),
-    fixtureGroups: mapToDictionary(
-      fixtureGroupStates,
-      isNotInitialFixtureState
-    ),
+    fixtures: mapToDictionary(fixtureStates, isNotInitialState),
+    fixtureGroups: mapToDictionary(fixtureGroupStates, isNotInitialState),
+    memories: mapToDictionary(memoryStates, isNotInitialState),
   }
 }
 

@@ -6,7 +6,7 @@ import {
   DmxUniverseContext,
   MasterDataContext,
 } from '../api/context'
-import { MasterDataMaps, masterDataMaps } from '../api/masterdata'
+import { masterDataMaps } from '../api/masterdata'
 
 export const useMasterData = (): MasterData => {
   const masterData = useContext(MasterDataContext)
@@ -15,13 +15,14 @@ export const useMasterData = (): MasterData => {
       fixtures: [],
       fixtureTypes: [],
       fixtureGroups: [],
+      memories: [],
       dynamicPages: [],
     }
   }
   return masterData
 }
 
-export const useMasterDataMaps = (): MasterDataMaps => {
+export const useMasterDataMaps = () => {
   // refresh the component when the master data changes
   useMasterData()
   return masterDataMaps

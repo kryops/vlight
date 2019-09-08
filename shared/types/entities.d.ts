@@ -24,19 +24,37 @@ export interface Fixture extends DbEntity {
 }
 
 export interface FixtureGroup extends DbEntity {
-  name: string
+  name?: string
   /**
    * Also accepts
-   * - fixture names containing # -> maps all fixtures with this name originally configured
+   * - fixture IDs containing # -> maps all fixtures with this ID originally configured
    * - `type:foobar` -> maps all fixtures of type `foobar`
    */
   fixtures: string[]
+}
+
+export interface MemoryScene {
+  /**
+   * Accepts
+   * - fixture IDs
+   * - fixture IDs containing # -> maps all fixtures with this ID originally configured
+   * - `type:foobar` -> maps all fixtures of type `foobar`
+   * - `group:foobar` -> maps all fixtures of group `foobar`
+   */
+  members: string[]
+  state: FixtureState
+}
+
+export interface Memory extends DbEntity {
+  name?: string
+  scenes: MemoryScene[]
 }
 
 export interface MasterData {
   fixtureTypes: FixtureType[]
   fixtures: Fixture[]
   fixtureGroups: FixtureGroup[]
+  memories: Memory[]
   dynamicPages: DynamicPage[]
 }
 
@@ -45,6 +63,12 @@ export interface MasterData {
 export interface FixtureState {
   on: boolean
   channels: Dictionary<number>
+  initial?: boolean
+}
+
+export interface MemoryState {
+  on: boolean
+  value: number
   initial?: boolean
 }
 

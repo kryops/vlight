@@ -3,8 +3,8 @@
 ## Roadmap
 
 - Memories/Scenes
-  - Channel values
-  - Colors
+  - API
+  - Frontend: Page, widget
   - Gradients
   - Patterns
 - 2D Map
