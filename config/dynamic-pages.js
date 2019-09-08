@@ -1,3 +1,4 @@
+// @ts-check
 /** @type {import('../shared/types/entities').DynamicPage[]} */
 const dynamicPages = [
   {
@@ -15,7 +16,6 @@ const dynamicPages = [
             ],
           },
           {
-            headline: 'Channels',
             widgets: [{ type: 'channels', from: 1, to: 8 }],
           },
         ],

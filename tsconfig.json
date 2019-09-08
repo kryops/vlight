@@ -10,6 +10,7 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "isolatedModules": true,
+    "jsx": "react",
     "lib": ["esnext"],
     "module": "commonjs",
     "moduleResolution": "node",

@@ -1,3 +1,4 @@
+// @ts-check
 /** @type {import('../shared/types/entities').FixtureType[]} */
 const fixtureTypes = [
   {
