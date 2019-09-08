@@ -1,17 +1,15 @@
-import { FixtureType, Fixture } from '@vlight/entities'
+import { Fixture } from '@vlight/entities'
 
-import { processFixtures } from '../../src/database/entities/fixtures'
+import {
+  processFixtures,
+  mapFixtureList,
+} from '../../src/database/entities/fixtures'
 import { fillEntity } from '../../src/database'
+
+import { fixtureTypes, fixtures, fixtureGroups } from './mocks'
 
 describe('processFixtures', () => {
   beforeAll(() => {
-    const fixtureTypes: FixtureType[] = [
-      {
-        id: 'bar',
-        name: 'Bar',
-        mapping: ['r', 'g', 'b'],
-      },
-    ]
     fillEntity('fixtureTypes', fixtureTypes)
   })
 
@@ -59,5 +57,32 @@ describe('processFixtures', () => {
         originalId: 'foo#',
       },
     ])
+  })
+})
+
+describe('mapFixtureList', () => {
+  beforeAll(() => {
+    fillEntity('fixtureTypes', fixtureTypes)
+    fillEntity('fixtures', fixtures)
+    fillEntity('fixtureGroups', fixtureGroups)
+  })
+
+  it.each<[string, string[], string[]]>([
+    ['just returns fixtures', ['foo1'], ['foo1']],
+    ['maps counted fixtures', ['bar#'], ['bar1', 'bar2']],
+    ['maps fixtures by type', ['type:foo'], ['foo1', 'foo2']],
+    ['maps fixtures by group', ['group:group1'], ['baz1']],
+    ['maps each fixture only once', ['foo1', 'foo1'], ['foo1']],
+    [
+      'all of the above',
+      ['foo1', 'bar#', 'type:bar'],
+      ['foo1', 'bar1', 'bar2'],
+    ],
+    ['skips mapping for non-existent types', ['type:none'], []],
+    ['skips mapping for non-existent groups', ['group:none'], []],
+    ['skips mapping for non-existent counted fixture IDs', ['none#'], []],
+    ['skips mapping for non-existent fixtures', ['none'], []],
+  ])('%s', (_, input, expected) => {
+    expect(mapFixtureList(input)).toEqual(expected)
   })
 })

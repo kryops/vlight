@@ -1,61 +1,11 @@
-import { FixtureType, Fixture, FixtureGroup } from '@vlight/entities'
-
 import { fillEntity } from '../../src/database'
 import { processFixtureGroups } from '../../src/database/entities/fixture-groups'
 
+import { fixtureTypes, fixtures, mockFixtureGroup } from './mocks'
+
 describe('processFixtureGroups', () => {
-  function mockFixtureGroup(fixtures: string[]): FixtureGroup {
-    return {
-      id: 'g',
-      name: 'G',
-      fixtures,
-    }
-  }
-
   beforeAll(() => {
-    const fixtureTypes: FixtureType[] = [
-      {
-        id: 'foo',
-        name: 'Foo',
-        mapping: ['m'],
-      },
-      {
-        id: 'bar',
-        name: 'Bar',
-        mapping: ['r', 'g', 'b'],
-      },
-    ]
     fillEntity('fixtureTypes', fixtureTypes)
-
-    const fixtures: Fixture[] = [
-      {
-        id: 'foo1',
-        name: 'Foo 1',
-        type: 'foo',
-        channel: 1,
-      },
-      {
-        id: 'foo2',
-        name: 'Foo 2',
-        type: 'foo',
-        channel: 2,
-      },
-      {
-        id: 'bar1',
-        originalId: 'bar#',
-        name: 'Bar 1',
-        type: 'bar',
-        channel: 3,
-      },
-      {
-        id: 'bar2',
-        originalId: 'bar#',
-        name: 'Bar 2',
-        type: 'bar',
-        channel: 6,
-      },
-    ]
-
     fillEntity('fixtures', fixtures)
   })
 

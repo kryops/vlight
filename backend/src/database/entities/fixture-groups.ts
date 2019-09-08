@@ -1,31 +1,14 @@
 import { FixtureGroup } from '@vlight/entities'
 
-import { isUnique } from '../../util/validation'
+import { mapFixtureList } from './fixtures'
 
-import { masterData } from '..'
-
-const typeMarker = 'type:'
-const countMarker = '#'
-
-function processFixtureGroup(group: FixtureGroup): FixtureGroup {
-  const allFixtures = masterData.fixtures
-
-  const fixtures = group.fixtures
-    .flatMap(fixture => {
-      if (fixture.startsWith(typeMarker)) {
-        const type = fixture.slice(typeMarker.length)
-        return allFixtures.filter(f => f.type === type).map(f => f.id)
-      }
-      if (fixture.includes(countMarker)) {
-        return allFixtures.filter(f => f.originalId === fixture).map(f => f.id)
-      }
-      return fixture
-    })
-    .filter(isUnique)
-
+function processFixtureGroup({
+  fixtures,
+  ...rest
+}: FixtureGroup): FixtureGroup {
   return {
-    ...group,
-    fixtures,
+    ...rest,
+    fixtures: mapFixtureList(fixtures),
   }
 }
 
