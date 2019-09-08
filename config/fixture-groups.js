@@ -27,7 +27,7 @@ const fixtureGroups = [
   {
     id: '12x12',
     name: '12x12',
-    fixtures: ['12x12-1#'],
+    fixtures: ['12x12-#'],
   },
   {
     id: 'blinder',

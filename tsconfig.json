@@ -26,5 +26,11 @@
     "resolveJsonModule": true,
     "strict": true
   },
-  "include": ["frontend/src", "backend/src", "backend/test"]
+  "include": [
+    "frontend/src",
+    "frontend/test",
+    "backend/src",
+    "backend/test",
+    "@types"
+  ]
 }

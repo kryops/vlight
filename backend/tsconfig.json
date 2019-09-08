@@ -5,5 +5,5 @@
     "lib": ["esnext"],
     "noEmit": true
   },
-  "include": ["."]
+  "include": ["./src", "./test", "./clients", "../@types"]
 }
