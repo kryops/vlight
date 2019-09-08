@@ -11,7 +11,7 @@ import { getDmxUniverse, setUniverseChannel } from '../../src/services/universe'
 jest.mock('../../src/devices')
 jest.mock('../../src/api')
 
-describe('universe/index', () => {
+describe('services/universe', () => {
   beforeAll(() => initChannels())
 
   it('changes values', () => {
