@@ -10,25 +10,21 @@ import {
 } from '../../../src/devices/vlight/protocol'
 
 describe('devices/vlight/protocol', () => {
-  it('getBinaryChannelMessage', () => {
-    expect(getBinaryChannelMessage(1, 0)).toEqual(Buffer.from([0x00, 0x00]))
-    expect(getBinaryChannelMessage(1, 1)).toEqual(Buffer.from([0x00, 0x01]))
-    expect(getBinaryChannelMessage(1, 255)).toEqual(Buffer.from([0x00, 0xff]))
-    expect(getBinaryChannelMessage(250, 250)).toEqual(Buffer.from([0xf9, 0xfa]))
-
-    expect(getBinaryChannelMessage(251, 250)).toEqual(
-      Buffer.from([0xfa, 0x00, 0xfa])
-    )
-    expect(getBinaryChannelMessage(500, 250)).toEqual(
-      Buffer.from([0xfa, 0xf9, 0xfa])
-    )
-
-    expect(getBinaryChannelMessage(501, 250)).toEqual(
-      Buffer.from([0xfb, 0x00, 0xfa])
-    )
-    expect(getBinaryChannelMessage(502, 250)).toEqual(
-      Buffer.from([0xfb, 0x01, 0xfa])
-    )
+  describe('getBinaryChannelMessage', () => {
+    it.each<[number, number, number[]]>([
+      [1, 0, [0x00, 0x00]],
+      [1, 1, [0x00, 0x01]],
+      [1, 255, [0x00, 0xff]],
+      [250, 250, [0xf9, 0xfa]],
+      [251, 250, [0xfa, 0x00, 0xfa]],
+      [500, 250, [0xfa, 0xf9, 0xfa]],
+      [501, 250, [0xfb, 0x00, 0xfa]],
+      [502, 250, [0xfb, 0x01, 0xfa]],
+    ])('channel %p value %p => %p', (channel, value, expected) => {
+      expect(getBinaryChannelMessage(channel, value)).toEqual(
+        Buffer.from(expected)
+      )
+    })
   })
 
   it('getMultipleBinaryChannelMessages', () => {

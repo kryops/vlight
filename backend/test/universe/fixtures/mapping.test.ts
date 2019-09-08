@@ -24,33 +24,40 @@ describe('universe/fixtures/mapping', () => {
       },
     }
 
-    it('turned off', () => {
-      const state: FixtureState = {
-        on: false,
-        channels: {
-          r: 100,
-        },
-      }
-      const expected = [0, 0, 0, 0]
-      expect(mapFixtureStateToChannels(fixtureTypeWithMaster, state)).toEqual(
-        expected
-      )
-      expect(
-        mapFixtureStateToChannels(fixtureTypeWithoutMaster, state)
-      ).toEqual(expected)
-    })
+    const turnedOff: FixtureState = {
+      on: false,
+      channels: {
+        r: 100,
+      },
+    }
 
-    it('with master channel', () => {
-      const expected = [100, 150, 0, 200]
-      expect(
-        mapFixtureStateToChannels(fixtureTypeWithMaster, exampleState)
-      ).toEqual(expected)
-    })
-    it('without master channel', () => {
-      const expected = [78, 118, 0, 0]
-      expect(
-        mapFixtureStateToChannels(fixtureTypeWithoutMaster, exampleState)
-      ).toEqual(expected)
+    it.each<[string, FixtureType, FixtureState, number[]]>([
+      [
+        'turned off (with master)',
+        fixtureTypeWithMaster,
+        turnedOff,
+        [0, 0, 0, 0],
+      ],
+      [
+        'turned off (without master)',
+        fixtureTypeWithoutMaster,
+        turnedOff,
+        [0, 0, 0, 0],
+      ],
+      [
+        'example state (with master)',
+        fixtureTypeWithMaster,
+        exampleState,
+        [100, 150, 0, 200],
+      ],
+      [
+        'example state (without master)',
+        fixtureTypeWithoutMaster,
+        exampleState,
+        [78, 118, 0, 0],
+      ],
+    ])('%p', (_, fixtureType, state, expected) => {
+      expect(mapFixtureStateToChannels(fixtureType, state)).toEqual(expected)
     })
   })
 })

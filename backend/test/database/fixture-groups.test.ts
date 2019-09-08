@@ -4,6 +4,14 @@ import { fillEntity } from '../../src/database'
 import { processFixtureGroups } from '../../src/database/entities/fixture-groups'
 
 describe('processFixtureGroups', () => {
+  function mockFixtureGroup(fixtures: string[]): FixtureGroup {
+    return {
+      id: 'g',
+      name: 'G',
+      fixtures,
+    }
+  }
+
   beforeAll(() => {
     const fixtureTypes: FixtureType[] = [
       {
@@ -51,65 +59,19 @@ describe('processFixtureGroups', () => {
     fillEntity('fixtures', fixtures)
   })
 
-  it('just returns fixtures', () => {
-    const groups: FixtureGroup[] = [
-      {
-        id: 'g',
-        name: 'G',
-        fixtures: ['foo1', 'foo2', 'bar1'],
-      },
-    ]
-    expect(processFixtureGroups(groups)).toEqual(groups)
-  })
-
-  it('returns multiple counted fixtures', () => {
-    const groups: FixtureGroup[] = [
-      {
-        id: 'g',
-        name: 'G',
-        fixtures: ['bar#'],
-      },
-    ]
-    expect(processFixtureGroups(groups)).toEqual([
-      {
-        id: 'g',
-        name: 'G',
-        fixtures: ['bar1', 'bar2'],
-      },
-    ])
-  })
-
-  it('returns multiple fixtures by type', () => {
-    const groups: FixtureGroup[] = [
-      {
-        id: 'g',
-        name: 'G',
-        fixtures: ['type:foo'],
-      },
-    ]
-    expect(processFixtureGroups(groups)).toEqual([
-      {
-        id: 'g',
-        name: 'G',
-        fixtures: ['foo1', 'foo2'],
-      },
-    ])
-  })
-
-  it('all of the above (including unique filter)', () => {
-    const groups: FixtureGroup[] = [
-      {
-        id: 'g',
-        name: 'G',
-        fixtures: ['foo1', 'bar#', 'type:foo'],
-      },
-    ]
-    expect(processFixtureGroups(groups)).toEqual([
-      {
-        id: 'g',
-        name: 'G',
-        fixtures: ['foo1', 'bar1', 'bar2', 'foo2'],
-      },
+  it.each<[string, string[], string[]]>([
+    ['just returns fixtures', ['foo1'], ['foo1']],
+    ['maps counted fixtures', ['bar#'], ['bar1', 'bar2']],
+    ['maps fixtures by type', ['type:foo'], ['foo1', 'foo2']],
+    ['maps each fixture only once', ['foo1', 'foo1'], ['foo1']],
+    [
+      'all of the above',
+      ['foo1', 'bar#', 'type:bar'],
+      ['foo1', 'bar1', 'bar2'],
+    ],
+  ])('%s', (_, input, expected) => {
+    expect(processFixtureGroups([mockFixtureGroup(input)])).toEqual([
+      mockFixtureGroup(expected),
     ])
   })
 })

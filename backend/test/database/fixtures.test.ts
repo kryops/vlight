@@ -26,17 +26,6 @@ describe('processFixtures', () => {
     expect(processFixtures(fixtures)).toEqual(fixtures)
   })
 
-  it('just returns single fixtures', () => {
-    const fixtures: Fixture[] = [
-      {
-        id: 'foo',
-        type: 'bar',
-        channel: 1,
-      },
-    ]
-    expect(processFixtures(fixtures)).toEqual(fixtures)
-  })
-
   it('handles multi fixtures', () => {
     const fixtures: Fixture[] = [
       {
