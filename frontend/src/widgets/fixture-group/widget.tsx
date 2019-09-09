@@ -35,9 +35,10 @@ const faderContainer = css`
   align-items: stretch;
   overflow-x: auto;
   max-width: 100%;
-  padding-bottom: ${baselinePx * 8}px; // horizontal scrolling
+  /* horizontal scrolling */
+  padding-bottom: ${baselinePx * 8}px;
 
-  // justify-content: center does not work with overflow
+  /* justify-content: center does not work with overflow */
   & > :first-child {
     margin-left: auto;
   }

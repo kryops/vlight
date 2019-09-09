@@ -13,7 +13,8 @@ const widgetContainer = css`
   flex-wrap: wrap;
   justify-content: stretch;
   margin: -${baselinePx}px;
-  margin-right: ${baselinePx * 8}px; // to allow scrolling
+  /* to allow scrolling */
+  margin-right: ${baselinePx * 8}px;
 
   ${flexEndSpacer}
 `

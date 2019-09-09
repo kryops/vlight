@@ -15,7 +15,7 @@ export const globalStyles = css`
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
         Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 
-      // remove 300ms click delay
+      /* remove 300ms click delay */
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
       user-select: none;

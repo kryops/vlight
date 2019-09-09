@@ -14,7 +14,8 @@ const channelsPage = css`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  margin-right: ${baselinePx * 8}px; // to allow scrolling
+  /* to allow scrolling */
+  margin-right: ${baselinePx * 8}px;
 
   ${flexEndSpacer}
 `

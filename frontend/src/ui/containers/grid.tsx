@@ -22,7 +22,8 @@ const grid = css`
   display: flex;
   justify-content: stretch;
 
-  margin-right: ${baselinePx * 8}px; // to allow scrolling
+  /* to allow scrolling */
+  margin-right: ${baselinePx * 8}px;
 
   @media (max-width: 768px) {
     display: block;

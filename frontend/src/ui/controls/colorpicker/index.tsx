@@ -36,7 +36,8 @@ const container = css`
 const colorPicker = css`
   position: relative;
   margin-bottom: 2px;
-  height: 0; // to make the SVG not scale beyond the max-height
+  /* to make the SVG not scale beyond the max-height */
+  height: 0;
   flex-grow: 1;
 `
 
