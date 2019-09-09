@@ -1,12 +1,12 @@
 import { MemoryState } from '@vlight/entities'
 
 import {
-  mapMemoryStateToChannelValue,
-  getAffectedChannels,
-  createFullUniverse,
+  createPreparedState,
+  MemoryPreparedState,
+  mapMemoryStateToChannel,
 } from '../../../src/controls/memories/mapping'
-import { createUniverse } from '../../../src/services/universe'
 import { fillEntity } from '../../../src/database'
+import { createUniverse } from '../../../src/services/universe'
 import {
   fixtureTypes,
   fixtures,
@@ -15,39 +15,52 @@ import {
 } from '../../database/mocks'
 
 describe('controls/memories/mapping', () => {
-  describe('mapMemoryStateToChannelValue', () => {
+  describe('mapMemoryStateToChannel', () => {
+    const fullUniverse = createUniverse()
+    fullUniverse[2] = 255
+    fullUniverse[3] = 100
+    const preparedState: MemoryPreparedState = {
+      fullUniverse,
+      affectedChannels: [3, 4],
+      fadedChannels: new Set([4]),
+    }
+
+    const stateOn: MemoryState = { on: true, value: 255 }
+    const stateHalf: MemoryState = { on: true, value: 127 }
+    const stateZero: MemoryState = { on: true, value: 0 }
+    const stateOff: MemoryState = { on: false, value: 255 }
+
     it.each<[string, number, number, MemoryState]>([
-      ['off', 255, 0, { on: false, value: 255 }],
-      ['value 0', 255, 0, { on: true, value: 0 }],
-      ['full on', 255, 255, { on: true, value: 255 }],
-      ['half on', 255, 127, { on: true, value: 127 }],
-      ['half on', 100, 50, { on: true, value: 127 }],
-      ['half on (0 anyway)', 0, 0, { on: true, value: 127 }],
-    ])('%p: %p => %p', (_, value, expected, state) => {
-      expect(mapMemoryStateToChannelValue(value, state)).toBe(expected)
+      ['on (affected)', 3, 255, stateOn],
+      ['on (faded)', 4, 100, stateOn],
+      ['half (affected)', 3, 255, stateHalf],
+      ['half (faded)', 4, 50, stateHalf],
+      ['zero (affected)', 3, 255, stateZero],
+      ['zero (faded)', 4, 0, stateZero],
+      ['off (affected)', 3, 0, stateOff],
+      ['off (faded)', 4, 0, stateOff],
+    ])('state %p => channel %p = %p', (_, channel, expected, state) => {
+      expect(mapMemoryStateToChannel(preparedState, state, channel)).toBe(
+        expected
+      )
     })
   })
 
-  describe('createFullUniverse', () => {
+  describe('createPreparedState', () => {
     beforeAll(() => {
       fillEntity('fixtureTypes', fixtureTypes)
       fillEntity('fixtures', fixtures)
       fillEntity('fixtureGroups', fixtureGroups)
     })
 
-    it("maps the memory's scenes to universe", () => {
+    it('creates the prepared state', () => {
       const memory = mockMemory([['bar1'], ['baz1']])
-      const fullUniverse = createFullUniverse(memory)
-      expect(fullUniverse.slice(0, 12)).toEqual(
+      const preparedState = createPreparedState(memory)
+      expect(preparedState.fullUniverse.slice(0, 12)).toEqual(
         Buffer.from([0, 0, 255, 0, 0, 0, 0, 0, 0, 255, 0, 0])
       )
+      expect(preparedState.affectedChannels).toEqual([3, 10])
+      expect(preparedState.fadedChannels).toEqual(new Set([3, 10]))
     })
-  })
-
-  it('getAffectedChannels', () => {
-    const universe = createUniverse()
-    universe[2] = 1
-    universe[4] = 255
-    expect(getAffectedChannels(universe)).toEqual([3, 5])
   })
 })

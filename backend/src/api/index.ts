@@ -8,6 +8,7 @@ import { getDmxUniverse } from '../services/universe'
 import { setChannel } from '../controls/channels'
 import { setFixtureState } from '../controls/fixtures'
 import { setFixtureGroupState } from '../controls/fixture-groups'
+import { setMemoryState } from '../controls/memories'
 import { logError, logTrace } from '../util/log'
 import { assertNever } from '../util/typescript'
 import { howLong } from '../util/time'
@@ -56,6 +57,11 @@ export function handleApiMessage(message: ApiInMessage) {
 
     case 'fixture-group':
       setFixtureGroupState(message.id, message.state)
+      changed = true // always broadcast
+      break
+
+    case 'memory':
+      setMemoryState(message.id, message.state)
       changed = true // always broadcast
       break
 

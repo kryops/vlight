@@ -2,9 +2,8 @@
 
 ## Roadmap
 
+- CSS centralizing for similar pages/widgets
 - Memories/Scenes
-  - API
-  - Frontend: Page, widget
   - Gradients
   - Patterns
 - 2D Map

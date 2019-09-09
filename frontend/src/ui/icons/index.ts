@@ -10,6 +10,7 @@ import {
   mdiPaletteOutline,
   mdiFileAccount,
   mdiSettings,
+  mdiImageFrame,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -20,6 +21,7 @@ export const iconSun = mdiWhiteBalanceSunny
 export const iconFader = mdiTuneVertical
 export const iconLight = mdiLightbulbOnOutline
 export const iconGroup = mdiGroup
+export const iconMemory = mdiImageFrame
 export const iconExperiment = mdiFlaskOutline
 export const iconColorPicker = mdiPaletteOutline
 export const iconDynamicPage = mdiFileAccount

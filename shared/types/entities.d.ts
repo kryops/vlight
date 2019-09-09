@@ -98,11 +98,17 @@ export interface FixtureGroupWidgetConfig {
   id: string
 }
 
+export interface MemoryWidgetConfig {
+  type: 'memory'
+  id: string
+}
+
 export type WidgetConfig =
   | UniverseWidgetConfig
   | ChannelsWidgetConfig
   | FixtureWidgetConfig
   | FixtureGroupWidgetConfig
+  | MemoryWidgetConfig
 
 export interface GridCellConfig {
   factor?: number

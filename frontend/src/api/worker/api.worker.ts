@@ -98,7 +98,7 @@ function connectWebSocket() {
     logWarn('WebSocket connection was closed, reconnecting...')
     connecting = true
     sendState()
-    setTimeout(connectWebSocket, 500)
+    setTimeout(connectWebSocket, 1000)
   }
 
   socket.onerror = e => logError('WebSocket error', e)

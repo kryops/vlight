@@ -1,5 +1,5 @@
 import { ApiInMessage } from '@vlight/api'
-import { FixtureState, IdType } from '@vlight/entities'
+import { FixtureState, IdType, MemoryState } from '@vlight/entities'
 
 import { logTrace } from '../util/log'
 import { socketProcessingInterval, useSocketUpdateThrottling } from '../config'
@@ -9,6 +9,7 @@ import {
   getApiChannelMessage,
   getApiFixtureStateMessage,
   getApiFixtureGroupStateMessage,
+  getApiMemoryStateMessage,
 } from './protocol'
 // @ts-ignore
 import ApiWorker, { ApiWorkerCommand } from './worker/api.worker'
@@ -51,6 +52,10 @@ export function changeFixtureGroupState(
   sendApiMessage(
     getApiFixtureGroupStateMessage(id, updateFixtureState(oldState, newState))
   )
+}
+
+export function changeMemoryState(id: IdType, state: MemoryState) {
+  sendApiMessage(getApiMemoryStateMessage(id, state))
 }
 
 export function initApiWorker() {

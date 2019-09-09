@@ -30,6 +30,9 @@ const dynamicPages = [
             factor: 2,
             widgets: [{ type: 'fixture-group', id: 'stufen' }],
           },
+          {
+            widgets: [{ type: 'memory', id: 'test' }],
+          },
         ],
       },
     ],

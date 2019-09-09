@@ -1,8 +1,10 @@
-import { FixtureState } from '@vlight/entities'
+import { FixtureState, MemoryState } from '@vlight/entities'
 
 import {
   getApiChannelMessage,
   getApiFixtureStateMessage,
+  getApiFixtureGroupStateMessage,
+  getApiMemoryStateMessage,
 } from '../../src/api/protocol'
 
 describe('api/protocol', () => {
@@ -24,6 +26,32 @@ describe('api/protocol', () => {
     }
     expect(getApiFixtureStateMessage('id', state)).toEqual({
       type: 'fixture',
+      id: 'id',
+      state,
+    })
+  })
+
+  it('getApiFixtureGroupStateMessage', () => {
+    const state: FixtureState = {
+      on: true,
+      channels: {
+        r: 100,
+      },
+    }
+    expect(getApiFixtureGroupStateMessage('id', state)).toEqual({
+      type: 'fixture-group',
+      id: 'id',
+      state,
+    })
+  })
+
+  it('getApiMemoryStateMessage', () => {
+    const state: MemoryState = {
+      on: true,
+      value: 255,
+    }
+    expect(getApiMemoryStateMessage('id', state)).toEqual({
+      type: 'memory',
       id: 'id',
       state,
     })

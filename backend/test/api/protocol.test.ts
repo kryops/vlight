@@ -23,8 +23,11 @@ describe('api/protocol', () => {
     const fixtureGroups = {
       '2': { on: true, channels: { r: 100 } },
     }
+    const memories = {
+      '2': { on: true, value: 100 },
+    }
     expect(
-      getApiStateMessage(universe, channels, fixtures, fixtureGroups)
+      getApiStateMessage(universe, channels, fixtures, fixtureGroups, memories)
     ).toEqual({
       type: 'state',
       masterData: { foo: 'bar' },
@@ -32,6 +35,7 @@ describe('api/protocol', () => {
       channels: Array.from(channels),
       fixtures,
       fixtureGroups,
+      memories,
     })
   })
 

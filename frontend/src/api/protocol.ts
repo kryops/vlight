@@ -2,8 +2,9 @@ import {
   ApiChannelMessage,
   ApiFixtureStateMessage,
   ApiFixtureGroupStateMessage,
+  ApiMemoryStateMessage,
 } from '@vlight/api'
-import { FixtureState, IdType } from '@vlight/entities'
+import { FixtureState, IdType, MemoryState } from '@vlight/entities'
 
 export function getApiChannelMessage(
   channel: number,
@@ -34,6 +35,17 @@ export function getApiFixtureGroupStateMessage(
 ): ApiFixtureGroupStateMessage {
   return {
     type: 'fixture-group',
+    id,
+    state,
+  }
+}
+
+export function getApiMemoryStateMessage(
+  id: IdType,
+  state: MemoryState
+): ApiMemoryStateMessage {
+  return {
+    type: 'memory',
     id,
     state,
   }

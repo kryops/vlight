@@ -22,6 +22,7 @@ export const ApiWrapper: React.SFC = ({ children }) => {
     channels: undefined,
     fixtures: {},
     fixtureGroups: {},
+    memories: {},
   })
 
   const appState = useMemo<AppState>(
@@ -29,8 +30,14 @@ export const ApiWrapper: React.SFC = ({ children }) => {
       channels: apiState.channels || [],
       fixtures: apiState.fixtures,
       fixtureGroups: apiState.fixtureGroups,
+      memories: apiState.memories,
     }),
-    [apiState.channels, apiState.fixtures, apiState.fixtureGroups]
+    [
+      apiState.channels,
+      apiState.fixtures,
+      apiState.fixtureGroups,
+      apiState.memories,
+    ]
   )
 
   useEffect(() => {

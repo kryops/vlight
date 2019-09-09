@@ -1,4 +1,10 @@
-import { Dictionary, FixtureState, IdType, MasterData } from './entities'
+import {
+  Dictionary,
+  FixtureState,
+  IdType,
+  MasterData,
+  MemoryState,
+} from './entities'
 
 // Both ingoing + outgoing
 
@@ -22,12 +28,20 @@ export interface ApiFixtureGroupStateMessage {
   state: FixtureState
 }
 
+/** Change the state of a memory */
+export interface ApiMemoryStateMessage {
+  type: 'memory'
+  id: IdType
+  state: MemoryState
+}
+
 // Incoming messages
 
 export type ApiInMessage =
   | ApiChannelMessage
   | ApiFixtureStateMessage
   | ApiFixtureGroupStateMessage
+  | ApiMemoryStateMessage
 
 // Outgoing messages
 
@@ -42,6 +56,7 @@ export interface ApiStateMessage {
   channels: number[]
   fixtures: Dictionary<FixtureState>
   fixtureGroups: Dictionary<FixtureState>
+  memories: Dictionary<MemoryState>
 }
 
 export interface ApiMasterDataMessage {
@@ -69,3 +84,4 @@ export type ApiOutMessage =
   | ApiChannelMessage
   | ApiFixtureStateMessage
   | ApiFixtureGroupStateMessage
+  | ApiMemoryStateMessage

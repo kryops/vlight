@@ -8,7 +8,6 @@ import {
   addUniverse,
   removeUniverse,
   setUniverseChannel,
-  getUniverseIndex,
 } from '../../services/universe'
 import { logWarn } from '../../util/log'
 import { dictionaryToMap } from '../../util/map'
@@ -16,14 +15,13 @@ import { howLong } from '../../util/time'
 
 import {
   getInitialMemoryState,
-  mapMemoryStateToChannelValue,
-  createFullUniverse,
-  getAffectedChannels,
+  MemoryPreparedState,
+  createPreparedState,
+  mapMemoryStateToChannel,
 } from './mapping'
 
 const outgoingUniverses: Map<IdType, Universe> = new Map()
-const fullUniverses: Map<IdType, Universe> = new Map()
-const affectedChannels: Map<IdType, number[]> = new Map()
+const preparedStates: Map<IdType, MemoryPreparedState> = new Map()
 export const memoryStates: Map<IdType, MemoryState> = new Map()
 
 function initMemory(memory: Memory, oldMemoryStates: Map<IdType, MemoryState>) {
@@ -31,9 +29,8 @@ function initMemory(memory: Memory, oldMemoryStates: Map<IdType, MemoryState>) {
   const universe = createUniverse()
   outgoingUniverses.set(id, universe)
 
-  const fullUniverse = createFullUniverse(memory)
-  fullUniverses.set(id, fullUniverse)
-  affectedChannels.set(id, getAffectedChannels(fullUniverse))
+  const preparedState = createPreparedState(memory)
+  preparedStates.set(id, preparedState)
 
   const initialState = oldMemoryStates.get(id) || getInitialMemoryState()
 
@@ -45,19 +42,17 @@ function initMemory(memory: Memory, oldMemoryStates: Map<IdType, MemoryState>) {
 
 function setMemoryStateToUniverse(memory: Memory, state: MemoryState): boolean {
   const universe = outgoingUniverses.get(memory.id)
-  const fullUniverse = fullUniverses.get(memory.id)
-  const channels = affectedChannels.get(memory.id)
-  if (!universe || !fullUniverse || !channels) return false
+  const preparedState = preparedStates.get(memory.id)
+  if (!universe || !preparedState) return false
 
   let changed = false
 
-  for (const channel of channels) {
-    const fullValue = fullUniverse[getUniverseIndex(channel)]
+  for (const channel of preparedState.affectedChannels) {
     if (
       setUniverseChannel(
         universe,
         channel,
-        mapMemoryStateToChannelValue(fullValue, state)
+        mapMemoryStateToChannel(preparedState, state, channel)
       )
     ) {
       changed = true
@@ -99,8 +94,7 @@ export function reloadMemories() {
     removeUniverse(universe)
   }
   outgoingUniverses.clear()
-  fullUniverses.clear()
-  affectedChannels.clear()
+  preparedStates.clear()
 
   memories.forEach(memory => initMemory(memory, oldMemoryStates))
 }

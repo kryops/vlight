@@ -1,5 +1,10 @@
 import { ApiOutMessage } from '@vlight/api'
-import { Dictionary, FixtureState, MasterData } from '@vlight/entities'
+import {
+  Dictionary,
+  FixtureState,
+  MasterData,
+  MemoryState,
+} from '@vlight/entities'
 
 import { logError, logTrace } from '../../util/log'
 import { assertNever } from '../../util/typescript'
@@ -11,6 +16,7 @@ export interface ApiState {
   channels: number[] | undefined
   fixtures: Dictionary<FixtureState>
   fixtureGroups: Dictionary<FixtureState>
+  memories: Dictionary<MemoryState>
 }
 
 function processChannelDeltaMap(
@@ -27,11 +33,13 @@ function processChannelDeltaMap(
 function processApiMessage(message: ApiOutMessage, state: ApiState) {
   switch (message.type) {
     case 'state':
-      state.masterData = message.masterData
-      state.universe = message.universe
-      state.channels = message.channels
-      state.fixtures = message.fixtures
-      state.fixtureGroups = message.fixtureGroups
+      const { type, ...rest } = message
+
+      // type checking
+      const partialState: ApiState = rest
+
+      Object.assign(state, partialState)
+
       break
 
     case 'masterdata':
@@ -60,6 +68,13 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
     case 'fixture-group':
       state.fixtureGroups = {
         ...state.fixtureGroups,
+        [message.id]: message.state,
+      }
+      break
+
+    case 'memory':
+      state.memories = {
+        ...state.memories,
         [message.id]: message.state,
       }
       break

@@ -2,6 +2,7 @@ import { universePageNavItem, universePageRoute } from './universe'
 import { channelsPageNavItem } from './channels'
 import { fixturesPageNavItem } from './fixtures'
 import { fixtureGroupsPageNavItem } from './fixture-groups'
+import { memoriesPageNavItem } from './memories'
 import { settingsPageNavItem } from './settings'
 import { testPageNavItem } from './test'
 
@@ -17,6 +18,7 @@ export const mainNavigationItems: NavItemEntry[] = [
   channelsPageNavItem,
   fixturesPageNavItem,
   fixtureGroupsPageNavItem,
+  memoriesPageNavItem,
   settingsPageNavItem,
   testPageNavItem,
 ]
