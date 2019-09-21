@@ -20,15 +20,17 @@ interface Env {
   analyze?: any
   production?: any
   profile?: any
+  profileReact?: any
 }
 
 // linaria CSS options
 stylis.set({ prefix: false })
 
 export const webpackConfiguration = (env: Env = {}) => {
-  const isProduction = !!env.production
+  const isProduction = !!env.production || !!env.profileReact
   const analyze = !!env.analyze
   const profile = !!env.profile
+  const profileReact = !!env.profileReact
   const isDevServer = process.env.DEV_SERVER === 'true'
 
   if (process.env.NODE_ENV === undefined) {
@@ -100,7 +102,12 @@ export const webpackConfiguration = (env: Env = {}) => {
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
       alias: isProduction
-        ? {}
+        ? profileReact
+          ? {
+              'react-dom$': 'react-dom/profiling',
+              'scheduler/tracing': 'scheduler/tracing-profiling',
+            }
+          : {}
         : {
             'react-dom': '@hot-loader/react-dom',
           },
@@ -179,6 +186,12 @@ export const webpackConfiguration = (env: Env = {}) => {
             mangle: true,
             ie8: false,
             sourceMap: true,
+            ...(profileReact
+              ? {
+                  keep_classnames: true,
+                  keep_fnames: true,
+                }
+              : {}),
           },
         }),
       ],

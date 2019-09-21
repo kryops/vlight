@@ -17,6 +17,7 @@
     "build:frontend": "cross-env NODE_ENV=production webpack --config frontend/webpack.config.ts --env.production",
     "build:frontend:dev": "webpack --config frontend/webpack.config.ts",
     "build:frontend:profile": "webpack --config frontend/webpack.config.ts --env.profile",
+    "build:frontend:profileReact": "webpack --config frontend/webpack.config.ts --env.profileReact",
     "client:tcp": "sucrase-node backend/clients/vlight-tcp.ts",
     "client:udp": "sucrase-node backend/clients/vlight-udp.ts",
     "docker:build": "docker build -t kryops/vlight .",
