@@ -22,5 +22,4 @@
 
 ## Experiments
 
-- Electron wrapper
 - Node.js worker threads

@@ -36,6 +36,7 @@
     "start:frontend": "webpack-dev-server --config frontend/webpack.config.ts",
     "start:devserver": "cross-env DEV_SERVER=true nodemon",
     "start:prod": "cross-env NODE_ENV=production && node .",
+    "start:electron": "electron ./electron.js",
     "test": "jest"
   },
   "devDependencies": {
@@ -80,6 +81,7 @@
     "concurrently": "^4.1.2",
     "core-js": "^3.2.1",
     "css-loader": "^3.2.0",
+    "electron": "^6.0.10",
     "eslint": "^6.5.0",
     "eslint-config-prettier": "^6.3.0",
     "eslint-plugin-import": "^2.18.2",
