@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useAppState } from '../../hooks/api'
+import { useApiState } from '../../hooks/api'
 
 import { StatelessChannelsWidget } from './widget'
 
@@ -11,8 +11,7 @@ export interface Props {
 }
 
 export const ChannelsWidget: React.SFC<Props> = ({ from, to, title }) => {
-  const appState = useAppState()
-  const channels = appState.channels
+  const channels = useApiState('channels')
 
   return (
     <StatelessChannelsWidget

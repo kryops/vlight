@@ -3,7 +3,7 @@ import React from 'react'
 
 import { setChannel } from '../../api'
 import { getUniverseIndex } from '../../api/util'
-import { useAppState } from '../../hooks/api'
+import { useApiState } from '../../hooks/api'
 import { PureDangerousFader } from '../../ui/controls/fader'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
@@ -21,7 +21,7 @@ const channelsPage = css`
 `
 
 const _ChannelsPage: React.SFC = () => {
-  const { channels } = useAppState()
+  const channels = useApiState('channels')
 
   // TODO add paging / virtual scrolling?
   const allChannels = createRangeArray(1, 512)
