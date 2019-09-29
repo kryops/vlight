@@ -1,8 +1,8 @@
 import cx from 'classnames'
 import { css } from 'linaria'
-import React, { Suspense, useCallback, useState } from 'react'
+import React, { Suspense, useCallback, useState, useEffect } from 'react'
+import { useLocation } from 'react-router'
 
-import { useRouterLocationChanged } from '../../hooks/router'
 import { RoutesOutlet } from '../../pages/routes-outlet'
 import { iconClose, iconMenu } from '../icons'
 import { CornerButton } from '../navigation/corner-button'
@@ -61,14 +61,14 @@ const alwaysShowNav = window.innerWidth >= navBreakpoint
 
 const _MainContainer: React.SFC = () => {
   const [nav, setNav] = useState(alwaysShowNav)
-  const locationChanged = useRouterLocationChanged()
+  const location = useLocation()
   const { lightMode } = useSettings()
 
   const toggleNav = useCallback(() => setNav(!nav), [nav])
 
-  if (locationChanged && !alwaysShowNav) {
-    setNav(false)
-  }
+  useEffect(() => {
+    if (!alwaysShowNav) setNav(false)
+  }, [location])
 
   const navOverlayed = nav && !alwaysShowNav
 

@@ -1,23 +1,23 @@
 import { hot } from 'react-hot-loader/root'
 import React, { StrictMode } from 'react'
+import { BrowserRouter } from 'react-router-dom'
 
 import { ApiWrapper } from './api/api-wrapper'
 import './ui/global-styles'
 import { MainContainer } from './ui/main/main-container'
 import { ErrorBoundary } from './util/error-boundary'
-import { RouterWithContext } from './util/router-with-context'
 import { SettingsWrapper } from './settings'
 
 const App: React.SFC = () => (
   <StrictMode>
     <ErrorBoundary>
-      <RouterWithContext>
+      <BrowserRouter>
         <SettingsWrapper>
           <ApiWrapper>
             <MainContainer />
           </ApiWrapper>
         </SettingsWrapper>
-      </RouterWithContext>
+      </BrowserRouter>
     </ErrorBoundary>
   </StrictMode>
 )
