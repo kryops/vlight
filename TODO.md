@@ -19,3 +19,8 @@
 - LaunchPad input
 - XTouch input
 - External input mapping
+
+## Experiments
+
+- Electron wrapper
+- Node.js worker threads
