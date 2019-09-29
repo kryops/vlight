@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 
 export function useDelayedState<T>(
   initialValue: T,
@@ -13,16 +13,19 @@ export function useDelayedState<T>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
-  }, [timeoutRef])
+  }, [])
 
-  function setStateDelayed(value: T, delayed = false) {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current)
-    if (delayed) {
-      timeoutRef.current = setTimeout(() => setState(value), ms)
-    } else {
-      setState(value)
-    }
-  }
+  const setStateDelayed = useCallback(
+    (value: T, delayed = false) => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+      if (delayed) {
+        timeoutRef.current = setTimeout(() => setState(value), ms)
+      } else {
+        setState(value)
+      }
+    },
+    [ms]
+  )
 
   return [state, setStateDelayed]
 }

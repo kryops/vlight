@@ -4,10 +4,6 @@ import { masterDataMaps } from '../api/masterdata'
 import { ApiState } from '../api/worker/processing'
 import { apiStateEmitter, apiState, workerState } from '../api/api-state'
 
-function identity<T>(arg: T): T {
-  return arg
-}
-
 export function useApiConnecting(): boolean {
   const [state, setState] = useState(workerState.connecting)
   useEffect(() => {
@@ -25,17 +21,13 @@ export function useApiConnecting(): boolean {
   return state
 }
 
-export function useApiState<
-  TKey extends keyof ApiState,
-  TResult = NonNullable<ApiState[TKey]>
->(
-  key: TKey,
-  mappingFn: (value: ApiState[TKey]) => TResult = identity as any
-): TResult {
-  const [state, setState] = useState(mappingFn(apiState[key]))
+export function useApiState<TKey extends keyof ApiState>(
+  key: TKey
+): NonNullable<ApiState[TKey]> {
+  const [state, setState] = useState(apiState[key])
   useEffect(() => {
     function eventHandler() {
-      setState(mappingFn(apiState[key]))
+      setState(apiState[key])
     }
 
     apiStateEmitter.on(key, eventHandler)
@@ -43,9 +35,10 @@ export function useApiState<
     return () => {
       apiStateEmitter.off(key, eventHandler)
     }
-  }, [key, mappingFn])
+  }, [key])
 
-  return state
+  // We assume that someone will display a loading screen further up if not all data is present
+  return state!
 }
 
 export function useApiStateEntry<

@@ -1,8 +1,4 @@
-import {
-  createRangeArray,
-  removeFromMutableArray,
-  flat,
-} from '../../src/util/array'
+import { createRangeArray, removeFromMutableArray } from '../../src/util/array'
 
 describe('util/array', () => {
   describe('removeFromMutableArray', () => {
@@ -28,12 +24,6 @@ describe('util/array', () => {
       expect(createRangeArray(1, 4)).toEqual([1, 2, 3, 4])
       expect(createRangeArray(1, 1)).toEqual([1])
       expect(createRangeArray(1, 0)).toEqual([])
-    })
-  })
-
-  describe('flat', () => {
-    it('flattens arrays', () => {
-      expect(flat([[1, 2, 3], [4], [], [5]])).toEqual([1, 2, 3, 4, 5])
     })
   })
 })

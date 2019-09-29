@@ -7,7 +7,6 @@ import {
   useApiStateEntry,
 } from '../../hooks/api'
 import { isTruthy, isUnique } from '../../util/validation'
-import { flat } from '../../util/array'
 
 import { StatelessFixtureGroupWidget } from './widget'
 
@@ -31,8 +30,7 @@ export const FixtureGroupWidget: React.SFC<Props> = ({ group }) => {
     .filter(isTruthy)
     .filter(isUnique)
   const groupMapping = useMemo(
-    () =>
-      flat(groupFixtureTypes.map(({ mapping }) => mapping)).filter(isUnique),
+    () => groupFixtureTypes.flatMap(({ mapping }) => mapping).filter(isUnique),
     [group, masterData] // eslint-disable-line
   )
 

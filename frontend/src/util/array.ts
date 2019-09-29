@@ -18,7 +18,3 @@ export function createRangeArray(min: number, max: number): number[] {
   }
   return arr
 }
-
-export function flat<T>(arrays: T[][]): T[] {
-  return arrays.reduce((acc, cur) => acc.concat(cur), [])
-}
