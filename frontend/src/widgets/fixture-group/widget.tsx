@@ -48,7 +48,7 @@ const faderContainer = css`
   }
 `
 
-interface StatelessProps {
+export interface StatelessFixtureGroupWidgetProps {
   group: FixtureGroup
   groupMapping: string[]
   groupState: FixtureState
@@ -56,89 +56,87 @@ interface StatelessProps {
   toggleColorPicker?: () => void
 }
 
-const _StatelessFixtureGroupWidget: React.SFC<StatelessProps> = ({
-  group,
-  groupMapping,
-  groupState,
-  colorPicker,
-  toggleColorPicker,
-}) => {
-  const groupStateRef = useCurrentRef(groupState)
-
-  const colorPickerCapable = colorPickerColors.every(c =>
-    groupMapping.includes(c)
-  )
-  const hasColorPicker = colorPicker && colorPickerCapable
-
-  const { r, g, b } = fixtureStateToColor(groupState)
-
-  const fadersToRender = groupMapping.filter(
-    c =>
-      c !== ChannelMapping.master &&
-      (!hasColorPicker || !colorPickerColors.includes(c))
-  )
-
-  const renderFader = (channelType: string, index = 0) => (
-    <FixtureStateFader
-      key={channelType + index}
-      id={group.id}
-      channelType={channelType}
-      value={groupState.channels[channelType] || 0}
-      stateRef={groupStateRef}
-      changeFn={changeFixtureGroupState}
-      colorPicker={
-        colorPickerCapable &&
-        !colorPicker &&
-        colorPickerColors.includes(channelType)
-      }
-    />
-  )
-
-  const onColorPickerChange = useCallback(
-    color =>
-      changeFixtureGroupState(group.id, groupState, {
-        channels: { ...color },
-      }),
-    [group.id, groupState]
-  )
-
-  return (
-    <Widget
-      key={group.id}
-      title={
-        <div className={title}>
-          <a
-            onClick={() =>
-              changeFixtureGroupState(group.id, groupState, {
-                on: !groupState.on,
-              })
-            }
-          >
-            {group.name || group.id} ({group.fixtures.length}){' '}
-            {!groupState.on && '[OFF]'}
-          </a>
-          {colorPickerCapable && (
-            <Icon
-              icon={iconColorPicker}
-              onClick={toggleColorPicker}
-              shade={colorPicker ? 1 : 2}
-            />
-          )}
-        </div>
-      }
-      className={groupState.on ? undefined : turnedOff}
-    >
-      <div className={faderContainer}>
-        {renderFader('m')}
-        {hasColorPicker && (
-          <ColorPicker r={r} g={g} b={b} onChange={onColorPickerChange} />
-        )}
-        {fadersToRender.map(renderFader)}
-      </div>
-    </Widget>
-  )
-}
-
 export const StatelessFixtureGroupWidget = memoInProduction(
-  _StatelessFixtureGroupWidget
+  ({
+    group,
+    groupMapping,
+    groupState,
+    colorPicker,
+    toggleColorPicker,
+  }: StatelessFixtureGroupWidgetProps) => {
+    const groupStateRef = useCurrentRef(groupState)
+
+    const colorPickerCapable = colorPickerColors.every(c =>
+      groupMapping.includes(c)
+    )
+    const hasColorPicker = colorPicker && colorPickerCapable
+
+    const { r, g, b } = fixtureStateToColor(groupState)
+
+    const fadersToRender = groupMapping.filter(
+      c =>
+        c !== ChannelMapping.master &&
+        (!hasColorPicker || !colorPickerColors.includes(c))
+    )
+
+    const renderFader = (channelType: string, index = 0) => (
+      <FixtureStateFader
+        key={channelType + index}
+        id={group.id}
+        channelType={channelType}
+        value={groupState.channels[channelType] || 0}
+        stateRef={groupStateRef}
+        changeFn={changeFixtureGroupState}
+        colorPicker={
+          colorPickerCapable &&
+          !colorPicker &&
+          colorPickerColors.includes(channelType)
+        }
+      />
+    )
+
+    const onColorPickerChange = useCallback(
+      color =>
+        changeFixtureGroupState(group.id, groupState, {
+          channels: { ...color },
+        }),
+      [group.id, groupState]
+    )
+
+    return (
+      <Widget
+        key={group.id}
+        title={
+          <div className={title}>
+            <a
+              onClick={() =>
+                changeFixtureGroupState(group.id, groupState, {
+                  on: !groupState.on,
+                })
+              }
+            >
+              {group.name || group.id} ({group.fixtures.length}){' '}
+              {!groupState.on && '[OFF]'}
+            </a>
+            {colorPickerCapable && (
+              <Icon
+                icon={iconColorPicker}
+                onClick={toggleColorPicker}
+                shade={colorPicker ? 1 : 2}
+              />
+            )}
+          </div>
+        }
+        className={groupState.on ? undefined : turnedOff}
+      >
+        <div className={faderContainer}>
+          {renderFader('m')}
+          {hasColorPicker && (
+            <ColorPicker r={r} g={g} b={b} onChange={onColorPickerChange} />
+          )}
+          {fadersToRender.map(renderFader)}
+        </div>
+      </Widget>
+    )
+  }
 )

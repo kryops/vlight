@@ -4,13 +4,17 @@ import { useDmxUniverse, useMasterData } from '../../hooks/api'
 
 import { StatelessUniverseWidget } from './widget'
 
-export interface Props {
+export interface UniverseWidgetProps {
   from: number
   to: number
   title?: string
 }
 
-export const UniverseWidget: React.SFC<Props> = ({ from, to, title }) => {
+export const UniverseWidget: React.FunctionComponent<UniverseWidgetProps> = ({
+  from,
+  to,
+  title,
+}) => {
   const universe = useDmxUniverse()
   const masterData = useMasterData()
 

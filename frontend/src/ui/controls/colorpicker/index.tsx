@@ -82,7 +82,7 @@ const colorPresetActive = css`
   padding: 0;
 `
 
-export interface Props {
+export interface ColorPickerProps {
   r?: number
   g?: number
   b?: number
@@ -90,7 +90,7 @@ export interface Props {
 }
 
 export const ColorPicker = memoInProduction(
-  ({ r = 0, g = 0, b = 0, onChange }: Props) => {
+  ({ r = 0, g = 0, b = 0, onChange }: ColorPickerProps) => {
     const { lightMode } = useSettings()
     const [
       localColor,

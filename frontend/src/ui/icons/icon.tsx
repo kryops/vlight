@@ -31,7 +31,7 @@ const path4 = css`
 `
 const pathShades = [path0, path1, path2, path3, path4]
 
-export interface Props {
+export interface IconProps {
   icon: string
   shade?: ColorShade
   className?: string
@@ -39,19 +39,17 @@ export interface Props {
   onClick?: () => void
 }
 
-const _Icon: React.SFC<Props> = ({
-  icon,
-  shade = 0,
-  className,
-  pathClassName,
-  onClick,
-}) => (
-  <svg viewBox="0 0 24 24" className={cx(iconSvg, className)} onClick={onClick}>
-    <path
-      d={icon}
-      className={cx(pathShades[shade] || pathShades[0], pathClassName)}
-    />
-  </svg>
+export const Icon = memoInProduction(
+  ({ icon, shade = 0, className, pathClassName, onClick }: IconProps) => (
+    <svg
+      viewBox="0 0 24 24"
+      className={cx(iconSvg, className)}
+      onClick={onClick}
+    >
+      <path
+        d={icon}
+        className={cx(pathShades[shade] || pathShades[0], pathClassName)}
+      />
+    </svg>
+  )
 )
-
-export const Icon = memoInProduction(_Icon)

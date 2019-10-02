@@ -59,7 +59,7 @@ const overlay = css`
 const navBreakpoint = 768
 const alwaysShowNav = window.innerWidth >= navBreakpoint
 
-const _MainContainer: React.SFC = () => {
+export const MainContainer = memoInProduction(() => {
   const [nav, setNav] = useState(alwaysShowNav)
   const location = useLocation()
   const { lightMode } = useSettings()
@@ -92,6 +92,4 @@ const _MainContainer: React.SFC = () => {
       </div>
     </div>
   )
-}
-
-export const MainContainer = memoInProduction(_MainContainer)
+})

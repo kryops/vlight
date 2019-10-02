@@ -58,26 +58,26 @@ const navLabel = css`
   padding-right: ${baselinePx * 4}px;
 `
 
-export interface Props {
+export interface NavItemProps {
   to: string
   icon: string
   label: string
   showLabel?: boolean
 }
 
-const _NavItem: React.SFC<Props> = ({ to, icon, label, showLabel }) => {
-  const { lightMode } = useSettings()
-  return (
-    <NavLink
-      to={to}
-      title={label}
-      className={cx(navItem, lightMode && navItem_light)}
-      activeClassName={lightMode ? navItem_active_light : navItem_active}
-    >
-      <Icon icon={icon} shade={1} pathClassName={iconPath} />
-      {showLabel && <span className={navLabel}>{label}</span>}
-    </NavLink>
-  )
-}
-
-export const NavItem = memoInProduction(_NavItem)
+export const NavItem = memoInProduction(
+  ({ to, icon, label, showLabel }: NavItemProps) => {
+    const { lightMode } = useSettings()
+    return (
+      <NavLink
+        to={to}
+        title={label}
+        className={cx(navItem, lightMode && navItem_light)}
+        activeClassName={lightMode ? navItem_active_light : navItem_active}
+      >
+        <Icon icon={icon} shade={1} pathClassName={iconPath} />
+        {showLabel && <span className={navLabel}>{label}</span>}
+      </NavLink>
+    )
+  }
+)

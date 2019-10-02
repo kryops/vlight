@@ -10,11 +10,13 @@ import { isTruthy, isUnique } from '../../util/validation'
 
 import { StatelessFixtureGroupWidget } from './widget'
 
-export interface Props {
+export interface FixtureGroupWidgetProps {
   group: FixtureGroup
 }
 
-export const FixtureGroupWidget: React.SFC<Props> = ({ group }) => {
+export const FixtureGroupWidget: React.FunctionComponent<
+  FixtureGroupWidgetProps
+> = ({ group }) => {
   const masterData = useMasterData()
   const groupState = useApiStateEntry('fixtureGroups', group.id)
 

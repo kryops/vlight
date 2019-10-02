@@ -34,7 +34,7 @@ const universeBar_connected = css`
   margin-right: ${-1.25 * baselinePx}px;
 `
 
-const _UniversePage: React.SFC = () => {
+const UniversePage = memoInProduction(() => {
   const universe = useDmxUniverse()
   const masterData = useMasterData()
   const { fixtureTypes } = useMasterDataMaps()
@@ -83,6 +83,6 @@ const _UniversePage: React.SFC = () => {
       </div>
     </>
   )
-}
+})
 
-export default memoInProduction(_UniversePage)
+export default UniversePage

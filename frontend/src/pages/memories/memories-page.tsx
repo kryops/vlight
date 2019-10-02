@@ -18,7 +18,7 @@ const memoriesPage = css`
   ${flexEndSpacer}
 `
 
-const _MemoriesPage: React.SFC = () => {
+const MemoriesPage = memoInProduction(() => {
   const { memories } = useMasterData()
 
   return (
@@ -28,6 +28,6 @@ const _MemoriesPage: React.SFC = () => {
       ))}
     </div>
   )
-}
+})
 
-export default memoInProduction(_MemoriesPage)
+export default MemoriesPage

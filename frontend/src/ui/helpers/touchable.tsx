@@ -17,7 +17,7 @@ export type RawTouchEventListener = (
   e: React.PointerEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
 ) => void
 
-export interface Props {
+export interface TouchableProps {
   onTouch?: TouchEventListener
   onDown?: TouchEventListener
   onUp?: TouchEventListener
@@ -27,7 +27,7 @@ export interface Props {
 
 export const Touchable = React.forwardRef<
   HTMLDivElement,
-  Props & { children: any }
+  TouchableProps & { children: any }
 >(({ onTouch, onDown, onUp, onMove, className, children }, ref) => {
   const pointerActive = useRef(false)
 

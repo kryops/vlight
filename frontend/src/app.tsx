@@ -8,7 +8,7 @@ import { MainContainer } from './ui/main/main-container'
 import { ErrorBoundary } from './util/error-boundary'
 import { SettingsWrapper } from './settings'
 
-const App: React.SFC = () => (
+const App = () => (
   <StrictMode>
     <ErrorBoundary>
       <BrowserRouter>

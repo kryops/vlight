@@ -20,12 +20,16 @@ const content = css`
   padding: ${baselinePx * 2}px;
 `
 
-export interface Props {
+export interface WidgetProps {
   title?: string | React.ReactElement
   className?: string
 }
 
-export const Widget: React.SFC<Props> = ({ title, className, children }) => (
+export const Widget: React.FunctionComponent<WidgetProps> = ({
+  title,
+  className,
+  children,
+}) => (
   <div className={cx(widget, className)}>
     <div className={headline}>{title}</div>
     <div className={content}>{children}</div>

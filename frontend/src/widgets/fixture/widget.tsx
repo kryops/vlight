@@ -58,7 +58,7 @@ const faderContainer = css`
   }
 `
 
-interface StatelessProps {
+export interface StatelessFixtureWidgetProps {
   fixture: Fixture
   fixtureType: FixtureType
   fixtureState: FixtureState
@@ -73,7 +73,7 @@ export const StatelessFixtureWidget = memoInProduction(
     fixtureState,
     colorPicker = true,
     toggleColorPicker,
-  }: StatelessProps) => {
+  }: StatelessFixtureWidgetProps) => {
     const fixtureStateRef = useCurrentRef(fixtureState)
 
     const colorPickerCapable = colorPickerColors.every(c =>

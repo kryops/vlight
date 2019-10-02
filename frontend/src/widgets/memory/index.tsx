@@ -5,11 +5,13 @@ import { useApiStateEntry } from '../../hooks/api'
 
 import { StatelessMemoryWidget } from './widget'
 
-export interface Props {
+export interface MemoryWidgetProps {
   memory: Memory
 }
 
-export const MemoryWidget: React.SFC<Props> = ({ memory }) => {
+export const MemoryWidget: React.FunctionComponent<MemoryWidgetProps> = ({
+  memory,
+}) => {
   const memoryState = useApiStateEntry('memories', memory.id)
 
   if (!memoryState) {

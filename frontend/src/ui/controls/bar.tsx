@@ -50,7 +50,7 @@ const barLevel = css`
   transform-origin: bottom center;
 `
 
-export interface Props {
+export interface BarProps {
   value: number
   min?: number
   max?: number
@@ -60,43 +60,45 @@ export interface Props {
   className?: string
 }
 
-const _Bar: React.SFC<Props> = ({
-  label,
-  cornerLabel,
-  value,
-  min = 0,
-  max = 1,
-  color,
-  className,
-}) => {
-  const { lightMode } = useSettings()
-  const fraction = ensureBetween(getFraction(value, min, max), 0, 1)
-  return (
-    <div
-      className={cx(bar, className)}
-      style={color ? { borderBottomColor: color } : undefined}
-    >
-      <div className={barLabel}>{label}</div>
-      {cornerLabel && (
-        <div className={cx(barCornerLabel, lightMode && barCornerLabel_light)}>
-          {cornerLabel}
-        </div>
-      )}
-      {fraction > 0 && (
-        <div
-          className={barLevel}
-          style={
-            fraction < 1
-              ? {
-                  opacity: 0.3 + fraction * 0.7,
-                  transform: `scaleY(${fraction})`,
-                }
-              : undefined
-          }
-        />
-      )}
-    </div>
-  )
-}
-
-export const Bar = memoInProduction(_Bar)
+export const Bar = memoInProduction(
+  ({
+    label,
+    cornerLabel,
+    value,
+    min = 0,
+    max = 1,
+    color,
+    className,
+  }: BarProps) => {
+    const { lightMode } = useSettings()
+    const fraction = ensureBetween(getFraction(value, min, max), 0, 1)
+    return (
+      <div
+        className={cx(bar, className)}
+        style={color ? { borderBottomColor: color } : undefined}
+      >
+        <div className={barLabel}>{label}</div>
+        {cornerLabel && (
+          <div
+            className={cx(barCornerLabel, lightMode && barCornerLabel_light)}
+          >
+            {cornerLabel}
+          </div>
+        )}
+        {fraction > 0 && (
+          <div
+            className={barLevel}
+            style={
+              fraction < 1
+                ? {
+                    opacity: 0.3 + fraction * 0.7,
+                    transform: `scaleY(${fraction})`,
+                  }
+                : undefined
+            }
+          />
+        )}
+      </div>
+    )
+  }
+)

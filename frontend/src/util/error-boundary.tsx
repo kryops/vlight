@@ -6,14 +6,14 @@ interface ErrorInfo {
   componentStack: string
 }
 
-interface State {
+interface ErrorBoundaryState {
   error?: Error
   stackTrace?: string
   componentStack?: string
 }
 
-export class ErrorBoundary extends React.Component<{}, State> {
-  state: State = {}
+export class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
+  state: ErrorBoundaryState = {}
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     this.prepareError(error, info)

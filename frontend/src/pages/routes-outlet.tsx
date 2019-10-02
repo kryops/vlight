@@ -7,7 +7,7 @@ import { dynamicPageRoute, DynamicPage } from './dynamic'
 
 import { entryRoute, mainNavigationItems } from '.'
 
-const _RoutesOutlet: React.SFC = () => (
+export const RoutesOutlet = memoInProduction(() => (
   <Switch>
     {mainNavigationItems.map(({ route, page }) => (
       <Route key={route} path={route} exact component={page} />
@@ -15,6 +15,4 @@ const _RoutesOutlet: React.SFC = () => (
     <Route path={dynamicPageRoute()} exact component={DynamicPage} />
     <Redirect to={entryRoute} />
   </Switch>
-)
-
-export const RoutesOutlet = memoInProduction(_RoutesOutlet)
+))

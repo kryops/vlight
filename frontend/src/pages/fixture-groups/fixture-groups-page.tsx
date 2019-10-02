@@ -18,7 +18,7 @@ const fixtureGroupsPage = css`
   ${flexEndSpacer}
 `
 
-const _FixtureGroupsPage: React.SFC = () => {
+const FixtureGroupsPage = memoInProduction(() => {
   const { fixtureGroups } = useMasterData()
 
   return (
@@ -28,6 +28,6 @@ const _FixtureGroupsPage: React.SFC = () => {
       ))}
     </div>
   )
-}
+})
 
-export default memoInProduction(_FixtureGroupsPage)
+export default FixtureGroupsPage

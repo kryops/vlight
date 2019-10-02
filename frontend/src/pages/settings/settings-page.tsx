@@ -4,7 +4,7 @@ import { useSettings } from '../../hooks/settings'
 import { Settings } from '../../settings'
 import { memoInProduction } from '../../util/development'
 
-const _SettingsPage: React.SFC = () => {
+const SettingsPage = memoInProduction(() => {
   const settings = useSettings()
   const { lightMode, updateSettings } = settings
 
@@ -19,6 +19,6 @@ const _SettingsPage: React.SFC = () => {
       </a>
     </div>
   )
-}
+})
 
-export default memoInProduction(_SettingsPage)
+export default SettingsPage

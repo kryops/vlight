@@ -4,13 +4,17 @@ import { useApiState } from '../../hooks/api'
 
 import { StatelessChannelsWidget } from './widget'
 
-export interface Props {
+export interface ChannelsWidgetProps {
   from: number
   to: number
   title?: string
 }
 
-export const ChannelsWidget: React.SFC<Props> = ({ from, to, title }) => {
+export const ChannelsWidget: React.FunctionComponent<ChannelsWidgetProps> = ({
+  from,
+  to,
+  title,
+}) => {
   const channels = useApiState('channels')
 
   return (

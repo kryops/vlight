@@ -32,44 +32,44 @@ const navigation_floating = css`
   box-shadow: 2px 0 10px icon(10%);
 `
 
-export interface Props {
+export interface NavigationProps {
   showLabels?: boolean
   floating?: boolean
 }
 
-const _Navigation: React.SFC<Props> = ({ showLabels, floating }) => {
-  const { lightMode } = useSettings()
-  const masterData = useMasterData()
-  const { dynamicPages } = masterData
+export const Navigation = memoInProduction(
+  ({ showLabels, floating }: NavigationProps) => {
+    const { lightMode } = useSettings()
+    const masterData = useMasterData()
+    const { dynamicPages } = masterData
 
-  return (
-    <div
-      className={cx(
-        navigation,
-        floating && navigation_floating,
-        lightMode && navigation_light
-      )}
-    >
-      {mainNavigationItems.map(({ route, icon, label }) => (
-        <NavItem
-          key={route}
-          to={route}
-          icon={icon}
-          label={label}
-          showLabel={showLabels}
-        />
-      ))}
-      {dynamicPages.map(({ id, icon, headline }) => (
-        <NavItem
-          key={id}
-          to={dynamicPageRoute(id)}
-          icon={icon || iconDynamicPage}
-          label={headline || id}
-          showLabel={showLabels}
-        />
-      ))}
-    </div>
-  )
-}
-
-export const Navigation = memoInProduction(_Navigation)
+    return (
+      <div
+        className={cx(
+          navigation,
+          floating && navigation_floating,
+          lightMode && navigation_light
+        )}
+      >
+        {mainNavigationItems.map(({ route, icon, label }) => (
+          <NavItem
+            key={route}
+            to={route}
+            icon={icon}
+            label={label}
+            showLabel={showLabels}
+          />
+        ))}
+        {dynamicPages.map(({ id, icon, headline }) => (
+          <NavItem
+            key={id}
+            to={dynamicPageRoute(id)}
+            icon={icon || iconDynamicPage}
+            label={headline || id}
+            showLabel={showLabels}
+          />
+        ))}
+      </div>
+    )
+  }
+)

@@ -39,49 +39,46 @@ const faderContainer = css`
   }
 `
 
-interface StatelessProps {
+export interface StatelessMemoryWidgetProps {
   memory: Memory
   state: MemoryState
 }
 
-const _StatelessMemoryWidget: React.SFC<StatelessProps> = ({
-  memory,
-  state,
-}) => {
-  return (
-    <Widget
-      key={memory.id}
-      title={
-        <div className={title}>
-          <a
-            onClick={() =>
+export const StatelessMemoryWidget = memoInProduction(
+  ({ memory, state }: StatelessMemoryWidgetProps) => {
+    return (
+      <Widget
+        key={memory.id}
+        title={
+          <div className={title}>
+            <a
+              onClick={() =>
+                changeMemoryState(memory.id, {
+                  value: state.value,
+                  on: !state.on,
+                })
+              }
+            >
+              {memory.name || memory.id} {!state.on && '[OFF]'}
+            </a>
+          </div>
+        }
+        className={state.on ? undefined : turnedOff}
+      >
+        <div className={faderContainer}>
+          <Fader
+            max={255}
+            step={1}
+            value={state.value || 0}
+            onChange={value =>
               changeMemoryState(memory.id, {
-                value: state.value,
-                on: !state.on,
+                on: state.on,
+                value,
               })
             }
-          >
-            {memory.name || memory.id} {!state.on && '[OFF]'}
-          </a>
+          />
         </div>
-      }
-      className={state.on ? undefined : turnedOff}
-    >
-      <div className={faderContainer}>
-        <Fader
-          max={255}
-          step={1}
-          value={state.value || 0}
-          onChange={value =>
-            changeMemoryState(memory.id, {
-              on: state.on,
-              value,
-            })
-          }
-        />
-      </div>
-    </Widget>
-  )
-}
-
-export const StatelessMemoryWidget = memoInProduction(_StatelessMemoryWidget)
+      </Widget>
+    )
+  }
+)

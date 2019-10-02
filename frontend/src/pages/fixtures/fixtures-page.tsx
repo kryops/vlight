@@ -18,7 +18,7 @@ const fixturesPage = css`
   ${flexEndSpacer}
 `
 
-const _FixturesPage: React.SFC = () => {
+const FixturesPage = memoInProduction(() => {
   const { fixtures } = useMasterData()
 
   return (
@@ -28,6 +28,6 @@ const _FixturesPage: React.SFC = () => {
       ))}
     </div>
   )
-}
+})
 
-export default memoInProduction(_FixturesPage)
+export default FixturesPage

@@ -26,7 +26,7 @@ const faderContainer = css`
   }
 `
 
-interface StatelessProps {
+export interface StatelessChannelsWidgetProps {
   channels: number[]
   from: number
   to: number
@@ -34,7 +34,7 @@ interface StatelessProps {
 }
 
 export const StatelessChannelsWidget = memoInProduction(
-  ({ channels, from, to, title }: StatelessProps) => {
+  ({ channels, from, to, title }: StatelessChannelsWidgetProps) => {
     const range = createRangeArray(from, to)
 
     return (

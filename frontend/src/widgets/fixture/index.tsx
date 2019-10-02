@@ -5,11 +5,13 @@ import { useMasterDataMaps, useApiStateEntry } from '../../hooks/api'
 
 import { StatelessFixtureWidget } from './widget'
 
-export interface Props {
+export interface FixtureWidgetProps {
   fixture: Fixture
 }
 
-export const FixtureWidget: React.SFC<Props> = ({ fixture }) => {
+export const FixtureWidget: React.FunctionComponent<FixtureWidgetProps> = ({
+  fixture,
+}) => {
   const { fixtureTypes } = useMasterDataMaps()
   const fixtureType = fixtureTypes.get(fixture.type)
   const fixtureState = useApiStateEntry('fixtures', fixture.id)

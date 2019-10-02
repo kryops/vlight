@@ -19,7 +19,7 @@ const widgetContainer = css`
   ${flexEndSpacer}
 `
 
-const _TestPage: React.SFC = () => {
+const TestPage = memoInProduction(() => {
   const masterData = useMasterData()
 
   return (
@@ -63,6 +63,6 @@ const _TestPage: React.SFC = () => {
       <pre>{JSON.stringify(masterData, null, 2)}</pre>
     </div>
   )
-}
+})
 
-export default memoInProduction(_TestPage)
+export default TestPage

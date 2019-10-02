@@ -15,17 +15,17 @@ const cornerButton = css`
   cursor: pointer;
 `
 
-export interface Props {
+export interface CornerButtonProps {
   icon: string
   tooltip?: string
   shade?: ColorShade
   onClick: () => void
 }
 
-const _CornerButton: React.SFC<Props> = ({ icon, tooltip, shade, onClick }) => (
-  <div title={tooltip} className={cornerButton} onClick={onClick}>
-    <Icon icon={icon} shade={shade === undefined ? 2 : shade} />
-  </div>
+export const CornerButton = memoInProduction(
+  ({ icon, tooltip, shade, onClick }: CornerButtonProps) => (
+    <div title={tooltip} className={cornerButton} onClick={onClick}>
+      <Icon icon={icon} shade={shade === undefined ? 2 : shade} />
+    </div>
+  )
 )
-
-export const CornerButton = memoInProduction(_CornerButton)
