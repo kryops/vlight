@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- Perf: Memoizing change handlers in widgets
 - CSS centralizing for similar pages/widgets
 - Memories/Scenes
   - Gradients

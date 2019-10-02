@@ -4,7 +4,7 @@ import React from 'react'
 import { setChannel } from '../../api'
 import { getUniverseIndex } from '../../api/util'
 import { useApiState } from '../../hooks/api'
-import { PureDangerousFader } from '../../ui/controls/fader'
+import { ChannelFader } from '../../ui/controls/fader/channel-fader'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
 import { createRangeArray } from '../../util/array'
@@ -20,7 +20,7 @@ const channelsPage = css`
   ${flexEndSpacer}
 `
 
-const _ChannelsPage: React.SFC = () => {
+const ChannelsPage = memoInProduction(() => {
   const channels = useApiState('channels')
 
   // TODO add paging / virtual scrolling?
@@ -28,18 +28,16 @@ const _ChannelsPage: React.SFC = () => {
 
   return (
     <div className={channelsPage}>
-      {allChannels.map(i => (
-        <PureDangerousFader
-          key={i}
-          value={channels![getUniverseIndex(i)] || 0}
-          max={255}
-          step={1}
-          label={i.toString()}
-          onChange={value => setChannel(i, value)}
+      {allChannels.map(channel => (
+        <ChannelFader
+          key={channel}
+          channel={channel}
+          value={channels![getUniverseIndex(channel)] || 0}
+          onChange={setChannel}
         />
       ))}
     </div>
   )
-}
+})
 
-export default memoInProduction(_ChannelsPage)
+export default ChannelsPage

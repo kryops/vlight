@@ -1,16 +1,17 @@
 import { FixtureState, FixtureGroup } from '@vlight/entities'
 import { css } from 'linaria'
-import React from 'react'
+import React, { useCallback } from 'react'
 
 import { changeFixtureGroupState } from '../../api'
 import { ChannelMapping } from '../../api/enums'
+import { useCurrentRef } from '../../hooks/ref'
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
 import {
   colorPickerColors,
   fixtureStateToColor,
 } from '../../ui/controls/colorpicker/util'
-import { Fader } from '../../ui/controls/fader'
+import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
 import { baselinePx } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { iconColorPicker } from '../../ui/icons'
@@ -62,6 +63,8 @@ const _StatelessFixtureGroupWidget: React.SFC<StatelessProps> = ({
   colorPicker,
   toggleColorPicker,
 }) => {
+  const groupStateRef = useCurrentRef(groupState)
+
   const colorPickerCapable = colorPickerColors.every(c =>
     groupMapping.includes(c)
   )
@@ -76,25 +79,27 @@ const _StatelessFixtureGroupWidget: React.SFC<StatelessProps> = ({
   )
 
   const renderFader = (channelType: string, index = 0) => (
-    <Fader
+    <FixtureStateFader
       key={channelType + index}
-      max={255}
-      step={1}
-      label={channelType.toUpperCase()}
+      id={group.id}
+      channelType={channelType}
       value={groupState.channels[channelType] || 0}
-      onChange={value =>
-        changeFixtureGroupState(group.id, groupState, {
-          channels: {
-            [channelType]: value,
-          },
-        })
-      }
+      stateRef={groupStateRef}
+      changeFn={changeFixtureGroupState}
       colorPicker={
         colorPickerCapable &&
         !colorPicker &&
         colorPickerColors.includes(channelType)
       }
     />
+  )
+
+  const onColorPickerChange = useCallback(
+    color =>
+      changeFixtureGroupState(group.id, groupState, {
+        channels: { ...color },
+      }),
+    [group.id, groupState]
   )
 
   return (
@@ -126,16 +131,7 @@ const _StatelessFixtureGroupWidget: React.SFC<StatelessProps> = ({
       <div className={faderContainer}>
         {renderFader('m')}
         {hasColorPicker && (
-          <ColorPicker
-            r={r}
-            g={g}
-            b={b}
-            onChange={color =>
-              changeFixtureGroupState(group.id, groupState, {
-                channels: { ...color },
-              })
-            }
-          />
+          <ColorPicker r={r} g={g} b={b} onChange={onColorPickerChange} />
         )}
         {fadersToRender.map(renderFader)}
       </div>

@@ -1,8 +1,6 @@
 import React from 'react'
 
-import { memoInProduction } from '../../../util/development'
-
-export const ColorPickerBackground = memoInProduction(() => (
+const background = (
   <svg
     viewBox="0 0 256 256"
     height="100%"
@@ -52,4 +50,6 @@ export const ColorPickerBackground = memoInProduction(() => (
       fill="url(#linearGradientWhite)"
     />
   </svg>
-))
+)
+
+export const ColorPickerBackground = () => background

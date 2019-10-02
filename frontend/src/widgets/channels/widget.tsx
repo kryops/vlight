@@ -3,7 +3,7 @@ import React from 'react'
 
 import { setChannel } from '../../api'
 import { Widget } from '../../ui/containers/widget'
-import { PureDangerousFader } from '../../ui/controls/fader'
+import { ChannelFader } from '../../ui/controls/fader/channel-fader'
 import { baselinePx } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { createRangeArray } from '../../util/array'
@@ -33,32 +33,23 @@ interface StatelessProps {
   title?: string
 }
 
-const _StatelessChannelsWidget: React.SFC<StatelessProps> = ({
-  channels,
-  from,
-  to,
-  title,
-}) => {
-  const range = createRangeArray(from, to)
-
-  return (
-    <Widget title={title || `Channels ${from} - ${to}`}>
-      <div className={faderContainer}>
-        {range.map(channel => (
-          <PureDangerousFader
-            key={channel}
-            max={255}
-            step={1}
-            label={channel.toString()}
-            value={channels[getUniverseIndex(channel)] || 0}
-            onChange={value => setChannel(channel, value)}
-          />
-        ))}
-      </div>
-    </Widget>
-  )
-}
-
 export const StatelessChannelsWidget = memoInProduction(
-  _StatelessChannelsWidget
+  ({ channels, from, to, title }: StatelessProps) => {
+    const range = createRangeArray(from, to)
+
+    return (
+      <Widget title={title || `Channels ${from} - ${to}`}>
+        <div className={faderContainer}>
+          {range.map(channel => (
+            <ChannelFader
+              key={channel}
+              channel={channel}
+              value={channels[getUniverseIndex(channel)] || 0}
+              onChange={setChannel}
+            />
+          ))}
+        </div>
+      </Widget>
+    )
+  }
 )
