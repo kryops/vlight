@@ -3,7 +3,7 @@
     "NODE_ENV": "development"
   },
   "ext": "ts,js",
-  "exec": "sucrase-node ./backend/src/index.ts",
+  "exec": "ts-node ./backend/src/index.ts",
   "ignore": ["**/*.test.ts", "config/state.js"],
   "watch": ["backend/src", "configxx/", "frontend/webpack.config.ts"]
 }

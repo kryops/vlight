@@ -23,7 +23,7 @@ function processChannelDeltaMap(
   universe: number[] | undefined,
   message: { [channel: number]: number }
 ) {
-  const newUniverse = [...(universe || [])]
+  const newUniverse = [...(universe ?? [])]
   for (const [channel, value] of Object.entries(message)) {
     newUniverse[getUniverseIndex(+channel)] = value
   }

@@ -48,7 +48,7 @@ export const Icon = memoInProduction(
     >
       <path
         d={icon}
-        className={cx(pathShades[shade] || pathShades[0], pathClassName)}
+        className={cx(pathShades[shade] ?? pathShades[0], pathClassName)}
       />
     </svg>
   )

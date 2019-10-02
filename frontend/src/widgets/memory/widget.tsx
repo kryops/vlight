@@ -28,7 +28,7 @@ export const StatelessMemoryWidget = memoInProduction(
                 })
               }
             >
-              {memory.name || memory.id} {!state.on && '[OFF]'}
+              {memory.name ?? memory.id} {!state.on && '[OFF]'}
             </a>
           </div>
         }
@@ -38,7 +38,7 @@ export const StatelessMemoryWidget = memoInProduction(
           <Fader
             max={255}
             step={1}
-            value={state.value || 0}
+            value={state.value ?? 0}
             onChange={value =>
               changeMemoryState(memory.id, {
                 on: state.on,

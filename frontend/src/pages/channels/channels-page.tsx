@@ -26,7 +26,7 @@ const ChannelsPage = memoInProduction(() => {
         <ChannelFader
           key={channel}
           channel={channel}
-          value={channels![getUniverseIndex(channel)] || 0}
+          value={channels![getUniverseIndex(channel)] ?? 0}
           onChange={setChannel}
         />
       ))}

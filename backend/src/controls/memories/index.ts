@@ -32,7 +32,7 @@ function initMemory(memory: Memory, oldMemoryStates: Map<IdType, MemoryState>) {
   const preparedState = createPreparedState(memory)
   preparedStates.set(id, preparedState)
 
-  const initialState = oldMemoryStates.get(id) || getInitialMemoryState()
+  const initialState = oldMemoryStates.get(id) ?? getInitialMemoryState()
 
   if (initialState.on) addUniverse(universe)
 

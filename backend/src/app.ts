@@ -15,7 +15,7 @@ export async function initExpressApp() {
   expressApp.use(history())
 
   expressApp.post('/api', express.json(), (req, res) => {
-    if (req.body && req.body.type) {
+    if (req.body?.type) {
       handleApiMessage(req.body)
       res.json({ ok: true })
     } else {

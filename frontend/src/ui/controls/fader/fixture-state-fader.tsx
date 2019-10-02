@@ -40,7 +40,7 @@ export const FixtureStateFader = memoInProduction(
         max={255}
         step={1}
         label={channelType.toUpperCase()}
-        value={stateRef.current.channels[channelType] || 0}
+        value={stateRef.current.channels[channelType] ?? 0}
         onChange={onChange}
         colorPicker={colorPicker}
       />
