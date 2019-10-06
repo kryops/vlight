@@ -199,6 +199,12 @@ export const webpackConfiguration = (env: Env = {}) => {
         chunks: 'all',
         cacheGroups: {
           vendors: false,
+          styles: {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
+            enforce: true,
+          },
         },
       },
     },
