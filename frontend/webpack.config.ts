@@ -197,6 +197,8 @@ export const webpackConfiguration = (env: Env = {}) => {
       ],
       splitChunks: {
         chunks: 'all',
+        minSize: 1000,
+        maxAsyncRequests: 10,
         cacheGroups: {
           vendors: false,
           styles: {

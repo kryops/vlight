@@ -1,11 +1,7 @@
-import { lazy } from 'react'
-
 import { iconMemory } from '../../ui/icons'
 import { NavItemEntry } from '../index'
 
-export const MemoriesPage = lazy(() =>
-  import(/* webpackChunkName: "memories" */ './memories-page')
-)
+import MemoriesPage from './memories-page'
 
 export const memoriesPageRoute = '/memories'
 

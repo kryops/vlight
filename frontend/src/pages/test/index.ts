@@ -1,11 +1,7 @@
-import { lazy } from 'react'
-
 import { iconExperiment } from '../../ui/icons'
 import { NavItemEntry } from '../index'
 
-export const TestPage = lazy(() =>
-  import(/* webpackChunkName: "test" */ './test-page')
-)
+import TestPage from './test-page'
 
 export const testPageRoute = '/test'
 

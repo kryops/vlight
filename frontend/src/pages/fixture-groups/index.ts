@@ -1,11 +1,7 @@
-import { lazy } from 'react'
-
 import { iconGroup } from '../../ui/icons'
 import { NavItemEntry } from '../index'
 
-export const FixtureGroupsPage = lazy(() =>
-  import(/* webpackChunkName: "fixture-groups" */ './fixture-groups-page')
-)
+import FixtureGroupsPage from './fixture-groups-page'
 
 export const fixtureGroupsPageRoute = '/fixture-groups'
 

@@ -1,11 +1,7 @@
-import { lazy } from 'react'
-
 import { iconSettings } from '../../ui/icons'
 import { NavItemEntry } from '../index'
 
-export const SettingsPage = lazy(() =>
-  import(/* webpackChunkName: "settings" */ './settings-page')
-)
+import SettingsPage from './settings-page'
 
 export const settingsPageRoute = '/settings'
 
