@@ -1,30 +1,12 @@
-import { css } from 'linaria'
 import React from 'react'
 
 import { setChannel } from '../../api'
 import { Widget } from '../../ui/containers/widget'
 import { ChannelFader } from '../../ui/controls/fader/channel-fader'
-import { baselinePx } from '../../ui/styles'
+import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
 import { createRangeArray } from '../../util/array'
 import { getUniverseIndex } from '../../api/util'
-
-const faderContainer = css`
-  display: flex;
-  align-items: stretch;
-  overflow-x: auto;
-  max-width: 100%;
-  /* horizontal scrolling */
-  padding-bottom: ${baselinePx * 8}px;
-
-  /* justify-content: center does not work with overflow */
-  & > :first-child {
-    margin-left: auto;
-  }
-  & > :last-child {
-    margin-right: auto;
-  }
-`
 
 export interface StatelessChannelsWidgetProps {
   channels: number[]

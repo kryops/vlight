@@ -1,9 +1,9 @@
 import { Fixture, FixtureState, FixtureType } from '@vlight/entities'
-import { css } from 'linaria'
 import React, { useCallback } from 'react'
 
 import { changeFixtureState } from '../../api'
 import { ChannelMapping } from '../../api/enums'
+import { useCurrentRef } from '../../hooks/ref'
 import { iconColorPicker } from '../../ui/icons'
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
@@ -12,10 +12,10 @@ import {
   fixtureStateToColor,
 } from '../../ui/controls/colorpicker/util'
 import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
-import { baselinePx } from '../../ui/styles'
+import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
 import { Icon } from '../../ui/icons/icon'
-import { useCurrentRef } from '../../hooks/ref'
+import { widgetTitle, widgetTurnedOff } from '../../ui/css/widget'
 
 export function getFixtureName(
   fixture: Fixture,
@@ -26,37 +26,6 @@ export function getFixtureName(
   }
   return `${fixture.channel} ${fixtureType.name}`
 }
-
-const title = css`
-  display: flex;
-
-  & > :first-child {
-    flex-grow: 1;
-  }
-`
-
-const turnedOff = css`
-  & > * {
-    opacity: 0.75;
-  }
-`
-
-const faderContainer = css`
-  display: flex;
-  align-items: stretch;
-  overflow-x: auto;
-  max-width: 100%;
-  /* horizontal scrolling */
-  padding-bottom: ${baselinePx * 8}px;
-
-  /* justify-content: center does not work with overflow */
-  & > :first-child {
-    margin-left: auto;
-  }
-  & > :last-child {
-    margin-right: auto;
-  }
-`
 
 export interface StatelessFixtureWidgetProps {
   fixture: Fixture
@@ -117,7 +86,7 @@ export const StatelessFixtureWidget = memoInProduction(
       <Widget
         key={fixture.id}
         title={
-          <div className={title}>
+          <div className={widgetTitle}>
             <a
               onClick={() =>
                 changeFixtureState(fixture.id, fixtureState, {
@@ -137,7 +106,7 @@ export const StatelessFixtureWidget = memoInProduction(
             )}
           </div>
         }
-        className={fixtureState.on ? undefined : turnedOff}
+        className={fixtureState.on ? undefined : widgetTurnedOff}
       >
         <div className={faderContainer}>
           {renderFader('m')}

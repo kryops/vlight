@@ -12,11 +12,7 @@ const widget = css`
   border: 1px solid ${primaryShade(2)};
   margin: ${widgetMargin}px;
 `
-const headline = css`
-  padding: ${baselinePx * 2}px;
-`
-
-const content = css`
+const section = css`
   padding: ${baselinePx * 2}px;
 `
 
@@ -31,7 +27,7 @@ export const Widget: React.FunctionComponent<WidgetProps> = ({
   children,
 }) => (
   <div className={cx(widget, className)}>
-    <div className={headline}>{title}</div>
-    <div className={content}>{children}</div>
+    <div className={section}>{title}</div>
+    <div className={section}>{children}</div>
   </div>
 )

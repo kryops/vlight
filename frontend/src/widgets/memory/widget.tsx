@@ -1,43 +1,12 @@
 import { Memory, MemoryState } from '@vlight/entities'
-import { css } from 'linaria'
 import React from 'react'
 
 import { changeMemoryState } from '../../api'
 import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader'
-import { baselinePx } from '../../ui/styles'
+import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
-
-const title = css`
-  display: flex;
-
-  & > :first-child {
-    flex-grow: 1;
-  }
-`
-
-const turnedOff = css`
-  & > * {
-    opacity: 0.75;
-  }
-`
-
-const faderContainer = css`
-  display: flex;
-  align-items: stretch;
-  overflow-x: auto;
-  max-width: 100%;
-  /* horizontal scrolling */
-  padding-bottom: ${baselinePx * 8}px;
-
-  /* justify-content: center does not work with overflow */
-  & > :first-child {
-    margin-left: auto;
-  }
-  & > :last-child {
-    margin-right: auto;
-  }
-`
+import { widgetTitle, widgetTurnedOff } from '../../ui/css/widget'
 
 export interface StatelessMemoryWidgetProps {
   memory: Memory
@@ -50,7 +19,7 @@ export const StatelessMemoryWidget = memoInProduction(
       <Widget
         key={memory.id}
         title={
-          <div className={title}>
+          <div className={widgetTitle}>
             <a
               onClick={() =>
                 changeMemoryState(memory.id, {
@@ -63,7 +32,7 @@ export const StatelessMemoryWidget = memoInProduction(
             </a>
           </div>
         }
-        className={state.on ? undefined : turnedOff}
+        className={state.on ? undefined : widgetTurnedOff}
       >
         <div className={faderContainer}>
           <Fader

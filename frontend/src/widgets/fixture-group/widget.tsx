@@ -1,5 +1,4 @@
 import { FixtureState, FixtureGroup } from '@vlight/entities'
-import { css } from 'linaria'
 import React, { useCallback } from 'react'
 
 import { changeFixtureGroupState } from '../../api'
@@ -12,41 +11,11 @@ import {
   fixtureStateToColor,
 } from '../../ui/controls/colorpicker/util'
 import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
-import { baselinePx } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { iconColorPicker } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
-
-const title = css`
-  display: flex;
-
-  & > :first-child {
-    flex-grow: 1;
-  }
-`
-
-const turnedOff = css`
-  & > * {
-    opacity: 0.4;
-  }
-`
-
-const faderContainer = css`
-  display: flex;
-  align-items: stretch;
-  overflow-x: auto;
-  max-width: 100%;
-  /* horizontal scrolling */
-  padding-bottom: ${baselinePx * 8}px;
-
-  /* justify-content: center does not work with overflow */
-  & > :first-child {
-    margin-left: auto;
-  }
-  & > :last-child {
-    margin-right: auto;
-  }
-`
+import { faderContainer } from '../../ui/css/fader-container'
+import { widgetTitle, widgetTurnedOff } from '../../ui/css/widget'
 
 export interface StatelessFixtureGroupWidgetProps {
   group: FixtureGroup
@@ -107,7 +76,7 @@ export const StatelessFixtureGroupWidget = memoInProduction(
       <Widget
         key={group.id}
         title={
-          <div className={title}>
+          <div className={widgetTitle}>
             <a
               onClick={() =>
                 changeFixtureGroupState(group.id, groupState, {
@@ -127,7 +96,7 @@ export const StatelessFixtureGroupWidget = memoInProduction(
             )}
           </div>
         }
-        className={groupState.on ? undefined : turnedOff}
+        className={groupState.on ? undefined : widgetTurnedOff}
       >
         <div className={faderContainer}>
           {renderFader('m')}

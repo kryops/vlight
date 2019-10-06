@@ -1,23 +1,10 @@
-import { css } from 'linaria'
 import React from 'react'
 
 import { useMasterData } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'
-import { DynamicWidget } from '../../widgets/dynamic'
-import { baselinePx } from '../../ui/styles'
-import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { Grid } from '../../ui/containers/grid'
-
-const widgetContainer = css`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: stretch;
-  margin: -${baselinePx}px;
-  /* to allow scrolling */
-  margin-right: ${baselinePx * 8}px;
-
-  ${flexEndSpacer}
-`
+import { pageWithWidgets } from '../../ui/css/page'
+import { DynamicWidget } from '../../widgets/dynamic'
 
 const TestPage = memoInProduction(() => {
   const masterData = useMasterData()
@@ -51,7 +38,7 @@ const TestPage = memoInProduction(() => {
         ]}
       />
       <h3>Widgets</h3>
-      <div className={widgetContainer}>
+      <div className={pageWithWidgets}>
         <DynamicWidget config={{ type: 'universe', from: 1, to: 22 }} />
         <DynamicWidget config={{ type: 'channels', from: 1, to: 8 }} />
         <DynamicWidget config={{ type: 'channels', from: 1, to: 4 }} />

@@ -8,18 +8,14 @@ import {
   useMasterDataMaps,
 } from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'
-import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
+import { pageWithWidgets } from '../../ui/css/page'
 import { baselinePx } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 
 import { getFixtureAtChannel, getEffectiveFixtureColor } from './util'
 
 const universePage = css`
-  display: flex;
-  flex-wrap: wrap;
   justify-content: flex-start; /* so the universeBar_connected margins work */
-
-  ${flexEndSpacer}
 `
 
 const barSize = baselinePx * 12
@@ -47,7 +43,7 @@ const UniversePage = memoInProduction(() => {
 
   return (
     <>
-      <div className={universePage}>
+      <div className={cx(pageWithWidgets, universePage)}>
         {universe.map((value, index) => {
           const fixture = fixturesAtIndex[index]
           const fixtureType = fixture

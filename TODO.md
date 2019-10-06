@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- CSS centralizing for similar pages/widgets
 - Memories/Scenes
   - Gradients
   - Patterns
