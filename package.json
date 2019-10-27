@@ -30,6 +30,7 @@
     "lint:css": "stylelint --syntax css-in-js 'frontend/**/*.@(ts|tsx)'",
     "postinstall": "rimraf node_modules/.cache .linaria-cache && node postinstall.js",
     "prepare": "yarn build",
+    "prettier": "prettier --write '{backend,frontend,shared}/**/*.{ts,tsx}'",
     "prod": "run-s build start:prod",
     "start": "concurrently 'nodemon' 'tsc -p ./backend/src --watch --noEmit --preserveWatchOutput' 'webpack-dev-server --config frontend/webpack.config.ts'",
     "start:backend": "nodemon",
