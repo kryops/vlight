@@ -10840,10 +10840,9 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
-usb-detection@^4.5.0:
+"usb-detection@https://github.com/kryops/node-usb-detection.git":
   version "4.5.0"
-  resolved "https://registry.yarnpkg.com/usb-detection/-/usb-detection-4.5.0.tgz#fead3b88bfe804023f59b8d7de95715ab9d2bacb"
-  integrity sha512-tAhcDhle/PYLvqx1pteJYjdVgDUcyTBixnT5bF+RHN+U+iK0S+fqNIRJLnNHYycbI0HavVV8TKa4j3e66/W7eg==
+  resolved "https://github.com/kryops/node-usb-detection.git#6b963b64012bda108e6982eea8eaf9f7421b2abb"
   dependencies:
     bindings "^1.3.0"
     eventemitter2 "^5.0.1"
