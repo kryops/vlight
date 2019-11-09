@@ -64,8 +64,8 @@ export const Navigation = memoInProduction(
           <NavItem
             key={id}
             to={dynamicPageRoute(id)}
-            icon={icon || iconDynamicPage}
-            label={headline || id}
+            icon={icon ?? iconDynamicPage}
+            label={headline ?? id}
             showLabel={showLabels}
           />
         ))}

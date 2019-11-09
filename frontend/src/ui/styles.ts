@@ -21,7 +21,7 @@ const colorShades = [1, 0.5, 0.2, 0.1, 0.05]
 
 function colorLevelFactory(color: string) {
   return function colorLevel(level: number): string {
-    return mix(colorShades[level] || 1, color, backgroundColor)
+    return mix(colorShades[level] ?? 1, color, backgroundColor)
   }
 }
 

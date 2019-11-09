@@ -20,13 +20,13 @@ export const StatelessChannelsWidget = memoInProduction(
     const range = createRangeArray(from, to)
 
     return (
-      <Widget title={title || `Channels ${from} - ${to}`}>
+      <Widget title={title ?? `Channels ${from} - ${to}`}>
         <div className={faderContainer}>
           {range.map(channel => (
             <ChannelFader
               key={channel}
               channel={channel}
-              value={channels[getUniverseIndex(channel)] || 0}
+              value={channels[getUniverseIndex(channel)] ?? 0}
               onChange={setChannel}
             />
           ))}

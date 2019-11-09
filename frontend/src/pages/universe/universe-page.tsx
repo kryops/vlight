@@ -54,7 +54,7 @@ const UniversePage = memoInProduction(() => {
 
           const fixtureName =
             fixture && fixtureType && fixture.channel === index + 1
-              ? fixture.name || fixtureType.name
+              ? fixture.name ?? fixtureType.name
               : undefined
 
           const fixtureColor =

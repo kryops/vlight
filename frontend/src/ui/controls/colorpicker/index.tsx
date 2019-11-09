@@ -98,7 +98,7 @@ export const ColorPicker = memoInProduction(
     ] = useDelayedState<ColorPickerColor | null>(null)
     const touchRef = useRef<HTMLDivElement>(null)
 
-    const currentColor: ColorPickerColor = localColor || { r, g, b }
+    const currentColor: ColorPickerColor = localColor ?? { r, g, b }
     const positionFromColor = colorToPosition(currentColor)
 
     const lastPositionRef = useRef<ColorPickerPosition | null>(

@@ -80,7 +80,7 @@ export const Fader = memoInProduction(
     const [localValue, setLocalValue] = useDelayedState<number | null>(null)
     const { lightMode } = useSettings()
 
-    const valueToUse = localValue || value
+    const valueToUse = localValue ?? value
     const currentFraction = (valueToUse - min) / (max - min)
     const y = Math.round(trackHeight - currentFraction * trackHeight)
 

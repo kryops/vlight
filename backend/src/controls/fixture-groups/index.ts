@@ -62,7 +62,7 @@ function initFixtureGroup(
   const universe = createUniverse()
   universes.set(id, universe)
   const initialState =
-    oldFixtureGroupStates.get(id) ||
+    oldFixtureGroupStates.get(id) ??
     getInitialFixtureState(getFixtureGroupMapping(fixtureGroup))
 
   if (initialState.on) addUniverse(universe)

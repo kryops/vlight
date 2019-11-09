@@ -53,7 +53,7 @@ export const StatelessFixtureGroupWidget = memoInProduction(
         key={channelType + index}
         id={group.id}
         channelType={channelType}
-        value={groupState.channels[channelType] || 0}
+        value={groupState.channels[channelType] ?? 0}
         stateRef={groupStateRef}
         changeFn={changeFixtureGroupState}
         colorPicker={
@@ -84,7 +84,7 @@ export const StatelessFixtureGroupWidget = memoInProduction(
                 })
               }
             >
-              {group.name || group.id} ({group.fixtures.length}){' '}
+              {group.name ?? group.id} ({group.fixtures.length}){' '}
               {!groupState.on && '[OFF]'}
             </a>
             {colorPickerCapable && (

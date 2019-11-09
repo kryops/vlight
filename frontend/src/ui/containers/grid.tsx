@@ -40,7 +40,7 @@ export interface GridProps {
 
 export const Grid = memoInProduction(
   ({ headline, cells, className }: GridProps) => {
-    const factorSum = cells.reduce((sum, { factor }) => sum + (factor || 1), 0)
+    const factorSum = cells.reduce((sum, { factor }) => sum + (factor ?? 1), 0)
     return (
       <>
         {headline && <h3>{headline}</h3>}
@@ -49,7 +49,7 @@ export const Grid = memoInProduction(
             <div
               key={index}
               className={cx(gridCell, className)}
-              style={{ flexBasis: ((factor || 1) / factorSum) * 100 + '%' }}
+              style={{ flexBasis: ((factor ?? 1) / factorSum) * 100 + '%' }}
             >
               {children}
             </div>

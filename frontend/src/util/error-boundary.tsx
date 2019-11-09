@@ -20,7 +20,7 @@ export class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
   }
 
   async prepareError(error: Error, { componentStack }: ErrorInfo) {
-    if (this.state.error && this.state.error.toString() === error.toString()) {
+    if (this.state.error?.toString() === error.toString()) {
       return
     }
 
