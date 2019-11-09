@@ -14,9 +14,9 @@ export interface FixtureGroupWidgetProps {
   group: FixtureGroup
 }
 
-export const FixtureGroupWidget: React.FunctionComponent<
-  FixtureGroupWidgetProps
-> = ({ group }) => {
+export const FixtureGroupWidget: React.FunctionComponent<FixtureGroupWidgetProps> = ({
+  group,
+}) => {
   const masterData = useMasterData()
   const groupState = useApiStateEntry('fixtureGroups', group.id)
 

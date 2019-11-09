@@ -34,13 +34,10 @@ function isNotInitialState({ initial }: FixtureState | MemoryState) {
 }
 
 function getCurrentState(): PersistedState {
-  const channels = Array.from(channelUniverse).reduce(
-    (acc, cur, index) => {
-      if (cur > 0) acc[index.toString()] = cur
-      return acc
-    },
-    {} as Dictionary<number>
-  )
+  const channels = Array.from(channelUniverse).reduce((acc, cur, index) => {
+    if (cur > 0) acc[index.toString()] = cur
+    return acc
+  }, {} as Dictionary<number>)
   return {
     channels,
     fixtures: mapToDictionary(fixtureStates, isNotInitialState),

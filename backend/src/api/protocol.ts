@@ -48,13 +48,10 @@ export function getApiUniverseDeltaMessage(
 ): ApiUniverseDeltaMessage {
   return {
     type: 'universe-delta',
-    channels: channels.reduce(
-      (obj, channel) => {
-        obj[channel] = universe[getUniverseIndex(channel)]
-        return obj
-      },
-      {} as ApiUniverseDeltaMessage['channels']
-    ),
+    channels: channels.reduce((obj, channel) => {
+      obj[channel] = universe[getUniverseIndex(channel)]
+      return obj
+    }, {} as ApiUniverseDeltaMessage['channels']),
   }
 }
 

@@ -41,8 +41,7 @@ function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
     const { id, type } = fixture
     const fixtureType = fixtureTypes.get(type)
     const state =
-      oldFixtureStates.get(id) ??
-      getInitialFixtureState(fixtureType?.mapping)
+      oldFixtureStates.get(id) ?? getInitialFixtureState(fixtureType?.mapping)
 
     fixtureStates.set(id, state)
     setFixtureStateToUniverse(fixture, state)

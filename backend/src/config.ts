@@ -20,9 +20,7 @@ export interface VLightConfiguration {
   statePersistenceFlushInterval: number
 }
 
-const userConfig: Partial<
-  VLightConfiguration
-> = require('../../config/vlight-config') // eslint-disable-line @typescript-eslint/no-var-requires
+const userConfig: Partial<VLightConfiguration> = require('../../config/vlight-config') // eslint-disable-line @typescript-eslint/no-var-requires
 
 function c<T extends keyof VLightConfiguration>(
   key: T,

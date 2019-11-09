@@ -20,7 +20,10 @@ describe('processMemories', () => {
     [
       'all of the above',
       [['group:group1', 'baz1', 'bar#', 'type:baz'], ['type:foo']],
-      [['baz1', 'bar1', 'bar2'], ['foo1', 'foo2']],
+      [
+        ['baz1', 'bar1', 'bar2'],
+        ['foo1', 'foo2'],
+      ],
     ],
   ])('%s', (_, input, expected) => {
     expect(processMemories([mockMemory(input)])).toEqual([mockMemory(expected)])
