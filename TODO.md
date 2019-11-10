@@ -21,6 +21,5 @@
 
 ## Experiments / Tech
 
-- replace worker-loader
 - webpack 5 Beta
 - Node.js worker threads

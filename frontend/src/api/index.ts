@@ -12,9 +12,11 @@ import {
   getApiMemoryStateMessage,
 } from './protocol'
 // @ts-ignore
-import ApiWorker, { ApiWorkerCommand } from './worker/api.worker'
+import { ApiWorkerCommand } from './worker/api.worker'
 
-export const apiWorker: Worker = new ApiWorker()
+export const apiWorker = new Worker('./worker/api.worker.ts', {
+  type: 'module',
+})
 
 export function sendApiMessage(message: ApiInMessage) {
   logTrace('Sending WebSocket message', message)

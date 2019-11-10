@@ -15,6 +15,7 @@ import {
 } from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import WebpackPwaManifest from 'webpack-pwa-manifest'
+import WorkerPlugin from 'worker-plugin'
 
 interface Env {
   analyze?: any
@@ -55,10 +56,6 @@ export const webpackConfiguration = (env: Env = {}) => {
     },
     module: {
       rules: [
-        {
-          test: /\.worker\.ts$/,
-          use: { loader: 'worker-loader' },
-        },
         {
           test: /\.tsx?$/,
           exclude: /node_modules/,
@@ -153,6 +150,7 @@ export const webpackConfiguration = (env: Env = {}) => {
         background_color: '#000c15',
         ios: true,
       }),
+      new WorkerPlugin(),
       !profile &&
         new ForkCheckerPlugin({
           tsconfig: join(__dirname, 'tsconfig.json'),
