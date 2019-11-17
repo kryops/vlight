@@ -42,12 +42,19 @@ export interface MemoryScene {
    * - `group:foobar` -> maps all fixtures of group `foobar`
    */
   members: string[]
-  state: FixtureState
+  pattern?: 'row' | 'alternate'
+  states: Array<FixtureState | FixtureStateGradient[]>
 }
 
 export interface Memory extends DbEntity {
   name?: string
   scenes: MemoryScene[]
+}
+
+export interface FixtureStateGradient {
+  /** 0 - 100 */
+  position?: number
+  channels: Dictionary<number>
 }
 
 export interface MasterData {

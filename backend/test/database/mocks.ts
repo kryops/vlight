@@ -74,10 +74,12 @@ export function mockMemory(sceneMembers: string[][]): Memory {
     id: 'm',
     scenes: sceneMembers.map(members => ({
       members,
-      state: {
-        on: true,
-        channels: { m: 255, r: 255 },
-      },
+      states: [
+        {
+          on: true,
+          channels: { m: 255, r: 255 },
+        },
+      ],
     })),
   }
 }

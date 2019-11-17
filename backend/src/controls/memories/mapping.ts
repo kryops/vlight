@@ -6,8 +6,9 @@ import {
   createUniverse,
   getUniverseIndex,
 } from '../../services/universe'
-import { isTruthy } from '../../util/validation'
 import { mapFixtureStateToChannels, ChannelMapping } from '../fixtures/mapping'
+
+import { getFixtureStateFor } from './gradients'
 
 export function getInitialMemoryState(): MemoryState {
   return {
@@ -44,23 +45,24 @@ export function mapMemoryStateToChannel(
 }
 
 function applySceneToPreparedState(
-  { members, state }: MemoryScene,
+  scene: MemoryScene,
   preparedState: MemoryPreparedState
 ) {
-  const sceneFixtures = members
-    .map(member => fixtures.get(member))
-    .filter(isTruthy)
-
   const { fullUniverse, affectedChannels, fadedChannels } = preparedState
 
-  for (const { type, channel } of sceneFixtures) {
-    const fixtureType = fixtureTypes.get(type)!
+  scene.members.forEach((member, memberIndex) => {
+    const fixture = fixtures.get(member)
+    if (!fixture) return
+    const { channel } = fixture
+    const fixtureType = fixtureTypes.get(fixture.type)!
 
     const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.master)
     const hasMaster = masterIndex !== -1
     if (hasMaster) {
       fadedChannels.add(channel + masterIndex)
     }
+
+    const state = getFixtureStateFor(scene, memberIndex)
 
     mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
       const universeIndex = getUniverseIndex(channel) + offset
@@ -73,7 +75,7 @@ function applySceneToPreparedState(
         if (!hasMaster) fadedChannels.add(channel + offset)
       }
     })
-  }
+  })
 }
 
 export function createPreparedState(memory: Memory): MemoryPreparedState {

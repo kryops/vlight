@@ -7,13 +7,15 @@ const memories = [
     scenes: [
       {
         members: ['stufe1', '3x12-#', 'type:flach', 'group:12x12'],
-        state: {
-          on: true,
-          channels: {
-            m: 255,
-            r: 255,
+        states: [
+          {
+            on: true,
+            channels: {
+              m: 255,
+              r: 255,
+            },
           },
-        },
+        ],
       },
     ],
   },
