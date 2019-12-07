@@ -5,5 +5,5 @@
   "ext": "ts,js",
   "exec": "ts-node ./backend/src/index.ts",
   "ignore": ["**/*.test.ts", "config/state.js"],
-  "watch": ["backend/src", "frontend/webpack.config.ts"]
+  "watch": ["backend/src", "frontend/webpack.config.ts", "config"]
 }

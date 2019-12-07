@@ -30,6 +30,7 @@ export function mapMemoryStateToChannel(
   channel: number
 ) {
   if (!state.on) return 0
+  if (state.value === 0) return 0
 
   const fullChannelValue = preparedState.fullUniverse[getUniverseIndex(channel)]
 
@@ -37,7 +38,6 @@ export function mapMemoryStateToChannel(
     return fullChannelValue
   }
 
-  if (state.value === 0) return 0
   if (state.value === 255) return fullChannelValue
 
   const rawValue = fullChannelValue * (state.value / 255)
@@ -57,10 +57,6 @@ function applySceneToPreparedState(
     const fixtureType = fixtureTypes.get(fixture.type)!
 
     const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.master)
-    const hasMaster = masterIndex !== -1
-    if (hasMaster) {
-      fadedChannels.add(channel + masterIndex)
-    }
 
     const state = getFixtureStateFor(scene, memberIndex)
 
@@ -72,7 +68,7 @@ function applySceneToPreparedState(
 
       if (value !== 0) {
         affectedChannels.push(channel + offset)
-        if (!hasMaster) fadedChannels.add(channel + offset)
+        if (offset !== masterIndex) fadedChannels.add(channel + offset)
       }
     })
   })

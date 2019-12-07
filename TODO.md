@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- Invert master channel handling: Use color channels to mix, only toggle master on/off?
 - 2D Map
 - Master data / config editor
   - User config

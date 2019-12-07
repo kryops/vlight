@@ -48,7 +48,7 @@ describe('controls/fixtures/mapping', () => {
         'example state (with master)',
         fixtureTypeWithMaster,
         exampleState,
-        [100, 150, 0, 200],
+        [78, 118, 0, 255],
       ],
       [
         'example state (without master)',

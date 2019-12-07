@@ -35,7 +35,7 @@ describe('controls/memories/mapping', () => {
       ['on (faded)', 4, 100, stateOn],
       ['half (affected)', 3, 255, stateHalf],
       ['half (faded)', 4, 50, stateHalf],
-      ['zero (affected)', 3, 255, stateZero],
+      ['zero (affected)', 3, 0, stateZero],
       ['zero (faded)', 4, 0, stateZero],
       ['off (affected)', 3, 0, stateOff],
       ['off (faded)', 4, 0, stateOff],
