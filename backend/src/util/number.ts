@@ -14,3 +14,13 @@ export function getFraction(value: number, min: number, max: number): number {
   if (fraction === -0) return 0
   return fraction
 }
+
+export function getValueForFraction(
+  fraction: number,
+  min: number,
+  max: number
+) {
+  const value = min + fraction * (max - min)
+  if (value === -0) return 0
+  return value
+}
