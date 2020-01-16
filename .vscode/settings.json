@@ -1,7 +1,10 @@
 {
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
-  "eslint.autoFixOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.fixAll.stylelint": true
+  },
   "eslint.validate": ["typescript", "typescriptreact", "javascript"],
   "typescript.preferences.quoteStyle": "single",
   "typescript.tsdk": "node_modules/typescript/lib",

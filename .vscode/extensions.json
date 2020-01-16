@@ -6,6 +6,6 @@
     "msjsdiag.debugger-for-chrome",
     "christian-kohler.npm-intellisense",
     "jpoissonnier.vscode-styled-components",
-    "shinnn.stylelint"
+    "stylelint.vscode-stylelint"
   ]
 }
