@@ -8,7 +8,8 @@ import { baselinePx, iconShade, primaryShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { useSettings } from '../../hooks/settings'
 
-const iconPath = css``
+// TODO cannot use empty css here as linaria complains
+const iconPath = 'iconPath'
 
 const navItem = css`
   display: flex;
@@ -18,7 +19,7 @@ const navItem = css`
   &:hover {
     background: ${primaryShade(3)};
 
-    & .${iconPath} {
+    & :global(.${iconPath}) {
       fill: ${iconShade(0)};
     }
   }
@@ -36,7 +37,7 @@ const navItem_light = css`
   &:hover {
     background: ${primaryShade(0)};
 
-    & .${iconPath} {
+    & :global(.${iconPath}) {
       fill: ${iconShade(3)};
     }
   }
@@ -44,12 +45,13 @@ const navItem_light = css`
 
 const navItem_active_light = css`
   background: ${primaryShade(0)};
-  & .${iconPath} {
-    fill: ${iconShade(0)};
-  }
 
   &:hover {
     background: ${primaryShade(0)};
+  }
+
+  & :global(.${iconPath}) {
+    fill: ${iconShade(0)};
   }
 `
 

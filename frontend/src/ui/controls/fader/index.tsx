@@ -10,8 +10,9 @@ import { getTouchEventOffset } from '../../../util/touch'
 import { memoInProduction } from '../../../util/development'
 import { baselinePx, iconShade, primaryShade } from '../../styles'
 
-const faderWidth = baselinePx * 12
-const faderHeight = baselinePx * 60
+const bs = 4 // TODO cannot use baselinePx because linaria throws
+const faderWidth = bs * 12
+const faderHeight = bs * 60
 
 const buttonHeight = faderWidth * 1.25
 
