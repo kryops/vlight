@@ -135,7 +135,7 @@
     "node-hid": "^1.1.0",
     "source-map-support": "^0.5.16",
     "tslib": "^1.9.3",
-    "usb-detection": "https://github.com/kryops/node-usb-detection.git",
+    "usb-detection": "^4.7.0",
     "ws": "^7.2.1"
   }
 }
