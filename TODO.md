@@ -2,14 +2,15 @@
 
 ## Roadmap
 
-- 2D Map
+- Project scoped config
 - Master data / config editor
-  - User config
-  - Fixture types
+  - (global) User config
+  - (global) Fixture types
   - Fixtures
   - Fixture groups
   - Dynamic pages
   - Memories
+- 2D Map
 - Chases
 - Speed/Fade control
 - LaunchPad input
