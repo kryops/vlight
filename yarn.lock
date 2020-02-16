@@ -6803,10 +6803,10 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-linaria@1.4.0:
-  version "1.4.0-beta.2"
-  resolved "https://registry.yarnpkg.com/linaria/-/linaria-1.4.0-beta.2.tgz#7179e7e17fee35019a7d423cb795c35f6723247f"
-  integrity sha512-dpA0M6E5ORv8JxY6YuUwVMqXg2ros0LBMTkZJDegW1iwnGKMIKLkcLv26LKffkdWhNxPo1C+9AYp1B3GcIodWQ==
+linaria@1.4.0-beta.3:
+  version "1.4.0-beta.3"
+  resolved "https://registry.yarnpkg.com/linaria/-/linaria-1.4.0-beta.3.tgz#aed44b5c2fa86830aee853d3504309fd95ab40d1"
+  integrity sha512-kH6pRfKnWGBJJmD1e9btapGR/TbI2cln7/xoo07875vQmNICjolwPLHZXL5j4H11EFnDemJmEsiWVvx29l2n9A==
   dependencies:
     "@babel/core" "^7.8.0"
     "@babel/generator" "^7.8.0"
