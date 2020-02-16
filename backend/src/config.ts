@@ -1,3 +1,5 @@
+import { join } from 'path'
+
 import { isDevelopment } from './env'
 
 export interface VLightConfiguration {
@@ -18,7 +20,10 @@ export interface VLightConfiguration {
   logLevel: LogLevel
   universeSize: number
   statePersistenceFlushInterval: number
+  project: string
 }
+
+export const configDirectoryPath = join(__dirname, '../../config')
 
 const userConfig: Partial<VLightConfiguration> = require('../../config/vlight-config') // eslint-disable-line @typescript-eslint/no-var-requires
 
@@ -63,3 +68,4 @@ export const statePersistenceFlushInterval = c(
   'statePersistenceFlushInterval',
   10000
 )
+export const project = c('project', 'default')

@@ -1,5 +1,5 @@
 // @ts-check
-/** @type {import('../shared/types/entities').Memory[]} */
+/** @type {import('../../shared/types/entities').Memory[]} */
 const memories = [
   {
     id: 'test',

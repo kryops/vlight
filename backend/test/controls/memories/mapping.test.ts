@@ -5,7 +5,7 @@ import {
   MemoryPreparedState,
   mapMemoryStateToChannel,
 } from '../../../src/controls/memories/mapping'
-import { fillEntity } from '../../../src/database'
+import { fillEntity } from '../../../src/database/access'
 import { createUniverse } from '../../../src/services/universe'
 import {
   fixtureTypes,

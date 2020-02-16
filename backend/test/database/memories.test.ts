@@ -1,4 +1,4 @@
-import { fillEntity } from '../../src/database'
+import { fillEntity } from '../../src/database/access'
 import { processMemories } from '../../src/database/entities/memories'
 
 import { fixtureTypes, fixtures, fixtureGroups, mockMemory } from './mocks'

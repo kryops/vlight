@@ -1,3 +1,6 @@
+import { promises } from 'fs'
+import { join } from 'path'
+
 import { Dictionary, FixtureState, MemoryState } from '@vlight/entities'
 
 import { mapToDictionary } from '../util/map'
@@ -5,12 +8,14 @@ import { channelUniverse } from '../controls/channels'
 import { fixtureStates } from '../controls/fixtures'
 import { fixtureGroupStates } from '../controls/fixture-groups'
 import { memoryStates } from '../controls/memories'
-import { statePersistenceFlushInterval } from '../config'
+import {
+  statePersistenceFlushInterval,
+  project,
+  configDirectoryPath,
+} from '../config'
 import { logTrace } from '../util/log'
 
-import { serialize, writeEntity } from './util'
-
-import { relativeConfigDirectoryPath } from '.'
+const { writeFile } = promises
 
 export interface PersistedState {
   channels: Dictionary<number>
@@ -46,13 +51,22 @@ function getCurrentState(): PersistedState {
   }
 }
 
+function serializeState(value: any) {
+  return `module.exports = ${JSON.stringify(value, null, 2)};\n`
+}
+
 async function checkAndPersistCurrentState() {
   const currentState = getCurrentState()
-  const currentStateString = serialize(currentState)
+  const currentStateString = serializeState(currentState)
   if (currentStateString === persistedStateString) return
 
   logTrace('Persisting application state')
-  await writeEntity(stateConfigFileName, currentStateString)
+
+  await writeFile(
+    join(configDirectoryPath, project, 'state.js'),
+    currentStateString
+  )
+
   persistedStateString = currentStateString
 }
 
@@ -62,12 +76,13 @@ export function getPersistedState(): PersistedState {
 
 export function initPersistedState() {
   try {
-    persistedState = require(relativeConfigDirectoryPath + stateConfigFileName)
+    const statePath = join(configDirectoryPath, project, stateConfigFileName)
+    persistedState = require(statePath)
   } catch {
     // do nothing
   }
 
-  persistedStateString = serialize(persistedState)
+  persistedStateString = serializeState(persistedState)
 
   setInterval(checkAndPersistCurrentState, statePersistenceFlushInterval)
 }

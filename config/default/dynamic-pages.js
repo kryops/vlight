@@ -1,5 +1,5 @@
 // @ts-check
-/** @type {import('../shared/types/entities').DynamicPage[]} */
+/** @type {import('../../shared/types/entities').DynamicPage[]} */
 const dynamicPages = [
   {
     id: 'dyn1',

@@ -4,7 +4,7 @@ import {
   processFixtures,
   mapFixtureList,
 } from '../../src/database/entities/fixtures'
-import { fillEntity } from '../../src/database'
+import { fillEntity } from '../../src/database/access'
 
 import { fixtureTypes, fixtures, fixtureGroups } from './mocks'
 
