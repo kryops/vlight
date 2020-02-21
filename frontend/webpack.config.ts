@@ -14,7 +14,6 @@ import {
   Plugin,
 } from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import WebpackPwaManifest from 'webpack-pwa-manifest'
 import WorkerPlugin from 'worker-plugin'
 
 interface Env {
@@ -143,13 +142,6 @@ export const webpackConfiguration = (env: Env = {}) => {
       new ExtractCssPlugin({
         ignoreOrder: true,
       } as any),
-      new WebpackPwaManifest({
-        name: 'vLight',
-        description: 'Virtual Light Controller',
-        display: 'standalone',
-        background_color: '#000c15',
-        ios: true,
-      }),
       new WorkerPlugin(),
       !profile &&
         new ForkCheckerPlugin({
