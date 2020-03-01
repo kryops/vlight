@@ -24,7 +24,8 @@
       "*": ["*", "../@types/*"]
     },
     "resolveJsonModule": true,
-    "strict": true
+    "strict": true,
+    "skipLibCheck": true
   },
   "include": [
     "frontend/src",
