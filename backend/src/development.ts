@@ -1,4 +1,4 @@
-/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/no-extraneous-dependencies, node/no-extraneous-import */
 
 import { Express } from 'express'
 import webpack from 'webpack'

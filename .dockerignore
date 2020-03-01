@@ -17,5 +17,6 @@ frontend/test
 jest.config.js
 LICENSE.md
 node_modules
-nodemon.json
 README.md
+shared/dist
+shared/test

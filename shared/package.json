@@ -5,5 +5,8 @@
   "repository": "https://github.com/kryops/vlight",
   "author": "Michael Strobel <michael@kryops.de>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "scripts": {
+    "clean": "rimraf dist"
+  }
 }
