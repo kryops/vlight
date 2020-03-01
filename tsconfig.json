@@ -20,6 +20,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
+      "@vlight/shared": ["../shared"],
       "@vlight/*": ["../shared/types/*"],
       "*": ["*", "../@types/*"]
     },
@@ -32,6 +33,7 @@
     "frontend/test",
     "backend/src",
     "backend/test",
+    "shared",
     "@types"
   ]
 }

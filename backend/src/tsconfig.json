@@ -3,7 +3,9 @@
   "compilerOptions": {
     "noEmit": false,
     "outDir": "../dist",
-    "rootDir": "."
+    "rootDir": ".",
+    "composite": true
   },
-  "include": ["."]
+  "include": ["."],
+  "references": [{ "path": "../../shared" }]
 }

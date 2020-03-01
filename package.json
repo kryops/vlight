@@ -9,11 +9,14 @@
   "engines": {
     "node": ">=11.14.0"
   },
+  "workspaces": {
+    "packages": ["shared"]
+  },
   "scripts": {
     "all": "yarn lint && yarn test && yarn build",
     "clean": "rimraf backend/dist frontend/dist node_modules/.cache .linaria-cache",
     "build": "yarn run clean && run-p build:backend build:frontend",
-    "build:backend": "tsc -p ./backend/src",
+    "build:backend": "tsc -b ./backend/src",
     "build:frontend": "cross-env NODE_ENV=production webpack --config frontend/webpack.config.ts --env.production",
     "build:frontend:dev": "webpack --config frontend/webpack.config.ts",
     "build:frontend:profile": "webpack --config frontend/webpack.config.ts --env.profile",
@@ -26,13 +29,13 @@
     "frontend:analyze": "webpack --config frontend/webpack.config.ts --env.production --env.analyze",
     "lint": "run-p lint:eslint lint:ts lint:css",
     "lint:eslint": "eslint 'frontend/**/*.@(ts|tsx)' 'backend/**/*.ts'",
-    "lint:ts": "tsc -p ./frontend && tsc -p ./backend",
+    "lint:ts": "tsc -b frontend backend",
     "lint:css": "stylelint --syntax css-in-js 'frontend/**/*.@(ts|tsx)'",
     "postinstall": "rimraf node_modules/.cache .linaria-cache && node postinstall.js",
     "prepare": "yarn build",
     "prettier": "prettier --write '{backend,frontend,shared}/**/*.{ts,tsx}'",
     "prod": "run-s build start:prod",
-    "start": "run-p start:backend start:frontend 'build:backend --watch --noEmit --preserveWatchOutput'",
+    "start": "yarn build:backend && run-p start:backend start:frontend 'build:backend --watch --preserveWatchOutput'",
     "start:backend": "nodemon",
     "start:frontend": "webpack-dev-server --config frontend/webpack.config.ts",
     "start:devserver": "cross-env DEV_SERVER=true nodemon",
@@ -135,5 +138,6 @@
     "tslib": "^1.11.1",
     "usb-detection": "^4.7.0",
     "ws": "^7.2.1"
-  }
+  },
+  "bundledDependencies": ["@vlight/shared"]
 }

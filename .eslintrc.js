@@ -41,6 +41,9 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'warn',
   },
   settings: {
+    node: {
+      allowModules: ['@vlight/shared'],
+    },
     react: {
       version: 'detect',
     },

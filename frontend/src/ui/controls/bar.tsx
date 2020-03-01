@@ -2,7 +2,7 @@ import cx from 'classnames'
 import { css } from 'linaria'
 import React from 'react'
 
-import { ensureBetween, getFraction } from '../../util/number'
+import { ensureBetween, getFraction } from '../../util/shared'
 import {
   baselinePx,
   iconShade,

@@ -7,7 +7,7 @@ import { getUniverseIndex } from '../../api/util'
 import { useApiState } from '../../hooks/api'
 import { ChannelFader } from '../../ui/controls/fader/channel-fader'
 import { pageWithWidgets } from '../../ui/css/page'
-import { createRangeArray } from '../../util/array'
+import { createRangeArray } from '../../util/shared'
 import { memoInProduction } from '../../util/development'
 
 const channelsPage = css`

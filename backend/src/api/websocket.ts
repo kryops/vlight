@@ -2,7 +2,7 @@ import { ApiOutMessage } from '@vlight/api'
 import ws from 'ws'
 
 import { httpServer } from '../app'
-import { removeFromMutableArray } from '../util/array'
+import { removeFromMutableArray } from '../util/shared'
 import { logInfo, logTrace } from '../util/log'
 
 import { getFullState } from './messages'

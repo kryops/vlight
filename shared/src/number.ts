@@ -8,6 +8,10 @@ export function ensureBetween(value: number, min: number, max: number): number {
   return value
 }
 
+export function roundToStep(value: number, step?: number) {
+  return step ? Math.round(value / step) * step : value
+}
+
 export function getFraction(value: number, min: number, max: number): number {
   if (min === max) return 0
   const fraction = (value - min) / (max - min)

@@ -3,7 +3,7 @@ import { FixtureState, IdType, Fixture } from '@vlight/entities'
 import { fixtures, fixtureTypes } from '../../database'
 import { getPersistedState } from '../../database/state'
 import { logWarn } from '../../util/log'
-import { dictionaryToMap } from '../../util/map'
+import { dictionaryToMap } from '../../util/shared'
 import { howLong } from '../../util/time'
 import {
   addUniverse,

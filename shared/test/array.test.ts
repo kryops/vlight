@@ -2,7 +2,8 @@ import {
   addToMutableArray,
   removeFromMutableArray,
   arrayRange,
-} from '../../src/util/array'
+  createRangeArray,
+} from '../src/array'
 
 describe('util/array', () => {
   it('removeFromMutableArray', () => {
@@ -29,5 +30,13 @@ describe('util/array', () => {
 
   it('arrayRange', () => {
     expect(arrayRange(1, 3, x => x + 1)).toEqual([2, 3, 4])
+  })
+
+  describe('createRangeArray', () => {
+    it('creates a range array', () => {
+      expect(createRangeArray(1, 4)).toEqual([1, 2, 3, 4])
+      expect(createRangeArray(1, 1)).toEqual([1])
+      expect(createRangeArray(1, 0)).toEqual([])
+    })
   })
 })

@@ -1,8 +1,8 @@
 import { Fixture } from '@vlight/entities'
 
-import { arrayRange } from '../../util/array'
+import { arrayRange } from '../../util/shared'
 import { logWarn } from '../../util/log'
-import { isUnique } from '../../util/validation'
+import { isUnique } from '../../util/shared'
 
 import { fixtureTypes, masterData, fixtureGroups, fixtures } from '..'
 

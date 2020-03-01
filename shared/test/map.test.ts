@@ -1,4 +1,4 @@
-import { mapToDictionary } from '../../src/util/map'
+import { mapToDictionary } from '../src/map'
 
 describe('util/map', () => {
   it('mapToDictionary', () => {

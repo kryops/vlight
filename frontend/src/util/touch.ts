@@ -1,6 +1,6 @@
 import { RefObject } from 'react'
 
-import { ensureBetween } from './number'
+import { ensureBetween } from './shared'
 
 export interface NormalizedTouchEvent<T extends HTMLElement = HTMLElement> {
   type: string

@@ -5,7 +5,7 @@ import { MasterData } from '@vlight/entities'
 
 import { Widget } from '../../ui/containers/widget'
 import { memoInProduction } from '../../util/development'
-import { createRangeArray } from '../../util/array'
+import { createRangeArray } from '../../util/shared'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
 import {

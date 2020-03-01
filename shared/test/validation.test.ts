@@ -1,4 +1,4 @@
-import { isTruthy, isUnique } from '../../src/util/validation'
+import { isTruthy, isUnique } from '../src/validation'
 
 describe('util/validation', () => {
   describe('isTruthy', () => {

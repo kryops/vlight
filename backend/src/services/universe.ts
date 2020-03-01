@@ -1,7 +1,7 @@
 import { broadcastUniverseChannelToSockets } from '../api'
 import { universeSize } from '../config'
 import { broadcastUniverseChannelToDevices } from '../devices'
-import { addToMutableArray, removeFromMutableArray } from '../util/array'
+import { addToMutableArray, removeFromMutableArray } from '../util/shared'
 
 export type Universe = Buffer
 

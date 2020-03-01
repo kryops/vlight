@@ -3,7 +3,7 @@ import { join } from 'path'
 
 import { Dictionary, FixtureState, MemoryState } from '@vlight/entities'
 
-import { mapToDictionary } from '../util/map'
+import { mapToDictionary } from '../util/shared'
 import { channelUniverse } from '../controls/channels'
 import { fixtureStates } from '../controls/fixtures'
 import { fixtureGroupStates } from '../controls/fixture-groups'

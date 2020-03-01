@@ -2,7 +2,7 @@ import { Device, HID } from 'node-hid'
 
 import { usbDmxPid, usbDmxVid } from '../../config'
 import { onWindows } from '../../env'
-import { removeFromMutableArray } from '../../util/array'
+import { removeFromMutableArray } from '../../util/shared'
 import { logError, logInfo, logWarn } from '../../util/log'
 
 import { HIDWithInfo, usbDmxDevices, bannedDevices } from '.'

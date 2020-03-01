@@ -97,16 +97,20 @@ export const webpackConfiguration = (env: Env = {}) => {
     },
     resolve: {
       extensions: ['.ts', '.tsx', '.js'],
-      alias: isProduction
-        ? profileReact
-          ? {
-              'react-dom$': 'react-dom/profiling',
-              'scheduler/tracing': 'scheduler/tracing-profiling',
-            }
-          : {}
-        : {
-            'react-dom': '@hot-loader/react-dom',
-          },
+      alias: {
+        // transpile from sources in frontend build
+        '@vlight/shared': join(__dirname, '../shared/src'),
+        ...(isProduction
+          ? profileReact
+            ? {
+                'react-dom$': 'react-dom/profiling',
+                'scheduler/tracing': 'scheduler/tracing-profiling',
+              }
+            : {}
+          : {
+              'react-dom': '@hot-loader/react-dom',
+            }),
+      },
     },
     stats: profile ? 'normal' : 'minimal',
     performance: false,

@@ -10,9 +10,9 @@ import {
   removeUniverse,
 } from '../../services/universe'
 import { logWarn } from '../../util/log'
-import { dictionaryToMap } from '../../util/map'
+import { dictionaryToMap } from '../../util/shared'
 import { howLong } from '../../util/time'
-import { isUnique, isTruthy } from '../../util/validation'
+import { isUnique, isTruthy } from '../../util/shared'
 import {
   getInitialFixtureState,
   mapFixtureStateToChannels,

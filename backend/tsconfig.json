@@ -5,5 +5,6 @@
     "lib": ["esnext"],
     "noEmit": true
   },
-  "include": ["./src", "./test", "./clients", "../@types"]
+  "include": ["./src", "./test", "./clients", "../@types"],
+  "references": [{ "path": "../shared" }]
 }

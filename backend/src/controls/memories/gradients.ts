@@ -9,7 +9,7 @@ import {
   ensureBetween,
   getFraction,
   getValueForFraction,
-} from '../../util/number'
+} from '../../util/shared'
 
 export enum ScenePattern {
   ROW = 'row',

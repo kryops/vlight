@@ -30,3 +30,11 @@ export function arrayRange<T>(
 
   return entries
 }
+
+export function createRangeArray(min: number, max: number): number[] {
+  const arr: number[] = []
+  for (let i = min; i <= max; i++) {
+    arr.push(i)
+  }
+  return arr
+}

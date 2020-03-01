@@ -6,7 +6,7 @@ import {
   useMasterDataMaps,
   useApiStateEntry,
 } from '../../hooks/api'
-import { isTruthy, isUnique } from '../../util/validation'
+import { isTruthy, isUnique } from '../../util/shared'
 
 import { StatelessFixtureGroupWidget } from './widget'
 

@@ -5,7 +5,7 @@ import { Widget } from '../../ui/containers/widget'
 import { ChannelFader } from '../../ui/controls/fader/channel-fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
-import { createRangeArray } from '../../util/array'
+import { createRangeArray } from '../../util/shared'
 import { getUniverseIndex } from '../../api/util'
 
 export interface StatelessChannelsWidgetProps {

@@ -1,8 +1,4 @@
-import {
-  ensureBetween,
-  getFraction,
-  getValueForFraction,
-} from '../../src/util/number'
+import { ensureBetween, getFraction, getValueForFraction } from '../src/number'
 
 describe('util/number', () => {
   describe('ensureBetween', () => {
