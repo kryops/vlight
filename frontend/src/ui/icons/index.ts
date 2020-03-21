@@ -9,7 +9,7 @@ import {
   mdiGroup,
   mdiPaletteOutline,
   mdiFileAccount,
-  mdiSettings,
+  mdiCog,
   mdiImageFrame,
 } from '@mdi/js'
 
@@ -25,4 +25,4 @@ export const iconMemory = mdiImageFrame
 export const iconExperiment = mdiFlaskOutline
 export const iconColorPicker = mdiPaletteOutline
 export const iconDynamicPage = mdiFileAccount
-export const iconSettings = mdiSettings
+export const iconSettings = mdiCog
