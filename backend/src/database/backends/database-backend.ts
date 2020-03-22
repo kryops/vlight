@@ -1,4 +1,4 @@
-import { EntityName, EntityArray } from '../mappings'
+import { EntityName, EntityArray } from '@vlight/entities'
 
 export interface DatabaseBackend {
   loadEntities<T extends EntityName>(entity: T): Promise<EntityArray<T>>

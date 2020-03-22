@@ -2,15 +2,11 @@ import { join } from 'path'
 import fs from 'fs'
 
 import prettier from 'prettier'
+import { EntityDictionary, EntityName, EntityArray } from '@vlight/entities'
 
-import {
-  EntityDictionary,
-  EntityName,
-  globalEntities,
-  EntityArray,
-} from '../mappings'
 import { configDirectoryPath, project } from '../../config'
 import { logWarn } from '../../util/log'
+import { globalEntities } from '../mappings'
 
 import { DatabaseBackend } from './database-backend'
 
@@ -68,7 +64,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
   /** @type {import('@vlight/shared/types/entities').${
     entityToTypeName[entity]
   }} */
-  const ${entity} = ${JSON.stringify(entries, null, 4)}
+  const ${entity} = ${JSON.stringify(entries, null, 2)}
   
   module.exports = ${entity}
 `,

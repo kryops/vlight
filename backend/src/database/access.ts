@@ -1,18 +1,21 @@
-import { MasterData } from '@vlight/entities'
+import {
+  MasterData,
+  EntityName,
+  EntityType,
+  EntityArray,
+} from '@vlight/entities'
 
 import {
-  EntityType,
-  EntityName,
   entityPreprocessors,
   EntityPreprocessor,
   entityOrder,
-  EntityArray,
 } from './mappings'
 import * as masterDataModule from './masterdata'
 import { JsDatabaseBackend } from './backends/js-backend'
 
 const masterData = masterDataModule.masterData
 const rawMasterData = masterDataModule.rawMasterData
+const allEntityNames = Object.keys(masterData) as EntityName[]
 
 const backend = new JsDatabaseBackend()
 
@@ -42,9 +45,18 @@ export function fillEntity<T extends EntityName>(
   }
 }
 
-export async function initEntities() {
-  const allEntityNames = Object.keys(masterData) as EntityName[]
+function getAffectedEntities(changedEntity: EntityName): EntityName[] {
+  if (!entityOrder.includes(changedEntity)) {
+    return [changedEntity]
+  }
 
+  return [
+    ...entityOrder.slice(entityOrder.indexOf(changedEntity)),
+    ...allEntityNames.filter(entity => !entityOrder.includes(entity)),
+  ]
+}
+
+export async function initEntities() {
   const entitiesToLoad: EntityName[] = [
     ...entityOrder,
     ...allEntityNames.filter(entity => !entityOrder.includes(entity)),
@@ -58,7 +70,7 @@ export async function writeEntity<T extends EntityName>(
   entries: EntityArray<T>
 ) {
   await backend.writeEntities(entity, entries)
-  // we need to reload all entities in case other preprocessed entities depend
-  // on the changed entries
-  await initEntities()
+  for (const entityToReload of getAffectedEntities(entity)) {
+    await initEntity(entityToReload)
+  }
 }

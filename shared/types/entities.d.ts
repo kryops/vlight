@@ -65,6 +65,11 @@ export interface MasterData {
   dynamicPages: DynamicPage[]
 }
 
+export type EntityName = keyof MasterData
+export type EntityDictionary<T = string> = { [key in EntityName]: T }
+export type EntityArray<T extends EntityName = EntityName> = MasterData[T]
+export type EntityType<T extends EntityName = EntityName> = MasterData[T][0]
+
 // State
 
 export interface FixtureState {

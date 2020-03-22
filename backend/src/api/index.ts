@@ -9,6 +9,7 @@ import { setChannel } from '../controls/channels'
 import { setFixtureState } from '../controls/fixtures'
 import { setFixtureGroupState } from '../controls/fixture-groups'
 import { setMemoryState } from '../controls/memories'
+import { updateMasterDataEntity } from '../services/masterdata'
 import { logError, logTrace } from '../util/log'
 import { assertNever } from '../util/typescript'
 import { howLong } from '../util/time'
@@ -64,6 +65,10 @@ export function handleApiMessage(message: ApiInMessage) {
       setMemoryState(message.id, message.state)
       changed = true // always broadcast
       break
+
+    case 'entity':
+      updateMasterDataEntity(message.entity, message.entries)
+      return // never broadcast
 
     default:
       assertNever(message)

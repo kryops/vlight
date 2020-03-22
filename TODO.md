@@ -3,7 +3,6 @@
 ## Roadmap
 
 - Master data / config editor
-  - (global) User config
   - (global) Fixture types
   - Fixtures
   - Fixture groups

@@ -7,7 +7,7 @@ import {
 } from '@vlight/api'
 import { Dictionary, FixtureState, IdType, MemoryState } from '@vlight/entities'
 
-import { masterData } from '../database'
+import { masterData, rawMasterData } from '../database'
 import { getUniverseIndex } from '../services/universe'
 
 export function getApiStateMessage({
@@ -26,6 +26,7 @@ export function getApiStateMessage({
   return {
     type: 'state',
     masterData,
+    rawMasterData,
     universe: Array.from(universe),
     channels: Array.from(channels),
     fixtures,
@@ -38,6 +39,7 @@ export function getApiMasterDataMessage(): ApiMasterDataMessage {
   return {
     type: 'masterdata',
     masterData,
+    rawMasterData,
   }
 }
 

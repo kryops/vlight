@@ -4,6 +4,8 @@ import {
   IdType,
   MasterData,
   MemoryState,
+  EntityName,
+  EntityArray,
 } from './entities'
 
 // Both ingoing + outgoing
@@ -37,11 +39,18 @@ export interface ApiMemoryStateMessage {
 
 // Incoming messages
 
-export type ApiInMessage =
+export interface ApiEntityMessage<T extends EntityName> {
+  type: 'entity'
+  entity: T
+  entries: EntityArray<T>
+}
+
+export type ApiInMessage<T extends EntityName = any> =
   | ApiChannelMessage
   | ApiFixtureStateMessage
   | ApiFixtureGroupStateMessage
   | ApiMemoryStateMessage
+  | ApiEntityMessage<T>
 
 // Outgoing messages
 
@@ -52,6 +61,7 @@ export type ApiInMessage =
 export interface ApiStateMessage {
   type: 'state'
   masterData: MasterData
+  rawMasterData: MasterData
   universe: number[]
   channels: number[]
   fixtures: Dictionary<FixtureState>
@@ -62,6 +72,7 @@ export interface ApiStateMessage {
 export interface ApiMasterDataMessage {
   type: 'masterdata'
   masterData: MasterData
+  rawMasterData: MasterData
 }
 
 /** Contains the whole DMX universe */

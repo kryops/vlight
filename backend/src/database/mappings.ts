@@ -1,14 +1,9 @@
-import { MasterData } from '@vlight/entities'
+import { EntityName, EntityType } from '@vlight/entities'
 
 import { processFixtures } from './entities/fixtures'
 import { processFixtureGroups } from './entities/fixture-groups'
 import { processMemories } from './entities/memories'
 import { processDynamicPages } from './entities/dynamic-pages'
-
-export type EntityName = keyof MasterData
-export type EntityDictionary<T = string> = { [key in EntityName]: T }
-export type EntityArray<T extends EntityName = EntityName> = MasterData[T]
-export type EntityType<T extends EntityName = EntityName> = MasterData[T][0]
 
 export type EntityPreprocessor<T> = (entries: T[]) => T[]
 export type EntityPreprocessorDictionary = {

@@ -1,7 +1,9 @@
+import { EntityArray, EntityName } from '@vlight/entities'
+
 import { logError } from '../util/log'
 import { howLong } from '../util/time'
 
-import { initEntities } from './access'
+import { initEntities, writeEntity } from './access'
 import { initPersistedState } from './state'
 
 export * from './masterdata'
@@ -22,4 +24,11 @@ export async function reloadDatabase() {
       error
     )
   }
+}
+
+export async function modifyEntity<T extends EntityName>(
+  entity: T,
+  entries: EntityArray<T>
+) {
+  await writeEntity(entity, entries)
 }
