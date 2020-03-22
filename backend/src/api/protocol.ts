@@ -10,13 +10,19 @@ import { Dictionary, FixtureState, IdType, MemoryState } from '@vlight/entities'
 import { masterData } from '../database'
 import { getUniverseIndex } from '../services/universe'
 
-export function getApiStateMessage(
-  universe: Buffer,
-  channels: Buffer,
-  fixtures: Dictionary<FixtureState>,
-  fixtureGroups: Dictionary<FixtureState>,
+export function getApiStateMessage({
+  universe,
+  channels,
+  fixtures,
+  fixtureGroups,
+  memories,
+}: {
+  universe: Buffer
+  channels: Buffer
+  fixtures: Dictionary<FixtureState>
+  fixtureGroups: Dictionary<FixtureState>
   memories: Dictionary<MemoryState>
-): ApiStateMessage {
+}): ApiStateMessage {
   return {
     type: 'state',
     masterData,

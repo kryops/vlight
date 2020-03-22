@@ -10,11 +10,11 @@ import { mapToDictionary } from '../util/shared'
 import { getApiStateMessage } from './protocol'
 
 export function getFullState(): ApiStateMessage {
-  return getApiStateMessage(
-    getDmxUniverse(),
-    channelUniverse,
-    mapToDictionary(fixtureStates),
-    mapToDictionary(fixtureGroupStates),
-    mapToDictionary(memoryStates)
-  )
+  return getApiStateMessage({
+    universe: getDmxUniverse(),
+    channels: channelUniverse,
+    fixtures: mapToDictionary(fixtureStates),
+    fixtureGroups: mapToDictionary(fixtureGroupStates),
+    memories: mapToDictionary(memoryStates),
+  })
 }

@@ -27,7 +27,13 @@ describe('api/protocol', () => {
       '2': { on: true, value: 100 },
     }
     expect(
-      getApiStateMessage(universe, channels, fixtures, fixtureGroups, memories)
+      getApiStateMessage({
+        universe,
+        channels,
+        fixtures,
+        fixtureGroups,
+        memories,
+      })
     ).toEqual({
       type: 'state',
       masterData: { foo: 'bar' },
