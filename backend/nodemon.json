@@ -6,10 +6,10 @@
   "exec": "node ./dist/index.js",
   "ignore": ["**/*.test.ts", "config/state.js"],
   "watch": [
-    "backend/dist",
-    "frontend/webpack.config.ts",
-    "config",
-    "shared/dist"
+    "dist",
+    "../frontend/webpack.config.ts",
+    "../config",
+    "../shared/dist"
   ],
-  "delay": 1000
+  "delay": 500
 }

@@ -68,7 +68,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
   /** @type {import('@vlight/shared/types/entities').${
     entityToTypeName[entity]
   }} */
-  const ${entity} = ${JSON.stringify(entries)}
+  const ${entity} = ${JSON.stringify(entries, null, 4)}
   
   module.exports = ${entity}
 `,
