@@ -6,6 +6,7 @@
     "msjsdiag.debugger-for-chrome",
     "christian-kohler.npm-intellisense",
     "jpoissonnier.vscode-styled-components",
-    "stylelint.vscode-stylelint"
+    "stylelint.vscode-stylelint",
+    "orta.vscode-jest"
   ]
 }

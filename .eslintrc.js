@@ -1,6 +1,6 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint', 'import', 'react-hooks'],
+  plugins: ['@typescript-eslint', 'import', 'react-hooks', 'jest'],
   extends: [
     'plugin:react/recommended',
     'plugin:@typescript-eslint/recommended',
@@ -8,6 +8,7 @@ module.exports = {
     'plugin:import/typescript',
     'plugin:prettier/recommended',
     'prettier/react',
+    'plugin:jest/recommended',
   ],
   parserOptions: {
     ecmaVersion: 2020,
