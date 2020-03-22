@@ -8,14 +8,14 @@ export * from './masterdata'
 
 export async function initDatabase() {
   const start = Date.now()
-  initEntities()
+  await initEntities()
   initPersistedState()
   howLong(start, 'initDatabase')
 }
 
 export async function reloadDatabase() {
   try {
-    initEntities()
+    await initEntities()
   } catch (error) {
     logError(
       'Error reloading database, the update may have only been partial!',

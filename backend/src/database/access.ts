@@ -1,46 +1,39 @@
-import { join } from 'path'
-
 import { MasterData } from '@vlight/entities'
-
-import { project, configDirectoryPath } from '../config'
 
 import {
   EntityType,
   EntityName,
-  entityToFileName,
-  globalEntities,
   entityPreprocessors,
   EntityPreprocessor,
   entityOrder,
+  EntityArray,
 } from './mappings'
 import * as masterDataModule from './masterdata'
+import { JsDatabaseBackend } from './backends/js-backend'
 
 const masterData = masterDataModule.masterData
+const rawMasterData = masterDataModule.rawMasterData
 
-function initEntity<T extends EntityType>(entity: EntityName) {
-  const fileName = entityToFileName[entity]
+const backend = new JsDatabaseBackend()
 
-  const configPath = globalEntities.has(entity)
-    ? join(configDirectoryPath, fileName)
-    : join(configDirectoryPath, project, fileName)
-  // enable reloading
-  delete require.cache[require.resolve(configPath)]
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const rawEntries: T[] = require(configPath)
+async function initEntity<T extends EntityName>(entity: T) {
+  const rawEntries = await backend.loadEntities(entity)
 
   const preprocessor = entityPreprocessors[entity] as
-    | EntityPreprocessor<T>
+    | EntityPreprocessor<EntityType<T>>
     | undefined
   const entries = preprocessor ? preprocessor(rawEntries) : rawEntries
 
-  fillEntity(entity, entries as any)
+  fillEntity(entity, entries as any, rawEntries as any)
 }
 
 export function fillEntity<T extends EntityName>(
   type: T,
-  entries: MasterData[T]
+  entries: MasterData[T],
+  rawEntries?: MasterData[T]
 ) {
   masterData[type] = entries
+  rawMasterData[type] = rawEntries ?? entries
   const map = masterDataModule[type]
   map.clear()
 
@@ -49,7 +42,7 @@ export function fillEntity<T extends EntityName>(
   }
 }
 
-export function initEntities() {
+export async function initEntities() {
   const allEntityNames = Object.keys(masterData) as EntityName[]
 
   const entitiesToLoad: EntityName[] = [
@@ -57,5 +50,15 @@ export function initEntities() {
     ...allEntityNames.filter(entity => !entityOrder.includes(entity)),
   ]
 
-  for (const entity of entitiesToLoad) initEntity(entity)
+  for (const entity of entitiesToLoad) await initEntity(entity)
+}
+
+export async function writeEntity<T extends EntityName>(
+  entity: T,
+  entries: EntityArray<T>
+) {
+  await backend.writeEntities(entity, entries)
+  // we need to reload all entities in case other preprocessed entities depend
+  // on the changed entries
+  await initEntities()
 }

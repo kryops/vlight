@@ -1,9 +1,9 @@
 // @ts-check
-/** @type {import('../../shared/types/entities').DynamicPage[]} */
+/** @type {import('@vlight/shared/types/entities').DynamicPage[]} */
 const dynamicPages = [
   {
     id: 'dyn1',
-    icon: require('@mdi/js').mdiAirballoon,
+    icon: 'mdiAirballoon',
     headline: 'Foobar',
     rows: [
       {

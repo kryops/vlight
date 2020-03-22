@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- Project scoped config
 - Master data / config editor
   - (global) User config
   - (global) Fixture types
@@ -21,3 +20,4 @@
 
 - webpack 5 Beta
 - Node.js worker threads
+- react-router 6 Alpha

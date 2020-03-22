@@ -16,6 +16,14 @@ export const masterData: MasterData = {
   dynamicPages: [],
 }
 
+export const rawMasterData: MasterData = {
+  fixtureTypes: [],
+  fixtures: [],
+  fixtureGroups: [],
+  memories: [],
+  dynamicPages: [],
+}
+
 export const fixtureTypes: Map<IdType, FixtureType> = new Map()
 export const fixtures: Map<IdType, Fixture> = new Map()
 export const fixtureGroups: Map<IdType, FixtureGroup> = new Map()

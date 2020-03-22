@@ -1,5 +1,5 @@
 // @ts-check
-/** @type {import('../shared/types/entities').FixtureType[]} */
+/** @type {import('@vlight/shared/types/entities').FixtureType[]} */
 const fixtureTypes = [
   {
     id: 'generic',
