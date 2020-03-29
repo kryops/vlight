@@ -2,7 +2,8 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "target": "es2018",
-    "lib": ["esnext"]
+    "lib": ["esnext"],
+    "noEmit": true
   },
   "include": ["./src", "./test", "./clients", "../@types"],
   "references": [{ "path": "../shared" }]
