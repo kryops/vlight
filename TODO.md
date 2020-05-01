@@ -2,6 +2,9 @@
 
 ## Roadmap
 
+- Backend restructuring
+  - more into services
+  - registration architecture
 - Master data / config editor
   - (global) Fixture types
   - Fixtures
