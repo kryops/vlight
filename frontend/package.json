@@ -57,7 +57,7 @@
     "linaria": "2.0.0-alpha.2",
     "mini-css-extract-plugin": "^0.9.0",
     "optimize-css-assets-webpack-plugin": "^5.0.3",
-    "polished": "^3.5.2",
+    "polished": "^3.6.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-hot-loader": "^4.12.21",
@@ -68,11 +68,11 @@
     "stylelint": "^13.3.3",
     "stylelint-config-recommended": "^3.0.0",
     "stylis": "3.5.4",
-    "terser-webpack-plugin": "^2.3.6",
+    "terser-webpack-plugin": "^3.0.0",
     "webpack": "^4.43.0",
     "webpack-bundle-analyzer": "^3.7.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3",
-    "worker-plugin": "^4.0.2"
+    "worker-plugin": "^4.0.3"
   }
 }
