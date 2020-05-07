@@ -1,10 +1,14 @@
 import { Fixture } from '@vlight/entities'
 
-import { arrayRange } from '../../util/shared'
-import { logWarn } from '../../util/log'
-import { isUnique } from '../../util/shared'
-
-import { fixtureTypes, masterData, fixtureGroups, fixtures } from '..'
+import { arrayRange } from '../../../util/shared'
+import { logWarn } from '../../../util/log'
+import { isUnique } from '../../../util/shared'
+import {
+  fixtureTypes,
+  masterData,
+  fixtureGroups,
+  fixtures,
+} from '../../../services/database'
 
 function replaceIndex<T extends string | undefined>(
   value: T,

@@ -1,6 +1,6 @@
 import { createConnection } from 'net'
 
-import { tcpPort } from '../src/config'
+import { tcpPort } from '../src/services/config'
 import { logInfo } from '../src/util/log'
 
 const socket = createConnection(tcpPort, undefined, () => {

@@ -4,23 +4,23 @@ import {
   multiChannelUniverseFlushThreshold,
   socketFlushInterval,
 } from '../config'
-import { getDmxUniverse } from '../services/universe'
-import { setChannel } from '../controls/channels'
-import { setFixtureState } from '../controls/fixtures'
-import { setFixtureGroupState } from '../controls/fixture-groups'
-import { setMemoryState } from '../controls/memories'
-import { updateMasterDataEntity } from '../services/masterdata'
-import { logError, logTrace } from '../util/log'
-import { assertNever } from '../util/typescript'
-import { howLong } from '../util/time'
+import { getDmxUniverse } from '../universe'
+import { setChannel } from '../../controls/channels'
+import { setFixtureState } from '../../controls/fixtures'
+import { setFixtureGroupState } from '../../controls/fixture-groups'
+import { setMemoryState } from '../../controls/memories'
+import { updateMasterDataEntity } from '../masterdata'
+import { logError, logTrace } from '../../util/log'
+import { assertNever } from '../../util/typescript'
+import { howLong } from '../../util/time'
+import { broadcastToSockets, sockets } from '../http/websocket'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
-import { broadcastToSockets, initWebSocketServer, sockets } from './websocket'
 import { getFullState } from './messages'
 
 const changedUninverseChannels: Set<number> = new Set<number>()
 
-function flushWebSockets() {
+function flushChangedUniverseChannels() {
   if (!sockets.length || changedUninverseChannels.size === 0) {
     return
   }
@@ -82,7 +82,7 @@ export function handleApiMessage(message: ApiInMessage) {
   }
 }
 
-export function broadcastUniverseChannelToSockets(channel: number) {
+export function broadcastUniverseChannelToApiClients(channel: number) {
   if (!sockets.length) {
     return
   }
@@ -91,13 +91,12 @@ export function broadcastUniverseChannelToSockets(channel: number) {
 
 export async function initApi() {
   const start = Date.now()
-  await initWebSocketServer()
 
-  setInterval(flushWebSockets, socketFlushInterval)
+  setInterval(flushChangedUniverseChannels, socketFlushInterval)
   howLong(start, 'initApi')
 }
 
-export function broadcastApplicationStateToSockets() {
+export function broadcastApplicationStateToApiClients() {
   broadcastToSockets(getFullState())
   changedUninverseChannels.clear()
 }

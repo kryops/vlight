@@ -13,8 +13,7 @@
     "build": "tsc -b ./src",
     "clean": "rimraf dist",
     "start": "yarn build && nodemon",
-    "start:prod": "cross-env NODE_ENV=production && node .",
-    "start:devserver": "yarn build && cross-env DEV_SERVER=true nodemon"
+    "start:prod": "cross-env NODE_ENV=production && node ."
   },
   "dependencies": {
     "@mdi/js": "^5.1.45",
@@ -37,8 +36,6 @@
     "@types/node-hid": "^1.2.0",
     "@types/prettier": "^2.0.0",
     "@types/ws": "^7.2.4",
-    "nodemon": "^2.0.3",
-    "webpack-dev-middleware": "^3.7.2",
-    "webpack-hot-middleware": "^2.24.4"
+    "nodemon": "^2.0.3"
   }
 }

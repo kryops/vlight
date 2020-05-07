@@ -2,7 +2,7 @@ import {
   devicesFlushInterval,
   enableVLightDevices,
   multiChannelUniverseFlushThreshold,
-} from '../../config'
+} from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
 import { howLong } from '../../util/time'
 

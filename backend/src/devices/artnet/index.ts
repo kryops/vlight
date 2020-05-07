@@ -1,6 +1,6 @@
 import { Artnet } from 'artnet'
 
-import { artnetHost, enableArtNetDevices } from '../../config'
+import { artnetHost, enableArtNetDevices } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
 import { logTrace } from '../../util/log'
 import { howLong } from '../../util/time'

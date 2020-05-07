@@ -1,17 +1,15 @@
 import { EntityArray, EntityName } from '@vlight/entities'
 
-import { logError } from '../util/log'
-import { howLong } from '../util/time'
+import { logError } from '../../util/log'
+import { howLong } from '../../util/time'
 
 import { initEntities, writeEntity } from './access'
-import { initPersistedState } from './state'
 
-export * from './masterdata'
+export * from '../masterdata'
 
 export async function initDatabase() {
   const start = Date.now()
   await initEntities()
-  initPersistedState()
   howLong(start, 'initDatabase')
 }
 

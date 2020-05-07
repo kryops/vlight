@@ -1,6 +1,6 @@
 import { createSocket } from 'dgram'
 
-import { udpMulticastAddress, udpPort } from '../src/config'
+import { udpMulticastAddress, udpPort } from '../src/services/config'
 import { logInfo } from '../src/util/log'
 import { getAddressString } from '../src/util/network'
 

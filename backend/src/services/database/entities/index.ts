@@ -1,9 +1,9 @@
 import { EntityName, EntityType } from '@vlight/entities'
 
-import { processFixtures } from './entities/fixtures'
-import { processFixtureGroups } from './entities/fixture-groups'
-import { processMemories } from './entities/memories'
-import { processDynamicPages } from './entities/dynamic-pages'
+import { processFixtures } from './fixtures'
+import { processFixtureGroups } from './fixture-groups'
+import { processMemories } from './memories'
+import { processDynamicPages } from './dynamic-pages'
 
 export type EntityPreprocessor<T> = (entries: T[]) => T[]
 export type EntityPreprocessorDictionary = {

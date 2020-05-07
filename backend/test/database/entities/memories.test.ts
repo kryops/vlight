@@ -1,5 +1,5 @@
-import { fillEntity } from '../../src/database/access'
-import { processMemories } from '../../src/database/entities/memories'
+import { fillEntity } from '../../../src/services/database/access'
+import { processMemories } from '../../../src/services/database/entities/memories'
 
 import { fixtureTypes, fixtures, fixtureGroups, mockMemory } from './mocks'
 

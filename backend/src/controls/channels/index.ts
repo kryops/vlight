@@ -1,4 +1,4 @@
-import { getPersistedState } from '../../database/state'
+import { getPersistedState } from '../../services/state'
 import {
   addUniverse,
   createUniverse,

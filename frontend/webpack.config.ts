@@ -31,7 +31,6 @@ export const webpackConfiguration = (env: Env = {}) => {
   const analyze = !!env.analyze
   const profile = !!env.profile
   const profileReact = !!env.profileReact
-  const isDevServer = process.env.DEV_SERVER === 'true'
 
   if (process.env.NODE_ENV === undefined) {
     process.env.NODE_ENV = isProduction ? 'production' : 'development'
@@ -41,9 +40,6 @@ export const webpackConfiguration = (env: Env = {}) => {
     entry: [
       isProduction && join(__dirname, 'src/polyfills.ts'),
       join(__dirname, 'src/index.tsx'),
-      !isProduction &&
-        isDevServer &&
-        'webpack-hot-middleware/client?reload=true',
     ].filter(Boolean) as string[],
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? 'source-map' : 'cheap-module-source-map',

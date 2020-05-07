@@ -1,13 +1,12 @@
 import { ApiOutMessage } from '@vlight/api'
 import ws from 'ws'
 
-import { httpServer } from '../app'
-import { removeFromMutableArray } from '../util/shared'
-import { logInfo, logTrace } from '../util/log'
+import { removeFromMutableArray } from '../../util/shared'
+import { logInfo, logTrace } from '../../util/log'
+import { getFullState } from '../api/messages'
+import { handleApiMessage } from '../api'
 
-import { getFullState } from './messages'
-
-import { handleApiMessage } from '.'
+import { httpServer } from './express'
 
 export const sockets: ws[] = []
 

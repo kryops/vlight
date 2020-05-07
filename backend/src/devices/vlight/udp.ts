@@ -1,6 +1,10 @@
 import { createSocket, Socket } from 'dgram'
 
-import { udpMulticastAddress, udpPort, udpUniverseInterval } from '../../config'
+import {
+  udpMulticastAddress,
+  udpPort,
+  udpUniverseInterval,
+} from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
 import { logTrace, logError } from '../../util/log'
 

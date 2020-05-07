@@ -5,8 +5,8 @@ import prettier from 'prettier'
 import { EntityDictionary, EntityName, EntityArray } from '@vlight/entities'
 
 import { configDirectoryPath, project } from '../../config'
-import { logWarn } from '../../util/log'
-import { globalEntities } from '../mappings'
+import { logWarn } from '../../../util/log'
+import { globalEntities } from '../entities'
 
 import { DatabaseBackend } from './database-backend'
 

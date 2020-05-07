@@ -1,7 +1,7 @@
 import { MemoryState, Memory, IdType } from '@vlight/entities'
 
-import { memories } from '../../database'
-import { getPersistedState } from '../../database/state'
+import { memories } from '../../services/database'
+import { getPersistedState } from '../../services/state'
 import {
   Universe,
   createUniverse,

@@ -1,4 +1,4 @@
-import { logLevel } from '../config'
+import { logLevel } from '../services/config'
 
 export const shouldLogTrace = logLevel === 'trace'
 export const shouldLogInfo = shouldLogTrace || logLevel === 'info'

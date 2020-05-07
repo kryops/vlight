@@ -1,4 +1,4 @@
-import { FixtureState } from '@vlight/entities'
+import { FixtureState, MasterData } from '@vlight/entities'
 
 import {
   getApiFixtureStateMessage,
@@ -6,12 +6,18 @@ import {
   getApiStateMessage,
   getApiUniverseDeltaMessage,
   getApiUniverseMessage,
-} from '../../src/api/protocol'
-import { universeSize } from '../../src/config'
+} from '../../../src/services/api/protocol'
+import { universeSize } from '../../../src/services/config'
 
-jest.mock('../../src/database', () => ({
-  masterData: { foo: 'bar' },
-}))
+function getMasterDataMock(): MasterData {
+  return {
+    dynamicPages: [],
+    fixtureGroups: [],
+    fixtureTypes: [],
+    fixtures: [],
+    memories: [],
+  }
+}
 
 describe('api/protocol', () => {
   it('getApiStateMessage', () => {
@@ -28,6 +34,8 @@ describe('api/protocol', () => {
     }
     expect(
       getApiStateMessage({
+        masterData: getMasterDataMock(),
+        rawMasterData: getMasterDataMock(),
         universe,
         channels,
         fixtures,
@@ -36,7 +44,8 @@ describe('api/protocol', () => {
       })
     ).toEqual({
       type: 'state',
-      masterData: { foo: 'bar' },
+      masterData: getMasterDataMock(),
+      rawMasterData: getMasterDataMock(),
       universe: Array.from(universe),
       channels: Array.from(channels),
       fixtures,
@@ -46,9 +55,15 @@ describe('api/protocol', () => {
   })
 
   it('getApiMasterDataMessage', () => {
-    expect(getApiMasterDataMessage()).toEqual({
+    expect(
+      getApiMasterDataMessage({
+        masterData: getMasterDataMock(),
+        rawMasterData: getMasterDataMock(),
+      })
+    ).toEqual({
       type: 'masterdata',
-      masterData: { foo: 'bar' },
+      masterData: getMasterDataMock(),
+      rawMasterData: getMasterDataMock(),
     })
   })
 

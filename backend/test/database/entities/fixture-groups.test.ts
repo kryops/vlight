@@ -1,5 +1,5 @@
-import { fillEntity } from '../../src/database/access'
-import { processFixtureGroups } from '../../src/database/entities/fixture-groups'
+import { fillEntity } from '../../../src/services/database/access'
+import { processFixtureGroups } from '../../../src/services/database/entities/fixture-groups'
 
 import { fixtureTypes, fixtures, mockFixtureGroup } from './mocks'
 

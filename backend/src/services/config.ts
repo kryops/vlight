@@ -23,9 +23,13 @@ export interface VLightConfiguration {
   project: string
 }
 
-export const configDirectoryPath = join(__dirname, '../../config')
+export const configDirectoryPath = join(__dirname, '../../../config')
 
-const userConfig: Partial<VLightConfiguration> = require('../../config/vlight-config') // eslint-disable-line @typescript-eslint/no-var-requires
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const userConfig: Partial<VLightConfiguration> = require(join(
+  configDirectoryPath,
+  'vlight-config'
+))
 
 function c<T extends keyof VLightConfiguration>(
   key: T,

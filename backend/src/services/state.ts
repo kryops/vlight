@@ -8,12 +8,14 @@ import { channelUniverse } from '../controls/channels'
 import { fixtureStates } from '../controls/fixtures'
 import { fixtureGroupStates } from '../controls/fixture-groups'
 import { memoryStates } from '../controls/memories'
+import { logTrace } from '../util/log'
+import { howLong } from '../util/time'
+
 import {
   statePersistenceFlushInterval,
   project,
   configDirectoryPath,
-} from '../config'
-import { logTrace } from '../util/log'
+} from './config'
 
 const { writeFile } = promises
 
@@ -75,6 +77,7 @@ export function getPersistedState(): PersistedState {
 }
 
 export function initPersistedState() {
+  const start = Date.now()
   try {
     const statePath = join(configDirectoryPath, project, stateConfigFileName)
     persistedState = require(statePath)
@@ -85,4 +88,5 @@ export function initPersistedState() {
   persistedStateString = serializeState(persistedState)
 
   setInterval(checkAndPersistCurrentState, statePersistenceFlushInterval)
+  howLong(start, 'initPersistedState')
 }

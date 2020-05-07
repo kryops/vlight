@@ -3,8 +3,9 @@
 ## Roadmap
 
 - Backend restructuring
-  - more into services
+  - entity dependencies instead of order
   - registration architecture
+  - easier masterData extension / new entity process?
 - Master data / config editor
   - (global) Fixture types
   - Fixtures

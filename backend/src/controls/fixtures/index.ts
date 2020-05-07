@@ -1,7 +1,7 @@
 import { FixtureState, IdType, Fixture } from '@vlight/entities'
 
-import { fixtures, fixtureTypes } from '../../database'
-import { getPersistedState } from '../../database/state'
+import { fixtures, fixtureTypes } from '../../services/database'
+import { getPersistedState } from '../../services/state'
 import { logWarn } from '../../util/log'
 import { dictionaryToMap } from '../../util/shared'
 import { howLong } from '../../util/time'

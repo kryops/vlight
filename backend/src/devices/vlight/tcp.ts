@@ -1,6 +1,6 @@
 import { createServer, Socket } from 'net'
 
-import { tcpPort } from '../../config'
+import { tcpPort } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
 import { removeFromMutableArray } from '../../util/shared'
 import { logInfo, logTrace } from '../../util/log'

@@ -1,7 +1,7 @@
 import { IdType, FixtureState, FixtureGroup, Fixture } from '@vlight/entities'
 
-import { fixtureGroups, fixtures, fixtureTypes } from '../../database'
-import { getPersistedState } from '../../database/state'
+import { fixtureGroups, fixtures, fixtureTypes } from '../../services/database'
+import { getPersistedState } from '../../services/state'
 import {
   Universe,
   createUniverse,

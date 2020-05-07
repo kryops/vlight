@@ -5,14 +5,14 @@ import {
   MemoryPreparedState,
   mapMemoryStateToChannel,
 } from '../../../src/controls/memories/mapping'
-import { fillEntity } from '../../../src/database/access'
+import { fillEntity } from '../../../src/services/database/access'
 import { createUniverse } from '../../../src/services/universe'
 import {
   fixtureTypes,
   fixtures,
   fixtureGroups,
   mockMemory,
-} from '../../database/mocks'
+} from '../../database/entities/mocks'
 
 describe('controls/memories/mapping', () => {
   describe('mapMemoryStateToChannel', () => {

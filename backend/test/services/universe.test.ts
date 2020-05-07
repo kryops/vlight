@@ -2,14 +2,14 @@
  * @jest-environment node
  */
 
-import { broadcastUniverseChannelToSockets } from '../../src/api'
-import { universeSize } from '../../src/config'
+import { broadcastUniverseChannelToApiClients } from '../../src/services/api'
+import { universeSize } from '../../src/services/config'
 import { channelUniverse, initChannels } from '../../src/controls/channels'
 import { broadcastUniverseChannelToDevices } from '../../src/devices'
 import { getDmxUniverse, setUniverseChannel } from '../../src/services/universe'
 
 jest.mock('../../src/devices')
-jest.mock('../../src/api')
+jest.mock('../../src/services/api')
 
 describe('services/universe', () => {
   beforeAll(() => initChannels())
@@ -24,20 +24,20 @@ describe('services/universe', () => {
     expect(getDmxUniverse()).toEqual(mockUniverse)
 
     expect(broadcastUniverseChannelToDevices).toHaveBeenCalledWith(1, 255)
-    expect(broadcastUniverseChannelToSockets).toHaveBeenCalledWith(1)
+    expect(broadcastUniverseChannelToApiClients).toHaveBeenCalledWith(1)
 
     // lower value
     setUniverseChannel(channelUniverse, 1, 200)
     mockUniverse[0] = 200
     expect(getDmxUniverse()).toEqual(mockUniverse)
     expect(broadcastUniverseChannelToDevices).toHaveBeenLastCalledWith(1, 200)
-    expect(broadcastUniverseChannelToSockets).toHaveBeenLastCalledWith(1)
+    expect(broadcastUniverseChannelToApiClients).toHaveBeenLastCalledWith(1)
 
     // same value
     setUniverseChannel(channelUniverse, 1, 200)
     expect(getDmxUniverse()).toEqual(mockUniverse)
     expect(broadcastUniverseChannelToDevices).toHaveBeenCalledTimes(2)
-    expect(broadcastUniverseChannelToSockets).toHaveBeenCalledTimes(2)
+    expect(broadcastUniverseChannelToApiClients).toHaveBeenCalledTimes(2)
   })
 
   it('throws on invalid channels', () => {

@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import { universeSize } from '../../../src/config'
+import { universeSize } from '../../../src/services/config'
 import {
   getBinaryChannelMessage,
   getBinaryUniverseMessage,

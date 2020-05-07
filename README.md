@@ -52,6 +52,6 @@ The automatic installation of the Visual Studio Build tools does not include all
 
 ## Documentation
 
-[vLight Client Protocol via REST/WebSocket](./backend/src/api/README.md)
+[vLight Client Protocol via REST/WebSocket](./backend/src/services/api/README.md)
 
 [vLight Binary Protocol via TCP/UDP](./backend/src/devices/vlight/README.md)

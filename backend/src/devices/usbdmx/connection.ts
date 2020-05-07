@@ -1,7 +1,7 @@
 import { Device, HID } from 'node-hid'
 
-import { usbDmxPid, usbDmxVid } from '../../config'
-import { onWindows } from '../../env'
+import { usbDmxPid, usbDmxVid } from '../../services/config'
+import { onWindows } from '../../services/env'
 import { removeFromMutableArray } from '../../util/shared'
 import { logError, logInfo, logWarn } from '../../util/log'
 

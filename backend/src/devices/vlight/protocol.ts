@@ -1,4 +1,4 @@
-import { universeSize } from '../../config'
+import { universeSize } from '../../services/config'
 
 const universePrefix = new Uint8Array([0xff])
 

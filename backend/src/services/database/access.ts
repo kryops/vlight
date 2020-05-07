@@ -5,12 +5,13 @@ import {
   EntityArray,
 } from '@vlight/entities'
 
+import * as masterDataModule from '../masterdata'
+
 import {
   entityPreprocessors,
   EntityPreprocessor,
   entityOrder,
-} from './mappings'
-import * as masterDataModule from './masterdata'
+} from './entities'
 import { JsDatabaseBackend } from './backends/js-backend'
 
 const masterData = masterDataModule.masterData

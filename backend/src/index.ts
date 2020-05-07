@@ -2,14 +2,16 @@ const startTime = Date.now()
 
 import sourceMapSupport from 'source-map-support'
 
-import { initApi } from './api'
-import { httpServer, initExpressApp } from './app'
-import { httpPort } from './config'
+import { initApi } from './services/api'
+import { httpServer } from './services/http/express'
+import { httpPort } from './services/config'
 import { initControls } from './controls'
-import { initDatabase } from './database'
+import { initDatabase } from './services/database'
 import { initDevices } from './devices'
-import { isDevelopment } from './env'
+import { isDevelopment } from './services/env'
 import { logError, logInfo, logWarn } from './util/log'
+import { initHttpServer } from './services/http'
+import { initPersistedState } from './services/state'
 
 sourceMapSupport.install()
 
@@ -35,10 +37,10 @@ if (!isDevelopment) {
 // actual initialization
 
 async function init() {
-  await initDatabase()
+  await Promise.all([initDatabase(), initPersistedState()])
 
   await Promise.all([
-    initExpressApp(),
+    initHttpServer(),
     initApi(),
     initControls(),
     initDevices(),

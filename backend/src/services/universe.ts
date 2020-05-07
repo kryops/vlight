@@ -1,7 +1,8 @@
-import { broadcastUniverseChannelToSockets } from '../api'
-import { universeSize } from '../config'
 import { broadcastUniverseChannelToDevices } from '../devices'
 import { addToMutableArray, removeFromMutableArray } from '../util/shared'
+
+import { universeSize } from './config'
+import { broadcastUniverseChannelToApiClients } from './api'
 
 export type Universe = Buffer
 
@@ -79,7 +80,7 @@ function computeAndBroadcastDmxChannel(
 
   if (changedDmx) {
     broadcastUniverseChannelToDevices(channel, newUniverseValue)
-    broadcastUniverseChannelToSockets(channel)
+    broadcastUniverseChannelToApiClients(channel)
   }
 
   return changedDmx

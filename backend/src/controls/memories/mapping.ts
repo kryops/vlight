@@ -1,6 +1,6 @@
 import { MemoryState, Memory, MemoryScene } from '@vlight/entities'
 
-import { fixtures, fixtureTypes } from '../../database'
+import { fixtures, fixtureTypes } from '../../services/database'
 import {
   Universe,
   createUniverse,

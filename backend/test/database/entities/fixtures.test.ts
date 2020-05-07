@@ -1,12 +1,13 @@
 import { Fixture } from '@vlight/entities'
 
+import { fillEntity } from '../../../src/services/database/access'
+
+import { fixtureTypes, fixtures, fixtureGroups } from './mocks'
+
 import {
   processFixtures,
   mapFixtureList,
-} from '../../src/database/entities/fixtures'
-import { fillEntity } from '../../src/database/access'
-
-import { fixtureTypes, fixtures, fixtureGroups } from './mocks'
+} from '.../../../src/services/database/entities/fixtures'
 
 describe('processFixtures', () => {
   beforeAll(() => {
