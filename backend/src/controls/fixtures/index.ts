@@ -1,4 +1,5 @@
 import { FixtureState, IdType, Fixture } from '@vlight/entities'
+import { ApiFixtureStateMessage } from '@vlight/api'
 
 import { fixtures, fixtureTypes } from '../../services/database'
 import { getPersistedState } from '../../services/state'
@@ -12,6 +13,8 @@ import {
   Universe,
   removeUniverse,
 } from '../../services/universe'
+import { controlRegistry } from '../registry'
+import { registerApiMessageHandler } from '../../services/api/registry'
 
 import { mapFixtureStateToChannels, getInitialFixtureState } from './mapping'
 
@@ -48,18 +51,7 @@ function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
   })
 }
 
-export function initFixtures() {
-  const start = Date.now()
-  fixtureUniverse = createUniverse()
-
-  const persistedState = dictionaryToMap(getPersistedState().fixtures)
-  setFixtureStatesFrom(persistedState)
-
-  addUniverse(fixtureUniverse)
-  howLong(start, 'initFixtures')
-}
-
-export function setFixtureState(id: IdType, state: FixtureState): boolean {
+function setFixtureState(id: IdType, state: FixtureState): boolean {
   const fixture = fixtures.get(id)
   if (!fixture) {
     logWarn('no fixture found for ID', id)
@@ -69,7 +61,12 @@ export function setFixtureState(id: IdType, state: FixtureState): boolean {
   return setFixtureStateToUniverse(fixture, state)
 }
 
-export function reloadFixtures() {
+function handleApiMessage(message: ApiFixtureStateMessage) {
+  setFixtureState(message.id, message.state)
+  return true
+}
+
+function reload() {
   removeUniverse(fixtureUniverse)
   fixtureUniverse.fill(0)
   addUniverse(fixtureUniverse)
@@ -78,4 +75,19 @@ export function reloadFixtures() {
   fixtureStates.clear()
 
   setFixtureStatesFrom(oldFixtureStates)
+}
+
+export function init() {
+  const start = Date.now()
+  fixtureUniverse = createUniverse()
+
+  const persistedState = dictionaryToMap(getPersistedState().fixtures)
+  setFixtureStatesFrom(persistedState)
+
+  addUniverse(fixtureUniverse)
+
+  controlRegistry.register({ reload })
+  registerApiMessageHandler('fixture', handleApiMessage)
+
+  howLong(start, 'initFixtures')
 }

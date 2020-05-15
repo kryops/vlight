@@ -1,22 +1,17 @@
-import { ApiInMessage } from '@vlight/api'
+import { ApiInMessage, ApiOutMessage } from '@vlight/api'
 
 import {
   multiChannelUniverseFlushThreshold,
   socketFlushInterval,
 } from '../config'
 import { getDmxUniverse } from '../universe'
-import { setChannel } from '../../controls/channels'
-import { setFixtureState } from '../../controls/fixtures'
-import { setFixtureGroupState } from '../../controls/fixture-groups'
-import { setMemoryState } from '../../controls/memories'
-import { updateMasterDataEntity } from '../masterdata'
 import { logError, logTrace } from '../../util/log'
-import { assertNever } from '../../util/typescript'
 import { howLong } from '../../util/time'
 import { broadcastToSockets, sockets } from '../http/websocket'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
 import { getFullState } from './messages'
+import { apiMessageHandlerRegistry } from './registry'
 
 const changedUninverseChannels: Set<number> = new Set<number>()
 
@@ -40,45 +35,14 @@ function flushChangedUniverseChannels() {
 export function handleApiMessage(message: ApiInMessage) {
   logTrace('Incoming API message', message)
 
-  let changed = false
+  const handler = apiMessageHandlerRegistry.get(message.type)
 
-  switch (message.type) {
-    case 'channels':
-      for (const [channel, value] of Object.entries(message.channels)) {
-        if (setChannel(+channel, value)) {
-          changed = true
-        }
-      }
-      break
-
-    case 'fixture':
-      setFixtureState(message.id, message.state)
-      changed = true // always broadcast
-      break
-
-    case 'fixture-group':
-      setFixtureGroupState(message.id, message.state)
-      changed = true // always broadcast
-      break
-
-    case 'memory':
-      setMemoryState(message.id, message.state)
-      changed = true // always broadcast
-      break
-
-    case 'entity':
-      updateMasterDataEntity(message.entity, message.entries)
-      return // never broadcast
-
-    default:
-      assertNever(message)
-      logError('Invalid API message', message)
-  }
-
-  if (changed) {
-    broadcastToSockets(message)
+  if (!handler) {
+    logError('No API message handler registered for type', message.type)
   } else {
-    logTrace('Skipping broadcast of non-changing message', message)
+    if (handler(message)) {
+      broadcastToSockets(message as ApiOutMessage)
+    }
   }
 }
 

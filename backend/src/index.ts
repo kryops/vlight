@@ -11,6 +11,7 @@ import { initDevices } from './devices'
 import { isDevelopment } from './services/env'
 import { logError, logInfo, logWarn } from './util/log'
 import { initHttpServer } from './services/http'
+import { initMasterData } from './services/masterdata'
 import { initPersistedState } from './services/state'
 
 sourceMapSupport.install()
@@ -37,7 +38,7 @@ if (!isDevelopment) {
 // actual initialization
 
 async function init() {
-  await Promise.all([initDatabase(), initPersistedState()])
+  await Promise.all([initDatabase(), initPersistedState(), initMasterData()])
 
   await Promise.all([
     initHttpServer(),

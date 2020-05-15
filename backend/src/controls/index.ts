@@ -1,20 +1,15 @@
-import { initChannels, reloadChannels } from './channels'
-import { initFixtures, reloadFixtures } from './fixtures'
-import { initFixtureGroups, reloadFixtureGroups } from './fixture-groups'
-import { initMemories, reloadMemories } from './memories'
+import { controlRegistry } from './registry'
+import * as channels from './channels'
+import * as fixtures from './fixtures'
+import * as fixtureGroups from './fixture-groups'
+import * as memories from './memories'
 
 export async function initControls() {
-  await Promise.all([
-    initChannels(),
-    initFixtures(),
-    initFixtureGroups(),
-    initMemories(),
-  ])
+  await Promise.all(
+    [channels, fixtures, fixtureGroups, memories].map(it => it.init())
+  )
 }
 
 export function reloadControls() {
-  reloadChannels()
-  reloadFixtures()
-  reloadFixtureGroups()
-  reloadMemories()
+  return controlRegistry.runParallel(entry => entry.reload())
 }

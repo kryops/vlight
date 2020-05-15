@@ -1,4 +1,5 @@
 import { IdType, FixtureState, FixtureGroup, Fixture } from '@vlight/entities'
+import { ApiFixtureGroupStateMessage } from '@vlight/api'
 
 import { fixtureGroups, fixtures, fixtureTypes } from '../../services/database'
 import { getPersistedState } from '../../services/state'
@@ -17,6 +18,8 @@ import {
   getInitialFixtureState,
   mapFixtureStateToChannels,
 } from '../fixtures/mapping'
+import { controlRegistry } from '../registry'
+import { registerApiMessageHandler } from '../../services/api/registry'
 
 const universes: Map<IdType, Universe> = new Map()
 export const fixtureGroupStates: Map<IdType, FixtureState> = new Map()
@@ -71,16 +74,7 @@ function initFixtureGroup(
   setFixtureGroupStateToUniverse(fixtureGroup, initialState)
 }
 
-export function initFixtureGroups() {
-  const start = Date.now()
-  const persistedState = dictionaryToMap(getPersistedState().fixtureGroups)
-  fixtureGroups.forEach(fixtureGroup =>
-    initFixtureGroup(fixtureGroup, persistedState)
-  )
-  howLong(start, 'initFixtureGroups')
-}
-
-export function setFixtureGroupState(id: IdType, state: FixtureState): boolean {
+function setFixtureGroupState(id: IdType, state: FixtureState): boolean {
   const fixtureGroup = fixtureGroups.get(id)
   if (!fixtureGroup) {
     logWarn('no fixture group found for ID', id)
@@ -97,7 +91,12 @@ export function setFixtureGroupState(id: IdType, state: FixtureState): boolean {
   return setFixtureGroupStateToUniverse(fixtureGroup, state)
 }
 
-export function reloadFixtureGroups() {
+function handleApiMessage(message: ApiFixtureGroupStateMessage) {
+  setFixtureGroupState(message.id, message.state)
+  return true
+}
+
+function reload() {
   const oldFixtureGroupStates = new Map(fixtureGroupStates)
   fixtureGroupStates.clear()
 
@@ -109,4 +108,17 @@ export function reloadFixtureGroups() {
   fixtureGroups.forEach(fixtureGroup =>
     initFixtureGroup(fixtureGroup, oldFixtureGroupStates)
   )
+}
+
+export function init() {
+  const start = Date.now()
+  const persistedState = dictionaryToMap(getPersistedState().fixtureGroups)
+  fixtureGroups.forEach(fixtureGroup =>
+    initFixtureGroup(fixtureGroup, persistedState)
+  )
+
+  controlRegistry.register({ reload })
+  registerApiMessageHandler('fixture-group', handleApiMessage)
+
+  howLong(start, 'initFixtureGroups')
 }

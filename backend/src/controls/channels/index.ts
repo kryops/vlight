@@ -1,3 +1,5 @@
+import { ApiChannelMessage } from '@vlight/api'
+
 import { getPersistedState } from '../../services/state'
 import {
   addUniverse,
@@ -7,12 +9,10 @@ import {
   removeUniverse,
 } from '../../services/universe'
 import { howLong } from '../../util/time'
+import { controlRegistry } from '../registry'
+import { registerApiMessageHandler } from '../../services/api/registry'
 
 export let channelUniverse: Universe
-
-export function setChannel(channel: number, value: number) {
-  return setUniverseChannel(channelUniverse, channel, value)
-}
 
 function loadChannels() {
   channelUniverse = createUniverse()
@@ -22,13 +22,31 @@ function loadChannels() {
   addUniverse(channelUniverse)
 }
 
-export function initChannels() {
-  const start = Date.now()
-  loadChannels()
-  howLong(start, 'initChannels')
+function setChannel(channel: number, value: number) {
+  return setUniverseChannel(channelUniverse, channel, value)
 }
 
-export function reloadChannels() {
+function handleApiMessage(message: ApiChannelMessage) {
+  let changed = false
+  for (const [channel, value] of Object.entries(message.channels)) {
+    if (setChannel(+channel, value)) {
+      changed = true
+    }
+  }
+  return changed
+}
+
+function reload() {
   removeUniverse(channelUniverse)
   loadChannels()
+}
+
+export function init() {
+  const start = Date.now()
+  loadChannels()
+
+  controlRegistry.register({ reload })
+  registerApiMessageHandler('channels', handleApiMessage)
+
+  howLong(start, 'initChannels')
 }

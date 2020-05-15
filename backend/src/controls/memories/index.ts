@@ -1,4 +1,5 @@
 import { MemoryState, Memory, IdType } from '@vlight/entities'
+import { ApiMemoryStateMessage } from '@vlight/api'
 
 import { memories } from '../../services/database'
 import { getPersistedState } from '../../services/state'
@@ -12,6 +13,8 @@ import {
 import { logWarn } from '../../util/log'
 import { dictionaryToMap } from '../../util/shared'
 import { howLong } from '../../util/time'
+import { controlRegistry } from '../registry'
+import { registerApiMessageHandler } from '../../services/api/registry'
 
 import {
   getInitialMemoryState,
@@ -62,14 +65,7 @@ function setMemoryStateToUniverse(memory: Memory, state: MemoryState): boolean {
   return changed
 }
 
-export function initMemories() {
-  const start = Date.now()
-  const persistedState = dictionaryToMap(getPersistedState().memories)
-  memories.forEach(memory => initMemory(memory, persistedState))
-  howLong(start, 'initMemories')
-}
-
-export function setMemoryState(id: IdType, state: MemoryState): boolean {
+function setMemoryState(id: IdType, state: MemoryState): boolean {
   const memory = memories.get(id)
   if (!memory) {
     logWarn('no memory found for ID', id)
@@ -86,7 +82,12 @@ export function setMemoryState(id: IdType, state: MemoryState): boolean {
   return setMemoryStateToUniverse(memory, state)
 }
 
-export function reloadMemories() {
+function handleApiMessage(message: ApiMemoryStateMessage) {
+  setMemoryState(message.id, message.state)
+  return true
+}
+
+function reload() {
   const oldMemoryStates = new Map(memoryStates)
   memoryStates.clear()
 
@@ -97,4 +98,15 @@ export function reloadMemories() {
   preparedStates.clear()
 
   memories.forEach(memory => initMemory(memory, oldMemoryStates))
+}
+
+export function init() {
+  const start = Date.now()
+  const persistedState = dictionaryToMap(getPersistedState().memories)
+  memories.forEach(memory => initMemory(memory, persistedState))
+
+  controlRegistry.register({ reload })
+  registerApiMessageHandler('memory', handleApiMessage)
+
+  howLong(start, 'initMemories')
 }
