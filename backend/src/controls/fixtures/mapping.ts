@@ -1,14 +1,6 @@
 import { FixtureState, FixtureType } from '@vlight/entities'
 
-/**
- * Sync with client ChannelMapping!
- */
-export enum ChannelMapping {
-  red = 'r',
-  green = 'g',
-  blue = 'b',
-  master = 'm',
-}
+import { ChannelMapping } from '../../util/shared'
 
 export function mapFixtureStateToChannels(
   type: FixtureType,

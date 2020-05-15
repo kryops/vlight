@@ -2,7 +2,6 @@ import { FixtureState, FixtureGroup } from '@vlight/entities'
 import React, { useCallback } from 'react'
 
 import { changeFixtureGroupState } from '../../api'
-import { ChannelMapping } from '../../api/enums'
 import { useCurrentRef } from '../../hooks/ref'
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
@@ -16,6 +15,7 @@ import { iconColorPicker } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { faderContainer } from '../../ui/css/fader-container'
 import { widgetTitle, widgetTurnedOff } from '../../ui/css/widget'
+import { ChannelMapping } from '../../util/shared'
 
 export interface StatelessFixtureGroupWidgetProps {
   group: FixtureGroup

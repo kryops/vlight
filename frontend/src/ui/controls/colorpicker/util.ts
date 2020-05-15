@@ -1,7 +1,6 @@
 import { Dictionary, FixtureState } from '@vlight/entities'
 
-import { ChannelMapping } from '../../../api/enums'
-import { ensureBetween } from '../../../util/shared'
+import { ensureBetween, ChannelMapping } from '../../../util/shared'
 
 export interface ColorPickerColor {
   r: number

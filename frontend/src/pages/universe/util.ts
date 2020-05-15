@@ -1,7 +1,7 @@
 import { MasterData, Fixture, FixtureType } from '@vlight/entities'
 
-import { ChannelMapping } from '../../api/enums'
 import { masterDataMaps } from '../../api/masterdata'
+import { ChannelMapping } from '../../util/shared'
 
 export function getFixtureAtChannel(masterData: MasterData, channel: number) {
   return masterData.fixtures.find(fixture => {

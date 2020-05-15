@@ -6,7 +6,8 @@ import {
   createUniverse,
   getUniverseIndex,
 } from '../../services/universe'
-import { mapFixtureStateToChannels, ChannelMapping } from '../fixtures/mapping'
+import { mapFixtureStateToChannels } from '../fixtures/mapping'
+import { ChannelMapping } from '../../util/shared'
 
 import { getFixtureStateFor } from './gradients'
 

@@ -65,6 +65,13 @@ export interface MasterData {
   dynamicPages: DynamicPage[]
 }
 
+export type MasterDataMaps = {
+  [key in keyof MasterData]: Map<
+    IdType,
+    MasterData[key] extends Array<infer U> ? U : never
+  >
+}
+
 export type EntityName = keyof MasterData
 export type EntityDictionary<T = string> = { [key in EntityName]: T }
 export type EntityArray<T extends EntityName = EntityName> = MasterData[T]

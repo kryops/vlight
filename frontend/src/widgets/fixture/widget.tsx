@@ -2,7 +2,6 @@ import { Fixture, FixtureState, FixtureType } from '@vlight/entities'
 import React, { useCallback } from 'react'
 
 import { changeFixtureState } from '../../api'
-import { ChannelMapping } from '../../api/enums'
 import { useCurrentRef } from '../../hooks/ref'
 import { iconColorPicker } from '../../ui/icons'
 import { Widget } from '../../ui/containers/widget'
@@ -16,6 +15,7 @@ import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
 import { Icon } from '../../ui/icons/icon'
 import { widgetTitle, widgetTurnedOff } from '../../ui/css/widget'
+import { ChannelMapping } from '../../util/shared'
 
 export function getFixtureName(
   fixture: Fixture,
