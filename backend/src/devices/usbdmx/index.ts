@@ -11,6 +11,7 @@ import { onWindows } from '../../services/env'
 import { getDmxUniverse } from '../../services/universe'
 import { logTrace, shouldLogTrace, logWarn, logInfo } from '../../util/log'
 import { delay, howLong } from '../../util/time'
+import { deviceRegistry } from '../registry'
 
 import {
   connectUsbDmxDevices,
@@ -85,7 +86,7 @@ function clearBannedDevices() {
   connectUsbDmxDevices(initDevice)
 }
 
-export function setChannelChangedForUsbDmxDevices(channel: number) {
+function broadcastUniverseChannel(channel: number) {
   if (!enableUsbDmxDevices || !usbDmxDevices.length) {
     return
   }
@@ -94,7 +95,7 @@ export function setChannelChangedForUsbDmxDevices(channel: number) {
   changedBlocks.add(block)
 }
 
-export async function initUsbDmxDevices() {
+export async function init() {
   if (!enableUsbDmxDevices) {
     return
   }
@@ -113,6 +114,8 @@ export async function initUsbDmxDevices() {
   setInterval(clearBannedDevices, 30000)
 
   await connectUsbDmxDevices(initDevice)
+
+  deviceRegistry.register({ broadcastUniverseChannel })
 
   howLong(start, 'initUsbDmxDevices')
 }

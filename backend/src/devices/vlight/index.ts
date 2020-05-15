@@ -5,6 +5,7 @@ import {
 } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
 import { howLong } from '../../util/time'
+import { deviceRegistry } from '../registry'
 
 import {
   getBinaryUniverseMessage,
@@ -34,7 +35,7 @@ function flushVlightDevices() {
   changedChannels.clear()
 }
 
-export function setChannelChangedForVlightDevices(channel: number) {
+function broadcastUniverseChannel(channel: number) {
   if (!enableVLightDevices) {
     return
   }
@@ -42,7 +43,7 @@ export function setChannelChangedForVlightDevices(channel: number) {
   changedChannels.add(channel)
 }
 
-export async function initVlightDevices() {
+export async function init() {
   if (!enableVLightDevices) {
     return
   }
@@ -51,5 +52,8 @@ export async function initVlightDevices() {
   await Promise.all([initTcpServer(), initUdpMulticast()])
 
   setInterval(flushVlightDevices, devicesFlushInterval)
+
+  deviceRegistry.register({ broadcastUniverseChannel })
+
   howLong(start, 'initVlightDevices')
 }

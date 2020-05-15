@@ -4,10 +4,19 @@ import { artnetHost, enableArtNetDevices } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
 import { logTrace } from '../../util/log'
 import { howLong } from '../../util/time'
+import { deviceRegistry } from '../registry'
 
 let server: Artnet
 
-export async function initArtNetServer() {
+function broadcastUniverseChannel(channel: number, value: number) {
+  if (!enableArtNetDevices || server === undefined) {
+    return
+  }
+  logTrace('set ArtNet channel', channel, value)
+  server.set(channel, value)
+}
+
+export async function init() {
   if (!enableArtNetDevices) {
     return
   }
@@ -16,15 +25,9 @@ export async function initArtNetServer() {
   const artnet = require('artnet') // eslint-disable-line
 
   server = artnet({ host: artnetHost })
-
   server.set(Array.from(getDmxUniverse()))
-  howLong(start, 'initArtNetServer')
-}
 
-export function broadcastArtNetChannel(channel: number, value: number) {
-  if (!enableArtNetDevices || server === undefined) {
-    return
-  }
-  logTrace('set ArtNet channel', channel, value)
-  server.set(channel, value)
+  deviceRegistry.register({ broadcastUniverseChannel })
+
+  howLong(start, 'initArtNetServer')
 }

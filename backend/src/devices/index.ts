@@ -1,20 +1,19 @@
-import { broadcastArtNetChannel, initArtNetServer } from './artnet'
-import { setChannelChangedForUsbDmxDevices, initUsbDmxDevices } from './usbdmx'
-import { setChannelChangedForVlightDevices, initVlightDevices } from './vlight'
+import * as artnet from './artnet'
+import * as usbDmx from './usbdmx'
+import * as vlight from './vlight'
+import { deviceRegistry } from './registry'
 
 export async function initDevices() {
-  await Promise.all([
-    initVlightDevices(),
-    initUsbDmxDevices(),
-    initArtNetServer(),
-  ])
+  await Promise.all(
+    [artnet, usbDmx, vlight].map(deviceController => deviceController.init())
+  )
 }
 
 export function broadcastUniverseChannelToDevices(
   channel: number,
   value: number
 ) {
-  broadcastArtNetChannel(channel, value)
-  setChannelChangedForVlightDevices(channel)
-  setChannelChangedForUsbDmxDevices(channel)
+  deviceRegistry.entries.forEach(entry =>
+    entry.broadcastUniverseChannel(channel, value)
+  )
 }
