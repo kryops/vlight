@@ -4,12 +4,7 @@
   },
   "ext": "ts,js",
   "exec": "node ./dist/index.js",
-  "ignore": ["**/*.test.ts", "config/state.js"],
-  "watch": [
-    "dist",
-    "../frontend/webpack.config.ts",
-    "../config",
-    "../shared/dist"
-  ],
+  "ignore": ["**/*.test.ts"],
+  "watch": ["dist", "../frontend/webpack.config.ts", "../shared/dist"],
   "delay": 500
 }
