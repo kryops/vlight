@@ -1,7 +1,7 @@
 import { IdType, FixtureState, FixtureGroup, Fixture } from '@vlight/entities'
 import { ApiFixtureGroupStateMessage } from '@vlight/api'
 
-import { fixtureGroups, fixtures, fixtureTypes } from '../../services/database'
+import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
 import {
   Universe,
@@ -25,13 +25,15 @@ const universes: Map<IdType, Universe> = new Map()
 export const fixtureGroupStates: Map<IdType, FixtureState> = new Map()
 
 function getAllFixturesOfGroup(fixtureGroup: FixtureGroup): Fixture[] {
-  return fixtureGroup.fixtures.map(id => fixtures.get(id)).filter(isTruthy)
+  return fixtureGroup.fixtures
+    .map(id => masterDataMaps.fixtures.get(id))
+    .filter(isTruthy)
 }
 
 function getFixtureGroupMapping(fixtureGroup: FixtureGroup) {
   return getAllFixturesOfGroup(fixtureGroup)
     .flatMap(fixture => {
-      const fixtureType = fixtureTypes.get(fixture.type)
+      const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
       return fixtureType ? fixtureType.mapping : []
     })
     .filter(isUnique)
@@ -47,7 +49,7 @@ function setFixtureGroupStateToUniverse(
 
   let changed = false
   for (const { type, channel } of fixtures) {
-    const fixtureType = fixtureTypes.get(type)!
+    const fixtureType = masterDataMaps.fixtureTypes.get(type)!
     mapFixtureStateToChannels(fixtureType, state).forEach((value, index) => {
       if (setUniverseChannel(universe, channel + index, value)) {
         changed = true
@@ -75,7 +77,7 @@ function initFixtureGroup(
 }
 
 function setFixtureGroupState(id: IdType, state: FixtureState): boolean {
-  const fixtureGroup = fixtureGroups.get(id)
+  const fixtureGroup = masterDataMaps.fixtureGroups.get(id)
   if (!fixtureGroup) {
     logWarn('no fixture group found for ID', id)
     return false
@@ -105,7 +107,7 @@ function reload() {
   }
   universes.clear()
 
-  fixtureGroups.forEach(fixtureGroup =>
+  masterData.fixtureGroups.forEach(fixtureGroup =>
     initFixtureGroup(fixtureGroup, oldFixtureGroupStates)
   )
 }
@@ -113,7 +115,7 @@ function reload() {
 export function init() {
   const start = Date.now()
   const persistedState = dictionaryToMap(getPersistedState().fixtureGroups)
-  fixtureGroups.forEach(fixtureGroup =>
+  masterData.fixtureGroups.forEach(fixtureGroup =>
     initFixtureGroup(fixtureGroup, persistedState)
   )
 

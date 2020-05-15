@@ -4,7 +4,10 @@
 
 import { broadcastUniverseChannelToApiClients } from '../../src/services/api'
 import { universeSize } from '../../src/services/config'
-import { channelUniverse, initChannels } from '../../src/controls/channels'
+import {
+  channelUniverse,
+  init as initChannels,
+} from '../../src/controls/channels'
 import { broadcastUniverseChannelToDevices } from '../../src/devices'
 import { getDmxUniverse, setUniverseChannel } from '../../src/services/universe'
 

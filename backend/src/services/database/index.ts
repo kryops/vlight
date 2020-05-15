@@ -1,32 +1,24 @@
 import { EntityArray, EntityName } from '@vlight/entities'
 
-import { logError } from '../../util/log'
 import { howLong } from '../../util/time'
 
-import { initEntities, writeEntity } from './access'
+import { JsDatabaseBackend } from './backends/js-backend'
 
-export * from '../masterdata'
+const backend = new JsDatabaseBackend()
 
-export async function initDatabase() {
-  const start = Date.now()
-  await initEntities()
-  howLong(start, 'initDatabase')
+export async function loadDatabaseEntity<T extends EntityName>(entity: T) {
+  return backend.loadEntities(entity)
 }
 
-export async function reloadDatabase() {
-  try {
-    await initEntities()
-  } catch (error) {
-    logError(
-      'Error reloading database, the update may have only been partial!',
-      error
-    )
-  }
-}
-
-export async function modifyEntity<T extends EntityName>(
+export async function writeDatabaseEntity<T extends EntityName>(
   entity: T,
   entries: EntityArray<T>
 ) {
-  await writeEntity(entity, entries)
+  await backend.writeEntities(entity, entries)
+}
+
+export async function initDatabase() {
+  const start = Date.now()
+  // do nothing
+  howLong(start, 'initDatabase')
 }

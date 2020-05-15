@@ -1,7 +1,7 @@
 import { MemoryState, Memory, IdType } from '@vlight/entities'
 import { ApiMemoryStateMessage } from '@vlight/api'
 
-import { memories } from '../../services/database'
+import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
 import {
   Universe,
@@ -66,7 +66,7 @@ function setMemoryStateToUniverse(memory: Memory, state: MemoryState): boolean {
 }
 
 function setMemoryState(id: IdType, state: MemoryState): boolean {
-  const memory = memories.get(id)
+  const memory = masterDataMaps.memories.get(id)
   if (!memory) {
     logWarn('no memory found for ID', id)
     return false
@@ -97,13 +97,13 @@ function reload() {
   outgoingUniverses.clear()
   preparedStates.clear()
 
-  memories.forEach(memory => initMemory(memory, oldMemoryStates))
+  masterData.memories.forEach(memory => initMemory(memory, oldMemoryStates))
 }
 
 export function init() {
   const start = Date.now()
   const persistedState = dictionaryToMap(getPersistedState().memories)
-  memories.forEach(memory => initMemory(memory, persistedState))
+  masterData.memories.forEach(memory => initMemory(memory, persistedState))
 
   controlRegistry.register({ reload })
   registerApiMessageHandler('memory', handleApiMessage)

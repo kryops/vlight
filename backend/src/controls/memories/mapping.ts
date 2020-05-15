@@ -1,6 +1,6 @@
 import { MemoryState, Memory, MemoryScene } from '@vlight/entities'
 
-import { fixtures, fixtureTypes } from '../../services/database'
+import { masterDataMaps } from '../../services/masterdata'
 import {
   Universe,
   createUniverse,
@@ -51,10 +51,10 @@ function applySceneToPreparedState(
   const { fullUniverse, affectedChannels, fadedChannels } = preparedState
 
   scene.members.forEach((member, memberIndex) => {
-    const fixture = fixtures.get(member)
+    const fixture = masterDataMaps.fixtures.get(member)
     if (!fixture) return
     const { channel } = fixture
-    const fixtureType = fixtureTypes.get(fixture.type)!
+    const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)!
 
     const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.master)
 

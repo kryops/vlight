@@ -3,12 +3,7 @@ import { Fixture } from '@vlight/entities'
 import { arrayRange } from '../../../util/shared'
 import { logWarn } from '../../../util/log'
 import { isUnique } from '../../../util/shared'
-import {
-  fixtureTypes,
-  masterData,
-  fixtureGroups,
-  fixtures,
-} from '../../../services/database'
+import { masterData, masterDataMaps } from '../data'
 
 function replaceIndex<T extends string | undefined>(
   value: T,
@@ -19,7 +14,7 @@ function replaceIndex<T extends string | undefined>(
 }
 
 function computeChannel(type: string, baseChannel: number, index: number) {
-  const fixtureType = fixtureTypes.get(type)
+  const fixtureType = masterDataMaps.fixtureTypes.get(type)
   const numChannels = fixtureType ? fixtureType.mapping.length : 1
   return baseChannel + (index - 1) * numChannels
 }
@@ -27,7 +22,7 @@ function computeChannel(type: string, baseChannel: number, index: number) {
 function processFixture(fixture: Fixture): Fixture | Fixture[] {
   const { id, type, channel, name, count } = fixture
 
-  const fixtureType = fixtureTypes.get(type)
+  const fixtureType = masterDataMaps.fixtureTypes.get(type)
   if (!fixtureType) {
     logWarn(
       `No fixtureType ${type} found for fixture ${id} / ${name}, skipping...`
@@ -71,7 +66,7 @@ export function mapFixtureList(fixtureList: string[]) {
       // `type:foobar`
       if (fixture.startsWith(typeMarker)) {
         const type = fixture.slice(typeMarker.length)
-        if (!fixtureTypes.has(type)) {
+        if (!masterDataMaps.fixtureTypes.has(type)) {
           logWarn(`Fixture type "${type}" not found, skipping mapping...`)
           return []
         }
@@ -80,7 +75,7 @@ export function mapFixtureList(fixtureList: string[]) {
       // `group:foobar`
       if (fixture.startsWith(groupMarker)) {
         const groupId = fixture.slice(groupMarker.length)
-        const group = fixtureGroups.get(groupId)
+        const group = masterDataMaps.fixtureGroups.get(groupId)
         if (!group) {
           logWarn(`Fixture group "${groupId}" not found, skipping mapping...`)
           return []
@@ -102,7 +97,7 @@ export function mapFixtureList(fixtureList: string[]) {
     })
     .filter(isUnique)
     .filter(fixture => {
-      if (!fixtures.has(fixture)) {
+      if (!masterDataMaps.fixtures.has(fixture)) {
         logWarn(`Fixture "${fixture}" not found, skipping mapping...`)
         return false
       }

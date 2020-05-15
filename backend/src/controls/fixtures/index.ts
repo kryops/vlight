@@ -1,7 +1,7 @@
 import { FixtureState, IdType, Fixture } from '@vlight/entities'
 import { ApiFixtureStateMessage } from '@vlight/api'
 
-import { fixtures, fixtureTypes } from '../../services/database'
+import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
 import { logWarn } from '../../util/log'
 import { dictionaryToMap } from '../../util/shared'
@@ -27,7 +27,7 @@ function setFixtureStateToUniverse(
   state: FixtureState
 ): boolean {
   const { type, channel } = fixture
-  const fixtureType = fixtureTypes.get(type)
+  const fixtureType = masterDataMaps.fixtureTypes.get(type)
   if (!fixtureType || !state) return false
 
   let changed = false
@@ -40,9 +40,9 @@ function setFixtureStateToUniverse(
 }
 
 function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
-  fixtures.forEach(fixture => {
+  masterData.fixtures.forEach(fixture => {
     const { id, type } = fixture
-    const fixtureType = fixtureTypes.get(type)
+    const fixtureType = masterDataMaps.fixtureTypes.get(type)
     const state =
       oldFixtureStates.get(id) ?? getInitialFixtureState(fixtureType?.mapping)
 
@@ -52,7 +52,7 @@ function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
 }
 
 function setFixtureState(id: IdType, state: FixtureState): boolean {
-  const fixture = fixtures.get(id)
+  const fixture = masterDataMaps.fixtures.get(id)
   if (!fixture) {
     logWarn('no fixture found for ID', id)
     return false

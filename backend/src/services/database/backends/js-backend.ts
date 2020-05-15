@@ -6,11 +6,13 @@ import { EntityDictionary, EntityName, EntityArray } from '@vlight/entities'
 
 import { configDirectoryPath, project } from '../../config'
 import { logWarn } from '../../../util/log'
-import { globalEntities } from '../entities'
 
 import { DatabaseBackend } from './database-backend'
 
 const { writeFile } = fs.promises
+
+// TODO move to entity definition
+const globalEntities = new Set<EntityName>(['fixtureTypes'])
 
 const entityToTypeName: EntityDictionary = {
   fixtureTypes: 'FixtureType[]',

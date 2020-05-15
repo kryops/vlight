@@ -6,7 +6,7 @@ import { fixtureStates } from '../../controls/fixtures'
 import { fixtureGroupStates } from '../../controls/fixture-groups'
 import { memoryStates } from '../../controls/memories'
 import { mapToDictionary } from '../../util/shared'
-import { masterData, rawMasterData } from '../database'
+import { masterData, rawMasterData } from '../masterdata'
 
 import { getApiStateMessage } from './protocol'
 
