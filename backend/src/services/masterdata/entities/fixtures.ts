@@ -4,6 +4,7 @@ import { arrayRange } from '../../../util/shared'
 import { logWarn } from '../../../util/log'
 import { isUnique } from '../../../util/shared'
 import { masterData, masterDataMaps } from '../data'
+import { registerMasterDataEntity } from '../registry'
 
 function replaceIndex<T extends string | undefined>(
   value: T,
@@ -43,9 +44,12 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
   }))
 }
 
-export function processFixtures(fixtures: Fixture[]): Fixture[] {
+function preprocessor(fixtures: Fixture[]): Fixture[] {
   return fixtures.flatMap(processFixture)
 }
+
+// only for unit test
+export const processFixtures = preprocessor
 
 const typeMarker = 'type:'
 const groupMarker = 'group:'
@@ -103,4 +107,11 @@ export function mapFixtureList(fixtureList: string[]) {
       }
       return true
     })
+}
+
+export function init() {
+  registerMasterDataEntity('fixtures', {
+    preprocessor,
+    dependencies: ['fixtureTypes'],
+  })
 }

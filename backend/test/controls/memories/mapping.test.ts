@@ -5,7 +5,7 @@ import {
   MemoryPreparedState,
   mapMemoryStateToChannel,
 } from '../../../src/controls/memories/mapping'
-import { fillEntity } from '../../../src/services/masterdata/entities'
+import { fillMasterDataEntity } from '../../../src/services/masterdata'
 import { createUniverse } from '../../../src/services/universe'
 import {
   fixtureTypes,
@@ -48,9 +48,9 @@ describe('controls/memories/mapping', () => {
 
   describe('createPreparedState', () => {
     beforeAll(() => {
-      fillEntity('fixtureTypes', fixtureTypes)
-      fillEntity('fixtures', fixtures)
-      fillEntity('fixtureGroups', fixtureGroups)
+      fillMasterDataEntity('fixtureTypes', fixtureTypes)
+      fillMasterDataEntity('fixtures', fixtures)
+      fillMasterDataEntity('fixtureGroups', fixtureGroups)
     })
 
     it('creates the prepared state', () => {

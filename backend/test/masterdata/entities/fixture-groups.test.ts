@@ -1,12 +1,12 @@
-import { fillEntity } from '../../../src/services/masterdata/entities'
+import { fillMasterDataEntity } from '../../../src/services/masterdata'
 import { processFixtureGroups } from '../../../src/services/masterdata/entities/fixture-groups'
 
 import { fixtureTypes, fixtures, mockFixtureGroup } from './mocks'
 
 describe('processFixtureGroups', () => {
   beforeAll(() => {
-    fillEntity('fixtureTypes', fixtureTypes)
-    fillEntity('fixtures', fixtures)
+    fillMasterDataEntity('fixtureTypes', fixtureTypes)
+    fillMasterDataEntity('fixtures', fixtures)
   })
 
   it.each<[string, string[], string[]]>([

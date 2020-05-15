@@ -38,7 +38,9 @@ if (!isDevelopment) {
 // actual initialization
 
 async function init() {
-  await Promise.all([initDatabase(), initPersistedState(), initMasterData()])
+  await initDatabase()
+
+  await Promise.all([initPersistedState(), initMasterData()])
 
   await Promise.all([
     initHttpServer(),

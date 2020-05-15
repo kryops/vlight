@@ -1,5 +1,7 @@
 import { FixtureGroup } from '@vlight/entities'
 
+import { registerMasterDataEntity } from '../registry'
+
 import { mapFixtureList } from './fixtures'
 
 function processFixtureGroup({
@@ -12,6 +14,16 @@ function processFixtureGroup({
   }
 }
 
-export function processFixtureGroups(groups: FixtureGroup[]): FixtureGroup[] {
+function preprocessor(groups: FixtureGroup[]): FixtureGroup[] {
   return groups.map(processFixtureGroup)
+}
+
+// only for unit test
+export const processFixtureGroups = preprocessor
+
+export function init() {
+  registerMasterDataEntity('fixtureGroups', {
+    preprocessor,
+    dependencies: ['fixtures', 'fixtureTypes'],
+  })
 }

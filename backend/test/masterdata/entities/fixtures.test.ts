@@ -1,6 +1,6 @@
 import { Fixture } from '@vlight/entities'
 
-import { fillEntity } from '../../../src/services/masterdata/entities'
+import { fillMasterDataEntity } from '../../../src/services/masterdata'
 import {
   processFixtures,
   mapFixtureList,
@@ -10,7 +10,7 @@ import { fixtureTypes, fixtures, fixtureGroups } from './mocks'
 
 describe('processFixtures', () => {
   beforeAll(() => {
-    fillEntity('fixtureTypes', fixtureTypes)
+    fillMasterDataEntity('fixtureTypes', fixtureTypes)
   })
 
   it('just returns single fixtures', () => {
@@ -62,9 +62,9 @@ describe('processFixtures', () => {
 
 describe('mapFixtureList', () => {
   beforeAll(() => {
-    fillEntity('fixtureTypes', fixtureTypes)
-    fillEntity('fixtures', fixtures)
-    fillEntity('fixtureGroups', fixtureGroups)
+    fillMasterDataEntity('fixtureTypes', fixtureTypes)
+    fillMasterDataEntity('fixtures', fixtures)
+    fillMasterDataEntity('fixtureGroups', fixtureGroups)
   })
 
   it.each<[string, string[], string[]]>([

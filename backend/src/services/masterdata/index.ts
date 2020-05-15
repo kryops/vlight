@@ -1,24 +1,33 @@
-import { EntityName, EntityArray } from '@vlight/entities'
+import { EntityName, EntityArray, MasterData } from '@vlight/entities'
 import { ApiEntityMessage } from '@vlight/api'
 
 import { reloadControls } from '../../controls'
 import { logInfo } from '../../util/log'
-import { writeDatabaseEntity } from '../database'
+import { writeDatabaseEntity, loadDatabaseEntity } from '../database'
 import { broadcastApplicationStateToApiClients } from '../api'
 import { registerApiMessageHandler } from '../api/registry'
 import { howLong } from '../../util/time'
 
+import { initMasterDataEntities } from './entities'
 import {
-  reloadAffectedMasterDataEntities,
-  initMasterDataEntities,
-} from './entities'
+  getEntitiesInDependencyOrder,
+  getAffectedEntities,
+} from './dependencies'
+import { getMasterDataEntityDefinition } from './registry'
+import { masterData, rawMasterData, masterDataMaps } from './data'
 
-// TODO currently unused
-export async function reloadMasterData() {
-  logInfo('Reloading master data')
-  await initMasterDataEntities()
-  reloadControls()
-  broadcastApplicationStateToApiClients()
+async function loadMasterDataEntity<T extends EntityName>(entity: T) {
+  const definition = getMasterDataEntityDefinition(entity)
+  if (!definition) return
+
+  const global = !!definition.global
+
+  const rawEntries = await loadDatabaseEntity(entity, { global })
+
+  const preprocessor = definition?.preprocessor
+  const entries = preprocessor ? preprocessor(rawEntries) : rawEntries
+
+  fillMasterDataEntity(entity, entries, rawEntries)
 }
 
 async function updateMasterDataEntity<T extends EntityName>(
@@ -26,8 +35,12 @@ async function updateMasterDataEntity<T extends EntityName>(
   entries: EntityArray<T>
 ) {
   logInfo(`Updating "${entity}"`)
-  await writeDatabaseEntity(entity, entries)
-  await reloadAffectedMasterDataEntities(entity)
+  const definition = getMasterDataEntityDefinition(entity)
+  const global = !!definition?.global
+  await writeDatabaseEntity(entity, entries, { global })
+  for (const entityToReload of getAffectedEntities(entity)) {
+    await loadMasterDataEntity(entityToReload)
+  }
   reloadControls()
   broadcastApplicationStateToApiClients()
 }
@@ -37,9 +50,34 @@ function handleApiMessage(message: ApiEntityMessage<any>) {
   return false
 }
 
-export function initMasterData() {
+export function fillMasterDataEntity<T extends EntityName>(
+  type: T,
+  entries: MasterData[T],
+  rawEntries?: MasterData[T]
+) {
+  masterData[type] = entries
+  rawMasterData[type] = rawEntries ?? entries
+
+  // for unit tests
+  if (!masterDataMaps[type]) masterDataMaps[type] = new Map()
+
+  const map = masterDataMaps[type]
+  map.clear()
+
+  for (const entry of entries) {
+    map.set(entry.id, entry as any)
+  }
+}
+
+export async function initMasterData() {
   const start = Date.now()
+  await initMasterDataEntities()
+  for (const entity of getEntitiesInDependencyOrder()) {
+    await loadMasterDataEntity(entity)
+  }
+
   registerApiMessageHandler('entity', handleApiMessage)
+
   howLong(start, 'initMasterData')
 }
 

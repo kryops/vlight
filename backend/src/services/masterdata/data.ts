@@ -1,20 +1,8 @@
 import { MasterData, IdType } from '@vlight/entities'
 
-export const masterData: MasterData = {
-  fixtureTypes: [],
-  fixtures: [],
-  fixtureGroups: [],
-  memories: [],
-  dynamicPages: [],
-}
+export const masterData: MasterData = {} as MasterData
 
-export const rawMasterData: MasterData = {
-  fixtureTypes: [],
-  fixtures: [],
-  fixtureGroups: [],
-  memories: [],
-  dynamicPages: [],
-}
+export const rawMasterData: MasterData = {} as MasterData
 
 type MasterDataMaps = {
   [key in keyof MasterData]: Map<
@@ -23,10 +11,4 @@ type MasterDataMaps = {
   >
 }
 
-export const masterDataMaps: MasterDataMaps = {
-  fixtureTypes: new Map(),
-  fixtures: new Map(),
-  fixtureGroups: new Map(),
-  memories: new Map(),
-  dynamicPages: new Map(),
-}
+export const masterDataMaps: MasterDataMaps = {} as MasterDataMaps
