@@ -25,10 +25,6 @@ export function registerMasterDataEntity<T extends EntityName>(
   masterDataMaps[name] = new Map()
 }
 
-export function getMasterDataEntityNames() {
-  return Array.from(masterDataEntityRegistry.entries.keys())
-}
-
 export function getMasterDataEntityDefinition<T extends EntityName>(
   name: T
 ): MasterDataEntityDefinition<T> | undefined {

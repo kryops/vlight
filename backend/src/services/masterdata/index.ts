@@ -18,9 +18,8 @@ import { masterData, rawMasterData, masterDataMaps } from './data'
 
 async function loadMasterDataEntity<T extends EntityName>(entity: T) {
   const definition = getMasterDataEntityDefinition(entity)
-  if (!definition) return
 
-  const global = !!definition.global
+  const global = !!definition?.global
 
   const rawEntries = await loadDatabaseEntity(entity, { global })
 
@@ -57,9 +56,6 @@ export function fillMasterDataEntity<T extends EntityName>(
 ) {
   masterData[type] = entries
   rawMasterData[type] = rawEntries ?? entries
-
-  // for unit tests
-  if (!masterDataMaps[type]) masterDataMaps[type] = new Map()
 
   const map = masterDataMaps[type]
   map.clear()

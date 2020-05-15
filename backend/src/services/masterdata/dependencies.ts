@@ -2,19 +2,16 @@ import { EntityName } from '@vlight/entities'
 
 import { logError } from '../../util/log'
 
-import {
-  getMasterDataEntityNames,
-  getMasterDataEntityDefinition,
-} from './registry'
+import { getMasterDataEntityDefinition } from './registry'
+import { allEntityNames } from './data'
 
 export function getEntitiesInDependencyOrder(): EntityName[] {
-  const entityNames = getMasterDataEntityNames()
-  const entityCount = entityNames.length
+  const entityCount = allEntityNames.length
   const order: EntityName[] = []
 
   while (order.length < entityCount) {
     const currentCount = order.length
-    for (const entity of entityNames) {
+    for (const entity of allEntityNames) {
       if (order.includes(entity)) continue
       const definition = getMasterDataEntityDefinition(entity)
       if (
@@ -35,8 +32,6 @@ export function getEntitiesInDependencyOrder(): EntityName[] {
 
 export function getAffectedEntities(changedEntity: EntityName): EntityName[] {
   const entityNamesInOrder = getEntitiesInDependencyOrder()
-  const definition = getMasterDataEntityDefinition(changedEntity)
-  if (!definition) return [changedEntity]
 
   const affected: EntityName[] = [changedEntity]
   while (true) {
