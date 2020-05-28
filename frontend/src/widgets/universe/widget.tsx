@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { css } from 'linaria'
 import React, { useMemo } from 'react'
 import { MasterData } from '@vlight/entities'
@@ -6,6 +5,7 @@ import { MasterData } from '@vlight/entities'
 import { Widget } from '../../ui/containers/widget'
 import { memoInProduction } from '../../util/development'
 import { createRangeArray } from '../../util/shared'
+import { cx } from '../../util/styles'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baselinePx } from '../../ui/styles'
 import {

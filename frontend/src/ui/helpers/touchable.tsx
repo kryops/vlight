@@ -1,8 +1,8 @@
-import cx from 'classnames'
 import { css } from 'linaria'
 import React, { useRef } from 'react'
 
 import { NormalizedTouchEvent, normalizeTouchEvent } from '../../util/touch'
+import { cx } from '../../util/styles'
 
 const pointerEventSupport = 'PointerEvent' in window
 

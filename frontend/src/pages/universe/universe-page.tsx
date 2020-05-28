@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import { css } from 'linaria'
-import cx from 'classnames'
 
 import {
   useDmxUniverse,
@@ -11,6 +10,7 @@ import { Bar } from '../../ui/controls/bar'
 import { pageWithWidgets } from '../../ui/css/page'
 import { baselinePx } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
+import { cx } from '../../util/styles'
 
 import { getFixtureAtChannel, getEffectiveFixtureColor } from './util'
 

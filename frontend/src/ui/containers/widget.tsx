@@ -1,8 +1,8 @@
-import cx from 'classnames'
 import { css } from 'linaria'
 import React from 'react'
 
 import { baselinePx, primaryShade } from '../styles'
+import { cx } from '../../util/styles'
 
 const widgetMargin = baselinePx
 

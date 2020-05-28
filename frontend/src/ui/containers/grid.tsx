@@ -1,10 +1,10 @@
 import React from 'react'
-import cx from 'classnames'
 import { css } from 'linaria'
 
 import { baselinePx } from '../styles'
 import { flexEndSpacer } from '../css/flex-end-spacer'
 import { memoInProduction } from '../../util/development'
+import { cx } from '../../util/styles'
 
 const grid = css`
   display: flex;

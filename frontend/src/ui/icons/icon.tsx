@@ -1,10 +1,10 @@
-import cx from 'classnames'
 import { css } from 'linaria'
 import React from 'react'
 
 import { ColorShade } from '../../types'
 import { baselinePx, iconShade } from '../styles'
 import { memoInProduction } from '../../util/development'
+import { cx } from '../../util/styles'
 
 const iconSize = baselinePx * 6
 

@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { css } from 'linaria'
 import React, { useRef } from 'react'
 
@@ -8,6 +7,7 @@ import { useDelayedState } from '../../../hooks/delayed-state'
 import { useSettings } from '../../../hooks/settings'
 import { baselinePx, iconShade, primaryShade } from '../../styles'
 import { memoInProduction } from '../../../util/development'
+import { cx } from '../../../util/styles'
 
 import { ColorPickerBackground } from './background'
 import {

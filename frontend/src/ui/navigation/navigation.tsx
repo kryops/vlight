@@ -1,10 +1,10 @@
-import cx from 'classnames'
 import { css } from 'linaria'
 import React from 'react'
 
 import { mainNavigationItems } from '../../pages'
 import { primaryShade, zNavigation, backgroundColorLight } from '../styles'
 import { memoInProduction } from '../../util/development'
+import { cx } from '../../util/styles'
 import { useMasterData } from '../../hooks/api'
 import { useSettings } from '../../hooks/settings'
 import { dynamicPageRoute } from '../../pages/dynamic'

@@ -1,6 +1,5 @@
 import React from 'react'
 import { css } from 'linaria'
-import cx from 'classnames'
 
 import { setChannel } from '../../api'
 import { getUniverseIndex } from '../../api/util'
@@ -9,6 +8,7 @@ import { ChannelFader } from '../../ui/controls/fader/channel-fader'
 import { pageWithWidgets } from '../../ui/css/page'
 import { createRangeArray } from '../../util/shared'
 import { memoInProduction } from '../../util/development'
+import { cx } from '../../util/styles'
 
 const channelsPage = css`
   justify-content: space-between;

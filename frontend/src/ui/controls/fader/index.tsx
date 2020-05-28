@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { css } from 'linaria'
 import React, { useRef } from 'react'
 
@@ -8,6 +7,7 @@ import { useSettings } from '../../../hooks/settings'
 import { ensureBetween, roundToStep } from '../../../util/shared'
 import { getTouchEventOffset } from '../../../util/touch'
 import { memoInProduction } from '../../../util/development'
+import { cx } from '../../../util/styles'
 import { baselinePx, iconShade, primaryShade } from '../../styles'
 
 const bs = 4 // TODO cannot use baselinePx because linaria throws

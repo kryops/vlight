@@ -1,11 +1,11 @@
 import { css } from 'linaria'
-import cx from 'classnames'
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { Icon } from '../icons/icon'
 import { baselinePx, iconShade, primaryShade } from '../styles'
 import { memoInProduction } from '../../util/development'
+import { cx } from '../../util/styles'
 import { useSettings } from '../../hooks/settings'
 
 const iconPath = css``

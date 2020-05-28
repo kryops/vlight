@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { css } from 'linaria'
 import React from 'react'
 
@@ -12,6 +11,7 @@ import {
   textShadeLight,
 } from '../styles'
 import { memoInProduction } from '../../util/development'
+import { cx } from '../../util/styles'
 import { useSettings } from '../../hooks/settings'
 
 const bar = css`

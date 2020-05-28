@@ -1,4 +1,3 @@
-import cx from 'classnames'
 import { css } from 'linaria'
 import React, { Suspense, useCallback, useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
@@ -15,6 +14,7 @@ import {
   textShadeLight,
 } from '../styles'
 import { memoInProduction } from '../../util/development'
+import { cx } from '../../util/styles'
 import { useSettings } from '../../hooks/settings'
 
 import { LoadingScreen } from './loading-screen'
