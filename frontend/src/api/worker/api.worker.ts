@@ -1,11 +1,11 @@
 import { ApiInMessage, ApiOutMessage } from '@vlight/api'
 
-import { logTrace, logWarn, logInfo, logError } from '../../util/log'
 import { assertNever } from '../../util/typescript'
 import {
   useSocketUpdateThrottling,
   socketProcessingInterval,
 } from '../../config'
+import { logger } from '../../util/shared'
 
 import { ApiState, processApiMessages } from './processing'
 
@@ -69,7 +69,7 @@ function sendClientUpdate() {
   })
 
   const message: ApiWorkerState = { state: changedState, connecting }
-  logTrace('Sending changed state', message)
+  logger.trace('Sending changed state', message)
   // TypeScript wants DOM API, but we are in a Web Worker
   const postMessageFn = postMessage as any
   postMessageFn(message)
@@ -81,7 +81,7 @@ function connectWebSocket() {
   socket = new WebSocket(`ws://${self.location.host}/ws`)
 
   socket.onopen = () => {
-    logInfo('WebSocket connection established')
+    logger.info('WebSocket connection established')
     connecting = false
     sendState()
   }
@@ -89,27 +89,32 @@ function connectWebSocket() {
   socket.onmessage = event => {
     try {
       const message = JSON.parse(event.data)
-      logTrace('WebSocket message', message)
+      logger.trace('WebSocket message', message)
       messageQueue.push(message)
     } catch (e) {
-      logError('WebSocket message parse error', e, 'message was:', event.data)
+      logger.error(
+        'WebSocket message parse error',
+        e,
+        'message was:',
+        event.data
+      )
     }
   }
 
   socket.onclose = () => {
-    logWarn('WebSocket connection was closed, reconnecting...')
+    logger.warn('WebSocket connection was closed, reconnecting...')
     connecting = true
     sendState()
     setTimeout(connectWebSocket, 1000)
   }
 
-  socket.onerror = e => logError('WebSocket error', e)
+  socket.onerror = e => logger.error('WebSocket error', e)
 }
 
 function sendApiMessage(message: ApiInMessage) {
-  logTrace('Sending WebSocket message', message)
+  logger.trace('Sending WebSocket message', message)
   if (!socket) {
-    logWarn('Tried to send socket message but was not connected', message)
+    logger.warn('Tried to send socket message but was not connected', message)
   } else {
     socket.send(JSON.stringify(message))
 

@@ -34,7 +34,7 @@ export class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
       // do nothing
     }
 
-    logError('[ErrorBoundary]', error, stackTrace, componentStack)
+    logger.error('[ErrorBoundary]', error, stackTrace, componentStack)
 
     this.setState({ error, stackTrace, componentStack })
   }

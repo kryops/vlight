@@ -6,9 +6,9 @@ import {
   MemoryState,
 } from '@vlight/entities'
 
-import { logError, logTrace } from '../../util/log'
 import { assertNever } from '../../util/typescript'
 import { getUniverseIndex } from '../util'
+import { logger } from '../../util/shared'
 
 export interface ApiState {
   masterData: MasterData | undefined
@@ -81,7 +81,7 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
 
     default:
       assertNever(message)
-      logError('Invalid API message received:', message)
+      logger.error('Invalid API message received:', message)
   }
 }
 
@@ -89,7 +89,7 @@ export function processApiMessages(
   messages: ApiOutMessage[],
   apiState: ApiState
 ): ApiState {
-  logTrace(`Processing ${messages.length} API messages`)
+  logger.debug(`Processing ${messages.length} API messages`)
 
   const newState = { ...apiState }
 

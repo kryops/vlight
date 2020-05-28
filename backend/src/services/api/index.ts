@@ -5,9 +5,9 @@ import {
   socketFlushInterval,
 } from '../config'
 import { getDmxUniverse } from '../universe'
-import { logError, logTrace } from '../../util/log'
 import { howLong } from '../../util/time'
 import { broadcastToSockets, sockets } from '../http/websocket'
+import { logger } from '../../util/shared'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
 import { getFullState } from './messages'
@@ -33,12 +33,12 @@ function flushChangedUniverseChannels() {
 }
 
 export function handleApiMessage(message: ApiInMessage): void {
-  logTrace('Incoming API message', message)
+  logger.debug('Incoming API message', message)
 
   const handler = apiMessageHandlerRegistry.get(message.type)
 
   if (!handler) {
-    logError('No API message handler registered for type', message.type)
+    logger.error('No API message handler registered for type', message.type)
   } else {
     if (handler(message)) {
       broadcastToSockets(message as ApiOutMessage)

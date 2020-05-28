@@ -1,8 +1,8 @@
 import { ApiInMessage } from '@vlight/api'
 import { FixtureState, IdType, MemoryState } from '@vlight/entities'
 
-import { logTrace } from '../util/log'
 import { socketProcessingInterval, useSocketUpdateThrottling } from '../config'
+import { logger } from '../util/shared'
 
 import { updateFixtureState } from './fixture'
 import {
@@ -18,7 +18,7 @@ export const apiWorker = new Worker('./worker/api.worker.ts', {
 })
 
 export function sendApiMessage(message: ApiInMessage): void {
-  logTrace('Sending WebSocket message', message)
+  logger.trace('Sending WebSocket message', message)
   const command: ApiWorkerCommand = { type: 'message', message }
   apiWorker.postMessage(command)
 }
@@ -75,9 +75,9 @@ export function initApiWorker(): void {
     apiWorker.postMessage(updateMessage)
     const currentSecond = Math.floor(now / 1000)
     if (currentSecond !== lastSecond) {
-      logTrace(`API request throttling at ${updatesPerSecond} fps`)
+      logger.debug(`API request throttling at ${updatesPerSecond} fps`)
       if (currentSecond !== lastSecond + 1) {
-        logTrace('API request throttling skipped multiple seconds')
+        logger.debug('API request throttling skipped multiple seconds')
       }
       lastSecond = currentSecond
       updatesPerSecond = 0

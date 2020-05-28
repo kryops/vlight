@@ -1,8 +1,7 @@
 import { ApiOutMessage } from '@vlight/api'
 import ws from 'ws'
 
-import { removeFromMutableArray } from '../../util/shared'
-import { logInfo, logTrace } from '../../util/log'
+import { removeFromMutableArray, logger } from '../../util/shared'
 import { getFullState } from '../api/messages'
 import { handleApiMessage } from '../api'
 
@@ -11,7 +10,7 @@ import { httpServer } from './express'
 export const sockets: ws[] = []
 
 function removeSocket(socket: ws) {
-  logInfo('Socket disconnected')
+  logger.info('Socket disconnected')
   removeFromMutableArray(sockets, socket)
 }
 
@@ -23,7 +22,7 @@ function sendSocketMessage(socket: ws, message: ApiOutMessage) {
 export async function initWebSocketServer(): Promise<void> {
   const wsServer = new ws.Server({ server: httpServer, path: '/ws' })
   wsServer.on('connection', socket => {
-    logInfo('Socket connected')
+    logger.info('Socket connected')
     sockets.push(socket)
     socket.on('message', message => {
       handleApiMessage(JSON.parse(message.toString()))
@@ -40,7 +39,7 @@ export function broadcastToSockets(message: ApiOutMessage): void {
   if (!sockets.length) {
     return
   }
-  logTrace('broadcast WebSocket message', message)
+  logger.debug('broadcast WebSocket message', message)
   const messageString = JSON.stringify(message)
   sockets.forEach(socket => socket.send(messageString))
 }

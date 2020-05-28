@@ -3,8 +3,7 @@ import { ApiFixtureStateMessage } from '@vlight/api'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
-import { logWarn } from '../../util/log'
-import { dictionaryToMap } from '../../util/shared'
+import { dictionaryToMap, logger } from '../../util/shared'
 import { howLong } from '../../util/time'
 import {
   addUniverse,
@@ -54,7 +53,7 @@ function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
 function setFixtureState(id: IdType, state: FixtureState): boolean {
   const fixture = masterDataMaps.fixtures.get(id)
   if (!fixture) {
-    logWarn('no fixture found for ID', id)
+    logger.warn('no fixture found for ID', id)
     return false
   }
   fixtureStates.set(id, state)

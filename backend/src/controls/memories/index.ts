@@ -10,8 +10,7 @@ import {
   removeUniverse,
   setUniverseChannel,
 } from '../../services/universe'
-import { logWarn } from '../../util/log'
-import { dictionaryToMap } from '../../util/shared'
+import { dictionaryToMap, logger } from '../../util/shared'
 import { howLong } from '../../util/time'
 import { controlRegistry } from '../registry'
 import { registerApiMessageHandler } from '../../services/api/registry'
@@ -68,7 +67,7 @@ function setMemoryStateToUniverse(memory: Memory, state: MemoryState): boolean {
 function setMemoryState(id: IdType, state: MemoryState): boolean {
   const memory = masterDataMaps.memories.get(id)
   if (!memory) {
-    logWarn('no memory found for ID', id)
+    logger.warn('no memory found for ID', id)
     return false
   }
   const oldState = memoryStates.get(id)!

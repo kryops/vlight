@@ -10,8 +10,7 @@ import {
   setUniverseChannel,
   removeUniverse,
 } from '../../services/universe'
-import { logWarn } from '../../util/log'
-import { dictionaryToMap } from '../../util/shared'
+import { dictionaryToMap, logger } from '../../util/shared'
 import { howLong } from '../../util/time'
 import { isUnique, isTruthy } from '../../util/shared'
 import {
@@ -79,7 +78,7 @@ function initFixtureGroup(
 function setFixtureGroupState(id: IdType, state: FixtureState): boolean {
   const fixtureGroup = masterDataMaps.fixtureGroups.get(id)
   if (!fixtureGroup) {
-    logWarn('no fixture group found for ID', id)
+    logger.warn('no fixture group found for ID', id)
     return false
   }
   const oldState = fixtureGroupStates.get(id)!

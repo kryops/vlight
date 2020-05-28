@@ -3,12 +3,11 @@ import { join } from 'path'
 
 import { Dictionary, FixtureState, MemoryState } from '@vlight/entities'
 
-import { mapToDictionary } from '../util/shared'
+import { mapToDictionary, logger } from '../util/shared'
 import { channelUniverse } from '../controls/channels'
 import { fixtureStates } from '../controls/fixtures'
 import { fixtureGroupStates } from '../controls/fixture-groups'
 import { memoryStates } from '../controls/memories'
-import { logTrace } from '../util/log'
 import { howLong } from '../util/time'
 
 import {
@@ -62,7 +61,7 @@ async function checkAndPersistCurrentState() {
   const currentStateString = serializeState(currentState)
   if (currentStateString === persistedStateString) return
 
-  logTrace('Persisting application state')
+  logger.debug('Persisting application state')
 
   await writeFile(
     join(configDirectoryPath, project, 'state.js'),

@@ -1,4 +1,4 @@
-import { logError } from './log'
+import { logger } from './shared'
 
 /**
  * This is a typescript guard to fail compilation when not all cases
@@ -7,5 +7,5 @@ import { logError } from './log'
  * Helpful for making sure that API/protocol extensions are handled correctly.
  */
 export function assertNever(arg: never): void {
-  logError('Expected to never see this', arg)
+  logger.error('Expected to never see this', arg)
 }

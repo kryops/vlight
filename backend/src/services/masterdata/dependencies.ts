@@ -1,6 +1,6 @@
 import { EntityName } from '@vlight/entities'
 
-import { logError } from '../../util/log'
+import { logger } from '../../util/shared'
 
 import { getMasterDataEntityDefinition } from './registry'
 import { allEntityNames } from './data'
@@ -22,7 +22,7 @@ export function getEntitiesInDependencyOrder(): EntityName[] {
       }
     }
     if (currentCount === order.length) {
-      logError('Masterdata entity dependency loop detected')
+      logger.error('Masterdata entity dependency loop detected')
       break
     }
   }

@@ -2,11 +2,11 @@ import { EntityName, EntityArray, MasterData } from '@vlight/entities'
 import { ApiEntityMessage } from '@vlight/api'
 
 import { reloadControls } from '../../controls'
-import { logInfo } from '../../util/log'
 import { writeDatabaseEntity, loadDatabaseEntity } from '../database'
 import { broadcastApplicationStateToApiClients } from '../api'
 import { registerApiMessageHandler } from '../api/registry'
 import { howLong } from '../../util/time'
+import { logger } from '../../util/shared'
 
 import { initMasterDataEntities } from './entities'
 import {
@@ -33,7 +33,7 @@ async function updateMasterDataEntity<T extends EntityName>(
   entity: T,
   entries: EntityArray<T>
 ) {
-  logInfo(`Updating "${entity}"`)
+  logger.info(`Updating "${entity}"`)
   const definition = getMasterDataEntityDefinition(entity)
   const global = !!definition?.global
   await writeDatabaseEntity(entity, entries, { global })

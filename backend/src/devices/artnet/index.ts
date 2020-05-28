@@ -2,9 +2,9 @@ import { Artnet } from 'artnet'
 
 import { artnetHost, enableArtNetDevices } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
-import { logTrace } from '../../util/log'
 import { howLong } from '../../util/time'
 import { deviceRegistry } from '../registry'
+import { logger } from '../../util/shared'
 
 let server: Artnet
 
@@ -12,7 +12,7 @@ function broadcastUniverseChannel(channel: number, value: number) {
   if (!enableArtNetDevices || server === undefined) {
     return
   }
-  logTrace('set ArtNet channel', channel, value)
+  logger.trace('set ArtNet channel', channel, value)
   server.set(channel, value)
 }
 

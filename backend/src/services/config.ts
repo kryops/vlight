@@ -1,5 +1,7 @@
 import { join } from 'path'
 
+import { LogLevel } from '../util/shared'
+
 import { isDevelopment } from './env'
 
 export interface VLightConfiguration {
@@ -62,9 +64,10 @@ export const multiChannelUniverseFlushThreshold = c(
   200
 )
 
-export type LogLevel = 'trace' | 'info' | 'warn' | 'error'
-
-export const logLevel = c('logLevel', isDevelopment ? 'trace' : 'info')
+export const logLevel = c(
+  'logLevel',
+  isDevelopment ? LogLevel.DEBUG : LogLevel.INFO
+)
 
 // application config
 export const universeSize = c('universeSize', 512)

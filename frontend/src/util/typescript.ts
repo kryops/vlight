@@ -7,5 +7,5 @@ import { logError } from './log'
  * Helpful for making sure that API/protocol extensions are handled correctly.
  */
 export function assertNever(arg: never): void {
-  logError('Expected to never see this', arg)
+  logger.error('Expected to never see this', arg)
 }

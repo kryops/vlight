@@ -5,7 +5,7 @@ import prettier from 'prettier'
 import { EntityName, EntityArray } from '@vlight/entities'
 
 import { configDirectoryPath, project } from '../../config'
-import { logWarn } from '../../../util/log'
+import { logger } from '../../../util/shared'
 
 import { DatabaseBackend, DatabaseEntityOptions } from './database-backend'
 
@@ -38,7 +38,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
       const rawEntries: EntityArray<T> = require(configPath)
       return rawEntries
     } catch (error) {
-      logWarn(`No database file found for entity "${entity}"`)
+      logger.warn(`No database file found for entity "${entity}"`)
       return []
     }
   }

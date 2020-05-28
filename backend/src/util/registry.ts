@@ -1,4 +1,4 @@
-import { logError } from './log'
+import { logger } from './shared'
 
 export class ListRegistry<T> {
   entries: T[] = []
@@ -17,7 +17,7 @@ export class MapRegistry<TKey, TEntry> {
 
   register(key: TKey, entry: TEntry): void {
     if (this.get(key)) {
-      logError(`Duplicate registry entry for key`, key)
+      logger.error(`Duplicate registry entry for key`, key)
     }
     this.entries.set(key, entry)
   }

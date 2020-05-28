@@ -1,10 +1,10 @@
 import { createConnection } from 'net'
 
 import { tcpPort } from '../src/services/config'
-import { logInfo } from '../src/util/log'
+import { logger } from '../src/util/shared'
 
 const socket = createConnection(tcpPort, undefined, () => {
-  logInfo('TCP client connected')
+  logger.info('TCP client connected')
 })
 
-socket.on('data', data => logInfo('message', data))
+socket.on('data', data => logger.info('message', data))

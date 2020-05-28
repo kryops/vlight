@@ -6,12 +6,13 @@ import {
   universeSize,
   usbDmxPid,
   usbDmxVid,
+  logLevel,
 } from '../../services/config'
 import { onWindows } from '../../services/env'
 import { getDmxUniverse } from '../../services/universe'
-import { logTrace, shouldLogTrace, logWarn, logInfo } from '../../util/log'
 import { delay, howLong } from '../../util/time'
 import { deviceRegistry } from '../registry'
+import { LogLevel, logger } from '../../util/shared'
 
 import {
   connectUsbDmxDevices,
@@ -39,8 +40,8 @@ function flushUsbDmxDevices() {
 
   for (const block of changedBlocks) {
     const message = getChannelBlockMessage(getDmxUniverse(), block)
-    if (shouldLogTrace) {
-      logTrace(`broadcast UsbDmx message: <${message.join(' ')}>`)
+    if (logLevel === LogLevel.TRACE) {
+      logger.trace(`broadcast UsbDmx message: <${message.join(' ')}>`)
     }
     usbDmxDevices.forEach(device => writeToUsbDmxDevice(device, message))
   }
@@ -73,7 +74,7 @@ async function initDevice(device: HIDWithInfo) {
   if (success) {
     usbDmxDevices.push(device)
   } else if (device.info.path) {
-    logWarn(`Adding ${device.info.path} to banned UsbDmx devices`)
+    logger.warn(`Adding ${device.info.path} to banned UsbDmx devices`)
     bannedDevices.add(device.info.path)
   }
 }
@@ -81,7 +82,7 @@ async function initDevice(device: HIDWithInfo) {
 function clearBannedDevices() {
   if (!bannedDevices.size) return
 
-  logInfo('Clearing banned UsbDmx devices')
+  logger.info('Clearing banned UsbDmx devices')
   bannedDevices.clear()
   connectUsbDmxDevices(initDevice)
 }

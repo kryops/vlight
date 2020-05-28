@@ -2,8 +2,7 @@ import { Device, HID } from 'node-hid'
 
 import { usbDmxPid, usbDmxVid } from '../../services/config'
 import { onWindows } from '../../services/env'
-import { removeFromMutableArray } from '../../util/shared'
-import { logError, logInfo, logWarn } from '../../util/log'
+import { removeFromMutableArray, logger } from '../../util/shared'
 
 import { HIDWithInfo, usbDmxDevices, bannedDevices } from '.'
 
@@ -12,7 +11,7 @@ function connectWithFallback(deviceInfo: Device) {
     try {
       return new HID(deviceInfo.path)
     } catch (e) {
-      logWarn(
+      logger.warn(
         'UsbDmx connecting failed using path, trying via VID/PID...',
         deviceInfo.path,
         e
@@ -44,15 +43,15 @@ export async function connectUsbDmxDevices(
         device.info = deviceInfo
 
         device.on('error', e => {
-          logError('UsbDmx device error, disconnecting:', e)
+          logger.error('UsbDmx device error, disconnecting:', e)
           removeFromMutableArray(usbDmxDevices, device)
         })
 
-        logInfo('UsbDmx device connected:', deviceInfo.path)
+        logger.info('UsbDmx device connected:', deviceInfo.path)
 
         callback(device)
       } catch (e) {
-        logError('Error connecting UsbDmx device:', e)
+        logger.error('Error connecting UsbDmx device:', e)
       }
     })
 }
@@ -72,7 +71,7 @@ export async function disconnectUsbDmxDevices(): Promise<void> {
   usbDmxDevices
     .filter(device => device.info.path && !paths.includes(device.info.path))
     .forEach(device => {
-      logInfo('UsbDmx device disconnected:', device.info.path)
+      logger.info('UsbDmx device disconnected:', device.info.path)
       device.close()
       removeFromMutableArray(usbDmxDevices, device)
     })
@@ -90,7 +89,7 @@ export function writeToUsbDmxDevice(
   try {
     device.write(messageToSend)
   } catch (e) {
-    logError('Error writing to UsbDmx device, disconnecting...', e)
+    logger.error('Error writing to UsbDmx device, disconnecting...', e)
     device.close()
     removeFromMutableArray(usbDmxDevices, device)
     return false

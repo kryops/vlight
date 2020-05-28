@@ -6,7 +6,7 @@ import {
   udpUniverseInterval,
 } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
-import { logTrace, logError } from '../../util/log'
+import { logger } from '../../util/shared'
 
 import { getBinaryUniverseMessage } from './protocol'
 
@@ -25,7 +25,7 @@ export async function initUdpMulticast(): Promise<void> {
       try {
         udpSocket.addMembership(udpMulticastAddress)
       } catch (e) {
-        logError('Could not bind UDP multicast socket:', e)
+        logger.error('Could not bind UDP multicast socket:', e)
       }
       resolve()
     })
@@ -36,7 +36,7 @@ export function sendUdpMulticastMessage(message: Buffer): void {
   if (udpSocket !== undefined) {
     // ignore the periodic universe messages
     if (message.length !== 513) {
-      logTrace('broadcast vLight UDP message', message)
+      logger.trace('broadcast vLight UDP message', message)
     }
     udpSocket.send(message, udpPort)
   }
