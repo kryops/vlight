@@ -100,7 +100,7 @@ function reload() {
   masterData.memories.forEach(memory => initMemory(memory, oldMemoryStates))
 }
 
-export function init() {
+export function init(): void {
   const start = Date.now()
   const persistedState = dictionaryToMap(getPersistedState().memories)
   masterData.memories.forEach(memory => initMemory(memory, persistedState))

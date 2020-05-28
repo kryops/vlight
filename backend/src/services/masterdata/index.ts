@@ -53,7 +53,7 @@ export function fillMasterDataEntity<T extends EntityName>(
   type: T,
   entries: MasterData[T],
   rawEntries?: MasterData[T]
-) {
+): void {
   masterData[type] = entries
   rawMasterData[type] = rawEntries ?? entries
 
@@ -65,7 +65,7 @@ export function fillMasterDataEntity<T extends EntityName>(
   }
 }
 
-export async function initMasterData() {
+export async function initMasterData(): Promise<void> {
   const start = Date.now()
   await initMasterDataEntities()
   for (const entity of getEntitiesInDependencyOrder()) {

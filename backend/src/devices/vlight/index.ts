@@ -43,7 +43,7 @@ function broadcastUniverseChannel(channel: number) {
   changedChannels.add(channel)
 }
 
-export async function init() {
+export async function init(): Promise<void> {
   if (!enableVLightDevices) {
     return
   }

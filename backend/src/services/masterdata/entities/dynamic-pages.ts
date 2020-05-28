@@ -16,6 +16,6 @@ function preprocessor(groups: DynamicPage[]): DynamicPage[] {
   return groups.map(processDynamicPage)
 }
 
-export function init() {
+export function init(): void {
   registerMasterDataEntity('dynamicPages', { preprocessor })
 }

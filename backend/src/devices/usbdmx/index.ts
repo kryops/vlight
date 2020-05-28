@@ -95,7 +95,7 @@ function broadcastUniverseChannel(channel: number) {
   changedBlocks.add(block)
 }
 
-export async function init() {
+export async function init(): Promise<void> {
   if (!enableUsbDmxDevices) {
     return
   }

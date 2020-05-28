@@ -28,7 +28,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
   async loadEntities<T extends EntityName>(
     entity: T,
     { global }: DatabaseEntityOptions = {}
-  ) {
+  ): Promise<EntityArray<T>> {
     const configPath = getModulePath(entity, !!global)
 
     // enable reloading
@@ -47,7 +47,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
     entity: T,
     entries: EntityArray<T>,
     { global }: DatabaseEntityOptions = {}
-  ) {
+  ): Promise<void> {
     const filePath = getModulePath(entity, !!global) + '.js'
 
     const prettierConfig = await prettier.resolveConfig(filePath)

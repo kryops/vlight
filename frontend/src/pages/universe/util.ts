@@ -3,7 +3,10 @@ import { MasterData, Fixture, FixtureType } from '@vlight/entities'
 import { masterDataMaps } from '../../api/masterdata'
 import { ChannelMapping } from '../../util/shared'
 
-export function getFixtureAtChannel(masterData: MasterData, channel: number) {
+export function getFixtureAtChannel(
+  masterData: MasterData,
+  channel: number
+): Fixture | undefined {
   return masterData.fixtures.find(fixture => {
     if (fixture.channel === channel) return true
     if (fixture.channel > channel) return false
@@ -18,7 +21,7 @@ export function getEffectiveFixtureColor(
   fixture: Fixture,
   fixtureType: FixtureType,
   universe: number[]
-) {
+): string | undefined {
   const getMappingValue = (mapping: ChannelMapping) => {
     const offset = fixtureType.mapping.indexOf(mapping)
     if (offset === -1) return 0

@@ -1,4 +1,4 @@
-export function removeFromMutableArray<T>(arr: T[], el: T) {
+export function removeFromMutableArray<T>(arr: T[], el: T): void {
   const index = arr.indexOf(el)
   if (index === -1) {
     return
@@ -11,7 +11,7 @@ export function removeFromMutableArray<T>(arr: T[], el: T) {
   }
 }
 
-export function addToMutableArray<T>(arr: T[], el: T) {
+export function addToMutableArray<T>(arr: T[], el: T): void {
   if (arr.includes(el)) {
     return
   }

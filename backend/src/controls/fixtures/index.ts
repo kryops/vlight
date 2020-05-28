@@ -77,7 +77,7 @@ function reload() {
   setFixtureStatesFrom(oldFixtureStates)
 }
 
-export function init() {
+export function init(): void {
   const start = Date.now()
   fixtureUniverse = createUniverse()
 

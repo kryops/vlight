@@ -63,7 +63,7 @@ export function getTouchEventOffset(
 export function getFractionWithMargin(
   offset: OffsetCoordinates,
   margin: number
-) {
+): { x: number; y: number } {
   const x = ensureBetween(
     (offset.x - margin) / (offset.width - margin * 2),
     0,

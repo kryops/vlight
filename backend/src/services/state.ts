@@ -76,7 +76,7 @@ export function getPersistedState(): PersistedState {
   return persistedState
 }
 
-export function initPersistedState() {
+export function initPersistedState(): void {
   const start = Date.now()
   try {
     const statePath = join(configDirectoryPath, project, stateConfigFileName)

@@ -7,7 +7,7 @@ import { MasterData, EntityName, MasterDataMaps } from '@vlight/entities'
 
 export const masterDataMaps: MasterDataMaps = {} as MasterDataMaps
 
-export function updateMasterData(masterData: MasterData) {
+export function updateMasterData(masterData: MasterData): void {
   for (const [key, entries] of Object.entries(masterData)) {
     if (!masterDataMaps[key as EntityName])
       masterDataMaps[key as EntityName] = new Map()

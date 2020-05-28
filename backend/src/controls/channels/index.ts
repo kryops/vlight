@@ -41,7 +41,7 @@ function reload() {
   loadChannels()
 }
 
-export function init() {
+export function init(): void {
   const start = Date.now()
   loadChannels()
 

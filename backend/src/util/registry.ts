@@ -3,7 +3,7 @@ import { logError } from './log'
 export class ListRegistry<T> {
   entries: T[] = []
 
-  register(entry: T) {
+  register(entry: T): void {
     this.entries.push(entry)
   }
 
@@ -15,14 +15,14 @@ export class ListRegistry<T> {
 export class MapRegistry<TKey, TEntry> {
   entries = new Map<TKey, TEntry>()
 
-  register(key: TKey, entry: TEntry) {
+  register(key: TKey, entry: TEntry): void {
     if (this.get(key)) {
       logError(`Duplicate registry entry for key`, key)
     }
     this.entries.set(key, entry)
   }
 
-  get(key: TKey) {
+  get(key: TKey): TEntry | undefined {
     return this.entries.get(key)
   }
 }

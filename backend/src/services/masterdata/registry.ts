@@ -18,7 +18,7 @@ const masterDataEntityRegistry = new MapRegistry<
 export function registerMasterDataEntity<T extends EntityName>(
   name: T,
   definition: MasterDataEntityDefinition<T>
-) {
+): void {
   masterDataEntityRegistry.register(name, definition)
   masterData[name] = []
   rawMasterData[name] = []

@@ -112,7 +112,7 @@ function reload() {
   )
 }
 
-export function init() {
+export function init(): void {
   const start = Date.now()
   const persistedState = dictionaryToMap(getPersistedState().fixtureGroups)
   masterData.fixtureGroups.forEach(fixtureGroup =>

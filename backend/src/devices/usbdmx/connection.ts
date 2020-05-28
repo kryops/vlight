@@ -25,7 +25,7 @@ function connectWithFallback(deviceInfo: Device) {
 
 export async function connectUsbDmxDevices(
   callback: (device: HIDWithInfo) => void
-) {
+): Promise<void> {
   const hid: typeof import('node-hid') = require('node-hid') // eslint-disable-line
 
   hid
@@ -57,7 +57,7 @@ export async function connectUsbDmxDevices(
     })
 }
 
-export async function disconnectUsbDmxDevices() {
+export async function disconnectUsbDmxDevices(): Promise<void> {
   const hid: typeof import('node-hid') = require('node-hid') // eslint-disable-line
   const paths = hid
     .devices()

@@ -21,7 +21,7 @@ function preprocessor(memories: Memory[]): Memory[] {
 // only for unit test
 export const processMemories = preprocessor
 
-export function init() {
+export function init(): void {
   registerMasterDataEntity('memories', {
     preprocessor,
     dependencies: ['fixtures', 'fixtureTypes', 'fixtureGroups'],

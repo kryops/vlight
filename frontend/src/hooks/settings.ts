@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 
-import { SettingsContext } from '../settings'
+import { SettingsContext, SettingsWithUpdate } from '../settings'
 
-export function useSettings() {
+export function useSettings(): SettingsWithUpdate {
   return useContext(SettingsContext)
 }

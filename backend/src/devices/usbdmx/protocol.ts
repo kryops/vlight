@@ -1,6 +1,6 @@
 export const blockSize = 32
 
-export function getModeMessage() {
+export function getModeMessage(): number[] {
   const message = new Array(34).fill(0)
   message[0] = 16
   // Modes:
@@ -16,7 +16,10 @@ export function getModeMessage() {
   return message
 }
 
-export function getChannelBlockMessage(universe: Buffer, block: number) {
+export function getChannelBlockMessage(
+  universe: Buffer,
+  block: number
+): number[] {
   const universeBlock = universe.slice(
     block * blockSize,
     (block + 1) * blockSize

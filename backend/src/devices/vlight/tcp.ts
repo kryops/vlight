@@ -25,12 +25,12 @@ function handleConnection(socket: Socket) {
   socket.write(getBinaryUniverseMessage(getDmxUniverse()))
 }
 
-export async function initTcpServer() {
+export async function initTcpServer(): Promise<void> {
   const server = createServer(handleConnection)
   await new Promise(resolve => server.listen(tcpPort, () => resolve()))
 }
 
-export function sendTcpBroadcastMessage(message: Buffer) {
+export function sendTcpBroadcastMessage(message: Buffer): void {
   if (!sockets.length) {
     return
   }

@@ -4,7 +4,7 @@ import * as fixtures from './fixtures'
 import * as fixtureTypes from './fixture-types'
 import * as memories from './memories'
 
-export async function initMasterDataEntities() {
+export async function initMasterDataEntities(): Promise<void> {
   ;[
     dynamicPages,
     fixtureGroups,

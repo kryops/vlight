@@ -10,7 +10,7 @@ import { handleApiMessage } from '../api'
 export const expressApp = express()
 export const httpServer = createServer(expressApp)
 
-export async function initExpressApp() {
+export async function initExpressApp(): Promise<void> {
   expressApp.use(history())
 
   expressApp.post('/api', express.json(), (req, res) => {

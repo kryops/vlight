@@ -11,28 +11,27 @@ import {
   getApiFixtureGroupStateMessage,
   getApiMemoryStateMessage,
 } from './protocol'
-// @ts-ignore
 import { ApiWorkerCommand } from './worker/api.worker'
 
 export const apiWorker = new Worker('./worker/api.worker.ts', {
   type: 'module',
 })
 
-export function sendApiMessage(message: ApiInMessage) {
+export function sendApiMessage(message: ApiInMessage): void {
   logTrace('Sending WebSocket message', message)
   const command: ApiWorkerCommand = { type: 'message', message }
   apiWorker.postMessage(command)
 }
 
-export function setChannel(channel: number, value: number) {
+export function setChannel(channel: number, value: number): void {
   sendApiMessage(getApiChannelMessage(channel, value))
 }
 
-export function setFixtureState(id: IdType, state: FixtureState) {
+export function setFixtureState(id: IdType, state: FixtureState): void {
   sendApiMessage(getApiFixtureStateMessage(id, state))
 }
 
-export function setFixtureGroupState(id: IdType, state: FixtureState) {
+export function setFixtureGroupState(id: IdType, state: FixtureState): void {
   sendApiMessage(getApiFixtureGroupStateMessage(id, state))
 }
 
@@ -40,7 +39,7 @@ export function changeFixtureState(
   id: IdType,
   oldState: FixtureState,
   newState: Partial<FixtureState>
-) {
+): void {
   sendApiMessage(
     getApiFixtureStateMessage(id, updateFixtureState(oldState, newState))
   )
@@ -50,17 +49,17 @@ export function changeFixtureGroupState(
   id: IdType,
   oldState: FixtureState,
   newState: Partial<FixtureState>
-) {
+): void {
   sendApiMessage(
     getApiFixtureGroupStateMessage(id, updateFixtureState(oldState, newState))
   )
 }
 
-export function changeMemoryState(id: IdType, state: MemoryState) {
+export function changeMemoryState(id: IdType, state: MemoryState): void {
   sendApiMessage(getApiMemoryStateMessage(id, state))
 }
 
-export function initApiWorker() {
+export function initApiWorker(): void {
   if (!useSocketUpdateThrottling) return
 
   const updateMessage: ApiWorkerCommand = { type: 'update' }

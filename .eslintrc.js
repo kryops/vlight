@@ -19,6 +19,7 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/ban-ts-ignore': 'off',
+    '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/camelcase': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-member-accessibility': 'off',
@@ -41,6 +42,14 @@ module.exports = {
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
   },
+  overrides: [
+    {
+      files: ['*.tsx'],
+      rules: {
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+      },
+    },
+  ],
   settings: {
     node: {
       allowModules: ['@vlight/shared'],

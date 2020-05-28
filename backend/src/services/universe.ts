@@ -120,7 +120,7 @@ export function createUniverse(): Universe {
   return Buffer.alloc(universeSize)
 }
 
-export function addUniverse(universe: Universe) {
+export function addUniverse(universe: Universe): void {
   addToMutableArray(universes, universe)
   if (universe.some(x => x !== 0)) {
     universe.forEach((value, index) =>
@@ -133,7 +133,7 @@ export function addUniverse(universe: Universe) {
   }
 }
 
-export function removeUniverse(universe: Universe) {
+export function removeUniverse(universe: Universe): void {
   removeFromMutableArray(universes, universe)
   if (universe.some(x => x !== 0)) {
     universe.forEach((value, index) =>
@@ -146,10 +146,10 @@ export function removeUniverse(universe: Universe) {
   }
 }
 
-export function getUniverseIndex(channel: number) {
+export function getUniverseIndex(channel: number): number {
   return channel - 1
 }
 
-export function getChannelFromUniverseIndex(index: number) {
+export function getChannelFromUniverseIndex(index: number): number {
   return index + 1
 }

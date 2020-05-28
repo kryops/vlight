@@ -16,7 +16,7 @@ function broadcastUniverseChannel(channel: number, value: number) {
   server.set(channel, value)
 }
 
-export async function init() {
+export async function init(): Promise<void> {
   if (!enableArtNetDevices) {
     return
   }

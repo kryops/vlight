@@ -62,7 +62,7 @@ const countMarker = '#'
  * - `type:foobar` -> maps all fixtures of type `foobar`
  * - `group:foobar` -> maps all fixtures of group `foobar`
  */
-export function mapFixtureList(fixtureList: string[]) {
+export function mapFixtureList(fixtureList: string[]): string[] {
   const allFixtures = masterData.fixtures
 
   return fixtureList
@@ -109,7 +109,7 @@ export function mapFixtureList(fixtureList: string[]) {
     })
 }
 
-export function init() {
+export function init(): void {
   registerMasterDataEntity('fixtures', {
     preprocessor,
     dependencies: ['fixtureTypes'],

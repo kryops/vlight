@@ -32,11 +32,14 @@ export const colorPresets: ColorPickerColor[] = [
   { r: 255, g: 255, b: 255 },
 ]
 
-export function colorPickerPossible(mapping: string[]) {
+export function colorPickerPossible(mapping: string[]): boolean {
   return mapping.every(c => colorPickerColors.includes(c))
 }
 
-export function isSameColor(c1: ColorPickerColor, c2: ColorPickerColor) {
+export function isSameColor(
+  c1: ColorPickerColor,
+  c2: ColorPickerColor
+): boolean {
   return (colorPickerColors as (keyof ColorPickerColor)[]).every(
     c => (c1[c] ?? 0) === (c2[c] ?? 0)
   )

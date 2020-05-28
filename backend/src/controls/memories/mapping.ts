@@ -29,7 +29,7 @@ export function mapMemoryStateToChannel(
   preparedState: MemoryPreparedState,
   state: MemoryState,
   channel: number
-) {
+): number {
   if (!state.on) return 0
   if (state.value === 0) return 0
 

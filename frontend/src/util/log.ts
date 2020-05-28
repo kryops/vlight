@@ -11,11 +11,12 @@ function date() {
 }
 
 export const logTrace = shouldLogTrace
-  ? (...args: any[]) => console.log(date(), 'TRACE', ...args)
+  ? (...args: any[]): void => console.log(date(), 'TRACE', ...args)
   : noop
 export const logInfo = shouldLogInfo
-  ? (...args: any[]) => console.log(date(), 'INFO', ...args)
+  ? (...args: any[]): void => console.log(date(), 'INFO', ...args)
   : noop
-export const logWarn = (...args: any[]) => console.warn(date(), 'WARN', ...args)
-export const logError = (...args: any[]) =>
+export const logWarn = (...args: any[]): void =>
+  console.warn(date(), 'WARN', ...args)
+export const logError = (...args: any[]): void =>
   console.error(date(), 'ERROR', ...args)

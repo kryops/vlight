@@ -32,7 +32,7 @@ function flushChangedUniverseChannels() {
   changedUninverseChannels.clear()
 }
 
-export function handleApiMessage(message: ApiInMessage) {
+export function handleApiMessage(message: ApiInMessage): void {
   logTrace('Incoming API message', message)
 
   const handler = apiMessageHandlerRegistry.get(message.type)
@@ -46,21 +46,21 @@ export function handleApiMessage(message: ApiInMessage) {
   }
 }
 
-export function broadcastUniverseChannelToApiClients(channel: number) {
+export function broadcastUniverseChannelToApiClients(channel: number): void {
   if (!sockets.length) {
     return
   }
   changedUninverseChannels.add(channel)
 }
 
-export async function initApi() {
+export async function initApi(): Promise<void> {
   const start = Date.now()
 
   setInterval(flushChangedUniverseChannels, socketFlushInterval)
   howLong(start, 'initApi')
 }
 
-export function broadcastApplicationStateToApiClients() {
+export function broadcastApplicationStateToApiClients(): void {
   broadcastToSockets(getFullState())
   changedUninverseChannels.clear()
 }

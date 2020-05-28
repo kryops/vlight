@@ -26,7 +26,7 @@ interface Env {
 // linaria CSS options
 stylis.set({ prefix: false })
 
-export const webpackConfiguration = (env: Env = {}) => {
+export const webpackConfiguration = (env: Env = {}): Configuration => {
   const isProduction = !!env.production || !!env.profileReact
   const analyze = !!env.analyze
   const profile = !!env.profile

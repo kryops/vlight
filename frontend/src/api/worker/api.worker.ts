@@ -28,8 +28,9 @@ let messageQueue: ApiOutMessage[] = []
 
 function sendState() {
   const message: ApiWorkerState = { state: apiState, connecting }
-  // @ts-ignore TypeScript wants DOM API, but we are in a Web Worker
-  postMessage(message)
+  // TypeScript wants DOM API, but we are in a Web Worker
+  const postMessageFn = postMessage as any
+  postMessageFn(message)
 }
 
 function processMessageQueue() {
@@ -69,8 +70,9 @@ function sendClientUpdate() {
 
   const message: ApiWorkerState = { state: changedState, connecting }
   logTrace('Sending changed state', message)
-  // @ts-ignore TypeScript wants DOM API, but we are in a Web Worker
-  postMessage(message)
+  // TypeScript wants DOM API, but we are in a Web Worker
+  const postMessageFn = postMessage as any
+  postMessageFn(message)
 
   clientApiState = apiState
 }

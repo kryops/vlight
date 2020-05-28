@@ -21,7 +21,7 @@ function preprocessor(groups: FixtureGroup[]): FixtureGroup[] {
 // only for unit test
 export const processFixtureGroups = preprocessor
 
-export function init() {
+export function init(): void {
   registerMasterDataEntity('fixtureGroups', {
     preprocessor,
     dependencies: ['fixtures', 'fixtureTypes'],

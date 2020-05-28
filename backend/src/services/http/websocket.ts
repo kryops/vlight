@@ -20,7 +20,7 @@ function sendSocketMessage(socket: ws, message: ApiOutMessage) {
   socket.send(messageString)
 }
 
-export async function initWebSocketServer() {
+export async function initWebSocketServer(): Promise<void> {
   const wsServer = new ws.Server({ server: httpServer, path: '/ws' })
   wsServer.on('connection', socket => {
     logInfo('Socket connected')
@@ -36,7 +36,7 @@ export async function initWebSocketServer() {
   })
 }
 
-export function broadcastToSockets(message: ApiOutMessage) {
+export function broadcastToSockets(message: ApiOutMessage): void {
   if (!sockets.length) {
     return
   }

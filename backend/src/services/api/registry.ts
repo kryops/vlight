@@ -12,6 +12,6 @@ export const apiMessageHandlerRegistry = new MapRegistry<
 export function registerApiMessageHandler<T extends ApiInMessage>(
   key: T['type'],
   handler: ApiMessageHandler<T>
-) {
+): void {
   apiMessageHandlerRegistry.register(key, handler)
 }

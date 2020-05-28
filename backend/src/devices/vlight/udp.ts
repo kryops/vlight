@@ -12,7 +12,7 @@ import { getBinaryUniverseMessage } from './protocol'
 
 let udpSocket: Socket
 
-export async function initUdpMulticast() {
+export async function initUdpMulticast(): Promise<void> {
   setInterval(() => {
     sendUdpMulticastMessage(getBinaryUniverseMessage(getDmxUniverse()))
   }, udpUniverseInterval)
@@ -32,7 +32,7 @@ export async function initUdpMulticast() {
   })
 }
 
-export function sendUdpMulticastMessage(message: Buffer) {
+export function sendUdpMulticastMessage(message: Buffer): void {
   if (udpSocket !== undefined) {
     // ignore the periodic universe messages
     if (message.length !== 513) {

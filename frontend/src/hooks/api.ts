@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { MasterData, MasterDataMaps } from '@vlight/entities'
 
 import { masterDataMaps } from '../api/masterdata'
 import { ApiState } from '../api/worker/processing'
@@ -61,12 +62,12 @@ export function useApiStateEntry<
   return state
 }
 
-export const useMasterData = () => useApiState('masterData')
+export const useMasterData = (): MasterData => useApiState('masterData')
 
-export const useMasterDataMaps = () => {
+export const useMasterDataMaps = (): MasterDataMaps => {
   // refresh the component when the master data changes
   useMasterData()
   return masterDataMaps
 }
 
-export const useDmxUniverse = () => useApiState('universe')
+export const useDmxUniverse = (): number[] => useApiState('universe')
