@@ -2,8 +2,8 @@ import React from 'react'
 import { WidgetConfig } from '@vlight/entities'
 
 import { useMasterDataMaps } from '../hooks/api'
-import { assertNever } from '../util/typescript'
 import { memoInProduction } from '../util/development'
+import { assertNever } from '../util/shared'
 
 import { UniverseWidget } from './universe'
 import { ChannelsWidget } from './channels'

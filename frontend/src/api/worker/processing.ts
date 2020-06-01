@@ -6,9 +6,8 @@ import {
   MemoryState,
 } from '@vlight/entities'
 
-import { assertNever } from '../../util/typescript'
 import { getUniverseIndex } from '../util'
-import { logger } from '../../util/shared'
+import { logger, assertNever } from '../../util/shared'
 
 export interface ApiState {
   masterData: MasterData | undefined
