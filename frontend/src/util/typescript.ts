@@ -1,4 +1,4 @@
-import { logError } from './log'
+import { logger } from './shared'
 
 /**
  * This is a typescript guard to fail compilation when not all cases

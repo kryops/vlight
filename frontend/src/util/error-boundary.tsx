@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { logError } from './log'
+import { logger } from './shared'
 
 interface ErrorInfo {
   componentStack: string
