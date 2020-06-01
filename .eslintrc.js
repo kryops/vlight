@@ -18,6 +18,7 @@ module.exports = {
     },
   },
   rules: {
+    'no-restricted-imports': ['error', { patterns: ['**/shared/src/**'] }],
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/camelcase': 'off',
