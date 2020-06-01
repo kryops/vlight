@@ -1,2 +1,3 @@
-// disable logging for tests
-jest.mock('../backend/src/util/log')
+import { setLogLevel, LogLevel } from '../backend/src/util/shared'
+
+setLogLevel(LogLevel.NONE)
