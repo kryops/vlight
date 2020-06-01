@@ -1,4 +1,4 @@
-import { EntityName, MasterData } from '@vlight/entities'
+import { EntityName, EntityArray } from '@vlight/entities'
 
 import { MapRegistry } from '../../util/registry'
 
@@ -6,7 +6,7 @@ import { masterData, rawMasterData, masterDataMaps } from './data'
 
 export interface MasterDataEntityDefinition<T extends EntityName = EntityName> {
   dependencies?: EntityName[]
-  preprocessor?: (rawEntries: MasterData[T]) => MasterData[T]
+  preprocessor?: (rawEntries: EntityArray<T>) => EntityArray<T>
   global?: boolean
 }
 

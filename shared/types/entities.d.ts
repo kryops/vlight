@@ -57,12 +57,16 @@ export interface FixtureStateGradient {
   channels: Dictionary<number>
 }
 
-export interface MasterData {
-  fixtureTypes: FixtureType[]
-  fixtures: Fixture[]
-  fixtureGroups: FixtureGroup[]
-  memories: Memory[]
-  dynamicPages: DynamicPage[]
+export interface MasterDataMapping {
+  fixtureTypes: FixtureType
+  fixtures: Fixture
+  fixtureGroups: FixtureGroup
+  memories: Memory
+  dynamicPages: DynamicPage
+}
+
+export type MasterData = {
+  [key in keyof MasterDataMapping]: Array<MasterDataMapping[key]>
 }
 
 export type MasterDataMaps = {
@@ -72,10 +76,12 @@ export type MasterDataMaps = {
   >
 }
 
-export type EntityName = keyof MasterData
+export type EntityName = keyof MasterDataMapping
 export type EntityDictionary<T = string> = { [key in EntityName]: T }
-export type EntityArray<T extends EntityName = EntityName> = MasterData[T]
-export type EntityType<T extends EntityName = EntityName> = MasterData[T][0]
+export type EntityArray<T extends EntityName = EntityName> = Array<
+  MasterDataMapping[T]
+>
+export type EntityType<T extends EntityName = EntityName> = MasterDataMapping[T]
 
 // State
 

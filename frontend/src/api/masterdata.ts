@@ -15,7 +15,7 @@ export function updateMasterData(masterData: MasterData): void {
     const map = masterDataMaps[key as EntityName]
     map.clear()
     for (const entry of entries) {
-      map.set(entry.id, entry)
+      map.set(entry.id, entry as any)
     }
   }
 }
