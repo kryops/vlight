@@ -45,12 +45,33 @@ export interface ApiEntityMessage<T extends EntityName> {
   entries: EntityArray<T>
 }
 
+export interface ApiAddEntityMessage<T extends EntityName> {
+  type: 'add-entity'
+  entity: T
+  entry: EntityType<T>
+}
+
+export interface ApiUpdateEntityMessage<T extends EntityName> {
+  type: 'update-entity'
+  entity: T
+  entry: EntityType<T>
+}
+
+export interface ApiRemoveEntityMessage<T extends EntityName> {
+  type: 'remove-entity'
+  entity: T
+  id: IdType
+}
+
 export type ApiInMessage<T extends EntityName = any> =
   | ApiChannelMessage
   | ApiFixtureStateMessage
   | ApiFixtureGroupStateMessage
   | ApiMemoryStateMessage
   | ApiEntityMessage<T>
+  | ApiAddEntityMessage<T>
+  | ApiUpdateEntityMessage<T>
+  | ApiRemoveEntityMessage<T>
 
 // Outgoing messages
 

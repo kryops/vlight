@@ -2,7 +2,7 @@ import { join } from 'path'
 import fs from 'fs'
 
 import prettier from 'prettier'
-import { EntityName, EntityArray } from '@vlight/entities'
+import { EntityName, EntityArray, EntityType, IdType } from '@vlight/entities'
 
 import { configDirectoryPath, project } from '../../config'
 import { logger } from '../../../util/shared'
@@ -24,11 +24,16 @@ function getModulePath(entity: EntityName, isGlobal: boolean) {
     : join(configDirectoryPath, project, fileName)
 }
 
+const cache = new Map<EntityName, EntityArray<any>>()
+
 export class JsDatabaseBackend implements DatabaseBackend {
   async loadEntities<T extends EntityName>(
     entity: T,
     { global }: DatabaseEntityOptions = {}
   ): Promise<EntityArray<T>> {
+    const cached = cache.get(entity)
+    if (cached) return cached
+
     const configPath = getModulePath(entity, !!global)
 
     // enable reloading
@@ -36,6 +41,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const rawEntries: EntityArray<T> = require(configPath)
+      cache.set(entity, rawEntries)
       return rawEntries
     } catch (error) {
       logger.warn(`No database file found for entity "${entity}"`)
@@ -48,6 +54,8 @@ export class JsDatabaseBackend implements DatabaseBackend {
     entries: EntityArray<T>,
     { global }: DatabaseEntityOptions = {}
   ): Promise<void> {
+    cache.set(entity, entries)
+
     const filePath = getModulePath(entity, !!global) + '.js'
 
     const prettierConfig = await prettier.resolveConfig(filePath)
@@ -61,5 +69,43 @@ export class JsDatabaseBackend implements DatabaseBackend {
     )
 
     await writeFile(filePath, fileContent)
+  }
+
+  async addEntry<T extends EntityName>(
+    entity: T,
+    entry: EntityType<T>,
+    options?: DatabaseEntityOptions
+  ): Promise<EntityArray<T>> {
+    const entries = [...(await this.loadEntities(entity, options)), entry]
+    await this.writeEntities(entity, entries, options)
+    return entries
+  }
+
+  async updateEntry<T extends EntityName>(
+    entity: T,
+    entry: EntityType<T>,
+    options?: DatabaseEntityOptions
+  ): Promise<EntityArray<T>> {
+    const entries = (await this.loadEntities(entity, options)).map(it =>
+      it.id === entry.id ? entry : it
+    )
+    await this.writeEntities(entity, entries, options)
+    return entries
+  }
+
+  async removeEntry<T extends EntityName>(
+    entity: T,
+    id: IdType,
+    options?: DatabaseEntityOptions
+  ): Promise<EntityArray<T>> {
+    const entries = (await this.loadEntities(entity, options)).filter(
+      it => it.id !== id
+    )
+    await this.writeEntities(entity, entries, options)
+    return entries
+  }
+
+  async clearCache(): Promise<void> {
+    cache.clear()
   }
 }

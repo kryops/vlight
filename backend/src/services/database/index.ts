@@ -1,4 +1,4 @@
-import { EntityArray, EntityName } from '@vlight/entities'
+import { EntityArray, EntityName, EntityType, IdType } from '@vlight/entities'
 
 import { howLong } from '../../util/time'
 
@@ -20,6 +20,30 @@ export async function writeDatabaseEntity<T extends EntityName>(
   options?: DatabaseEntityOptions
 ): Promise<void> {
   await backend.writeEntities(entity, entries, options)
+}
+
+export async function addDatabaseEntry<T extends EntityName>(
+  entity: T,
+  entry: EntityType<T>,
+  options?: DatabaseEntityOptions
+): Promise<void> {
+  await backend.addEntry(entity, entry, options)
+}
+
+export async function updateDatabaseEntry<T extends EntityName>(
+  entity: T,
+  entry: EntityType<T>,
+  options?: DatabaseEntityOptions
+): Promise<void> {
+  await backend.updateEntry(entity, entry, options)
+}
+
+export async function removeDatabaseEntry<T extends EntityName>(
+  entity: T,
+  id: IdType,
+  options?: DatabaseEntityOptions
+): Promise<void> {
+  await backend.removeEntry(entity, id, options)
 }
 
 export async function initDatabase(): Promise<void> {

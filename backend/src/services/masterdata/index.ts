@@ -1,12 +1,24 @@
 import { EntityName, EntityArray, MasterData } from '@vlight/entities'
-import { ApiEntityMessage } from '@vlight/api'
+import {
+  ApiEntityMessage,
+  ApiAddEntityMessage,
+  ApiUpdateEntityMessage,
+  ApiRemoveEntityMessage,
+} from '@vlight/api'
 
 import { reloadControls } from '../../controls'
-import { writeDatabaseEntity, loadDatabaseEntity } from '../database'
+import {
+  writeDatabaseEntity,
+  loadDatabaseEntity,
+  addDatabaseEntry,
+  updateDatabaseEntry,
+  removeDatabaseEntry,
+} from '../database'
 import { broadcastApplicationStateToApiClients } from '../api'
 import { registerApiMessageHandler } from '../api/registry'
 import { howLong } from '../../util/time'
 import { logger } from '../../util/shared'
+import { DatabaseEntityOptions } from '../database/backends/database-backend'
 
 import { initMasterDataEntities } from './entities'
 import {
@@ -31,12 +43,14 @@ async function loadMasterDataEntity<T extends EntityName>(entity: T) {
 
 async function updateMasterDataEntity<T extends EntityName>(
   entity: T,
-  entries: EntityArray<T>
+  operation: (options: DatabaseEntityOptions) => Promise<void>
 ) {
   logger.info(`Updating "${entity}"`)
   const definition = getMasterDataEntityDefinition(entity)
   const global = !!definition?.global
-  await writeDatabaseEntity(entity, entries, { global })
+
+  await operation({ global })
+
   for (const entityToReload of getAffectedEntities(entity)) {
     await loadMasterDataEntity(entityToReload)
   }
@@ -44,18 +58,13 @@ async function updateMasterDataEntity<T extends EntityName>(
   broadcastApplicationStateToApiClients()
 }
 
-function handleApiMessage(message: ApiEntityMessage<any>) {
-  updateMasterDataEntity(message.entity, message.entries)
-  return false
-}
-
 export function fillMasterDataEntity<T extends EntityName>(
   type: T,
-  entries: MasterData[T],
-  rawEntries?: MasterData[T]
+  entries: EntityArray<T>,
+  rawEntries?: EntityArray<T>
 ): void {
-  masterData[type] = entries
-  rawMasterData[type] = rawEntries ?? entries
+  masterData[type] = entries as MasterData[T]
+  rawMasterData[type] = (rawEntries ?? entries) as MasterData[T]
 
   const map = masterDataMaps[type]
   map.clear()
@@ -65,6 +74,45 @@ export function fillMasterDataEntity<T extends EntityName>(
   }
 }
 
+function registerApiMessageHandlers() {
+  registerApiMessageHandler('entity', (message: ApiEntityMessage<any>) => {
+    updateMasterDataEntity(message.entity, options =>
+      writeDatabaseEntity(message.entity, message.entries, options)
+    )
+    return false
+  })
+
+  registerApiMessageHandler(
+    'add-entity',
+    (message: ApiAddEntityMessage<any>) => {
+      updateMasterDataEntity(message.entity, options =>
+        addDatabaseEntry(message.entity, message.entry, options)
+      )
+      return false
+    }
+  )
+
+  registerApiMessageHandler(
+    'update-entity',
+    (message: ApiUpdateEntityMessage<any>) => {
+      updateMasterDataEntity(message.entity, options =>
+        updateDatabaseEntry(message.entity, message.entry, options)
+      )
+      return false
+    }
+  )
+
+  registerApiMessageHandler(
+    'remove-entity',
+    (message: ApiRemoveEntityMessage<any>) => {
+      updateMasterDataEntity(message.entity, options =>
+        removeDatabaseEntry(message.entity, message.id, options)
+      )
+      return false
+    }
+  )
+}
+
 export async function initMasterData(): Promise<void> {
   const start = Date.now()
   await initMasterDataEntities()
@@ -72,7 +120,7 @@ export async function initMasterData(): Promise<void> {
     await loadMasterDataEntity(entity)
   }
 
-  registerApiMessageHandler('entity', handleApiMessage)
+  registerApiMessageHandlers()
 
   howLong(start, 'initMasterData')
 }
