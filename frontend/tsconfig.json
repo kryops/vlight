@@ -4,7 +4,8 @@
     "target": "es2019",
     "lib": ["es2019", "dom"],
     "jsx": "react",
-    "noEmit": true
+    "noEmit": true,
+    "importsNotUsedAsValues": "preserve"
   },
   "include": ["./src", "./test", "../@types"],
   "references": [{ "path": "../shared" }]

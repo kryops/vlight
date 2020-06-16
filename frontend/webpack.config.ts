@@ -145,7 +145,10 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       new WorkerPlugin(),
       !profile &&
         new ForkCheckerPlugin({
-          tsconfig: join(__dirname, 'tsconfig.json'),
+          typescript: {
+            configFile: join(__dirname, 'tsconfig.json'),
+            mode: 'write-references',
+          },
         }),
 
       // development
