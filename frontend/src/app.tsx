@@ -7,6 +7,7 @@ import './ui/global-styles'
 import { MainContainer } from './ui/main/main-container'
 import { ErrorBoundary } from './util/error-boundary'
 import { SettingsWrapper } from './settings'
+import { OverlayContainer } from './ui/overlays/overlay'
 
 const App = () => (
   <StrictMode>
@@ -14,7 +15,9 @@ const App = () => (
       <BrowserRouter>
         <SettingsWrapper>
           <ApiWrapper>
-            <MainContainer />
+            <OverlayContainer>
+              <MainContainer />
+            </OverlayContainer>
           </ApiWrapper>
         </SettingsWrapper>
       </BrowserRouter>

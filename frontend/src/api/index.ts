@@ -75,7 +75,7 @@ export function initApiWorker(): void {
     apiWorker.postMessage(updateMessage)
     const currentSecond = Math.floor(now / 1000)
     if (currentSecond !== lastSecond) {
-      logger.debug(`API request throttling at ${updatesPerSecond} fps`)
+      logger.trace(`API request throttling at ${updatesPerSecond} fps`)
       if (currentSecond !== lastSecond + 1) {
         logger.debug('API request throttling skipped multiple seconds')
       }

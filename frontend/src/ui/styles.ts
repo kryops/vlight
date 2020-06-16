@@ -4,6 +4,7 @@ export const baselinePx = 4
 export const fontSizePx = 16
 
 export const zNavigation = 10
+export const zOverlay = 20
 
 export const backgroundColor = '#000c15'
 export const backgroundColorLight = '#fff'

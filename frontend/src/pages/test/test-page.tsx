@@ -5,6 +5,8 @@ import { memoInProduction } from '../../util/development'
 import { Grid } from '../../ui/containers/grid'
 import { pageWithWidgets } from '../../ui/css/page'
 import { DynamicWidget } from '../../widgets/dynamic'
+import { showDialog } from '../../ui/overlays/dialog'
+import { okCancel } from '../../ui/overlays/modal'
 
 const TestPage = memoInProduction(() => {
   const masterData = useMasterData()
@@ -12,6 +14,9 @@ const TestPage = memoInProduction(() => {
   return (
     <div>
       <h2>Test Page</h2>
+      <h3>Overlay / Modal / Dialog</h3>
+      <a onClick={() => showDialog('sadsdfsdf', okCancel)}>Dialog</a>
+      <h3>Grid</h3>
       <Grid
         headline="Gridddd"
         cells={[

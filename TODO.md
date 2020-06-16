@@ -2,9 +2,10 @@
 
 ## Roadmap
 
+- Styling: Astroturf vs linaria
+  - Fix stylelint
+  - BaselinePx => baseline()
 - Backend restructuring
-  - entity dependencies instead of order
-  - registration architecture
   - easier masterData extension / new entity process?
 - Master data / config editor
   - (global) Fixture types
