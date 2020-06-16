@@ -6,7 +6,8 @@
     "outDir": "./dist",
     "rootDir": ".",
     "declaration": true,
-    "composite": true
+    "composite": true,
+    "incremental": true
   },
   "include": ["./src", "./test"]
 }
