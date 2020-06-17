@@ -27,6 +27,34 @@ export const globalStyles = css`
       text-decoration: none;
     }
 
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-weight: normal;
+      margin: 1rem 0;
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    h3 {
+      font-size: 1.125rem;
+    }
+
+    h4 {
+      font-size: 1rem;
+    }
+
     #root {
       height: 100%;
     }

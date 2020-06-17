@@ -13,7 +13,7 @@ const SettingsPage = memoInProduction(() => {
 
   return (
     <div>
-      <h2>Settings Page</h2>
+      <h1>Settings</h1>
       <a onClick={() => toggleSetting('lightMode')}>
         Light Mode: {lightMode ? 'on' : 'off'}
       </a>

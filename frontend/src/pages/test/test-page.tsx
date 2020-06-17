@@ -13,10 +13,10 @@ const TestPage = memoInProduction(() => {
 
   return (
     <div>
-      <h2>Test Page</h2>
-      <h3>Overlay / Modal / Dialog</h3>
+      <h1>Test Page</h1>
+      <h2>Overlay / Modal / Dialog</h2>
       <a onClick={() => showDialog('sadsdfsdf', okCancel)}>Dialog</a>
-      <h3>Grid</h3>
+      <h2>Grid</h2>
       <Grid
         headline="Gridddd"
         cells={[
@@ -42,7 +42,7 @@ const TestPage = memoInProduction(() => {
           },
         ]}
       />
-      <h3>Widgets</h3>
+      <h2>Widgets</h2>
       <div className={pageWithWidgets}>
         <DynamicWidget config={{ type: 'universe', from: 1, to: 22 }} />
         <DynamicWidget config={{ type: 'channels', from: 1, to: 8 }} />
@@ -51,7 +51,7 @@ const TestPage = memoInProduction(() => {
         <DynamicWidget config={{ type: 'fixture', id: 'rgb' }} />
         <DynamicWidget config={{ type: 'fixture-group', id: 'multi' }} />
       </div>
-      <h3>Master data</h3>
+      <h2>Master data</h2>
       <pre>{JSON.stringify(masterData, null, 2)}</pre>
     </div>
   )

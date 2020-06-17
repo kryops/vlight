@@ -16,7 +16,7 @@ const DynamicPage = memoInProduction(() => {
 
   return (
     <div>
-      {headline && <h2>{headline}</h2>}
+      {headline && <h1>{headline}</h1>}
       {rows.map(({ headline, cells }, index) => (
         <Grid
           key={index}

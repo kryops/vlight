@@ -101,7 +101,7 @@ export function Modal<T>({
               onClick={() => onClose(null as any)}
             />
           )}
-          {title && <h3 className={titleStyle}>{title}</h3>}
+          {title && <h2 className={titleStyle}>{title}</h2>}
           {content}
           {Content && <Content onClose={onClose} />}
           {buttons && (

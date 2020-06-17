@@ -43,7 +43,7 @@ export const Grid = memoInProduction(
     const factorSum = cells.reduce((sum, { factor }) => sum + (factor ?? 1), 0)
     return (
       <>
-        {headline && <h3>{headline}</h3>}
+        {headline && <h2>{headline}</h2>}
         <div className={cx(grid, className)}>
           {cells.map(({ factor, children, className }, index) => (
             <div
