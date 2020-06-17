@@ -8,11 +8,10 @@ import { ensureBetween, roundToStep } from '../../../util/shared'
 import { getTouchEventOffset } from '../../../util/touch'
 import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
-import { baseline, iconShade, primaryShade } from '../../styles'
+import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
 
-const bs = 4 // TODO cannot use baselinePx because linaria throws
-const faderWidth = bs * 12
-const faderHeight = bs * 60
+const faderWidth = baselinePx * 12
+const faderHeight = baselinePx * 60
 
 const buttonHeight = faderWidth * 1.25
 

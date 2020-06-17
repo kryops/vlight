@@ -5,22 +5,20 @@ import { mdiPower } from '@mdi/js'
 import { Icon } from '../icons/icon'
 import {
   baseline,
-  baselinePx,
   primaryShade,
   errorShade,
   successShade,
   backgroundColor,
+  baselinePx,
 } from '../styles'
 import { cx } from '../../util/styles'
 import { Clickable } from '../helpers/clickable'
 
-const widgetMarginPx = baselinePx
-
 const widget = css`
   flex: 1 1 auto;
-  max-width: calc(100% - ${widgetMarginPx * 2}px);
+  max-width: calc(100% - ${baselinePx * 2}px);
   border: 1px solid ${primaryShade(2)};
-  margin: ${widgetMarginPx}px;
+  margin: ${baselinePx}px;
 `
 const section = css`
   padding: ${baseline(2)};

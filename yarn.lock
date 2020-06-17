@@ -772,7 +772,7 @@
     "@babel/helper-plugin-utils" "^7.10.1"
     "@babel/helper-regex" "^7.10.1"
 
-"@babel/plugin-transform-template-literals@^7.10.1":
+"@babel/plugin-transform-template-literals@^7.10.1", "@babel/plugin-transform-template-literals@^7.8.3":
   version "7.10.1"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-template-literals/-/plugin-transform-template-literals-7.10.1.tgz#914c7b7f4752c570ea00553b4284dad8070e8628"
   integrity sha512-t7B/3MQf5M1T9hPCRG28DNGZUuxAuDqLYS03rJrIk2prj/UV7Z6FOneijhQhnv/Xa039vidXeVbvjK2SK5f7Gg==
@@ -6701,10 +6701,10 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-linaria@2.0.0-alpha.2:
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/linaria/-/linaria-2.0.0-alpha.2.tgz#562fb715fc43745e1252ed123c7e80a4398c0a2b"
-  integrity sha512-T+32WjqU0s5BgjERpIHXZe+u70YKMQoy0QGxGqzJ+YoPfVe9xOl8Wb25UpVTRQTyRUHcusOw/56bPbq0E3fPxQ==
+linaria@2.0.0-alpha.5:
+  version "2.0.0-alpha.5"
+  resolved "https://registry.yarnpkg.com/linaria/-/linaria-2.0.0-alpha.5.tgz#cc7e4227bf73c5a2312609fb70e7b1883f4009f7"
+  integrity sha512-W+PcPHcdjJ0VyBjrTnFgqc+R3eTNd3Bf4couvwo+5Yst7JaZh5ot4KYmOzP/AOjPZPlMUGhM4H4NQwyApFY2AQ==
   dependencies:
     "@babel/core" "^7.9.0"
     "@babel/generator" "^7.9.4"
@@ -6712,6 +6712,7 @@ linaria@2.0.0-alpha.2:
     "@babel/plugin-syntax-dynamic-import" "^7.8.3"
     "@babel/plugin-transform-modules-commonjs" "^7.9.0"
     "@babel/plugin-transform-runtime" "^7.9.0"
+    "@babel/plugin-transform-template-literals" "^7.8.3"
     "@babel/register" "^7.9.0"
     "@babel/template" "^7.8.6"
     "@babel/traverse" "^7.9.0"
