@@ -149,6 +149,10 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
             configFile: join(__dirname, 'tsconfig.json'),
             mode: 'write-references',
           },
+          eslint: {
+            enabled: true,
+            files: ['**/*.@(ts|tsx)'],
+          },
         }),
 
       // development

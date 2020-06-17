@@ -24,7 +24,7 @@
     "docker:run": "docker run --rm --privileged -p 8000:8000 -v $(pwd)/config:/usr/src/app/config -it --init kryops/vlight",
     "docker": "run-s docker:build docker:run",
     "frontend": "yarn --cwd frontend",
-    "lint": "run-p lint:eslint lint:ts 'frontend lint:css'",
+    "lint": "run-p --continue-on-error lint:eslint lint:ts 'frontend lint:css'",
     "lint:eslint": "eslint 'frontend/**/*.@(ts|tsx)' 'backend/**/*.ts' 'shared/**/*.ts'",
     "lint:ts": "tsc -b frontend backend shared",
     "lint:ts:watch": "tsc -b frontend backend shared --watch",
