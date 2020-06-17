@@ -44,6 +44,7 @@ const navItem_light = css`
 
 const navItem_active_light = css`
   background: ${primaryShade(0)};
+
   & .${iconPath} {
     fill: ${iconShade(0)};
   }

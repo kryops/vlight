@@ -12,7 +12,7 @@
     "build:profile": "webpack --config webpack.config.ts --env.profile",
     "build:profileReact": "webpack --config webpack.config.ts --env.profileReact",
     "clean": "rimraf dist",
-    "lint:css": "stylelint --syntax css-in-js '**/*.@(ts|tsx)'",
+    "lint:css": "stylelint '**/*.@(ts|tsx)'",
     "start": "webpack-dev-server --config webpack.config.ts"
   },
   "dependencies": {

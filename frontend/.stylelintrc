@@ -5,6 +5,7 @@
   ],
   "rules": {
     "block-no-empty": null,
+    "no-descending-specificity": null,
     "no-empty-source": null,
     "no-invalid-double-slash-comments": null,
     "selector-pseudo-class-no-unknown": [true, { "ignorePseudoClasses": ["global"] }],
