@@ -26,18 +26,6 @@ export const globalStyles = css`
       text-decoration: none;
     }
 
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-weight: normal;
-      margin: 1rem 0;
-
-      &:first-child {
-        margin-top: 0;
-      }
-    }
-
     h1 {
       font-size: 1.5rem;
     }
@@ -52,6 +40,18 @@ export const globalStyles = css`
 
     h4 {
       font-size: 1rem;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      font-weight: normal;
+      margin: 1rem 0;
+
+      &:first-child {
+        margin-top: 0;
+      }
     }
 
     #root {
