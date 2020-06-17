@@ -3,14 +3,18 @@ import { channelsPageNavItem } from './channels'
 import { fixturesPageNavItem } from './fixtures'
 import { fixtureGroupsPageNavItem } from './fixture-groups'
 import { memoriesPageNavItem } from './memories'
-import { settingsPageNavItem } from './settings'
+import { configPageNavItem } from './config'
 import { testPageNavItem } from './test'
+import { settingsPageEntry } from './config/settings'
 
-export interface NavItemEntry {
+export interface RouteEntry {
   route: string
+  page: React.ComponentType
+}
+
+export interface NavItemEntry extends RouteEntry {
   icon: string
   label: string
-  page: React.ComponentType
 }
 
 export const mainNavigationItems: NavItemEntry[] = [
@@ -19,8 +23,10 @@ export const mainNavigationItems: NavItemEntry[] = [
   fixturesPageNavItem,
   fixtureGroupsPageNavItem,
   memoriesPageNavItem,
-  settingsPageNavItem,
+  configPageNavItem,
   testPageNavItem,
 ]
+
+export const standaloneRoutes: RouteEntry[] = [settingsPageEntry]
 
 export const entryRoute = universePageRoute

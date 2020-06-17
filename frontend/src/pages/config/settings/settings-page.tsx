@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { useSettings } from '../../hooks/settings'
-import { Settings } from '../../settings'
-import { memoInProduction } from '../../util/development'
-import { Clickable } from '../../ui/helpers/clickable'
+import { useSettings } from '../../../hooks/settings'
+import { Settings } from '../../../settings'
+import { memoInProduction } from '../../../util/development'
+import { Clickable } from '../../../ui/helpers/clickable'
 
 const SettingsPage = memoInProduction(() => {
   const settings = useSettings()

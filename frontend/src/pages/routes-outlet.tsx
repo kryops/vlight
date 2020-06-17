@@ -5,11 +5,11 @@ import { memoInProduction } from '../util/development'
 
 import { dynamicPageRoute, DynamicPage } from './dynamic'
 
-import { entryRoute, mainNavigationItems } from '.'
+import { entryRoute, mainNavigationItems, standaloneRoutes } from '.'
 
 export const RoutesOutlet = memoInProduction(() => (
   <Switch>
-    {mainNavigationItems.map(({ route, page }) => (
+    {[...mainNavigationItems, ...standaloneRoutes].map(({ route, page }) => (
       <Route key={route} path={route} exact component={page} />
     ))}
     <Route path={dynamicPageRoute()} exact component={DynamicPage} />
