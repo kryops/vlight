@@ -3,6 +3,7 @@ import React from 'react'
 import { useSettings } from '../../hooks/settings'
 import { Settings } from '../../settings'
 import { memoInProduction } from '../../util/development'
+import { Clickable } from '../../ui/helpers/clickable'
 
 const SettingsPage = memoInProduction(() => {
   const settings = useSettings()
@@ -14,9 +15,9 @@ const SettingsPage = memoInProduction(() => {
   return (
     <div>
       <h1>Settings</h1>
-      <a onClick={() => toggleSetting('lightMode')}>
+      <Clickable onClick={() => toggleSetting('lightMode')}>
         Light Mode: {lightMode ? 'on' : 'off'}
-      </a>
+      </Clickable>
     </div>
   )
 })

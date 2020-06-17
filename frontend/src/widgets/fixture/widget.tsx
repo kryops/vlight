@@ -14,7 +14,6 @@ import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
 import { Icon } from '../../ui/icons/icon'
-import { widgetTitle, widgetTurnedOff } from '../../ui/css/widget'
 import { ChannelMapping } from '../../util/shared'
 
 export function getFixtureName(
@@ -85,28 +84,22 @@ export const StatelessFixtureWidget = memoInProduction(
     return (
       <Widget
         key={fixture.id}
-        title={
-          <div className={widgetTitle}>
-            <a
-              onClick={() =>
-                changeFixtureState(fixture.id, fixtureState, {
-                  on: !fixtureState.on,
-                })
-              }
-            >
-              {getFixtureName(fixture, fixtureType)}{' '}
-              {!fixtureState.on && '[OFF]'}
-            </a>
-            {colorPickerCapable && (
-              <Icon
-                icon={iconColorPicker}
-                onClick={toggleColorPicker}
-                shade={colorPicker ? 1 : 2}
-              />
-            )}
-          </div>
+        title={getFixtureName(fixture, fixtureType)}
+        titleSide={
+          colorPickerCapable ? (
+            <Icon
+              icon={iconColorPicker}
+              onClick={toggleColorPicker}
+              shade={colorPicker ? 1 : 2}
+            />
+          ) : undefined
         }
-        className={fixtureState.on ? undefined : widgetTurnedOff}
+        onTitleClick={() =>
+          changeFixtureState(fixture.id, fixtureState, {
+            on: !fixtureState.on,
+          })
+        }
+        turnedOn={fixtureState.on}
       >
         <div className={faderContainer}>
           {renderFader('m')}

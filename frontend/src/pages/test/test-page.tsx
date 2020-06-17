@@ -7,6 +7,7 @@ import { pageWithWidgets } from '../../ui/css/page'
 import { DynamicWidget } from '../../widgets/dynamic'
 import { showDialog } from '../../ui/overlays/dialog'
 import { okCancel } from '../../ui/overlays/buttons'
+import { Clickable } from '../../ui/helpers/clickable'
 
 const TestPage = memoInProduction(() => {
   const masterData = useMasterData()
@@ -15,7 +16,9 @@ const TestPage = memoInProduction(() => {
     <div>
       <h1>Test Page</h1>
       <h2>Overlay / Modal / Dialog</h2>
-      <a onClick={() => showDialog('sadsdfsdf', okCancel)}>Dialog</a>
+      <Clickable onClick={() => showDialog('sadsdfsdf', okCancel)}>
+        Dialog
+      </Clickable>
       <h2>Grid</h2>
       <Grid
         headline="Gridddd"

@@ -14,7 +14,6 @@ import { memoInProduction } from '../../util/development'
 import { iconColorPicker } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { faderContainer } from '../../ui/css/fader-container'
-import { widgetTitle, widgetTurnedOff } from '../../ui/css/widget'
 import { ChannelMapping } from '../../util/shared'
 
 export interface StatelessFixtureGroupWidgetProps {
@@ -75,28 +74,22 @@ export const StatelessFixtureGroupWidget = memoInProduction(
     return (
       <Widget
         key={group.id}
-        title={
-          <div className={widgetTitle}>
-            <a
-              onClick={() =>
-                changeFixtureGroupState(group.id, groupState, {
-                  on: !groupState.on,
-                })
-              }
-            >
-              {group.name ?? group.id} ({group.fixtures.length}){' '}
-              {!groupState.on && '[OFF]'}
-            </a>
-            {colorPickerCapable && (
-              <Icon
-                icon={iconColorPicker}
-                onClick={toggleColorPicker}
-                shade={colorPicker ? 1 : 2}
-              />
-            )}
-          </div>
+        title={`${group.name ?? group.id} (${group.fixtures.length})`}
+        onTitleClick={() =>
+          changeFixtureGroupState(group.id, groupState, {
+            on: !groupState.on,
+          })
         }
-        className={groupState.on ? undefined : widgetTurnedOff}
+        titleSide={
+          colorPickerCapable ? (
+            <Icon
+              icon={iconColorPicker}
+              onClick={toggleColorPicker}
+              shade={colorPicker ? 1 : 2}
+            />
+          ) : undefined
+        }
+        turnedOn={groupState.on}
       >
         <div className={faderContainer}>
           {renderFader('m')}

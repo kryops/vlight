@@ -34,13 +34,21 @@ const pathShades = [path0, path1, path2, path3, path4]
 export interface IconProps {
   icon: string
   shade?: ColorShade
+  color?: string
   className?: string
   pathClassName?: string
   onClick?: () => void
 }
 
 export const Icon = memoInProduction(
-  ({ icon, shade = 0, className, pathClassName, onClick }: IconProps) => (
+  ({
+    icon,
+    shade = 0,
+    className,
+    pathClassName,
+    color,
+    onClick,
+  }: IconProps) => (
     <svg
       viewBox="0 0 24 24"
       className={cx(iconSvg, className)}
@@ -49,6 +57,7 @@ export const Icon = memoInProduction(
       <path
         d={icon}
         className={cx(pathShades[shade] ?? pathShades[0], pathClassName)}
+        style={color ? { fill: color } : undefined}
       />
     </svg>
   )

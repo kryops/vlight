@@ -6,7 +6,6 @@ import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
-import { widgetTitle, widgetTurnedOff } from '../../ui/css/widget'
 
 export interface StatelessMemoryWidgetProps {
   memory: Memory
@@ -18,21 +17,14 @@ export const StatelessMemoryWidget = memoInProduction(
     return (
       <Widget
         key={memory.id}
-        title={
-          <div className={widgetTitle}>
-            <a
-              onClick={() =>
-                changeMemoryState(memory.id, {
-                  value: state.value,
-                  on: !state.on,
-                })
-              }
-            >
-              {memory.name ?? memory.id} {!state.on && '[OFF]'}
-            </a>
-          </div>
+        title={memory.name ?? memory.id}
+        onTitleClick={() =>
+          changeMemoryState(memory.id, {
+            value: state.value,
+            on: !state.on,
+          })
         }
-        className={state.on ? undefined : widgetTurnedOff}
+        turnedOn={state.on}
       >
         <div className={faderContainer}>
           <Fader
