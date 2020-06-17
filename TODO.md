@@ -2,8 +2,11 @@
 
 ## Roadmap
 
-- Styling: Astroturf vs linaria
-  - Fix stylelint
+- Frontend
+  - Back button (navigation)
+  - Tile overview (config)
+  - Entity list
+  - Edit modals
 - Backend restructuring
   - easier masterData extension / new entity process?
 - Master data / config editor
