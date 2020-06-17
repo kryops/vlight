@@ -3,7 +3,7 @@ import React from 'react'
 
 import { ColorShade } from '../../types'
 import { Icon } from '../icons/icon'
-import { baselinePx, zNavigation } from '../styles'
+import { baseline, zNavigation } from '../styles'
 import { memoInProduction } from '../../util/development'
 
 const cornerButton = css`
@@ -11,7 +11,7 @@ const cornerButton = css`
   left: 0;
   bottom: 0;
   z-index: ${zNavigation};
-  padding: ${baselinePx * 3}px;
+  padding: ${baseline(3)};
   cursor: pointer;
 `
 

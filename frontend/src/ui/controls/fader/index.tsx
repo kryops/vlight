@@ -8,7 +8,7 @@ import { ensureBetween, roundToStep } from '../../../util/shared'
 import { getTouchEventOffset } from '../../../util/touch'
 import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
-import { baselinePx, iconShade, primaryShade } from '../../styles'
+import { baseline, iconShade, primaryShade } from '../../styles'
 
 const bs = 4 // TODO cannot use baselinePx because linaria throws
 const faderWidth = bs * 12
@@ -25,12 +25,12 @@ const fader = css`
   flex: 0 0 auto;
   width: ${faderWidth}px;
   height: ${faderHeight}px;
-  margin: ${baselinePx * 1.5}px;
+  margin: ${baseline(1.5)};
 `
 
 const colorPickerFader = css`
-  margin-left: ${baselinePx * 3.5}px;
-  margin-right: ${baselinePx * 3.5}px;
+  margin-left: ${baseline(3.5)};
+  margin-right: ${baseline(3.5)};
 `
 
 const track = css`

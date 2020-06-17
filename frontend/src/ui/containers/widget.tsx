@@ -1,19 +1,19 @@
 import { css } from 'linaria'
 import React from 'react'
 
-import { baselinePx, primaryShade } from '../styles'
+import { baseline, baselinePx, primaryShade } from '../styles'
 import { cx } from '../../util/styles'
 
-const widgetMargin = baselinePx
+const widgetMarginPx = baselinePx
 
 const widget = css`
   flex: 1 1 auto;
-  max-width: calc(100% - ${widgetMargin * 2}px);
+  max-width: calc(100% - ${widgetMarginPx * 2}px);
   border: 1px solid ${primaryShade(2)};
-  margin: ${widgetMargin}px;
+  margin: ${widgetMarginPx}px;
 `
 const section = css`
-  padding: ${baselinePx * 2}px;
+  padding: ${baseline(2)};
 `
 
 export interface WidgetProps {

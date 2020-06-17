@@ -1,7 +1,7 @@
 import React from 'react'
 import { css } from 'linaria'
 
-import { baselinePx } from '../styles'
+import { baseline } from '../styles'
 import { flexEndSpacer } from '../css/flex-end-spacer'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
@@ -11,7 +11,7 @@ const grid = css`
   justify-content: stretch;
 
   /* to allow scrolling */
-  margin-right: ${baselinePx * 8}px;
+  margin-right: ${baseline(8)};
 
   @media (max-width: 768px) {
     display: block;

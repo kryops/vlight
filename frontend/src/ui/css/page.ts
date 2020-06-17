@@ -1,6 +1,6 @@
 import { css } from 'linaria'
 
-import { baselinePx } from '../styles'
+import { baseline } from '../styles'
 
 import { flexEndSpacer } from './flex-end-spacer'
 
@@ -8,9 +8,9 @@ export const pageWithWidgets = css`
   display: flex;
   flex-wrap: wrap;
   justify-content: stretch;
-  margin: -${baselinePx}px;
+  margin: -${baseline(1)};
   /* to allow scrolling */
-  margin-right: ${baselinePx * 8}px;
+  margin-right: ${baseline(8)};
 
   ${flexEndSpacer}
 `

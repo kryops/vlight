@@ -8,7 +8,7 @@ import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
 import {
   backgroundColor,
-  baselinePx,
+  baseline,
   zNavigation,
   backgroundColorLight,
   textShadeLight,
@@ -35,7 +35,7 @@ const mainContainer_light = css`
 
 const content = css`
   flex: 1 1 auto;
-  padding: ${baselinePx * 4}px;
+  padding: ${baseline(4)};
   height: 100%;
   box-sizing: border-box;
   overflow: auto;

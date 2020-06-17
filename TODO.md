@@ -4,7 +4,6 @@
 
 - Styling: Astroturf vs linaria
   - Fix stylelint
-  - BaselinePx => baseline()
 - Backend restructuring
   - easier masterData extension / new entity process?
 - Master data / config editor

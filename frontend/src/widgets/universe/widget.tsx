@@ -7,7 +7,7 @@ import { memoInProduction } from '../../util/development'
 import { createRangeArray } from '../../util/shared'
 import { cx } from '../../util/styles'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
-import { baselinePx } from '../../ui/styles'
+import { baseline, baselinePx } from '../../ui/styles'
 import {
   getFixtureAtChannel,
   getEffectiveFixtureColor,
@@ -26,16 +26,16 @@ const container = css`
   ${flexEndSpacer}
 `
 
-const barSize = baselinePx * 12
+const barSizePx = baselinePx * 12
 
 const universeBar = css`
-  width: ${barSize}px;
-  height: ${barSize}px;
-  margin: ${baselinePx}px;
+  width: ${barSizePx}px;
+  height: ${barSizePx}px;
+  margin: ${baseline(1)};
 `
 
 const universeBar_connected = css`
-  margin-right: ${-1.25 * baselinePx}px;
+  margin-right: ${baseline(-1.25)};
 `
 
 export interface StatelessUniverseWidgetProps {
@@ -57,7 +57,7 @@ export const StatelessUniverseWidget = memoInProduction(
     const range = createRangeArray(from, to)
     // try to wrap it in a few rows to fit in with other widgets
     const maxWidth = Math.round(
-      Math.ceil(range.length / barRows) * (barSize + 6 * baselinePx)
+      Math.ceil(range.length / barRows) * (barSizePx + 6 * baselinePx)
     )
 
     return (

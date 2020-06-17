@@ -5,7 +5,7 @@ import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
 import { Touchable } from '../../helpers/touchable'
 import { useDelayedState } from '../../../hooks/delayed-state'
 import { useSettings } from '../../../hooks/settings'
-import { baselinePx, iconShade, primaryShade } from '../../styles'
+import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
 import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
 
@@ -29,7 +29,7 @@ const container = css`
   flex-direction: column;
   justify-content: stretch;
   width: ${colorPickerWidth}px;
-  margin: ${baselinePx * 1.5}px;
+  margin: ${baseline(1.5)};
   flex: 0 0 auto;
 `
 
@@ -63,7 +63,7 @@ const positionMarker = css`
 
 const colorPresetBar = css`
   display: flex;
-  height: ${baselinePx * 8}px;
+  height: ${baseline(8)};
   overflow: hidden;
 `
 

@@ -8,7 +8,7 @@ import {
 } from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'
 import { pageWithWidgets } from '../../ui/css/page'
-import { baselinePx } from '../../ui/styles'
+import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 
@@ -18,16 +18,16 @@ const universePage = css`
   justify-content: flex-start; /* so the universeBar_connected margins work */
 `
 
-const barSize = baselinePx * 12
+const barSize = baseline(12)
 
 const universeBar = css`
-  width: ${barSize}px;
-  height: ${barSize}px;
-  margin: ${baselinePx}px;
+  width: ${barSize};
+  height: ${barSize};
+  margin: ${baseline(1)};
 `
 
 const universeBar_connected = css`
-  margin-right: ${-1.25 * baselinePx}px;
+  margin-right: ${baseline(-1.25)};
 `
 
 const UniversePage = memoInProduction(() => {

@@ -3,10 +3,9 @@ import React from 'react'
 
 import { ensureBetween, getFraction } from '../../util/shared'
 import {
-  baselinePx,
+  baseline,
   iconShade,
   primaryShade,
-  fontSizePx,
   textShade,
   textShadeLight,
 } from '../styles'
@@ -20,7 +19,7 @@ const bar = css`
   align-items: center;
   justify-content: center;
   border: 1px solid ${iconShade(2)};
-  padding: ${baselinePx * 2}px;
+  padding: ${baseline(2)};
 `
 
 const barLabel = css`
@@ -29,9 +28,9 @@ const barLabel = css`
 
 const barCornerLabel = css`
   position: absolute;
-  left: ${baselinePx}px;
-  bottom: ${baselinePx / 2}px;
-  font-size: ${fontSizePx * 0.65}px;
+  left: ${baseline(1)};
+  bottom: ${baseline(0.5)};
+  font-size: 0.65rem;
   color: ${textShade(0)};
   z-index: 2;
 `

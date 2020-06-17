@@ -3,6 +3,10 @@ import { mix } from 'polished'
 export const baselinePx = 4
 export const fontSizePx = 16
 
+export function baseline(factor: number) {
+  return `${factor * baselinePx}px`
+}
+
 export const zNavigation = 10
 export const zOverlay = 20
 

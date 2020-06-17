@@ -2,15 +2,15 @@ import { css } from 'linaria'
 import React from 'react'
 
 import { ColorShade } from '../../types'
-import { baselinePx, iconShade } from '../styles'
+import { baseline, iconShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 
-const iconSize = baselinePx * 6
+const iconSize = baseline(6)
 
 const iconSvg = css`
-  width: ${iconSize}px;
-  height: ${iconSize}px;
+  width: ${iconSize};
+  height: ${iconSize};
   display: block;
 `
 

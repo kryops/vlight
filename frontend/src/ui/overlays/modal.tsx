@@ -1,44 +1,12 @@
 import React, { ReactElement, ComponentType } from 'react'
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { mdiClose } from '@mdi/js'
 import { css } from 'linaria'
 
 import { Icon } from '../icons/icon'
-import { zOverlay, primaryShade, baselinePx, iconShade } from '../styles'
+import { zOverlay, primaryShade, baseline, iconShade } from '../styles'
 
 import { removeOverlay, addOverlay } from './overlay'
-
-export interface ModalButton<T> {
-  icon: string
-  label: string
-  value: T
-}
-
-export const buttonOk: ModalButton<true> = {
-  icon: mdiCheck,
-  label: 'Ok',
-  value: true,
-}
-
-export const buttonYes: ModalButton<true> = {
-  icon: mdiCheck,
-  label: 'Yes',
-  value: true,
-}
-
-export const buttonNo: ModalButton<false> = {
-  icon: mdiClose,
-  label: 'No',
-  value: false,
-}
-
-export const buttonCancel: ModalButton<null> = {
-  icon: mdiClose,
-  label: 'Cancel',
-  value: null,
-}
-
-export const yesNo = [buttonYes, buttonNo]
-export const okCancel = [buttonOk, buttonCancel]
+import { ModalButton } from './buttons'
 
 export interface ModalProps<T> {
   onClose: (result: T) => void
@@ -65,23 +33,23 @@ const modalContainer = css`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: ${baselinePx * 4}px;
+  padding: ${baseline(4)};
   box-sizing: border-box;
   align-items: center;
   justify-content: center;
 `
 
 const modal = css`
-  min-width: ${baselinePx * 64}px;
+  min-width: ${baseline(64)};
   max-width: 95vh;
-  padding: ${baselinePx * 8}px;
+  padding: ${baseline(8)};
   background: ${primaryShade(2)};
 `
 
 const closeButton = css`
   float: right;
-  margin: ${baselinePx * -6}px;
-  padding: ${baselinePx * 2}px;
+  margin: ${baseline(-6)};
+  padding: ${baseline(2)};
 `
 
 const titleStyle = css`
@@ -90,8 +58,8 @@ const titleStyle = css`
 
 const buttonContainer = css`
   display: flex;
-  margin-top: ${baselinePx * 8}px;
-  margin-bottom: ${baselinePx * -4}px;
+  margin-top: ${baseline(8)};
+  margin-bottom: ${baseline(-4)};
   border-top: 1px solid ${iconShade(2)};
 `
 
@@ -101,13 +69,13 @@ const buttonStyle = css`
   min-width: 0;
   align-items: center;
   justify-content: center;
-  padding: ${baselinePx * 4}px;
+  padding: ${baseline(4)};
   box-sizing: content-box;
 `
 
 const buttonIcon = css`
   flex: 0 0 auto;
-  padding-right: ${baselinePx * 2}px;
+  padding-right: ${baseline(2)};
 `
 
 export function Modal<T>({

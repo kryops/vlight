@@ -1,6 +1,7 @@
 import { ReactElement } from 'react'
 
-import { ModalButton, buttonOk, showModal } from './modal'
+import { showModal } from './modal'
+import { ModalButton, buttonOk } from './buttons'
 
 export function showDialog<T = true>(
   content: string | ReactElement,

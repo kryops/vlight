@@ -3,7 +3,7 @@ import React from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { Icon } from '../icons/icon'
-import { baselinePx, iconShade, primaryShade } from '../styles'
+import { baseline, iconShade, primaryShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { useSettings } from '../../hooks/settings'
@@ -13,7 +13,7 @@ const iconPath = css``
 const navItem = css`
   display: flex;
   align-items: center;
-  padding: ${baselinePx * 3}px;
+  padding: ${baseline(3)};
 
   &:hover {
     background: ${primaryShade(3)};
@@ -54,8 +54,8 @@ const navItem_active_light = css`
 `
 
 const navLabel = css`
-  padding-left: ${baselinePx * 2}px;
-  padding-right: ${baselinePx * 4}px;
+  padding-left: ${baseline(2)};
+  padding-right: ${baseline(4)};
 `
 
 export interface NavItemProps {

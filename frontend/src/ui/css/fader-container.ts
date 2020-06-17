@@ -1,6 +1,6 @@
 import { css } from 'linaria'
 
-import { baselinePx } from '../styles'
+import { baseline } from '../styles'
 
 export const faderContainer = css`
   display: flex;
@@ -8,7 +8,7 @@ export const faderContainer = css`
   overflow-x: auto;
   max-width: 100%;
   /* horizontal scrolling */
-  padding-bottom: ${baselinePx * 8}px;
+  padding-bottom: ${baseline(8)};
 
   /* justify-content: center does not work with overflow */
   & > :first-child {

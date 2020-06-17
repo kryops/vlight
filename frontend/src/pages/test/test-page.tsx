@@ -6,7 +6,7 @@ import { Grid } from '../../ui/containers/grid'
 import { pageWithWidgets } from '../../ui/css/page'
 import { DynamicWidget } from '../../widgets/dynamic'
 import { showDialog } from '../../ui/overlays/dialog'
-import { okCancel } from '../../ui/overlays/modal'
+import { okCancel } from '../../ui/overlays/buttons'
 
 const TestPage = memoInProduction(() => {
   const masterData = useMasterData()
