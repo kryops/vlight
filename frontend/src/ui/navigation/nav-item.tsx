@@ -34,23 +34,23 @@ const navItem_active = css`
 
 const navItem_light = css`
   &:hover {
-    background: ${primaryShade(0)};
+    background: ${primaryShade(4, true)};
 
     & .${iconPath} {
-      fill: ${iconShade(3)};
+      fill: ${iconShade(0, true)};
     }
   }
 `
 
 const navItem_active_light = css`
-  background: ${primaryShade(0)};
-
-  & .${iconPath} {
-    fill: ${iconShade(0)};
-  }
+  background: ${primaryShade(2, true)};
 
   &:hover {
-    background: ${primaryShade(0)};
+    background: ${primaryShade(2, true)};
+  }
+
+  & .${iconPath} {
+    fill: ${iconShade(1, true)};
   }
 `
 

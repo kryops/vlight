@@ -11,7 +11,7 @@ import {
   baseline,
   zNavigation,
   backgroundColorLight,
-  textShadeLight,
+  textShade,
 } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
@@ -26,10 +26,10 @@ const mainContainer = css`
 
 const mainContainer_light = css`
   background: ${backgroundColorLight};
-  color: ${textShadeLight(0)};
+  color: ${textShade(0, true)};
 
   & a {
-    color: ${textShadeLight(0)};
+    color: ${textShade(0, true)};
   }
 `
 

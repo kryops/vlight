@@ -41,6 +41,10 @@ const track = css`
   height: ${trackHeight}px;
 `
 
+const track_light = css`
+  background: ${iconShade(3, true)};
+`
+
 const button = css`
   position: relative;
   width: ${faderWidth};
@@ -53,6 +57,7 @@ const button = css`
 `
 
 const button_light = css`
+  background: ${primaryShade(0, true)};
   color: #fff;
 `
 
@@ -103,7 +108,7 @@ export const Fader = memoInProduction(
         }}
         onUp={() => setLocalValue(null, true)}
       >
-        <div className={track} ref={trackRef} />
+        <div className={cx(track, lightMode && track_light)} ref={trackRef} />
         <div
           className={cx(button, lightMode && button_light)}
           style={{ transform: `translateY(${y}px)` }}

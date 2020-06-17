@@ -2,13 +2,7 @@ import { css } from 'linaria'
 import React from 'react'
 
 import { ensureBetween, getFraction } from '../../util/shared'
-import {
-  baseline,
-  iconShade,
-  primaryShade,
-  textShade,
-  textShadeLight,
-} from '../styles'
+import { baseline, iconShade, primaryShade, textShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { useSettings } from '../../hooks/settings'
@@ -36,7 +30,7 @@ const barCornerLabel = css`
 `
 
 const barCornerLabel_light = css`
-  color: ${textShadeLight(0)};
+  color: ${textShade(0, true)};
 `
 
 const barLevel = css`

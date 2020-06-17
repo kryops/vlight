@@ -42,7 +42,7 @@ const colorPicker = css`
 `
 
 const colorPicker_light = css`
-  border: 1px solid #555;
+  border: 1px solid ${iconShade(3, true)};
 `
 
 const markerContainer = css`

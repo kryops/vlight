@@ -21,12 +21,17 @@ const textColor = '#ddd'
 const iconColor = '#fff'
 
 const textColorLight = '#000'
+const iconColorLight = '#000'
 
 const colorShades = [1, 0.5, 0.2, 0.1, 0.05]
 
-function colorLevelFactory(color: string) {
-  return function colorLevel(level: number): string {
-    return mix(colorShades[level] ?? 1, color, backgroundColor)
+function colorLevelFactory(color: string, lightColor?: string) {
+  return function colorLevel(level: number, isLight = false): string {
+    return mix(
+      colorShades[level] ?? 1,
+      (isLight ? lightColor : color) ?? color,
+      isLight ? backgroundColorLight : backgroundColor
+    )
   }
 }
 
@@ -34,7 +39,5 @@ export const primaryShade = colorLevelFactory(primaryColor)
 export const successShade = colorLevelFactory(successColor)
 export const errorShade = colorLevelFactory(errorColor)
 export const warnShade = colorLevelFactory(warnColor)
-export const textShade = colorLevelFactory(textColor)
-export const iconShade = colorLevelFactory(iconColor)
-
-export const textShadeLight = colorLevelFactory(textColorLight)
+export const textShade = colorLevelFactory(textColor, textColorLight)
+export const iconShade = colorLevelFactory(iconColor, iconColorLight)

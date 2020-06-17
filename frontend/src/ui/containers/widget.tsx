@@ -10,9 +10,11 @@ import {
   successShade,
   backgroundColor,
   baselinePx,
+  backgroundColorLight,
 } from '../styles'
 import { cx } from '../../util/styles'
 import { Clickable } from '../helpers/clickable'
+import { useSettings } from '../../hooks/settings'
 
 const widget = css`
   flex: 1 1 auto;
@@ -49,9 +51,19 @@ const widgetTurnedOff = css`
   }
 `
 
+const widgetTurnedOff_light = css`
+  &::after {
+    background: linear-gradient(to top, ${backgroundColorLight}, transparent);
+  }
+`
+
 const widgetTurnedOn = css`
   border-color: ${primaryShade(0)};
   background: ${primaryShade(3)};
+`
+
+const widgetTurnedOn_light = css`
+  background: ${primaryShade(4, true)};
 `
 
 const widgetIndicator = css`
@@ -75,27 +87,32 @@ export const Widget: React.FunctionComponent<WidgetProps> = ({
   turnedOn,
   className,
   children,
-}) => (
-  <div
-    className={cx(
-      widget,
-      className,
-      turnedOn !== undefined && (turnedOn ? widgetTurnedOn : widgetTurnedOff)
-    )}
-  >
-    <div className={cx(section, widgetTitle)}>
-      <Clickable onClick={onTitleClick}>
-        {title}
-        {turnedOn !== undefined && (
-          <Icon
-            icon={mdiPower}
-            color={turnedOn ? successShade(0) : errorShade(0)}
-            className={widgetIndicator}
-          />
-        )}
-      </Clickable>
-      {titleSide}
+}) => {
+  const { lightMode } = useSettings()
+  return (
+    <div
+      className={cx(
+        widget,
+        className,
+        turnedOn !== undefined && (turnedOn ? widgetTurnedOn : widgetTurnedOff),
+        turnedOn === true && lightMode && widgetTurnedOn_light,
+        turnedOn === false && lightMode && widgetTurnedOff_light
+      )}
+    >
+      <div className={cx(section, widgetTitle)}>
+        <Clickable onClick={onTitleClick}>
+          {title}
+          {turnedOn !== undefined && (
+            <Icon
+              icon={mdiPower}
+              color={turnedOn ? successShade(0) : errorShade(0)}
+              className={widgetIndicator}
+            />
+          )}
+        </Clickable>
+        {titleSide}
+      </div>
+      <div className={section}>{children}</div>
     </div>
-    <div className={section}>{children}</div>
-  </div>
-)
+  )
+}
