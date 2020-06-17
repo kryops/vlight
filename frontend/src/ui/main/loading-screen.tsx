@@ -12,7 +12,7 @@ const loadingScreen = css`
   justify-content: center;
 `
 
-export const LoadingScreen: React.FunctionComponent = () => (
+export const LoadingScreen = () => (
   <div className={loadingScreen}>
     <Icon icon={iconLoading} className={rotateAnimation} />
   </div>

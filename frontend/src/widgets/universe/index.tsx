@@ -10,11 +10,7 @@ export interface UniverseWidgetProps {
   title?: string
 }
 
-export const UniverseWidget: React.FunctionComponent<UniverseWidgetProps> = ({
-  from,
-  to,
-  title,
-}) => {
+export const UniverseWidget = ({ from, to, title }: UniverseWidgetProps) => {
   const universe = useDmxUniverse()
   const masterData = useMasterData()
 

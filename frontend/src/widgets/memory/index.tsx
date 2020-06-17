@@ -9,9 +9,7 @@ export interface MemoryWidgetProps {
   memory: Memory
 }
 
-export const MemoryWidget: React.FunctionComponent<MemoryWidgetProps> = ({
-  memory,
-}) => {
+export const MemoryWidget = ({ memory }: MemoryWidgetProps) => {
   const memoryState = useApiStateEntry('memories', memory.id)
 
   if (!memoryState) {

@@ -23,7 +23,7 @@ export const SettingsContext = React.createContext<SettingsWithUpdate>({
   updateSettings: () => {},
 })
 
-export const SettingsWrapper: React.FunctionComponent = ({ children }) => {
+export const SettingsWrapper: React.FC = ({ children }) => {
   const [settings, setSettings] = useState<Settings>(initialSettings)
 
   const settingsWithUpdate: SettingsWithUpdate = useMemo<SettingsWithUpdate>(

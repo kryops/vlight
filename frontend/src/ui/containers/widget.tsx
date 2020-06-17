@@ -80,7 +80,7 @@ export interface WidgetProps {
   className?: string
 }
 
-export const Widget: React.FunctionComponent<WidgetProps> = ({
+export const Widget: React.FC<WidgetProps> = ({
   title,
   titleSide,
   onTitleClick,

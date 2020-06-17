@@ -10,11 +10,7 @@ export interface ChannelsWidgetProps {
   title?: string
 }
 
-export const ChannelsWidget: React.FunctionComponent<ChannelsWidgetProps> = ({
-  from,
-  to,
-  title,
-}) => {
+export const ChannelsWidget = ({ from, to, title }: ChannelsWidgetProps) => {
   const channels = useApiState('channels')
 
   return (
