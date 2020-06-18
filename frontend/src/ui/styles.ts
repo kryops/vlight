@@ -3,7 +3,7 @@ import { mix } from 'polished'
 export const baselinePx = 4
 export const fontSizePx = 16
 
-export function baseline(factor: number): string {
+export function baseline(factor = 1): string {
   return `${factor * baselinePx}px`
 }
 

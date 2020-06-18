@@ -53,11 +53,7 @@ export const Icon = memoInProduction(
         <path
           d={icon}
           className={pathClassName}
-          style={
-            color || shade
-              ? { fill: color ?? iconShade(shade, lightMode) }
-              : undefined
-          }
+          style={{ fill: color ?? iconShade(shade, lightMode) }}
         />
       </svg>
     )

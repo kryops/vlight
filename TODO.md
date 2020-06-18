@@ -3,8 +3,6 @@
 ## Roadmap
 
 - Frontend
-  - Back button (navigation)
-  - Tile overview (config)
   - Entity list
   - Edit modals
 - Backend restructuring
