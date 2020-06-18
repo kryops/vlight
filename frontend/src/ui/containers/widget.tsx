@@ -34,6 +34,10 @@ const widgetTitle = css`
   }
 `
 
+const titleSideContainer = css`
+  margin-left: ${baseline(2)};
+`
+
 const widgetTurnedOff = css`
   position: relative;
   border-style: dotted;
@@ -72,11 +76,17 @@ const widgetIndicator = css`
   margin: 0 ${baseline(1)};
 `
 
+const bottomLine = css`
+  height: ${baseline(0.75)};
+  margin-top: ${baseline(-0.75)};
+`
+
 export interface WidgetProps {
   title?: string | React.ReactElement
   titleSide?: string | React.ReactElement
   onTitleClick?: () => void
   turnedOn?: boolean
+  bottomLineColor?: string
   className?: string
 }
 
@@ -85,6 +95,7 @@ export const Widget: React.FC<WidgetProps> = ({
   titleSide,
   onTitleClick,
   turnedOn,
+  bottomLineColor,
   className,
   children,
 }) => {
@@ -99,20 +110,25 @@ export const Widget: React.FC<WidgetProps> = ({
         turnedOn === false && lightMode && widgetTurnedOff_light
       )}
     >
-      <div className={cx(section, widgetTitle)}>
-        <Clickable onClick={onTitleClick}>
-          {title}
-          {turnedOn !== undefined && (
-            <Icon
-              icon={mdiPower}
-              color={turnedOn ? successShade(0) : errorShade(0)}
-              className={widgetIndicator}
-            />
-          )}
-        </Clickable>
-        {titleSide}
-      </div>
+      {(title || titleSide) && (
+        <div className={cx(section, widgetTitle)}>
+          <Clickable onClick={onTitleClick}>
+            {title}
+            {turnedOn !== undefined && (
+              <Icon
+                icon={mdiPower}
+                color={turnedOn ? successShade(0) : errorShade(0)}
+                className={widgetIndicator}
+              />
+            )}
+          </Clickable>
+          {titleSide && <div className={titleSideContainer}>{titleSide}</div>}
+        </div>
+      )}
       <div className={section}>{children}</div>
+      {bottomLineColor && (
+        <div className={bottomLine} style={{ background: bottomLineColor }} />
+      )}
     </div>
   )
 }

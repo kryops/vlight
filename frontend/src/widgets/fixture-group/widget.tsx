@@ -15,6 +15,7 @@ import { iconColorPicker } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { faderContainer } from '../../ui/css/fader-container'
 import { ChannelMapping } from '../../util/shared'
+import { getFixtureStateColor } from '../../util/fixtures'
 
 export interface StatelessFixtureGroupWidgetProps {
   group: FixtureGroup
@@ -90,6 +91,7 @@ export const StatelessFixtureGroupWidget = memoInProduction(
           ) : undefined
         }
         turnedOn={groupState.on}
+        bottomLineColor={getFixtureStateColor(groupState)}
       >
         <div className={faderContainer}>
           {renderFader('m')}

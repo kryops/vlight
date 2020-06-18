@@ -15,6 +15,7 @@ import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
 import { Icon } from '../../ui/icons/icon'
 import { ChannelMapping } from '../../util/shared'
+import { getFixtureStateColor } from '../../util/fixtures'
 
 export function getFixtureName(
   fixture: Fixture,
@@ -100,6 +101,7 @@ export const StatelessFixtureWidget = memoInProduction(
           })
         }
         turnedOn={fixtureState.on}
+        bottomLineColor={getFixtureStateColor(fixtureState)}
       >
         <div className={faderContainer}>
           {renderFader('m')}
