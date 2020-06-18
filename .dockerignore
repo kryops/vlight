@@ -1,6 +1,7 @@
 .git
 .gitignore
 .editorconfig
+.eslintcache
 .eslintrc.js
 .linaria-cache
 .prettierignore

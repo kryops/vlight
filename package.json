@@ -15,7 +15,7 @@
   },
   "scripts": {
     "all": "yarn lint && yarn test && yarn build",
-    "clean": "yarn workspaces run clean && rimraf node_modules/.cache .linaria-cache",
+    "clean": "yarn workspaces run clean && rimraf node_modules/.cache .linaria-cache .eslintcache",
     "backend": "yarn --cwd backend",
     "build": "yarn run clean && run-p 'backend build' 'frontend build'",
     "client:tcp": "ts-node backend/clients/vlight-tcp.ts",
@@ -25,7 +25,7 @@
     "docker": "run-s docker:build docker:run",
     "frontend": "yarn --cwd frontend",
     "lint": "run-p --continue-on-error lint:eslint lint:ts 'frontend lint:css'",
-    "lint:eslint": "eslint 'frontend/**/*.@(ts|tsx)' 'backend/**/*.ts' 'shared/**/*.ts'",
+    "lint:eslint": "eslint --cache 'frontend/**/*.@(ts|tsx)' 'backend/**/*.ts' 'shared/**/*.ts'",
     "lint:ts": "tsc -b frontend backend shared",
     "lint:ts:watch": "tsc -b frontend backend shared --watch",
     "postinstall": "rimraf node_modules/.cache .linaria-cache && node postinstall.js",
