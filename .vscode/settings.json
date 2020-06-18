@@ -8,9 +8,6 @@
   "eslint.validate": ["typescript", "typescriptreact", "javascript"],
   "typescript.preferences.quoteStyle": "single",
   "typescript.tsdk": "node_modules/typescript/lib",
-  "stylelint.configOverrides": {
-    "syntax": "css-in-js"
-  },
 
   "search.exclude": {
     "**/node_modules": true,
