@@ -1,13 +1,12 @@
-import { iconSun } from '../../ui/icons'
+import { iconUniverse } from '../../ui/icons'
 import { NavItemEntry } from '../index'
+import { universePageRoute } from '../routes'
 
 import UniversePage from './universe-page'
 
-export const universePageRoute = '/universe'
-
 export const universePageNavItem: NavItemEntry = {
   route: universePageRoute,
-  icon: iconSun,
+  icon: iconUniverse,
   label: 'Universe',
   page: UniversePage,
 }

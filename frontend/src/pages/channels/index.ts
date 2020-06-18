@@ -1,9 +1,8 @@
 import { iconFader } from '../../ui/icons'
 import { NavItemEntry } from '../index'
+import { channelsPageRoute } from '../routes'
 
 import ChannelsPage from './channels-page'
-
-export const channelsPageRoute = '/channels'
 
 export const channelsPageNavItem: NavItemEntry = {
   route: channelsPageRoute,

@@ -7,7 +7,7 @@ import { pageWithWidgets } from '../../ui/css/page'
 import { DynamicWidget } from '../../widgets/dynamic'
 import { showDialog } from '../../ui/overlays/dialog'
 import { okCancel } from '../../ui/overlays/buttons'
-import { Clickable } from '../../ui/helpers/clickable'
+import { Clickable } from '../../ui/components/clickable'
 
 const TestPage = memoInProduction(() => {
   const masterData = useMasterData()

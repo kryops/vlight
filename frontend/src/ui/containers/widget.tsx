@@ -1,6 +1,5 @@
 import { css } from 'linaria'
 import React from 'react'
-import { mdiPower } from '@mdi/js'
 
 import { Icon } from '../icons/icon'
 import {
@@ -13,8 +12,9 @@ import {
   backgroundColorLight,
 } from '../styles'
 import { cx } from '../../util/styles'
-import { Clickable } from '../helpers/clickable'
+import { Clickable } from '../components/clickable'
 import { useSettings } from '../../hooks/settings'
+import { iconOn } from '../icons'
 
 const widget = css`
   flex: 1 1 auto;
@@ -71,8 +71,6 @@ const widgetTurnedOn_light = css`
 `
 
 const widgetIndicator = css`
-  display: inline;
-  vertical-align: top;
   margin: 0 ${baseline(1)};
 `
 
@@ -116,9 +114,10 @@ export const Widget: React.FC<WidgetProps> = ({
             {title}
             {turnedOn !== undefined && (
               <Icon
-                icon={mdiPower}
+                icon={iconOn}
                 color={turnedOn ? successShade(0) : errorShade(0)}
                 className={widgetIndicator}
+                inline
               />
             )}
           </Clickable>

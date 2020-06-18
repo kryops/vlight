@@ -3,7 +3,9 @@ import React from 'react'
 import { useSettings } from '../../../hooks/settings'
 import { Settings } from '../../../settings'
 import { memoInProduction } from '../../../util/development'
-import { Clickable } from '../../../ui/helpers/clickable'
+import { Clickable } from '../../../ui/components/clickable'
+import { BackArrow } from '../../../ui/components/back-arrow'
+import { configPageRoute } from '../../routes'
 
 const SettingsPage = memoInProduction(() => {
   const settings = useSettings()
@@ -14,7 +16,10 @@ const SettingsPage = memoInProduction(() => {
 
   return (
     <div>
-      <h1>Settings</h1>
+      <h1>
+        <BackArrow to={configPageRoute} />
+        Settings
+      </h1>
       <Clickable onClick={() => toggleSetting('lightMode')}>
         Light Mode: {lightMode ? 'on' : 'off'}
       </Clickable>

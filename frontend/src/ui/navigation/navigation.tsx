@@ -7,8 +7,8 @@ import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { useMasterData } from '../../hooks/api'
 import { useSettings } from '../../hooks/settings'
-import { dynamicPageRoute } from '../../pages/dynamic'
 import { iconDynamicPage } from '../icons'
+import { dynamicPageRoute } from '../../pages/routes'
 
 import { NavItem } from './nav-item'
 

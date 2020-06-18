@@ -1,9 +1,9 @@
 import React, { ReactElement, ComponentType } from 'react'
-import { mdiClose } from '@mdi/js'
 import { css } from 'linaria'
 
 import { Icon } from '../icons/icon'
 import { zOverlay, primaryShade, baseline, iconShade } from '../styles'
+import { iconClose } from '../icons'
 
 import { removeOverlay, addOverlay } from './overlay'
 import { ModalButton } from './buttons'
@@ -96,7 +96,7 @@ export function Modal<T>({
         <div className={modal}>
           {showCloseButton && (
             <Icon
-              icon={mdiClose}
+              icon={iconClose}
               className={closeButton}
               onClick={() => onClose(null as any)}
             />

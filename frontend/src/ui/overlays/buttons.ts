@@ -1,4 +1,4 @@
-import { mdiCheck, mdiClose } from '@mdi/js'
+import { iconOk, iconClose } from '../icons'
 
 export interface ModalButton<T> {
   icon: string
@@ -7,25 +7,25 @@ export interface ModalButton<T> {
 }
 
 export const buttonOk: ModalButton<true> = {
-  icon: mdiCheck,
+  icon: iconOk,
   label: 'Ok',
   value: true,
 }
 
 export const buttonYes: ModalButton<true> = {
-  icon: mdiCheck,
+  icon: iconOk,
   label: 'Yes',
   value: true,
 }
 
 export const buttonNo: ModalButton<false> = {
-  icon: mdiClose,
+  icon: iconClose,
   label: 'No',
   value: false,
 }
 
 export const buttonCancel: ModalButton<null> = {
-  icon: mdiClose,
+  icon: iconClose,
   label: 'Cancel',
   value: null,
 }

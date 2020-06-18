@@ -1,9 +1,8 @@
 import { iconExperiment } from '../../ui/icons'
 import { NavItemEntry } from '../index'
+import { testPageRoute } from '../routes'
 
 import TestPage from './test-page'
-
-export const testPageRoute = '/test'
 
 export const testPageNavItem: NavItemEntry = {
   route: testPageRoute,

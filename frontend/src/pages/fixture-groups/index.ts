@@ -1,9 +1,8 @@
 import { iconGroup } from '../../ui/icons'
 import { NavItemEntry } from '../index'
+import { fixtureGroupsPageRoute } from '../routes'
 
 import FixtureGroupsPage from './fixture-groups-page'
-
-export const fixtureGroupsPageRoute = '/fixture-groups'
 
 export const fixtureGroupsPageNavItem: NavItemEntry = {
   route: fixtureGroupsPageRoute,

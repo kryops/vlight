@@ -1,8 +1,7 @@
 import { RouteEntry } from '../../index'
+import { settingsPageRoute } from '../../routes'
 
 import SettingsPage from './settings-page'
-
-export const settingsPageRoute = '/settings'
 
 export const settingsPageEntry: RouteEntry = {
   route: settingsPageRoute,

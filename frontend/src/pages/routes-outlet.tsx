@@ -3,9 +3,10 @@ import { Redirect, Route, Switch } from 'react-router-dom'
 
 import { memoInProduction } from '../util/development'
 
-import { dynamicPageRoute, DynamicPage } from './dynamic'
+import { DynamicPage } from './dynamic'
+import { dynamicPageRoute, _entryRoute } from './routes'
 
-import { entryRoute, mainNavigationItems, standaloneRoutes } from '.'
+import { mainNavigationItems, standaloneRoutes } from '.'
 
 export const RoutesOutlet = memoInProduction(() => (
   <Switch>
@@ -13,6 +14,6 @@ export const RoutesOutlet = memoInProduction(() => (
       <Route key={route} path={route} exact component={page} />
     ))}
     <Route path={dynamicPageRoute()} exact component={DynamicPage} />
-    <Redirect to={entryRoute} />
+    <Redirect to={_entryRoute} />
   </Switch>
 ))

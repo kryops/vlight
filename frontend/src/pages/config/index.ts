@@ -1,13 +1,12 @@
-import { iconSettings } from '../../ui/icons'
+import { iconConfig } from '../../ui/icons'
 import { NavItemEntry } from '../index'
+import { configPageRoute } from '../routes'
 
 import ConfigPage from './config-page'
 
-export const configPageRoute = '/config'
-
 export const configPageNavItem: NavItemEntry = {
   route: configPageRoute,
-  icon: iconSettings,
+  icon: iconConfig,
   label: 'Config',
   page: ConfigPage,
 }

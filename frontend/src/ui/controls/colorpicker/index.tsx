@@ -2,7 +2,7 @@ import { css } from 'linaria'
 import React, { useRef } from 'react'
 
 import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
-import { Touchable } from '../../helpers/touchable'
+import { Touchable } from '../../components/touchable'
 import { useDelayedState } from '../../../hooks/delayed-state'
 import { useSettings } from '../../../hooks/settings'
 import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'

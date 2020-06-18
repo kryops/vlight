@@ -5,6 +5,7 @@ import { ColorShade } from '../../types'
 import { baseline, iconShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
+import { useSettings } from '../../hooks/settings'
 
 const iconSize = baseline(6)
 
@@ -14,22 +15,12 @@ const iconSvg = css`
   display: block;
 `
 
-const path0 = css`
-  fill: ${iconShade(0)};
+const iconInline = css`
+  display: inline;
+  vertical-align: middle;
+  position: relative;
+  top: ${baseline(-0.5)};
 `
-const path1 = css`
-  fill: ${iconShade(1)};
-`
-const path2 = css`
-  fill: ${iconShade(2)};
-`
-const path3 = css`
-  fill: ${iconShade(3)};
-`
-const path4 = css`
-  fill: ${iconShade(4)};
-`
-const pathShades = [path0, path1, path2, path3, path4]
 
 export interface IconProps {
   icon: string
@@ -37,6 +28,7 @@ export interface IconProps {
   color?: string
   className?: string
   pathClassName?: string
+  inline?: boolean
   onClick?: () => void
 }
 
@@ -47,18 +39,27 @@ export const Icon = memoInProduction(
     className,
     pathClassName,
     color,
+    inline,
     onClick,
-  }: IconProps) => (
-    <svg
-      viewBox="0 0 24 24"
-      className={cx(iconSvg, className)}
-      onClick={onClick}
-    >
-      <path
-        d={icon}
-        className={cx(pathShades[shade] ?? pathShades[0], pathClassName)}
-        style={color ? { fill: color } : undefined}
-      />
-    </svg>
-  )
+  }: IconProps) => {
+    const { lightMode } = useSettings()
+
+    return (
+      <svg
+        viewBox="0 0 24 24"
+        className={cx(iconSvg, inline && iconInline, className)}
+        onClick={onClick}
+      >
+        <path
+          d={icon}
+          className={pathClassName}
+          style={
+            color || shade
+              ? { fill: color ?? iconShade(shade, lightMode) }
+              : undefined
+          }
+        />
+      </svg>
+    )
+  }
 )

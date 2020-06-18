@@ -1,4 +1,4 @@
-import { universePageNavItem, universePageRoute } from './universe'
+import { universePageNavItem } from './universe'
 import { channelsPageNavItem } from './channels'
 import { fixturesPageNavItem } from './fixtures'
 import { fixtureGroupsPageNavItem } from './fixture-groups'
@@ -28,5 +28,3 @@ export const mainNavigationItems: NavItemEntry[] = [
 ]
 
 export const standaloneRoutes: RouteEntry[] = [settingsPageEntry]
-
-export const entryRoute = universePageRoute
