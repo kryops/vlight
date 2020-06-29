@@ -2,8 +2,16 @@ import React, { ReactElement, ComponentType } from 'react'
 import { css } from 'linaria'
 
 import { Icon } from '../icons/icon'
-import { zOverlay, primaryShade, baseline, iconShade } from '../styles'
+import {
+  zOverlay,
+  primaryShade,
+  baseline,
+  iconShade,
+  textShade,
+} from '../styles'
 import { iconClose } from '../icons'
+import { cx } from '../../util/styles'
+import { useSettings } from '../../hooks/settings'
 
 import { removeOverlay, addOverlay } from './overlay'
 import { ModalButton } from './buttons'
@@ -39,11 +47,23 @@ const modalContainer = css`
   justify-content: center;
 `
 
+const modalContainer_light = css`
+  color: ${textShade(0, true)};
+
+  & a {
+    color: ${textShade(0, true)};
+  }
+`
+
 const modal = css`
   min-width: ${baseline(64)};
   max-width: 95vh;
   padding: ${baseline(8)};
   background: ${primaryShade(2)};
+`
+
+const modal_light = css`
+  background: ${primaryShade(4, true)};
 `
 
 const closeButton = css`
@@ -87,13 +107,15 @@ export function Modal<T>({
   closeOnBackDrop,
   showCloseButton,
 }: ModalProps<T>) {
+  const { lightMode } = useSettings()
+
   return (
     <div
       className={backDrop}
       onClick={closeOnBackDrop ? () => onClose(null as any) : undefined}
     >
-      <div className={modalContainer}>
-        <div className={modal}>
+      <div className={cx(modalContainer, lightMode && modalContainer_light)}>
+        <div className={cx(modal, lightMode && modal_light)}>
           {showCloseButton && (
             <Icon
               icon={iconClose}
