@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { useHistory } from 'react-router'
 import { css } from 'linaria'
 
@@ -12,7 +12,7 @@ const tileGrid = css`
   flex-wrap: wrap;
 `
 
-export const TileGrid: React.FC = ({ children }) => (
+export const TileGrid = ({ children }: PropsWithChildren<{}>) => (
   <div className={tileGrid}>{children}</div>
 )
 

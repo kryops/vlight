@@ -1,4 +1,9 @@
-import React, { ComponentType, useEffect, useState } from 'react'
+import React, {
+  ComponentType,
+  useEffect,
+  useState,
+  PropsWithChildren,
+} from 'react'
 
 import { addToMutableArray, removeFromMutableArray } from '../../util/shared'
 
@@ -20,7 +25,7 @@ export function removeOverlay(component: ComponentType<OverlayProps>) {
   overlaysChanged?.()
 }
 
-export const OverlayContainer: React.FC = ({ children }) => {
+export const OverlayContainer = ({ children }: PropsWithChildren<{}>) => {
   const [, setCounter] = useState(0)
 
   useEffect(() => {

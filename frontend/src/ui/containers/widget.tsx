@@ -1,5 +1,5 @@
 import { css } from 'linaria'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 
 import { Icon } from '../icons/icon'
 import {
@@ -88,7 +88,7 @@ export interface WidgetProps {
   className?: string
 }
 
-export const Widget: React.FC<WidgetProps> = ({
+export function Widget({
   title,
   titleSide,
   onTitleClick,
@@ -96,7 +96,7 @@ export const Widget: React.FC<WidgetProps> = ({
   bottomLineColor,
   className,
   children,
-}) => {
+}: PropsWithChildren<WidgetProps>) {
   const { lightMode } = useSettings()
   return (
     <div

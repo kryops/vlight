@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, PropsWithChildren } from 'react'
 
 export interface Settings {
   lightMode: boolean
@@ -23,7 +23,7 @@ export const SettingsContext = React.createContext<SettingsWithUpdate>({
   updateSettings: () => {},
 })
 
-export const SettingsWrapper: React.FC = ({ children }) => {
+export function SettingsWrapper({ children }: PropsWithChildren<{}>) {
   const [settings, setSettings] = useState<Settings>(initialSettings)
 
   const settingsWithUpdate: SettingsWithUpdate = useMemo<SettingsWithUpdate>(
