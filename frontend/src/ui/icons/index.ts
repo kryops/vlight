@@ -15,6 +15,7 @@ import {
   mdiCheck,
   mdiPower,
   mdiChevronLeft,
+  mdiShape,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -27,6 +28,7 @@ export const iconBack = mdiChevronLeft
 
 export const iconUniverse = mdiWhiteBalanceSunny
 export const iconFader = mdiTuneVertical
+export const iconFixtureType = mdiShape
 export const iconLight = mdiLightbulbOnOutline
 export const iconGroup = mdiGroup
 export const iconMemory = mdiImageFrame

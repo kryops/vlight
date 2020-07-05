@@ -6,6 +6,7 @@ import { memoriesPageNavItem } from './memories'
 import { configPageNavItem } from './config'
 import { testPageNavItem } from './test'
 import { settingsPageEntry } from './config/settings'
+import { entitiesPageEntry } from './config/entities'
 
 export interface RouteEntry {
   route: string
@@ -27,4 +28,7 @@ export const mainNavigationItems: NavItemEntry[] = [
   testPageNavItem,
 ]
 
-export const standaloneRoutes: RouteEntry[] = [settingsPageEntry]
+export const standaloneRoutes: RouteEntry[] = [
+  settingsPageEntry,
+  entitiesPageEntry,
+]
