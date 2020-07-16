@@ -147,6 +147,12 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
         new ForkCheckerPlugin({
           typescript: {
             configFile: join(__dirname, 'tsconfig.json'),
+            configOverwrite: {
+              compilerOptions: {
+                noUnusedLocals: false,
+                noUnusedParameters: false,
+              },
+            },
             mode: 'write-references',
           },
           eslint: {
