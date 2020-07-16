@@ -146,6 +146,7 @@ export interface GridRowConfig {
 }
 
 export interface DynamicPage extends DbEntity {
+  name?: string
   icon?: string
   headline?: string
   rows: GridRowConfig[]

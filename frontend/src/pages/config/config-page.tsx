@@ -1,50 +1,12 @@
 import React from 'react'
+import { EntityName } from '@vlight/entities'
 
 import { memoInProduction } from '../../util/development'
 import { settingsPageRoute, entitiesPageRoute } from '../routes'
 import { TileGrid, Tile } from '../../ui/containers/tiles'
-import {
-  iconConfig,
-  iconFixtureType,
-  iconLight,
-  iconGroup,
-  iconMemory,
-  iconDynamicPage,
-} from '../../ui/icons'
+import { iconConfig } from '../../ui/icons'
 
-interface EntityEntry {
-  name: string
-  icon: string
-  target: string
-}
-
-const entities: EntityEntry[] = [
-  {
-    name: 'Fixture types',
-    icon: iconFixtureType,
-    target: entitiesPageRoute('fixtureTypes'),
-  },
-  {
-    name: 'Fixtures',
-    icon: iconLight,
-    target: entitiesPageRoute('fixtures'),
-  },
-  {
-    name: 'Fixture Groups',
-    icon: iconGroup,
-    target: entitiesPageRoute('fixtureGroups'),
-  },
-  {
-    name: 'Memories',
-    icon: iconMemory,
-    target: entitiesPageRoute('memories'),
-  },
-  {
-    name: 'Dynamic Pages',
-    icon: iconDynamicPage,
-    target: entitiesPageRoute('dynamicPages'),
-  },
-]
+import { entityUiMapping } from './entities/entity-ui-mapping'
 
 const ConfigPage = memoInProduction(() => {
   return (
@@ -52,9 +14,16 @@ const ConfigPage = memoInProduction(() => {
       <h1>Config</h1>
       <TileGrid>
         <Tile icon={iconConfig} title="Settings" target={settingsPageRoute} />
-        {entities.map(({ name, icon, target }, index) => (
-          <Tile key={index} title={name} icon={icon} target={target} />
-        ))}
+        {Object.entries(entityUiMapping).map(
+          ([type, { name, icon }], index) => (
+            <Tile
+              key={index}
+              title={name}
+              icon={icon}
+              target={entitiesPageRoute(type as EntityName)}
+            />
+          )
+        )}
       </TileGrid>
     </div>
   )
