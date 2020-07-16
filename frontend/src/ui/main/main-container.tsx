@@ -3,7 +3,7 @@ import React, { Suspense, useCallback, useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
 
 import { RoutesOutlet } from '../../pages/routes-outlet'
-import { iconClose, iconMenu } from '../icons'
+import { iconClose, iconMenu, iconLight } from '../icons'
 import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
 import {
@@ -16,6 +16,8 @@ import {
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { useSettings } from '../../hooks/settings'
+import { devMode } from '../../config'
+import { Icon } from '../icons/icon'
 
 import { LoadingScreen } from './loading-screen'
 
@@ -56,13 +58,19 @@ const overlay = css`
   z-index: ${zNavigation};
 `
 
+const devOverlay = css`
+  position: absolute;
+  bottom: ${baseline(1)};
+  right: ${baseline(1)};
+`
+
 const navBreakpoint = 768
 const alwaysShowNav = window.innerWidth >= navBreakpoint
 
 export const MainContainer = memoInProduction(() => {
   const [nav, setNav] = useState(alwaysShowNav)
   const location = useLocation()
-  const { lightMode } = useSettings()
+  const { lightMode, updateSettings } = useSettings()
 
   const toggleNav = useCallback(() => setNav(!nav), [nav])
 
@@ -90,6 +98,14 @@ export const MainContainer = memoInProduction(() => {
           <RoutesOutlet />
         </Suspense>
       </div>
+      {devMode && (
+        <div className={devOverlay}>
+          <Icon
+            icon={iconLight}
+            onClick={() => updateSettings({ lightMode: !lightMode })}
+          />
+        </div>
+      )}
     </div>
   )
 })
