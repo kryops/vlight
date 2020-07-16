@@ -10,8 +10,7 @@ import {
   textShade,
 } from '../styles'
 import { iconClose } from '../icons'
-import { cx } from '../../util/styles'
-import { useSettings } from '../../hooks/settings'
+import { useClassName } from '../../hooks/ui'
 
 import { removeOverlay, addOverlay } from './overlay'
 import { ModalButton } from './buttons'
@@ -107,15 +106,16 @@ export function Modal<T>({
   closeOnBackDrop,
   showCloseButton,
 }: ModalProps<T>) {
-  const { lightMode } = useSettings()
+  const containerClassName = useClassName(modalContainer, modalContainer_light)
+  const modalClassName = useClassName(modal, modal_light)
 
   return (
     <div
       className={backDrop}
       onClick={closeOnBackDrop ? () => onClose(null as any) : undefined}
     >
-      <div className={cx(modalContainer, lightMode && modalContainer_light)}>
-        <div className={cx(modal, lightMode && modal_light)}>
+      <div className={containerClassName}>
+        <div className={modalClassName}>
           {showCloseButton && (
             <Icon
               icon={iconClose}

@@ -6,9 +6,9 @@ import { primaryShade, zNavigation, backgroundColorLight } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { useMasterData } from '../../hooks/api'
-import { useSettings } from '../../hooks/settings'
 import { iconDynamicPage } from '../icons'
 import { dynamicPageRoute } from '../../pages/routes'
+import { useClassName } from '../../hooks/ui'
 
 import { NavItem } from './nav-item'
 
@@ -39,18 +39,12 @@ export interface NavigationProps {
 
 export const Navigation = memoInProduction(
   ({ showLabels, floating }: NavigationProps) => {
-    const { lightMode } = useSettings()
+    const className = useClassName(navigation, navigation_light)
     const masterData = useMasterData()
     const { dynamicPages } = masterData
 
     return (
-      <div
-        className={cx(
-          navigation,
-          floating && navigation_floating,
-          lightMode && navigation_light
-        )}
-      >
+      <div className={cx(className, floating && navigation_floating)}>
         {mainNavigationItems.map(({ route, icon, label }) => (
           <NavItem
             key={route}

@@ -4,10 +4,10 @@ import React, { useRef } from 'react'
 import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
 import { Touchable } from '../../components/touchable'
 import { useDelayedState } from '../../../hooks/delayed-state'
-import { useSettings } from '../../../hooks/settings'
 import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
 import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
+import { useClassName } from '../../../hooks/ui'
 
 import { ColorPickerBackground } from './background'
 import {
@@ -91,7 +91,7 @@ export interface ColorPickerProps {
 
 export const ColorPicker = memoInProduction(
   ({ r = 0, g = 0, b = 0, onChange }: ColorPickerProps) => {
-    const { lightMode } = useSettings()
+    const className = useClassName(colorPicker, colorPicker_light)
     const [
       localColor,
       setLocalColor,
@@ -114,7 +114,7 @@ export const ColorPicker = memoInProduction(
     return (
       <div className={container}>
         <Touchable
-          className={cx(colorPicker, lightMode && colorPicker_light)}
+          className={className}
           ref={touchRef}
           onTouch={event => {
             const offset = getTouchEventOffset(event, touchRef)

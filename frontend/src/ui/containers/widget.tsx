@@ -13,8 +13,8 @@ import {
 } from '../styles'
 import { cx } from '../../util/styles'
 import { Clickable } from '../components/clickable'
-import { useSettings } from '../../hooks/settings'
 import { iconOn } from '../icons'
+import { useClassName } from '../../hooks/ui'
 
 const widget = css`
   flex: 1 1 auto;
@@ -97,15 +97,17 @@ export function Widget({
   className,
   children,
 }: PropsWithChildren<WidgetProps>) {
-  const { lightMode } = useSettings()
+  const stateClassName = useClassName(
+    turnedOn ? widgetTurnedOn : widgetTurnedOff,
+    turnedOn ? widgetTurnedOn_light : widgetTurnedOff_light
+  )
+
   return (
     <div
       className={cx(
         widget,
         className,
-        turnedOn !== undefined && (turnedOn ? widgetTurnedOn : widgetTurnedOff),
-        turnedOn === true && lightMode && widgetTurnedOn_light,
-        turnedOn === false && lightMode && widgetTurnedOff_light
+        turnedOn !== undefined && stateClassName
       )}
     >
       {(title || titleSide) && (

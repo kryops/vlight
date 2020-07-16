@@ -5,7 +5,7 @@ import { ensureBetween, getFraction } from '../../util/shared'
 import { baseline, iconShade, primaryShade, textShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-import { useSettings } from '../../hooks/settings'
+import { useClassName } from '../../hooks/ui'
 
 const bar = css`
   position: relative;
@@ -63,7 +63,10 @@ export const Bar = memoInProduction(
     color,
     className,
   }: BarProps) => {
-    const { lightMode } = useSettings()
+    const cornerLabelClassName = useClassName(
+      barCornerLabel,
+      barCornerLabel_light
+    )
     const fraction = ensureBetween(getFraction(value, min, max), 0, 1)
     return (
       <div
@@ -72,11 +75,7 @@ export const Bar = memoInProduction(
       >
         <div className={barLabel}>{label}</div>
         {cornerLabel && (
-          <div
-            className={cx(barCornerLabel, lightMode && barCornerLabel_light)}
-          >
-            {cornerLabel}
-          </div>
+          <div className={cornerLabelClassName}>{cornerLabel}</div>
         )}
         {fraction > 0 && (
           <div

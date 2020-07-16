@@ -3,12 +3,12 @@ import React, { useRef } from 'react'
 
 import { Touchable } from '../../components/touchable'
 import { useDelayedState } from '../../../hooks/delayed-state'
-import { useSettings } from '../../../hooks/settings'
 import { ensureBetween, roundToStep } from '../../../util/shared'
 import { getTouchEventOffset } from '../../../util/touch'
 import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
 import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
+import { useClassName } from '../../../hooks/ui'
 
 const faderWidth = baselinePx * 12
 const faderHeight = baselinePx * 60
@@ -83,7 +83,8 @@ export const Fader = memoInProduction(
   }: FaderProps) => {
     const trackRef = useRef<HTMLDivElement>(null)
     const [localValue, setLocalValue] = useDelayedState<number | null>(null)
-    const { lightMode } = useSettings()
+    const trackClassName = useClassName(track, track_light)
+    const buttonClassName = useClassName(button, button_light)
 
     const valueToUse = localValue ?? value
     const currentFraction = (valueToUse - min) / (max - min)
@@ -91,7 +92,7 @@ export const Fader = memoInProduction(
 
     return (
       <Touchable
-        className={cx(fader, { [colorPickerFader]: colorPicker })}
+        className={cx(fader, colorPicker && colorPickerFader)}
         onTouch={event => {
           const offset = getTouchEventOffset(event, trackRef)
           if (!offset) {
@@ -108,9 +109,9 @@ export const Fader = memoInProduction(
         }}
         onUp={() => setLocalValue(null, true)}
       >
-        <div className={cx(track, lightMode && track_light)} ref={trackRef} />
+        <div className={trackClassName} ref={trackRef} />
         <div
-          className={cx(button, lightMode && button_light)}
+          className={buttonClassName}
           style={{ transform: `translateY(${y}px)` }}
         >
           {label}

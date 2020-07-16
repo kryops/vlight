@@ -18,6 +18,7 @@ import { cx } from '../../util/styles'
 import { useSettings } from '../../hooks/settings'
 import { devMode } from '../../config'
 import { Icon } from '../icons/icon'
+import { useClassName } from '../../hooks/ui'
 
 import { LoadingScreen } from './loading-screen'
 
@@ -71,6 +72,7 @@ export const MainContainer = memoInProduction(() => {
   const [nav, setNav] = useState(alwaysShowNav)
   const location = useLocation()
   const { lightMode, updateSettings } = useSettings()
+  const className = useClassName(mainContainer, mainContainer_light)
 
   const toggleNav = useCallback(() => setNav(!nav), [nav])
 
@@ -81,7 +83,7 @@ export const MainContainer = memoInProduction(() => {
   const navOverlayed = nav && !alwaysShowNav
 
   return (
-    <div className={cx(mainContainer, lightMode && mainContainer_light)}>
+    <div className={className}>
       {navOverlayed && <div className={overlay} onClick={toggleNav} />}
       {nav && (
         <Navigation showLabels={!alwaysShowNav} floating={!alwaysShowNav} />

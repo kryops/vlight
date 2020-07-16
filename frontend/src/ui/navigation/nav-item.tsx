@@ -5,8 +5,7 @@ import { NavLink } from 'react-router-dom'
 import { Icon } from '../icons/icon'
 import { baseline, iconShade, primaryShade } from '../styles'
 import { memoInProduction } from '../../util/development'
-import { cx } from '../../util/styles'
-import { useSettings } from '../../hooks/settings'
+import { useClassName } from '../../hooks/ui'
 
 const iconPath = css``
 
@@ -68,13 +67,14 @@ export interface NavItemProps {
 
 export const NavItem = memoInProduction(
   ({ to, icon, label, showLabel }: NavItemProps) => {
-    const { lightMode } = useSettings()
+    const className = useClassName(navItem, navItem_light)
+    const activeClassName = useClassName(navItem_active, navItem_active_light)
     return (
       <NavLink
         to={to}
         title={label}
-        className={cx(navItem, lightMode && navItem_light)}
-        activeClassName={lightMode ? navItem_active_light : navItem_active}
+        className={className}
+        activeClassName={activeClassName}
       >
         <Icon icon={icon} shade={1} pathClassName={iconPath} />
         {showLabel && <span className={navLabel}>{label}</span>}
