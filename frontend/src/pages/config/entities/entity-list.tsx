@@ -42,11 +42,6 @@ const entryIcon = css`
   margin: ${baseline(-padding)};
   margin-left: 0;
   padding: ${baseline(padding)};
-  opacity: 0.6;
-
-  &:hover {
-    opacity: 1;
-  }
 `
 
 export interface EntityListProps<T extends EntityType> {
@@ -67,6 +62,7 @@ export function EntityList<T extends EntityType>({
           <Icon
             icon={iconDelete}
             className={entryIcon}
+            hoverable
             onClick={async () => {
               const result = await showDialog<boolean | null>(
                 `Really delete "${entry.name}"?`,

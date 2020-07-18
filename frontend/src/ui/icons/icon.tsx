@@ -22,6 +22,18 @@ const iconInline = css`
   top: ${baseline(-0.5)};
 `
 
+const iconClickable = css`
+  cursor: pointer;
+`
+
+const iconHoverable = css`
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 1;
+  }
+`
+
 export interface IconProps {
   icon: string
   shade?: ColorShade
@@ -29,6 +41,7 @@ export interface IconProps {
   className?: string
   pathClassName?: string
   inline?: boolean
+  hoverable?: boolean
   onClick?: () => void
 }
 
@@ -40,6 +53,7 @@ export const Icon = memoInProduction(
     pathClassName,
     color,
     inline,
+    hoverable,
     onClick,
   }: IconProps) => {
     const { lightMode } = useSettings()
@@ -47,7 +61,13 @@ export const Icon = memoInProduction(
     return (
       <svg
         viewBox="0 0 24 24"
-        className={cx(iconSvg, inline && iconInline, className)}
+        className={cx(
+          iconSvg,
+          inline && iconInline,
+          hoverable && iconHoverable,
+          onClick && iconClickable,
+          className
+        )}
         onClick={onClick}
       >
         <path
