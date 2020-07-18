@@ -1,5 +1,11 @@
 import { ApiInMessage } from '@vlight/api'
-import { FixtureState, IdType, MemoryState, EntityName } from '@vlight/entities'
+import {
+  FixtureState,
+  IdType,
+  MemoryState,
+  EntityName,
+  EntityType,
+} from '@vlight/entities'
 
 import { socketProcessingInterval, useSocketUpdateThrottling } from '../config'
 import { logger } from '../util/shared'
@@ -11,6 +17,7 @@ import {
   getApiFixtureGroupStateMessage,
   getApiMemoryStateMessage,
   getApiRemoveEntityMessage,
+  getApiEditEntityMessage,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
 
@@ -62,6 +69,13 @@ export function changeMemoryState(id: IdType, state: MemoryState): void {
 
 export function removeEntity(entity: EntityName, id: IdType): void {
   sendApiMessage(getApiRemoveEntityMessage(entity, id))
+}
+
+export function editEntity<T extends EntityName>(
+  entity: T,
+  entry: EntityType<T>
+): void {
+  sendApiMessage(getApiEditEntityMessage(entity, entry))
 }
 
 export function initApiWorker(): void {

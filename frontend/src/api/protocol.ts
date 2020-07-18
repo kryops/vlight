@@ -4,8 +4,16 @@ import {
   ApiFixtureGroupStateMessage,
   ApiMemoryStateMessage,
   ApiRemoveEntityMessage,
+  ApiUpdateEntityMessage,
+  ApiAddEntityMessage,
 } from '@vlight/api'
-import { FixtureState, IdType, MemoryState, EntityName } from '@vlight/entities'
+import {
+  FixtureState,
+  IdType,
+  MemoryState,
+  EntityName,
+  EntityType,
+} from '@vlight/entities'
 
 export function getApiChannelMessage(
   channel: number,
@@ -49,6 +57,17 @@ export function getApiMemoryStateMessage(
     type: 'memory',
     id,
     state,
+  }
+}
+
+export function getApiEditEntityMessage<T extends EntityName>(
+  entity: T,
+  entry: EntityType<T>
+): ApiAddEntityMessage<T> | ApiUpdateEntityMessage<T> {
+  return {
+    type: entry.id ? 'update-entity' : 'add-entity',
+    entity,
+    entry,
   }
 }
 
