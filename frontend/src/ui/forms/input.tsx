@@ -8,6 +8,7 @@ import {
   textShade,
   baseline,
   backgroundColorLight,
+  inputWidth,
 } from '../styles'
 
 export interface InputProps {
@@ -19,16 +20,18 @@ export interface InputProps {
 
 const input = css`
   flex: 1 1 auto;
+  width: ${inputWidth};
+  max-width: 100%;
   padding: ${baseline()};
   background: ${backgroundColor};
   color: ${textShade(0)};
-  border: 1px solid ${textShade(0)};
+  border: 1px solid ${textShade(1)};
 `
 
 const input_light = css`
   background: ${backgroundColorLight};
   color: ${textShade(0, true)};
-  border-color: ${textShade(0, true)};
+  border-color: ${textShade(2, true)};
 `
 
 export function Input({

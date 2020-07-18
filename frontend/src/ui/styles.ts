@@ -7,6 +7,8 @@ export function baseline(factor = 1): string {
   return `${factor * baselinePx}px`
 }
 
+export const inputWidth = baseline(64)
+
 export const zNavigation = 10
 export const zOverlay = 20
 

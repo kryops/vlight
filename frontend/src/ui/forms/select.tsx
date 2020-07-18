@@ -27,7 +27,7 @@ export const undefinedSelectEntry: SelectEntry<undefined> = {
   label: '',
 }
 
-const input = css`
+const select = css`
   flex: 1 1 auto;
   padding: ${baseline()};
   background: ${backgroundColor};
@@ -35,7 +35,7 @@ const input = css`
   border: 1px solid ${textShade(0)};
 `
 
-const input_light = css`
+const select_light = css`
   background: ${backgroundColorLight};
   color: ${textShade(0, true)};
   border-color: ${textShade(0, true)};
@@ -47,7 +47,7 @@ export function Select<T>({
   onChange,
   className,
 }: SelectProps<T>) {
-  const inputClassName = useClassName(input, input_light)
+  const inputClassName = useClassName(select, select_light)
 
   const normalizedEntries = entries.map(entry => {
     if (entry === undefined) return undefinedSelectEntry

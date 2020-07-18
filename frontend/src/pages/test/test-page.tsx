@@ -18,6 +18,8 @@ import {
   FormCheckbox,
   FormSelect,
 } from '../../ui/forms/form-input'
+import { Label } from '../../ui/forms/label'
+import { Button } from '../../ui/forms/button'
 
 const TestPage = memoInProduction(() => {
   const masterData = useMasterData()
@@ -55,6 +57,29 @@ const TestPage = memoInProduction(() => {
         name="bar"
         entries={[undefined, 'sdf', 'dfgfdg', 'dfgdfölgkjdflkg']}
       />
+      <br />
+      <h4>Labels</h4>
+      <Label
+        label="Foobdrtretrearf"
+        input={<FormTextInput formState={formState} name="name" />}
+      />
+      <Label
+        label="Foobar"
+        input={<FormCheckbox formState={formState} name="foo" />}
+      />
+      <Label
+        label="Foobar"
+        input={
+          <FormSelect
+            formState={formState}
+            name="bar"
+            entries={[undefined, 'sdf', 'dfgfdg', 'dfgdfölgkjdflkg']}
+          />
+        }
+      />
+      <Button onClick={() => {}} block>
+        Foobar
+      </Button>
       <h2>Overlay / Modal / Dialog</h2>
       <Clickable onClick={() => showDialog('sadsdfsdf', okCancel)}>
         Dialog
