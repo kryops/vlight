@@ -12,6 +12,7 @@ import {
   zNavigation,
   backgroundColorLight,
   textShade,
+  zDevOverlay,
 } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
@@ -61,6 +62,7 @@ const overlay = css`
 
 const devOverlay = css`
   position: absolute;
+  z-index: ${zDevOverlay};
   bottom: ${baseline(1)};
   right: ${baseline(1)};
 `

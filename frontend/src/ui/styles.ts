@@ -11,6 +11,7 @@ export const inputWidth = baseline(64)
 
 export const zNavigation = 10
 export const zOverlay = 20
+export const zDevOverlay = 30
 
 export const backgroundColor = '#000c15'
 export const backgroundColorLight = '#fff'
