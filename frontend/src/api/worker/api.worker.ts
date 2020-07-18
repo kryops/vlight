@@ -53,7 +53,8 @@ function sendClientUpdate() {
         clientApiState &&
         typeof apiState[k] === 'object' &&
         !Array.isArray(apiState[k]) &&
-        k !== 'masterData' // if masterData changes, we always want it all
+        k !== 'masterData' &&
+        k !== 'rawMasterData' // if masterData changes, we always want it all
       ) {
         changedState[k] = {} as any
         Object.entries(apiState[k] as any).forEach(([key2, value2]) => {
@@ -62,7 +63,7 @@ function sendClientUpdate() {
           }
         })
       } else {
-        changedState[k] = value
+        changedState[k] = value as any
       }
     }
   })

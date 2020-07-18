@@ -3,8 +3,9 @@ import {
   ApiFixtureStateMessage,
   ApiFixtureGroupStateMessage,
   ApiMemoryStateMessage,
+  ApiRemoveEntityMessage,
 } from '@vlight/api'
-import { FixtureState, IdType, MemoryState } from '@vlight/entities'
+import { FixtureState, IdType, MemoryState, EntityName } from '@vlight/entities'
 
 export function getApiChannelMessage(
   channel: number,
@@ -48,5 +49,16 @@ export function getApiMemoryStateMessage(
     type: 'memory',
     id,
     state,
+  }
+}
+
+export function getApiRemoveEntityMessage<T extends EntityName>(
+  entity: T,
+  id: IdType
+): ApiRemoveEntityMessage<T> {
+  return {
+    type: 'remove-entity',
+    entity,
+    id,
   }
 }

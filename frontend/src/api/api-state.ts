@@ -9,6 +9,7 @@ import { apiWorker } from '.'
 
 export const apiState: ApiState = {
   masterData: undefined,
+  rawMasterData: undefined,
   universe: undefined,
   channels: undefined,
   fixtures: {},

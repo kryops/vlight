@@ -1,21 +1,15 @@
-import { ApiOutMessage } from '@vlight/api'
-import {
-  Dictionary,
-  FixtureState,
-  MasterData,
-  MemoryState,
-} from '@vlight/entities'
+import { ApiOutMessage, ApiStateMessage } from '@vlight/api'
+import { MasterData } from '@vlight/entities'
 
 import { getUniverseIndex } from '../util'
 import { logger, assertNever } from '../../util/shared'
 
-export interface ApiState {
-  masterData: MasterData | undefined
-  universe: number[] | undefined
-  channels: number[] | undefined
-  fixtures: Dictionary<FixtureState>
-  fixtureGroups: Dictionary<FixtureState>
-  memories: Dictionary<MemoryState>
+export type ApiState = {
+  [key in keyof Omit<ApiStateMessage, 'type'>]: ApiStateMessage[key] extends
+    | any[]
+    | MasterData
+    ? ApiStateMessage[key] | undefined
+    : ApiStateMessage[key]
 }
 
 function processChannelDeltaMap(

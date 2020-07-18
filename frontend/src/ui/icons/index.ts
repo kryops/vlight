@@ -16,6 +16,7 @@ import {
   mdiPower,
   mdiChevronLeft,
   mdiShape,
+  mdiDelete,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -25,6 +26,7 @@ export const iconClose = mdiClose
 export const iconOk = mdiCheck
 export const iconOn = mdiPower
 export const iconBack = mdiChevronLeft
+export const iconDelete = mdiDelete
 
 export const iconUniverse = mdiWhiteBalanceSunny
 export const iconFader = mdiTuneVertical
