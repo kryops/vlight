@@ -13,6 +13,7 @@ import { baseline } from '../../../ui/styles'
 
 import { entityUiMapping } from './entity-ui-mapping'
 import { EntityList } from './entity-list'
+import { openEntityEditor } from './editors'
 
 const headline = css`
   display: flex;
@@ -41,7 +42,12 @@ const EntitiesPage = memoInProduction(() => {
       <h1 className={headline}>
         <BackArrow to={configPageRoute} />
         <div className={title}>{entityUiMapping[type].name}</div>
-        <Icon icon={iconAdd} className={icon} hoverable />
+        <Icon
+          icon={iconAdd}
+          className={icon}
+          hoverable
+          onClick={() => openEntityEditor(type)}
+        />
       </h1>
       <EntityList type={type} entries={entries as any} />
     </div>

@@ -10,11 +10,12 @@ import { iconDelete } from '../../../ui/icons'
 import { showDialog } from '../../../ui/overlays/dialog'
 import { yesNo } from '../../../ui/overlays/buttons'
 
+import { openEntityEditor } from './editors'
+
 const padding = 3
 
 const listEntry = css`
   display: flex;
-  padding: ${baseline(padding)};
   margin: ${baseline(2)} 0;
   background: ${primaryShade(3)};
   font-size: 1.25rem;
@@ -34,31 +35,36 @@ const listEntry_light = css`
 `
 
 const entryContent = css`
+  padding: ${baseline(padding)};
   flex: 1 1 auto;
 `
 
 const entryIcon = css`
   flex: 0 0 auto;
-  margin: ${baseline(-padding)};
-  margin-left: 0;
   padding: ${baseline(padding)};
 `
 
-export interface EntityListProps<T extends EntityType> {
-  type: EntityName
-  entries: T[]
+export interface EntityListProps<T extends EntityName> {
+  type: T
+  entries: EntityType<T>[]
 }
 
-export function EntityList<T extends EntityType>({
+export function EntityList<T extends EntityName>({
   type,
   entries,
 }: EntityListProps<T>) {
   const listEntryClassName = useClassName(listEntry, listEntry_light)
+
   return (
     <>
       {entries.map(entry => (
         <div key={entry.id} className={listEntryClassName}>
-          <div className={entryContent}>{entry.name ?? entry.id}</div>
+          <div
+            className={entryContent}
+            onClick={() => openEntityEditor(type, entry)}
+          >
+            {entry.name ?? entry.id}
+          </div>
           <Icon
             icon={iconDelete}
             className={entryIcon}
