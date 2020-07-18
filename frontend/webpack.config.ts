@@ -1,4 +1,3 @@
-// import ExtractCssPlugin from 'extract-css-chunks-webpack-plugin'
 import { join } from 'path'
 
 import ForkCheckerPlugin from 'fork-ts-checker-webpack-plugin'
@@ -70,8 +69,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
           ],
         },
         {
-          test: /\.linaria\.css$/,
-          exclude: /node_modules/,
+          test: /\.css$/,
           use: [
             {
               loader: ExtractCssPlugin.loader,

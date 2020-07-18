@@ -1,9 +1,10 @@
+import './ui/global-styles'
+
 import { hot } from 'react-hot-loader/root'
 import React, { StrictMode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
 import { ApiWrapper } from './api/api-wrapper'
-import './ui/global-styles'
 import { MainContainer } from './ui/main/main-container'
 import { ErrorBoundary } from './util/error-boundary'
 import { SettingsWrapper } from './settings'
