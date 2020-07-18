@@ -90,6 +90,22 @@ const buttonStyle = css`
   justify-content: center;
   padding: ${baseline(4)};
   box-sizing: content-box;
+  cursor: pointer;
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:active {
+    background: ${primaryShade(1)};
+  }
+`
+
+const buttonStyle_light = css`
+  &:active {
+    background: ${primaryShade(2, true)};
+  }
 `
 
 const buttonIcon = css`
@@ -108,6 +124,7 @@ export function Modal<T>({
 }: ModalProps<T>) {
   const containerClassName = useClassName(modalContainer, modalContainer_light)
   const modalClassName = useClassName(modal, modal_light)
+  const buttonClassName = useClassName(buttonStyle, buttonStyle_light)
 
   return (
     <div
@@ -131,7 +148,7 @@ export function Modal<T>({
               {buttons.map(({ icon, label, value }, index) => (
                 <a
                   key={index}
-                  className={buttonStyle}
+                  className={buttonClassName}
                   onClick={() => onClose?.(value)}
                 >
                   <Icon icon={icon} className={buttonIcon} />
