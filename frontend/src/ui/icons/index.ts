@@ -18,6 +18,8 @@ import {
   mdiShape,
   mdiDelete,
   mdiPlusCircle,
+  mdiCheckboxBlankOutline,
+  mdiCheckBoxOutline,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -29,6 +31,9 @@ export const iconOn = mdiPower
 export const iconBack = mdiChevronLeft
 export const iconDelete = mdiDelete
 export const iconAdd = mdiPlusCircle
+
+export const iconCheckbox = mdiCheckboxBlankOutline
+export const iconCheckbox_checked = mdiCheckBoxOutline
 
 export const iconUniverse = mdiWhiteBalanceSunny
 export const iconFader = mdiTuneVertical
