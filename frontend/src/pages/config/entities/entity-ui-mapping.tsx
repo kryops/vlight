@@ -10,6 +10,7 @@ import {
 } from '../../../ui/icons'
 
 import { FixtureTypeEditor } from './editors/fixture-type-editor'
+import { FixtureEditor } from './editors/fixture-editor'
 
 export interface EntityEditorProps<T extends EntityName> {
   entry: EntityType<T>
@@ -33,6 +34,12 @@ export const entityUiMapping: { [key in EntityName]: EntityEntry<key> } = {
   fixtures: {
     name: 'Fixtures',
     icon: iconLight,
+    editor: FixtureEditor,
+    newEntityFactory: () => ({
+      name: 'New Fixture',
+      type: '',
+      channel: 1,
+    }),
   },
   fixtureGroups: {
     name: 'Fixture Groups',

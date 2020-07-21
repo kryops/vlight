@@ -34,7 +34,7 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
     return []
   }
 
-  if (!count || count === 1) {
+  if (!count || count <= 1) {
     return fixture
   }
 

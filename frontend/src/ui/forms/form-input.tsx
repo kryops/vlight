@@ -1,10 +1,15 @@
 import React from 'react'
+import { IdType } from '@vlight/entities'
 
 import { FormState } from '../../hooks/form'
 
 import { TextInput, TypedInputProps, NumberInput } from './typed-input'
 import { Checkbox } from './checkbox'
 import { Select, SelectProps } from './select'
+import {
+  EntityReferenceSelectProps,
+  EntityReferenceSelect,
+} from './entity-reference-select'
 
 export interface FormInputProps<
   TValue,
@@ -55,6 +60,26 @@ export function FormSelect<
   return (
     <Select
       entries={entries}
+      value={formState.values[name] as any}
+      onChange={value => formState.changeValue(name, value as any)}
+      {...rest}
+    />
+  )
+}
+
+export function FormEntityReferenceSelect<
+  TValues extends { [key in TName]: IdType },
+  TName extends keyof TValues
+>({
+  formState,
+  name,
+  entity,
+  ...rest
+}: FormInputProps<IdType, TValues, TName> &
+  Omit<EntityReferenceSelectProps, 'value' | 'onChange'>) {
+  return (
+    <EntityReferenceSelect
+      entity={entity}
       value={formState.values[name] as any}
       onChange={value => formState.changeValue(name, value as any)}
       {...rest}
