@@ -35,11 +35,19 @@ export async function initWebSocketServer(): Promise<void> {
   })
 }
 
+const skipLoggingForMessageTypes = new Set<ApiOutMessage['type']>([
+  'state',
+  'masterdata',
+])
+
 export function broadcastToSockets(message: ApiOutMessage): void {
   if (!sockets.length) {
     return
   }
-  logger.debug('broadcast WebSocket message', message)
+  const info = skipLoggingForMessageTypes.has(message.type)
+    ? message.type
+    : message
+  logger.debug('broadcast WebSocket message', info)
   const messageString = JSON.stringify(message)
   sockets.forEach(socket => socket.send(messageString))
 }
