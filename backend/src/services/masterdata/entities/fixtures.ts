@@ -1,6 +1,6 @@
 import { Fixture } from '@vlight/entities'
 
-import { arrayRange, logger } from '../../../util/shared'
+import { arrayRange, logger, FixtureMappingPrefix } from '../../../util/shared'
 import { isUnique } from '../../../util/shared'
 import { masterData, masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'
@@ -54,10 +54,6 @@ function preprocessor(fixtures: Fixture[]): Fixture[] {
 // only for unit test
 export const processFixtures = preprocessor
 
-const typeMarker = 'type:'
-const groupMarker = 'group:'
-const countMarker = 'all:'
-
 /**
  * Maps the following to a list of plain unique fixture IDs:
  * - fixture IDs
@@ -71,8 +67,8 @@ export function mapFixtureList(fixtureList: string[]): string[] {
   return fixtureList
     .flatMap(fixture => {
       // `type:foobar`
-      if (fixture.startsWith(typeMarker)) {
-        const type = fixture.slice(typeMarker.length)
+      if (fixture.startsWith(FixtureMappingPrefix.type)) {
+        const type = fixture.slice(FixtureMappingPrefix.type.length)
         if (!masterDataMaps.fixtureTypes.has(type)) {
           logger.warn(`Fixture type "${type}" not found, skipping mapping...`)
           return []
@@ -80,8 +76,8 @@ export function mapFixtureList(fixtureList: string[]): string[] {
         return allFixtures.filter(f => f.type === type).map(f => f.id)
       }
       // `group:foobar`
-      if (fixture.startsWith(groupMarker)) {
-        const groupId = fixture.slice(groupMarker.length)
+      if (fixture.startsWith(FixtureMappingPrefix.group)) {
+        const groupId = fixture.slice(FixtureMappingPrefix.group.length)
         const group = masterDataMaps.fixtureGroups.get(groupId)
         if (!group) {
           logger.warn(
@@ -92,8 +88,8 @@ export function mapFixtureList(fixtureList: string[]): string[] {
         return group.fixtures
       }
       // `all:foobar`
-      if (fixture.startsWith(countMarker)) {
-        const originalId = fixture.slice(countMarker.length)
+      if (fixture.startsWith(FixtureMappingPrefix.all)) {
+        const originalId = fixture.slice(FixtureMappingPrefix.all.length)
         const mappedFixtures = allFixtures
           .filter(f => f.originalId === originalId)
           .map(f => f.id)

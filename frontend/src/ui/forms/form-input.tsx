@@ -10,6 +10,7 @@ import {
   EntityReferenceSelectProps,
   EntityReferenceSelect,
 } from './entity-reference-select'
+import { ArrayInput, ArrayInputProps } from './array-input'
 
 export interface FormInputProps<
   TValue,
@@ -80,6 +81,25 @@ export function FormEntityReferenceSelect<
   return (
     <EntityReferenceSelect
       entity={entity}
+      value={formState.values[name] as any}
+      onChange={value => formState.changeValue(name, value as any)}
+      {...rest}
+    />
+  )
+}
+
+export function FormArrayInput<
+  TValue,
+  TValues extends { [key in TName]: TValue[] },
+  TName extends keyof TValues
+>({
+  formState,
+  name,
+  ...rest
+}: FormInputProps<TValue[], TValues, TName> &
+  Omit<ArrayInputProps<TValue>, 'value' | 'onChange'>) {
+  return (
+    <ArrayInput
       value={formState.values[name] as any}
       onChange={value => formState.changeValue(name, value as any)}
       {...rest}

@@ -56,7 +56,8 @@ const modalContainer_light = css`
 
 const modal = css`
   min-width: ${baseline(64)};
-  max-width: 95vh;
+  max-width: 100vw;
+  box-sizing: border-box;
   padding: ${baseline(8)};
   background: ${primaryShade(2)};
 `

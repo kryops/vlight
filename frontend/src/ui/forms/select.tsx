@@ -33,6 +33,7 @@ const select = css`
   background: ${backgroundColor};
   color: ${textShade(0)};
   border: 1px solid ${textShade(0)};
+  max-width: 95vw;
 `
 
 const select_light = css`

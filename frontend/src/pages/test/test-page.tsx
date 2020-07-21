@@ -20,12 +20,18 @@ import {
 } from '../../ui/forms/form-input'
 import { Label } from '../../ui/forms/label'
 import { Button } from '../../ui/forms/button'
+import { ArrayInput } from '../../ui/forms/array-input'
+import { TextInput } from '../../ui/forms/typed-input'
 
 const TestPage = memoInProduction(() => {
   const masterData = useMasterData()
   const [inputValue, setInputValue] = useState('foo')
   const [selectValue, setSelectValue] = useState('foo')
   const [checkboxValue, setCheckboxValue] = useState(false)
+  const [arrayValue, setArrayValue] = useState<Array<string | undefined>>([
+    'foo',
+    'bar',
+  ])
   const formState = useFormState<{
     foo?: boolean
     name?: string
@@ -46,6 +52,14 @@ const TestPage = memoInProduction(() => {
         value={selectValue}
         onChange={setSelectValue}
         entries={[undefined, 'foo', 'bar', 'baz']}
+      />
+      <br />
+      Array:
+      <ArrayInput
+        value={arrayValue}
+        onChange={setArrayValue}
+        Input={TextInput}
+        displayRemoveButtons
       />
       <br />
       FormState: <FormTextInput formState={formState} name="name" />{' '}
@@ -74,6 +88,17 @@ const TestPage = memoInProduction(() => {
             formState={formState}
             name="bar"
             entries={[undefined, 'sdf', 'dfgfdg', 'dfgdfölgkjdflkg']}
+          />
+        }
+      />
+      <Label
+        label="Array"
+        input={
+          <ArrayInput
+            value={arrayValue}
+            onChange={setArrayValue}
+            Input={TextInput}
+            displayRemoveButtons
           />
         }
       />

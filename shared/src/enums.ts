@@ -4,3 +4,9 @@ export enum ChannelMapping {
   blue = 'b',
   master = 'm',
 }
+
+export enum FixtureMappingPrefix {
+  all = 'all:',
+  type = 'type:',
+  group = 'group:',
+}

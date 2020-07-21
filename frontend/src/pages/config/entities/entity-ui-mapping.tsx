@@ -11,6 +11,7 @@ import {
 
 import { FixtureTypeEditor } from './editors/fixture-type-editor'
 import { FixtureEditor } from './editors/fixture-editor'
+import { FixtureGroupEditor } from './editors/fixture-group-editor'
 
 export interface EntityEditorProps<T extends EntityName> {
   entry: EntityType<T>
@@ -44,6 +45,11 @@ export const entityUiMapping: { [key in EntityName]: EntityEntry<key> } = {
   fixtureGroups: {
     name: 'Fixture Groups',
     icon: iconGroup,
+    editor: FixtureGroupEditor,
+    newEntityFactory: () => ({
+      name: 'New Fixture Group',
+      fixtures: [],
+    }),
   },
   memories: {
     name: 'Memories',

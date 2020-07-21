@@ -2,17 +2,16 @@
 
 ## Roadmap
 
-- Frontend
-  - Entity list
-  - Edit modals
-- Backend restructuring
-  - easier masterData extension / new entity process?
+- Fixture page modes
+  - single fixtures
+  - multiple fixtures from definition
+  - all by type
+  - apply state to selectable fixtures
 - Master data / config editor
-  - (global) Fixture types
-  - Fixtures
-  - Fixture groups
   - Dynamic pages
   - Memories
+- Backend restructuring
+  - easier masterData extension / new entity process?
 - 2D Map
 - Chases
 - Speed/Fade control

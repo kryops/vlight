@@ -27,6 +27,8 @@ export function useApiState<TKey extends keyof ApiState>(
 ): NonNullable<ApiState[TKey]> {
   const [state, setState] = useState(apiState[key])
   useEffect(() => {
+    setState(apiState[key])
+
     function eventHandler() {
       setState(apiState[key])
     }

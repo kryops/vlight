@@ -13,6 +13,7 @@ const iconSvg = css`
   width: ${iconSize};
   height: ${iconSize};
   display: block;
+  flex: 0 0 auto;
 `
 
 const iconInline = css`
