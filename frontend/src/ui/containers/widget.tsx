@@ -63,7 +63,7 @@ const widgetTurnedOff_light = css`
 
 const widgetTurnedOn = css`
   border-color: ${primaryShade(0)};
-  background: ${primaryShade(3)};
+  background: ${primaryShade(2)};
 `
 
 const widgetTurnedOn_light = css`

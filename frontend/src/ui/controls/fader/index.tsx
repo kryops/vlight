@@ -49,7 +49,7 @@ const button = css`
   position: relative;
   width: ${faderWidth};
   height: ${buttonHeight}px;
-  background: ${primaryShade(2)};
+  background: ${primaryShade(1)};
   z-index: 2;
   display: flex;
   align-items: center;
