@@ -7,9 +7,13 @@ import { registerMasterDataEntity } from '../registry'
 
 function replaceIndex<T extends string | undefined>(
   value: T,
-  index: number
+  index: number,
+  isName = false
 ): T {
   if (!value) return value
+  if (!value.includes('#')) {
+    return (isName ? `${value} (${index})` : `${value}_${index}`) as T
+  }
   return value.replace(/#/g, String(index)) as T
 }
 
@@ -37,7 +41,7 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
   return arrayRange(1, count, index => ({
     id: replaceIndex(id, index),
     originalId: id,
-    name: replaceIndex(name, index),
+    name: replaceIndex(name, index, true),
     type,
     channel: computeChannel(type, channel, index),
   }))
@@ -52,12 +56,12 @@ export const processFixtures = preprocessor
 
 const typeMarker = 'type:'
 const groupMarker = 'group:'
-const countMarker = '#'
+const countMarker = 'all:'
 
 /**
  * Maps the following to a list of plain unique fixture IDs:
  * - fixture IDs
- * - fixture IDs containing # -> maps all fixtures with this ID originally configured
+ * - `all:foobar` -> maps all fixtures from this original ID
  * - `type:foobar` -> maps all fixtures of type `foobar`
  * - `group:foobar` -> maps all fixtures of group `foobar`
  */
@@ -87,14 +91,15 @@ export function mapFixtureList(fixtureList: string[]): string[] {
         }
         return group.fixtures
       }
-      // `foobar#`
-      if (fixture.includes(countMarker)) {
+      // `all:foobar`
+      if (fixture.startsWith(countMarker)) {
+        const originalId = fixture.slice(countMarker.length)
         const mappedFixtures = allFixtures
-          .filter(f => f.originalId === fixture)
+          .filter(f => f.originalId === originalId)
           .map(f => f.id)
         if (!mappedFixtures.length) {
           logger.warn(
-            `No fixtures with ID "${fixture}" found, skipping mapping...`
+            `No fixtures with original ID "${fixture}" found, skipping mapping...`
           )
         }
         return mappedFixtures

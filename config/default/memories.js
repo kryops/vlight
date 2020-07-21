@@ -6,7 +6,7 @@ const memories = [
     name: 'Test',
     scenes: [
       {
-        members: ['3x12-#', 'type:flach', 'group:12x12'],
+        members: ['all:3x12', 'type:flach', 'group:12x12'],
         pattern: 'alternate',
         states: [
           {
