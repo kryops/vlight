@@ -24,6 +24,18 @@ function getModulePath(entity: EntityName, isGlobal: boolean) {
     : join(configDirectoryPath, project, fileName)
 }
 
+// TODO generate ID based on name?
+function generateId(entries: EntityArray): string {
+  let highestNumber = 0
+  for (const entry of entries) {
+    if (entry.id.match(/^\d+$/)) {
+      const value = parseInt(entry.id)
+      if (value > highestNumber) highestNumber = value
+    }
+  }
+  return String(highestNumber + 1)
+}
+
 const cache = new Map<EntityName, EntityArray<any>>()
 
 export class JsDatabaseBackend implements DatabaseBackend {
@@ -76,7 +88,9 @@ export class JsDatabaseBackend implements DatabaseBackend {
     entry: EntityType<T>,
     options?: DatabaseEntityOptions
   ): Promise<EntityArray<T>> {
-    const entries = [...(await this.loadEntities(entity, options)), entry]
+    const oldEntries = await this.loadEntities(entity, options)
+    const newEntry = { ...entry, id: generateId(oldEntries) }
+    const entries = [...oldEntries, newEntry]
     await this.writeEntities(entity, entries, options)
     return entries
   }
