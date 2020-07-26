@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useState } from 'react'
 import { css } from 'linaria'
 
 import { Icon } from '../icons/icon'
@@ -10,7 +10,7 @@ import { TypedInputProps } from './typed-input'
 
 export interface ArrayInputProps<T> {
   value: Array<T | undefined>
-  onChange: (value: Array<T | undefined>) => void
+  onChange: (value: Array<T>) => void
   Input: React.ComponentType<TypedInputProps<T>>
   displayRemoveButtons?: boolean
   className?: string
@@ -37,6 +37,10 @@ function removeTrailingUndefined<T extends any[]>(arr: T): T {
   return newArr
 }
 
+function removeUndefined<T>(arr: (T | undefined)[]): T[] {
+  return arr.filter(it => it !== undefined) as T[]
+}
+
 export function ArrayInput<T>({
   value,
   onChange,
@@ -45,18 +49,33 @@ export function ArrayInput<T>({
   className,
   entryClassName,
 }: ArrayInputProps<T>) {
-  const toRender = [...removeTrailingUndefined(value), undefined]
+  const outgoingValueRef = useRef(value)
+  const [valueToUse, setValueToUse] = useState(removeTrailingUndefined(value))
+
+  if (outgoingValueRef.current !== value) {
+    outgoingValueRef.current = value
+    setValueToUse(value)
+  }
+
+  function onChangeInternal(value: (T | undefined)[]) {
+    const valueToSend = removeUndefined(value)
+    outgoingValueRef.current = valueToSend
+    onChange(valueToSend)
+    setValueToUse(removeTrailingUndefined(value))
+  }
+
+  const toRender = [...valueToUse, undefined]
 
   return (
     <div className={cx(container, className)}>
       {toRender.map((singleValue, index) => {
         const changeSingleValue = (newSingleValue: T | undefined) => {
-          if (newSingleValue !== undefined && index === value.length) {
-            onChange([...value, newSingleValue])
+          if (newSingleValue !== undefined && index === valueToUse.length) {
+            onChangeInternal([...value, newSingleValue])
           } else {
-            const newValue = [...value]
+            const newValue = [...valueToUse]
             newValue[index] = newSingleValue
-            onChange(removeTrailingUndefined(newValue))
+            onChangeInternal(newValue)
           }
         }
 
