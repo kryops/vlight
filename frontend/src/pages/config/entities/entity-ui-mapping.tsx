@@ -12,6 +12,7 @@ import {
 import { FixtureTypeEditor } from './editors/fixture-type-editor'
 import { FixtureEditor } from './editors/fixture-editor'
 import { FixtureGroupEditor } from './editors/fixture-group-editor'
+import { MemoryEditor } from './editors/memory-editor'
 
 export interface EntityEditorProps<T extends EntityName> {
   entry: EntityType<T>
@@ -54,6 +55,23 @@ export const entityUiMapping: { [key in EntityName]: EntityEntry<key> } = {
   memories: {
     name: 'Memories',
     icon: iconMemory,
+    editor: MemoryEditor,
+    newEntityFactory: () => ({
+      name: 'New Memory',
+      scenes: [
+        {
+          members: [],
+          states: [
+            {
+              on: true,
+              channels: {
+                r: 255,
+              },
+            },
+          ],
+        },
+      ],
+    }),
   },
   dynamicPages: {
     name: 'Dynamic Pages',
