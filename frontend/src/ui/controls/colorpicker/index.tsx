@@ -82,15 +82,20 @@ const colorPresetActive = css`
   padding: 0;
 `
 
+const defaultHeight = css`
+  height: ${baseline(48)};
+`
+
 export interface ColorPickerProps {
   r?: number
   g?: number
   b?: number
   onChange: (color: ColorPickerColor) => void
+  setDefaultHeight?: boolean
 }
 
 export const ColorPicker = memoInProduction(
-  ({ r = 0, g = 0, b = 0, onChange }: ColorPickerProps) => {
+  ({ r = 0, g = 0, b = 0, onChange, setDefaultHeight }: ColorPickerProps) => {
     const className = useClassName(colorPicker, colorPicker_light)
     const [
       localColor,
@@ -112,7 +117,7 @@ export const ColorPicker = memoInProduction(
         : positionFromColor
 
     return (
-      <div className={container}>
+      <div className={cx(container, setDefaultHeight && defaultHeight)}>
         <Touchable
           className={className}
           ref={touchRef}

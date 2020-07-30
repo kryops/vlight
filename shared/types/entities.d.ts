@@ -33,6 +33,8 @@ export interface FixtureGroup extends DbEntity {
   fixtures: string[]
 }
 
+export type MemorySceneState = FixtureState | FixtureStateGradient[]
+
 export interface MemoryScene {
   /**
    * Accepts
@@ -43,7 +45,7 @@ export interface MemoryScene {
    */
   members: string[]
   pattern?: 'row' | 'alternate'
-  states: Array<FixtureState | FixtureStateGradient[]>
+  states: Array<MemorySceneState>
 }
 
 export interface Memory extends DbEntity {

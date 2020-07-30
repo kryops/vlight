@@ -42,6 +42,7 @@ const labelContainerResponsive = css`
 const inputContainer = css`
   display: flex;
   flex: 1 0 auto;
+  align-items: center;
 `
 
 const descriptionStyle = css`

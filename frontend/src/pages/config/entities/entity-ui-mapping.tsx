@@ -65,6 +65,7 @@ export const entityUiMapping: { [key in EntityName]: EntityEntry<key> } = {
             {
               on: true,
               channels: {
+                m: 255,
                 r: 255,
               },
             },

@@ -35,6 +35,10 @@ const iconHoverable = css`
   }
 `
 
+const iconPadding = css`
+  padding: ${baseline(2)};
+`
+
 export interface IconProps {
   icon: string
   shade?: ColorShade
@@ -42,6 +46,7 @@ export interface IconProps {
   className?: string
   pathClassName?: string
   inline?: boolean
+  padding?: boolean
   hoverable?: boolean
   onClick?: () => void
 }
@@ -54,6 +59,7 @@ export const Icon = memoInProduction(
     pathClassName,
     color,
     inline,
+    padding,
     hoverable,
     onClick,
   }: IconProps) => {
@@ -67,6 +73,7 @@ export const Icon = memoInProduction(
           inline && iconInline,
           hoverable && iconHoverable,
           onClick && iconClickable,
+          padding && iconPadding,
           className
         )}
         onClick={onClick}

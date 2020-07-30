@@ -15,8 +15,8 @@ export function getFixtureStateColor(
     ChannelMapping.blue,
   ].map(mapping => fixtureState.channels[mapping])
 
-  if (values.every(x => x === 0)) return undefined
+  if (values.every(x => x === 0 || x === undefined)) return undefined
   const [r, g, b] = values
   const opacity = 0.3 + (masterValue / 255) * 0.7
-  return `rgba(${r}, ${g}, ${b}, ${opacity})`
+  return `rgba(${r ?? 0}, ${g ?? 0}, ${b ?? 0}, ${opacity})`
 }

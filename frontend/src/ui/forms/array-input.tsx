@@ -86,7 +86,6 @@ export function ArrayInput<T>({
               <Icon
                 icon={iconDelete}
                 onClick={() => changeSingleValue(undefined)}
-                inline
                 hoverable
               />
             )}
