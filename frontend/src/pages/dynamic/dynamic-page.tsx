@@ -7,7 +7,7 @@ import { Grid } from '../../ui/containers/grid'
 import { DynamicWidget } from '../../widgets/dynamic'
 
 const DynamicPage = memoInProduction(() => {
-  const { id } = useParams()
+  const { id } = useParams<{ id: string }>()
   const masterData = useMasterData()
   const page = masterData.dynamicPages.find(p => p.id === id)
   if (!page) return null
