@@ -24,6 +24,7 @@ export function useDelayedState<T>(
         setState(value)
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [ms]
   )
 

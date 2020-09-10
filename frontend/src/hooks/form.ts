@@ -26,6 +26,7 @@ export function useFormState<TValues extends object>(
     <TKey extends keyof TValues>(key: TKey, value: TValues[TKey]) => {
       setValues(oldValues => ({ ...oldValues, [key]: value }))
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 
