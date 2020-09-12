@@ -10,7 +10,6 @@ export function useDelayedState<T>(
   // clean up on unmount
   useEffect(() => {
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
     }
   }, [])
@@ -24,7 +23,6 @@ export function useDelayedState<T>(
         setState(value)
       }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [ms]
   )
 

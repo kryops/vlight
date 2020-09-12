@@ -1,8 +1,7 @@
 import { Fixture, FixtureState, FixtureType } from '@vlight/entities'
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef } from 'react'
 
 import { changeFixtureState } from '../../api'
-import { useCurrentRef } from '../../hooks/ref'
 import { iconColorPicker } from '../../ui/icons'
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
@@ -43,7 +42,8 @@ export const StatelessFixtureWidget = memoInProduction(
     colorPicker = true,
     toggleColorPicker,
   }: StatelessFixtureWidgetProps) => {
-    const fixtureStateRef = useCurrentRef(fixtureState)
+    const fixtureStateRef = useRef(fixtureState)
+    fixtureStateRef.current = fixtureState
 
     const colorPickerCapable = colorPickerColors.every(c =>
       fixtureType.mapping.includes(c)

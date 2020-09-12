@@ -1,6 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
-
-import { useCurrentRef } from './ref'
+import { useState, useCallback, useEffect, useRef } from 'react'
 
 export interface FormState<TValues extends object> {
   values: TValues
@@ -16,17 +14,17 @@ export function useFormState<TValues extends object>(
   { onChange }: FormStateOptions<TValues> = {}
 ): FormState<TValues> {
   const [values, setValues] = useState(initialValues)
-  const onChangeRef = useCurrentRef(onChange)
+  const onChangeRef = useRef(onChange)
+  onChangeRef.current = onChange
+
   useEffect(() => {
     onChangeRef.current?.(values)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [values])
 
   const changeValue = useCallback(
     <TKey extends keyof TValues>(key: TKey, value: TValues[TKey]) => {
       setValues(oldValues => ({ ...oldValues, [key]: value }))
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   )
 

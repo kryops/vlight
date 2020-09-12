@@ -1,8 +1,7 @@
 import { FixtureState, FixtureGroup } from '@vlight/entities'
-import React, { useCallback } from 'react'
+import React, { useCallback, useRef } from 'react'
 
 import { changeFixtureGroupState } from '../../api'
-import { useCurrentRef } from '../../hooks/ref'
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
 import {
@@ -33,7 +32,8 @@ export const StatelessFixtureGroupWidget = memoInProduction(
     colorPicker,
     toggleColorPicker,
   }: StatelessFixtureGroupWidgetProps) => {
-    const groupStateRef = useCurrentRef(groupState)
+    const groupStateRef = useRef(groupState)
+    groupStateRef.current = groupState
 
     const colorPickerCapable = colorPickerColors.every(c =>
       groupMapping.includes(c)
