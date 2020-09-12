@@ -1,8 +1,7 @@
 import { Fixture } from '@vlight/entities'
 
-import { arrayRange, logger, FixtureMappingPrefix } from '../../../util/shared'
-import { isUnique } from '../../../util/shared'
-import { masterData, masterDataMaps } from '../data'
+import { arrayRange, logger } from '../../../util/shared'
+import { masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'
 
 function replaceIndex<T extends string | undefined>(
@@ -53,65 +52,6 @@ function preprocessor(fixtures: Fixture[]): Fixture[] {
 
 // only for unit test
 export const processFixtures = preprocessor
-
-/**
- * Maps the following to a list of plain unique fixture IDs:
- * - fixture IDs
- * - `all:foobar` -> maps all fixtures from this original ID
- * - `type:foobar` -> maps all fixtures of type `foobar`
- * - `group:foobar` -> maps all fixtures of group `foobar`
- */
-export function mapFixtureList(fixtureList: string[]): string[] {
-  const allFixtures = masterData.fixtures
-
-  return fixtureList
-    .flatMap(fixture => {
-      // `type:foobar`
-      if (fixture.startsWith(FixtureMappingPrefix.type)) {
-        const type = fixture.slice(FixtureMappingPrefix.type.length)
-        if (!masterDataMaps.fixtureTypes.has(type)) {
-          logger.warn(`Fixture type "${type}" not found, skipping mapping...`)
-          return []
-        }
-        return allFixtures.filter(f => f.type === type).map(f => f.id)
-      }
-      // `group:foobar`
-      if (fixture.startsWith(FixtureMappingPrefix.group)) {
-        const groupId = fixture.slice(FixtureMappingPrefix.group.length)
-        const group = masterDataMaps.fixtureGroups.get(groupId)
-        if (!group) {
-          logger.warn(
-            `Fixture group "${groupId}" not found, skipping mapping...`
-          )
-          return []
-        }
-        return group.fixtures
-      }
-      // `all:foobar`
-      if (fixture.startsWith(FixtureMappingPrefix.all)) {
-        const originalId = fixture.slice(FixtureMappingPrefix.all.length)
-        const mappedFixtures = allFixtures
-          .filter(f => f.originalId === originalId)
-          .map(f => f.id)
-        if (!mappedFixtures.length) {
-          logger.warn(
-            `No fixtures with original ID "${fixture}" found, skipping mapping...`
-          )
-        }
-        return mappedFixtures
-      }
-      // 'foobar1'
-      return fixture
-    })
-    .filter(isUnique)
-    .filter(fixture => {
-      if (!masterDataMaps.fixtures.has(fixture)) {
-        logger.warn(`Fixture "${fixture}" not found, skipping mapping...`)
-        return false
-      }
-      return true
-    })
-}
 
 export function init(): void {
   registerMasterDataEntity('fixtures', {

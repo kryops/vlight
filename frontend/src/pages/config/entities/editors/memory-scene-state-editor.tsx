@@ -1,18 +1,13 @@
 import React, { useState } from 'react'
-import { MemorySceneState, MemoryScene, FixtureState } from '@vlight/entities'
+import { MemorySceneState, MemoryScene } from '@vlight/entities'
 import { css } from 'linaria'
 
-import { ColorPicker } from '../../../../ui/controls/colorpicker'
-import {
-  fixtureStateToColor,
-  ColorPickerColor,
-} from '../../../../ui/controls/colorpicker/util'
-import { Fader } from '../../../../ui/controls/fader'
-import { faderContainer } from '../../../../ui/css/fader-container'
-import { cx } from '../../../../util/styles'
+import { useCommonFixtureMapping } from '../../../../hooks/fixtures'
+import { FixtureStateWidget } from '../../../../widgets/fixture/fixture-state-widget'
+import { updateFixtureState } from '../../../../api/fixture'
 
-const container = css`
-  padding-bottom: 0;
+const widget = css`
+  border: none;
 `
 
 export interface MemorySceneStateEditorProps {
@@ -27,43 +22,25 @@ export function MemorySceneStateEditor({
   onChange,
 }: MemorySceneStateEditorProps) {
   const [localState, setLocalState] = useState(state)
-  // TODO get mapping from scene
+  const mapping = useCommonFixtureMapping(scene.members)
 
   if (Array.isArray(localState)) {
     // TODO support gradient
     return <div>(gradients not supported yet)</div>
   } else {
-    const { r, g, b } = fixtureStateToColor(localState)
-
-    const changeChannels = (
-      newChannels: FixtureState['channels'] | ColorPickerColor
-    ) => {
-      const newState = {
-        ...localState,
-        channels: { ...localState.channels, ...newChannels },
-      }
-      setLocalState(newState)
-      onChange(newState)
-    }
-
-    const renderFader = (channelType: string, index = 0) => (
-      <Fader
-        key={index}
-        max={255}
-        step={1}
-        label={channelType.toUpperCase()}
-        value={localState.channels[channelType] ?? 0}
-        onChange={newValue => changeChannels({ [channelType]: newValue })}
-        colorPicker={false}
-      />
-    )
-
-    // TODO switch between colorpicker and faders
     return (
-      <div className={cx(faderContainer, container)}>
-        {renderFader('m')}
-        <ColorPicker r={r} g={g} b={b} onChange={changeChannels} />
-      </div>
+      <FixtureStateWidget
+        title="Edit Memory Scene"
+        fixtureState={localState}
+        mapping={mapping}
+        onChange={partialState => {
+          const newState = updateFixtureState(localState, partialState)
+          setLocalState(newState)
+          onChange(newState)
+        }}
+        disableOn
+        className={widget}
+      />
     )
   }
 }

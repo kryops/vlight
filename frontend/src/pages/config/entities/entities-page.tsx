@@ -2,6 +2,7 @@ import React from 'react'
 import { useParams } from 'react-router'
 import { EntityName } from '@vlight/entities'
 import { css } from 'linaria'
+import { Link } from 'react-router-dom'
 
 import { memoInProduction } from '../../../util/development'
 import { BackArrow } from '../../../ui/components/back-arrow'
@@ -41,7 +42,9 @@ const EntitiesPage = memoInProduction(() => {
     <div>
       <h1 className={headline}>
         <BackArrow to={configPageRoute} />
-        <div className={title}>{entityUiMapping[type].name}</div>
+        <div className={title}>
+          <Link to={configPageRoute}>{entityUiMapping[type].name}</Link>
+        </div>
         <Icon
           icon={iconAdd}
           className={icon}

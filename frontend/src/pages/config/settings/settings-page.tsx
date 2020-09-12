@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import { useSettings } from '../../../hooks/settings'
 import { Settings } from '../../../settings'
@@ -18,7 +19,7 @@ const SettingsPage = memoInProduction(() => {
     <div>
       <h1>
         <BackArrow to={configPageRoute} />
-        Settings
+        <Link to={configPageRoute}>Settings</Link>
       </h1>
       <Clickable onClick={() => toggleSetting('lightMode')}>
         Light Mode: {lightMode ? 'on' : 'off'}

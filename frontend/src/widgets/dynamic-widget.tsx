@@ -5,11 +5,11 @@ import { useMasterDataMaps } from '../hooks/api'
 import { memoInProduction } from '../util/development'
 import { assertNever } from '../util/shared'
 
-import { UniverseWidget } from './universe'
-import { ChannelsWidget } from './channels'
-import { FixtureWidget } from './fixture'
-import { FixtureGroupWidget } from './fixture-group'
-import { MemoryWidget } from './memory'
+import { UniverseWidget } from './universe/universe-widget'
+import { ChannelsWidget } from './channels/channels-widget'
+import { FixtureWidget } from './fixture/fixture-widget'
+import { FixtureGroupWidget } from './fixture-group/fixture-group-widget'
+import { MemoryWidget } from './memory/memory-widget'
 
 export interface DynamicWidgetProps {
   config: WidgetConfig

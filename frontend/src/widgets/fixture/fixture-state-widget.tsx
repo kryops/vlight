@@ -1,58 +1,53 @@
-import { Fixture, FixtureState, FixtureType } from '@vlight/entities'
-import React, { useCallback, useRef } from 'react'
+import { FixtureState } from '@vlight/entities'
+import React, { useCallback, useRef, useState } from 'react'
 
-import { changeFixtureState } from '../../api'
-import { iconColorPicker } from '../../ui/icons'
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
 import {
   colorPickerColors,
   fixtureStateToColor,
 } from '../../ui/controls/colorpicker/util'
-import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
-import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
+import { iconColorPicker } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
+import { faderContainer } from '../../ui/css/fader-container'
 import { ChannelMapping } from '../../util/shared'
 import { getFixtureStateColor } from '../../util/fixtures'
+import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
 
-export function getFixtureName(
-  fixture: Fixture,
-  fixtureType: FixtureType
-): string {
-  if (fixture.name) {
-    return `${fixture.channel} ${fixture.name}`
-  }
-  return `${fixture.channel} ${fixtureType.name}`
-}
-
-export interface StatelessFixtureWidgetProps {
-  fixture: Fixture
-  fixtureType: FixtureType
+export interface FixtureStateWidgetProps {
   fixtureState: FixtureState
-  colorPicker?: boolean
-  toggleColorPicker?: () => void
+  mapping: string[]
+  title?: string
+  onChange: (newState: Partial<FixtureState>) => void
+  disableOn?: boolean
+  className?: string
 }
 
-export const StatelessFixtureWidget = memoInProduction(
+export const FixtureStateWidget = memoInProduction(
   ({
-    fixture,
-    fixtureType,
     fixtureState,
-    colorPicker = true,
-    toggleColorPicker,
-  }: StatelessFixtureWidgetProps) => {
-    const fixtureStateRef = useRef(fixtureState)
-    fixtureStateRef.current = fixtureState
+    mapping,
+    title,
+    onChange,
+    disableOn,
+    className,
+  }: FixtureStateWidgetProps) => {
+    const stateRef = useRef(fixtureState)
+    stateRef.current = fixtureState
 
-    const colorPickerCapable = colorPickerColors.every(c =>
-      fixtureType.mapping.includes(c)
+    const colorPickerCapable = colorPickerColors.every(c => mapping.includes(c))
+    const [colorPicker, setColorPicker] = useState(colorPickerCapable)
+    const toggleColorPicker = useCallback(
+      () => setColorPicker(prev => !prev),
+      []
     )
+
     const hasColorPicker = colorPicker && colorPickerCapable
 
     const { r, g, b } = fixtureStateToColor(fixtureState)
 
-    const fadersToRender = fixtureType.mapping.filter(
+    const fadersToRender = mapping.filter(
       c =>
         c !== ChannelMapping.master &&
         (!hasColorPicker || !colorPickerColors.includes(c))
@@ -61,11 +56,9 @@ export const StatelessFixtureWidget = memoInProduction(
     const renderFader = (channelType: string, index = 0) => (
       <FixtureStateFader
         key={channelType + index}
-        id={fixture.id}
         channelType={channelType}
         value={fixtureState.channels[channelType] ?? 0}
-        stateRef={fixtureStateRef}
-        changeFn={changeFixtureState}
+        onChange={onChange}
         colorPicker={
           colorPickerCapable &&
           !colorPicker &&
@@ -76,16 +69,24 @@ export const StatelessFixtureWidget = memoInProduction(
 
     const onColorPickerChange = useCallback(
       color =>
-        changeFixtureState(fixture.id, fixtureState, {
+        onChange({
           channels: { ...color },
         }),
-      [fixture.id, fixtureState]
+      [onChange]
     )
 
     return (
       <Widget
-        key={fixture.id}
-        title={getFixtureName(fixture, fixtureType)}
+        className={className}
+        title={title}
+        onTitleClick={
+          disableOn
+            ? undefined
+            : () =>
+                onChange({
+                  on: !fixtureState.on,
+                })
+        }
         titleSide={
           colorPickerCapable ? (
             <Icon
@@ -95,12 +96,7 @@ export const StatelessFixtureWidget = memoInProduction(
             />
           ) : undefined
         }
-        onTitleClick={() =>
-          changeFixtureState(fixture.id, fixtureState, {
-            on: !fixtureState.on,
-          })
-        }
-        turnedOn={fixtureState.on}
+        turnedOn={disableOn ? undefined : fixtureState.on}
         bottomLineColor={getFixtureStateColor(fixtureState)}
       >
         <div className={faderContainer}>

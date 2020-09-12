@@ -1,3 +1,5 @@
+import { IdType } from '@vlight/entities'
+
 export function removeFromMutableArray<T>(arr: T[], el: T): void {
   const index = arr.indexOf(el)
   if (index === -1) {
@@ -37,4 +39,10 @@ export function createRangeArray(min: number, max: number): number[] {
     arr.push(i)
   }
   return arr
+}
+
+export function entityArrayToMap<T extends { id: IdType }>(
+  arr: T[]
+): Map<IdType, T> {
+  return new Map<IdType, T>(arr.map(it => [it.id, it]))
 }

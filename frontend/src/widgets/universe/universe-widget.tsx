@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useDmxUniverse, useMasterData } from '../../hooks/api'
 
-import { StatelessUniverseWidget } from './widget'
+import { StatelessUniverseWidget } from './stateless-universe-widget'
 
 export interface UniverseWidgetProps {
   from: number

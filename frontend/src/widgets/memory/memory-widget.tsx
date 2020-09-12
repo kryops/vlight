@@ -3,7 +3,7 @@ import React from 'react'
 
 import { useApiStateEntry } from '../../hooks/api'
 
-import { StatelessMemoryWidget } from './widget'
+import { StatelessMemoryWidget } from './stateless-memory-widget'
 
 export interface MemoryWidgetProps {
   memory: Memory

@@ -27,7 +27,7 @@ export interface FixtureGroup extends DbEntity {
   name?: string
   /**
    * Also accepts
-   * - fixture IDs containing # -> maps all fixtures with this ID originally configured
+   * - `all:foobar` -> maps all fixtures with this ID originally configured
    * - `type:foobar` -> maps all fixtures of type `foobar`
    */
   fixtures: string[]
@@ -39,7 +39,7 @@ export interface MemoryScene {
   /**
    * Accepts
    * - fixture IDs
-   * - fixture IDs containing # -> maps all fixtures with this ID originally configured
+   * - `all:foobar` -> maps all fixtures with this ID originally configured
    * - `type:foobar` -> maps all fixtures of type `foobar`
    * - `group:foobar` -> maps all fixtures of group `foobar`
    */

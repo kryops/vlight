@@ -1,12 +1,9 @@
 import { Fixture } from '@vlight/entities'
 
 import { fillMasterDataEntity } from '../../../src/services/masterdata'
-import {
-  processFixtures,
-  mapFixtureList,
-} from '../../../src/services/masterdata/entities/fixtures'
+import { processFixtures } from '../../../src/services/masterdata/entities/fixtures'
 
-import { fixtureTypes, fixtures, fixtureGroups } from './mocks'
+import { fixtureTypes } from './mocks'
 
 describe('processFixtures', () => {
   beforeAll(() => {
@@ -27,7 +24,7 @@ describe('processFixtures', () => {
   it('handles multi fixtures', () => {
     const fixtures: Fixture[] = [
       {
-        id: 'foo#',
+        id: 'foo',
         type: 'bar',
         name: 'Foo #',
         channel: 1,
@@ -36,53 +33,26 @@ describe('processFixtures', () => {
     ]
     expect(processFixtures(fixtures)).toEqual([
       {
-        id: 'foo1',
+        id: 'foo_1',
         type: 'bar',
         name: 'Foo 1',
         channel: 1,
-        originalId: 'foo#',
+        originalId: 'foo',
       },
       {
-        id: 'foo2',
+        id: 'foo_2',
         type: 'bar',
         name: 'Foo 2',
         channel: 4,
-        originalId: 'foo#',
+        originalId: 'foo',
       },
       {
-        id: 'foo3',
+        id: 'foo_3',
         type: 'bar',
         name: 'Foo 3',
         channel: 7,
-        originalId: 'foo#',
+        originalId: 'foo',
       },
     ])
-  })
-})
-
-describe('mapFixtureList', () => {
-  beforeAll(() => {
-    fillMasterDataEntity('fixtureTypes', fixtureTypes)
-    fillMasterDataEntity('fixtures', fixtures)
-    fillMasterDataEntity('fixtureGroups', fixtureGroups)
-  })
-
-  it.each<[string, string[], string[]]>([
-    ['just returns fixtures', ['foo1'], ['foo1']],
-    ['maps counted fixtures', ['bar#'], ['bar1', 'bar2']],
-    ['maps fixtures by type', ['type:foo'], ['foo1', 'foo2']],
-    ['maps fixtures by group', ['group:group1'], ['baz1']],
-    ['maps each fixture only once', ['foo1', 'foo1'], ['foo1']],
-    [
-      'all of the above',
-      ['foo1', 'bar#', 'type:bar'],
-      ['foo1', 'bar1', 'bar2'],
-    ],
-    ['skips mapping for non-existent types', ['type:none'], []],
-    ['skips mapping for non-existent groups', ['group:none'], []],
-    ['skips mapping for non-existent counted fixture IDs', ['none#'], []],
-    ['skips mapping for non-existent fixtures', ['none'], []],
-  ])('%s', (_, input, expected) => {
-    expect(mapFixtureList(input)).toEqual(expected)
   })
 })

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useMasterData } from '../../hooks/api'
 import { pageWithWidgets } from '../../ui/css/page'
-import { FixtureWidget } from '../../widgets/fixture'
+import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
 import { memoInProduction } from '../../util/development'
 
 const FixturesPage = memoInProduction(() => {

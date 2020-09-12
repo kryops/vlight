@@ -4,7 +4,7 @@ import { useParams } from 'react-router'
 import { useMasterData } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'
 import { Grid } from '../../ui/containers/grid'
-import { DynamicWidget } from '../../widgets/dynamic'
+import { DynamicWidget } from '../../widgets/dynamic-widget'
 
 const DynamicPage = memoInProduction(() => {
   const { id } = useParams<{ id: string }>()

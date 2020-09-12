@@ -13,13 +13,13 @@ describe('processMemories', () => {
   it.each<[string, string[][], string[][]]>([
     ['just returns fixtures', [['foo1']], [['foo1']]],
     ['handles multiple scenes', [['foo1'], ['foo2']], [['foo1'], ['foo2']]],
-    ['maps counted fixtures', [['bar#']], [['bar1', 'bar2']]],
+    ['maps counted fixtures', [['all:bar']], [['bar1', 'bar2']]],
     ['maps fixtures by type', [['type:foo']], [['foo1', 'foo2']]],
     ['maps fixtures by group', [['group:group1']], [['baz1']]],
     ['maps each fixture only once', [['baz1', 'baz1']], [['baz1']]],
     [
       'all of the above',
-      [['group:group1', 'baz1', 'bar#', 'type:baz'], ['type:foo']],
+      [['group:group1', 'baz1', 'all:bar', 'type:baz'], ['type:foo']],
       [
         ['baz1', 'bar1', 'bar2'],
         ['foo1', 'foo2'],

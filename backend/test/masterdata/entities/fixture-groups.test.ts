@@ -11,12 +11,12 @@ describe('processFixtureGroups', () => {
 
   it.each<[string, string[], string[]]>([
     ['just returns fixtures', ['foo1'], ['foo1']],
-    ['maps counted fixtures', ['bar#'], ['bar1', 'bar2']],
+    ['maps counted fixtures', ['all:bar'], ['bar1', 'bar2']],
     ['maps fixtures by type', ['type:foo'], ['foo1', 'foo2']],
     ['maps each fixture only once', ['foo1', 'foo1'], ['foo1']],
     [
       'all of the above',
-      ['foo1', 'bar#', 'type:bar'],
+      ['foo1', 'all:bar', 'type:bar'],
       ['foo1', 'bar1', 'bar2'],
     ],
   ])('%s', (_, input, expected) => {

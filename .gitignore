@@ -170,3 +170,4 @@ $RECYCLE.BIN/
 dist
 .linaria-cache
 config/*/state.js
+*.tsbuildinfo

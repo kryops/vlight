@@ -2,7 +2,7 @@ import React from 'react'
 
 import { useApiState } from '../../hooks/api'
 
-import { StatelessChannelsWidget } from './widget'
+import { StatelessChannelsWidget } from './stateless-channels-widget'
 
 export interface ChannelsWidgetProps {
   from: number

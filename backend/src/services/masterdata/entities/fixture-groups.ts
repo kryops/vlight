@@ -1,8 +1,8 @@
 import { FixtureGroup } from '@vlight/entities'
 
+import { mapFixtureList } from '../../../util/shared'
+import { masterData, masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'
-
-import { mapFixtureList } from './fixtures'
 
 function processFixtureGroup({
   fixtures,
@@ -10,7 +10,7 @@ function processFixtureGroup({
 }: FixtureGroup): FixtureGroup {
   return {
     ...rest,
-    fixtures: mapFixtureList(fixtures),
+    fixtures: mapFixtureList(fixtures, { masterData, masterDataMaps }),
   }
 }
 
