@@ -8,8 +8,9 @@
   - all by type
   - apply state to selectable fixtures
 - Master data / config editor
+  - Memories Preview in entity list
   - Dynamic pages
-  - Memories
+  - Read-only view for viewing from the widgets (=> jump to editor from there?)
 - Backend restructuring
   - easier masterData extension / new entity process?
 - 2D Map

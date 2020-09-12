@@ -9,6 +9,7 @@ import {
   ensureBetween,
   getFraction,
   getValueForFraction,
+  interpolateGradientPositions,
 } from '../../util/shared'
 
 export enum ScenePattern {
@@ -46,46 +47,6 @@ export function getStateIndexAndFractionFor(
   }
 }
 
-function mapGradientEntriesToPosition(
-  gradient: FixtureStateGradient[]
-): number[] {
-  let lastPosition = 0
-  let lastPositionIndex = 0
-
-  let nextPosition = 100
-  let nextPositionIndex = gradient.length - 1
-
-  function refreshNextPosition(entryIndex: number) {
-    nextPositionIndex = gradient.findIndex(
-      (other, otherIndex) => otherIndex > entryIndex && other.position
-    )
-    if (nextPositionIndex === -1) nextPositionIndex = gradient.length - 1
-    nextPosition = gradient[nextPositionIndex].position ?? 100
-  }
-
-  refreshNextPosition(0)
-
-  return gradient.map((entry, entryIndex) => {
-    if (entry.position && entry.position >= lastPosition) {
-      lastPosition = entry.position
-      lastPositionIndex = entryIndex
-      return entry.position
-    }
-    if (entryIndex === 0) return 0
-    if (entryIndex === gradient.length - 1) return 100
-
-    if (entryIndex > nextPositionIndex) refreshNextPosition(entryIndex)
-
-    const positionFraction = getFraction(
-      entryIndex,
-      lastPositionIndex,
-      nextPositionIndex
-    )
-
-    return getValueForFraction(positionFraction, lastPosition, nextPosition)
-  })
-}
-
 function stateFromChannels(channels: Dictionary<number>): FixtureState {
   return { on: true, channels }
 }
@@ -120,7 +81,9 @@ export function getFixtureStateForGradientFraction(
 
   const position = fraction * 100
 
-  const gradientPositions = mapGradientEntriesToPosition(gradient)
+  const gradientPositions = interpolateGradientPositions(
+    gradient.map(entry => entry.position)
+  )
 
   const nextIndex = gradientPositions.findIndex(
     entryPosition => entryPosition >= position

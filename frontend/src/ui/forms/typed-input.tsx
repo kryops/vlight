@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-import { Input, InputProps } from './input'
+import { Input } from './input'
 
-export interface TypedInputProps<T>
-  extends Omit<InputProps, 'type' | 'value' | 'onChange'> {
+export interface TypedInputProps<T> {
   value: T | undefined
   onChange: (value: T | undefined) => void
+  className?: string
 }
 
 export function TextInput({
@@ -22,17 +22,27 @@ export function TextInput({
   )
 }
 
-export function NumberInput({
-  value,
-  onChange,
-  ...rest
-}: TypedInputProps<number>) {
+export interface NumberInputProps extends TypedInputProps<number> {
+  min?: number
+  max?: number
+}
+
+export function NumberInput({ value, onChange, ...rest }: NumberInputProps) {
+  // To allow undefined here even if it is not applied from above
+  const [internalValue, setInternalValue] = useState(value)
+
+  useEffect(() => {
+    setInternalValue(value)
+  }, [value])
+
   return (
     <Input
       type="number"
-      value={String(value ?? '')}
+      value={String(internalValue ?? '')}
       onChange={newValue => {
-        onChange(newValue === '' ? undefined : parseFloat(newValue))
+        const numberValue = newValue === '' ? undefined : parseFloat(newValue)
+        setInternalValue(numberValue)
+        onChange(numberValue)
       }}
       {...rest}
     />

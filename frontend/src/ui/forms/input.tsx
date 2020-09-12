@@ -11,10 +11,10 @@ import {
   inputWidth,
 } from '../styles'
 
-export interface InputProps {
+export interface InputProps extends React.InputHTMLAttributes<any> {
   type?: 'text' | 'number' | 'date' | 'time' | 'password'
   value: string
-  onChange: (value: string) => void
+  onChange: (value: any) => void
   className?: string
 }
 
@@ -39,6 +39,7 @@ export function Input({
   value,
   onChange,
   className,
+  ...rest
 }: InputProps) {
   const inputClassName = useClassName(input, input_light)
   return (
@@ -47,6 +48,7 @@ export function Input({
       value={value}
       onChange={event => onChange(event.target.value)}
       className={cx(inputClassName, className)}
+      {...rest}
     />
   )
 }
