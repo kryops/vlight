@@ -3,7 +3,7 @@ import React from 'react'
 
 import { setMemoryState } from '../../api'
 import { Widget } from '../../ui/containers/widget'
-import { Fader } from '../../ui/controls/fader'
+import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
 

@@ -20,6 +20,7 @@ import {
   mdiPlusCircle,
   mdiCheckboxBlankOutline,
   mdiCheckBoxOutline,
+  mdiLightbulbOffOutline,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -39,6 +40,7 @@ export const iconUniverse = mdiWhiteBalanceSunny
 export const iconFader = mdiTuneVertical
 export const iconFixtureType = mdiShape
 export const iconLight = mdiLightbulbOnOutline
+export const iconLightOff = mdiLightbulbOffOutline
 export const iconGroup = mdiGroup
 export const iconMemory = mdiImageFrame
 export const iconExperiment = mdiFlaskOutline

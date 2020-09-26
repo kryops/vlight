@@ -6,7 +6,7 @@ import { pageWithWidgets } from '../../ui/css/page'
 import { MemoryWidget } from '../../widgets/memory/memory-widget'
 import { Header } from '../../ui/containers/header'
 import { Button } from '../../ui/buttons/button'
-import { iconOn } from '../../ui/icons'
+import { iconLight, iconLightOff } from '../../ui/icons'
 import { setMemoryState } from '../../api'
 
 const MemoriesPage = memoInProduction(() => {
@@ -25,10 +25,13 @@ const MemoriesPage = memoInProduction(() => {
       <Header
         rightContent={
           <>
-            <Button icon={iconOn} onDown={() => setOnForAllMemories(true)}>
+            <Button icon={iconLight} onDown={() => setOnForAllMemories(true)}>
               ON
             </Button>
-            <Button icon={iconOn} onDown={() => setOnForAllMemories(false)}>
+            <Button
+              icon={iconLightOff}
+              onDown={() => setOnForAllMemories(false)}
+            >
               OFF
             </Button>
           </>

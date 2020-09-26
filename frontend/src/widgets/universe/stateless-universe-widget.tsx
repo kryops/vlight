@@ -73,6 +73,8 @@ export const StatelessUniverseWidget = memoInProduction(
 
             const isConnected =
               fixture && fixture === fixturesAtIndex[index + 1]
+            const channelOffset = fixture ? index + 1 - fixture.channel : -1
+            const channelMapping = fixtureType?.mapping[channelOffset]
 
             const fixtureName =
               fixture && fixtureType && fixture.channel === index + 1
@@ -90,7 +92,8 @@ export const StatelessUniverseWidget = memoInProduction(
                 value={value}
                 max={255}
                 label={(index + 1).toString()}
-                cornerLabel={fixtureName}
+                topCornerLabel={channelMapping?.toUpperCase()}
+                bottomCornerLabel={fixtureName}
                 color={fixtureColor}
                 className={cx(universeBar, {
                   [universeBar_connected]: isConnected,

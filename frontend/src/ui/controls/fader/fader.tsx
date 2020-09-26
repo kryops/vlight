@@ -61,14 +61,39 @@ const button_light = css`
   color: #fff;
 `
 
+const subLabelStyle = css`
+  position: absolute;
+  bottom: ${baseline()};
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 0.65rem;
+`
+
+const cornerLabelStyle = css`
+  position: absolute;
+  font-size: 0.65rem;
+  z-index: 3;
+  top: ${baseline(0.5)};
+  left: ${baseline(1)};
+`
+
+const cornerLabel_overflow = css`
+  min-width: ${baseline(32)};
+`
+
 export interface FaderProps {
   value: number
   min?: number
   max?: number
   step?: number
   label?: string
+  subLabel?: string
+  cornerLabel?: string
+  cornerLabelOverflow?: boolean
   onChange: (value: number) => void
   colorPicker?: boolean
+  className?: string
 }
 
 export const Fader = memoInProduction(
@@ -78,8 +103,12 @@ export const Fader = memoInProduction(
     max = 100,
     step,
     label,
+    subLabel,
+    cornerLabel,
+    cornerLabelOverflow,
     onChange,
     colorPicker,
+    className,
   }: FaderProps) => {
     const trackRef = useRef<HTMLDivElement>(null)
     const [localValue, setLocalValue] = useDelayedState<number | null>(null)
@@ -94,7 +123,7 @@ export const Fader = memoInProduction(
 
     return (
       <Touchable
-        className={cx(fader, colorPicker && colorPickerFader)}
+        className={cx(fader, colorPicker && colorPickerFader, className)}
         onTouch={event => {
           const offset = getTouchEventOffset(event, trackRef)
           if (!offset) {
@@ -117,7 +146,18 @@ export const Fader = memoInProduction(
           style={{ transform: `translateY(${y}px)` }}
         >
           {label}
+          {subLabel && <div className={subLabelStyle}>{subLabel}</div>}
         </div>
+        {cornerLabel && (
+          <div
+            className={cx(
+              cornerLabelStyle,
+              cornerLabelOverflow && cornerLabel_overflow
+            )}
+          >
+            {cornerLabel}
+          </div>
+        )}
       </Touchable>
     )
   }

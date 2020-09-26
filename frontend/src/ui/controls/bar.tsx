@@ -5,7 +5,7 @@ import { ensureBetween, getFraction } from '../../util/shared'
 import { baseline, iconShade, primaryShade, textShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-import { useClassName } from '../../hooks/ui'
+import { useClassNames } from '../../hooks/ui'
 
 const bar = css`
   position: relative;
@@ -16,14 +16,16 @@ const bar = css`
   padding: ${baseline(2)};
 `
 
+const bar_light = css`
+  border: 1px solid ${iconShade(2, true)};
+`
+
 const barLabel = css`
   z-index: 2;
 `
 
 const barCornerLabel = css`
   position: absolute;
-  left: ${baseline(1)};
-  bottom: ${baseline(0.5)};
   font-size: 0.65rem;
   color: ${textShade(0)};
   z-index: 2;
@@ -31,6 +33,20 @@ const barCornerLabel = css`
 
 const barCornerLabel_light = css`
   color: ${textShade(0, true)};
+`
+
+const barTopCornerLabel = css`
+  top: ${baseline(0.5)};
+  right: ${baseline(1)};
+`
+
+const barBottomCornerLabel = css`
+  bottom: ${baseline(0.5)};
+  left: ${baseline(1)};
+`
+
+const barBottomCornerLabel_overflow = css`
+  min-width: ${baseline(32)};
 `
 
 const barLevel = css`
@@ -48,7 +64,9 @@ export interface BarProps {
   min?: number
   max?: number
   label?: string
-  cornerLabel?: string
+  topCornerLabel?: string
+  bottomCornerLabel?: string
+  bottomCornerLabelOverflow?: boolean
   color?: string
   className?: string
 }
@@ -56,26 +74,41 @@ export interface BarProps {
 export const Bar = memoInProduction(
   ({
     label,
-    cornerLabel,
+    topCornerLabel,
+    bottomCornerLabel,
+    bottomCornerLabelOverflow,
     value,
     min = 0,
     max = 1,
     color,
     className,
   }: BarProps) => {
-    const cornerLabelClassName = useClassName(
-      barCornerLabel,
-      barCornerLabel_light
+    const [barClassName, cornerLabelClassName] = useClassNames(
+      [bar, bar_light],
+      [barCornerLabel, barCornerLabel_light]
     )
     const fraction = ensureBetween(getFraction(value, min, max), 0, 1)
     return (
       <div
-        className={cx(bar, className)}
+        className={cx(barClassName, className)}
         style={color ? { borderBottomColor: color } : undefined}
       >
         <div className={barLabel}>{label}</div>
-        {cornerLabel && (
-          <div className={cornerLabelClassName}>{cornerLabel}</div>
+        {topCornerLabel && (
+          <div className={cx(cornerLabelClassName, barTopCornerLabel)}>
+            {topCornerLabel}
+          </div>
+        )}
+        {bottomCornerLabel && (
+          <div
+            className={cx(
+              cornerLabelClassName,
+              barBottomCornerLabel,
+              bottomCornerLabelOverflow && barBottomCornerLabel_overflow
+            )}
+          >
+            {bottomCornerLabel}
+          </div>
         )}
         {fraction > 0 && (
           <div

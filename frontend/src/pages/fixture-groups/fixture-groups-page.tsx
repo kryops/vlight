@@ -6,7 +6,7 @@ import { pageWithWidgets } from '../../ui/css/page'
 import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
 import { Button } from '../../ui/buttons/button'
-import { iconOn } from '../../ui/icons'
+import { iconLight, iconLightOff } from '../../ui/icons'
 import { setFixtureGroupState } from '../../api'
 
 const FixtureGroupsPage = memoInProduction(() => {
@@ -25,10 +25,10 @@ const FixtureGroupsPage = memoInProduction(() => {
       <Header
         rightContent={
           <>
-            <Button icon={iconOn} onDown={() => setOnForAllGroups(true)}>
+            <Button icon={iconLight} onDown={() => setOnForAllGroups(true)}>
               ON
             </Button>
-            <Button icon={iconOn} onDown={() => setOnForAllGroups(false)}>
+            <Button icon={iconLightOff} onDown={() => setOnForAllGroups(false)}>
               OFF
             </Button>
           </>

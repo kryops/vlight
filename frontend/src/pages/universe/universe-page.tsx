@@ -52,6 +52,8 @@ const UniversePage = memoInProduction(() => {
             : undefined
 
           const isConnected = fixture && fixture === fixturesAtIndex[index + 1]
+          const channelOffset = fixture ? index + 1 - fixture.channel : -1
+          const channelMapping = fixtureType?.mapping[channelOffset]
 
           const fixtureName =
             fixture && fixtureType && fixture.channel === index + 1
@@ -69,7 +71,11 @@ const UniversePage = memoInProduction(() => {
               value={value}
               max={255}
               label={(index + 1).toString()}
-              cornerLabel={fixtureName}
+              topCornerLabel={channelMapping?.toUpperCase()}
+              bottomCornerLabel={fixtureName}
+              bottomCornerLabelOverflow={
+                fixtureType ? fixtureType.mapping.length > 1 : false
+              }
               color={fixtureColor}
               className={cx(universeBar, {
                 [universeBar_connected]: isConnected,

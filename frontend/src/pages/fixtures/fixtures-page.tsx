@@ -6,7 +6,7 @@ import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
 import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
 import { Button } from '../../ui/buttons/button'
-import { iconOn } from '../../ui/icons'
+import { iconLight, iconLightOff } from '../../ui/icons'
 import { setFixtureState } from '../../api'
 
 const FixturesPage = memoInProduction(() => {
@@ -25,10 +25,13 @@ const FixturesPage = memoInProduction(() => {
       <Header
         rightContent={
           <>
-            <Button icon={iconOn} onDown={() => setOnForAllFixtures(true)}>
+            <Button icon={iconLight} onDown={() => setOnForAllFixtures(true)}>
               ON
             </Button>
-            <Button icon={iconOn} onDown={() => setOnForAllFixtures(false)}>
+            <Button
+              icon={iconLightOff}
+              onDown={() => setOnForAllFixtures(false)}
+            >
               OFF
             </Button>
           </>

@@ -3,7 +3,7 @@ import { FixtureState } from '@vlight/entities'
 
 import { memoInProduction } from '../../../util/development'
 
-import { Fader } from '.'
+import { Fader } from './fader'
 
 export interface FixtureStateFaderProps {
   channelType: string

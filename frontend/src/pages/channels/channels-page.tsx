@@ -11,7 +11,7 @@ import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { Header } from '../../ui/containers/header'
 import { Button } from '../../ui/buttons/button'
-import { iconOn } from '../../ui/icons'
+import { iconLight, iconLightOff } from '../../ui/icons'
 
 const channelsPage = css`
   justify-content: space-between;
@@ -28,10 +28,16 @@ const ChannelsPage = memoInProduction(() => {
       <Header
         rightContent={
           <>
-            <Button icon={iconOn} onDown={() => setChannels(allChannels, 255)}>
+            <Button
+              icon={iconLight}
+              onDown={() => setChannels(allChannels, 255)}
+            >
               ON
             </Button>
-            <Button icon={iconOn} onDown={() => setChannels(allChannels, 0)}>
+            <Button
+              icon={iconLightOff}
+              onDown={() => setChannels(allChannels, 0)}
+            >
               OFF
             </Button>
           </>
