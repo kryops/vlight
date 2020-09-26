@@ -9,7 +9,7 @@ import {
 
 describe('api/protocol', () => {
   it('getApiChannelMessage', () => {
-    expect(getApiChannelMessage(1, 2)).toEqual({
+    expect(getApiChannelMessage([1], 2)).toEqual({
       type: 'channels',
       channels: {
         1: 2,
@@ -24,10 +24,11 @@ describe('api/protocol', () => {
         r: 100,
       },
     }
-    expect(getApiFixtureStateMessage('id', state)).toEqual({
+    expect(getApiFixtureStateMessage('id', state, false)).toEqual({
       type: 'fixture',
       id: 'id',
       state,
+      merge: false,
     })
   })
 
@@ -38,10 +39,11 @@ describe('api/protocol', () => {
         r: 100,
       },
     }
-    expect(getApiFixtureGroupStateMessage('id', state)).toEqual({
+    expect(getApiFixtureGroupStateMessage('id', state, false)).toEqual({
       type: 'fixture-group',
       id: 'id',
       state,
+      merge: false,
     })
   })
 
@@ -50,10 +52,11 @@ describe('api/protocol', () => {
       on: true,
       value: 255,
     }
-    expect(getApiMemoryStateMessage('id', state)).toEqual({
+    expect(getApiMemoryStateMessage('id', state, false)).toEqual({
       type: 'memory',
       id: 'id',
       state,
+      merge: false,
     })
   })
 })

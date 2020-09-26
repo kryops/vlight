@@ -10,9 +10,15 @@ import {
   setUniverseChannel,
   removeUniverse,
 } from '../../services/universe'
-import { dictionaryToMap, logger } from '../../util/shared'
+import {
+  dictionaryToMap,
+  logger,
+  forEach,
+  isUnique,
+  isTruthy,
+  mergeFixtureStates,
+} from '../../util/shared'
 import { howLong } from '../../util/time'
-import { isUnique, isTruthy } from '../../util/shared'
 import {
   getInitialFixtureState,
   mapFixtureStateToChannels,
@@ -75,25 +81,36 @@ function initFixtureGroup(
   setFixtureGroupStateToUniverse(fixtureGroup, initialState)
 }
 
-function setFixtureGroupState(id: IdType, state: FixtureState): boolean {
+function setFixtureGroupState(
+  id: IdType,
+  state: Partial<FixtureState>,
+  merge = false
+): boolean {
   const fixtureGroup = masterDataMaps.fixtureGroups.get(id)
   if (!fixtureGroup) {
     logger.warn('no fixture group found for ID', id)
     return false
   }
   const oldState = fixtureGroupStates.get(id)!
-  fixtureGroupStates.set(id, state)
+  const newState = mergeFixtureStates(
+    merge ? fixtureGroupStates.get(id) : undefined,
+    state
+  )
+
+  fixtureGroupStates.set(id, newState)
 
   const universe = universes.get(id)!
 
-  if (!oldState.on && state.on) addUniverse(universe)
-  else if (oldState.on && !state.on) removeUniverse(universe)
+  if (!oldState.on && newState.on) addUniverse(universe)
+  else if (oldState.on && !newState.on) removeUniverse(universe)
 
-  return setFixtureGroupStateToUniverse(fixtureGroup, state)
+  return setFixtureGroupStateToUniverse(fixtureGroup, newState)
 }
 
 function handleApiMessage(message: ApiFixtureGroupStateMessage) {
-  setFixtureGroupState(message.id, message.state)
+  forEach(message.id, id =>
+    setFixtureGroupState(id, message.state, message.merge)
+  )
   return true
 }
 

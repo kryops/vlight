@@ -8,7 +8,7 @@ import { getTouchEventOffset } from '../../../util/touch'
 import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
 import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
-import { useClassName } from '../../../hooks/ui'
+import { useClassNames } from '../../../hooks/ui'
 
 const faderWidth = baselinePx * 12
 const faderHeight = baselinePx * 60
@@ -83,8 +83,10 @@ export const Fader = memoInProduction(
   }: FaderProps) => {
     const trackRef = useRef<HTMLDivElement>(null)
     const [localValue, setLocalValue] = useDelayedState<number | null>(null)
-    const trackClassName = useClassName(track, track_light)
-    const buttonClassName = useClassName(button, button_light)
+    const [trackClassName, buttonClassName] = useClassNames(
+      [track, track_light],
+      [button, button_light]
+    )
 
     const valueToUse = localValue ?? value
     const currentFraction = (valueToUse - min) / (max - min)

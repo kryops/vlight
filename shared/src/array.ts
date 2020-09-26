@@ -46,3 +46,11 @@ export function entityArrayToMap<T extends { id: IdType }>(
 ): Map<IdType, T> {
   return new Map<IdType, T>(arr.map(it => [it.id, it]))
 }
+
+export function forEach<T>(entry: T | T[], cb: (it: T) => void): void {
+  if (Array.isArray(entry)) {
+    entry.forEach(cb)
+  } else {
+    cb(entry)
+  }
+}

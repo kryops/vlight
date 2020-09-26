@@ -16,47 +16,53 @@ import {
 } from '@vlight/entities'
 
 export function getApiChannelMessage(
-  channel: number,
+  channels: number[],
   value: number
 ): ApiChannelMessage {
-  return {
+  const message: ApiChannelMessage = {
     type: 'channels',
-    channels: {
-      [channel]: value,
-    },
+    channels: {},
   }
+  channels.forEach(channel => (message.channels[channel] = value))
+  return message
 }
 
 export function getApiFixtureStateMessage(
-  id: IdType,
-  state: FixtureState
+  id: IdType | IdType[],
+  state: Partial<FixtureState>,
+  merge: boolean
 ): ApiFixtureStateMessage {
   return {
     type: 'fixture',
     id,
     state,
+    merge,
   }
 }
 
 export function getApiFixtureGroupStateMessage(
-  id: IdType,
-  state: FixtureState
+  id: IdType | IdType[],
+  state: Partial<FixtureState>,
+  merge: boolean
 ): ApiFixtureGroupStateMessage {
   return {
     type: 'fixture-group',
     id,
     state,
+    merge,
   }
 }
 
 export function getApiMemoryStateMessage(
-  id: IdType,
-  state: MemoryState
+  id: IdType | IdType[],
+  state: Partial<MemoryState>,
+  merge: boolean
 ): ApiMemoryStateMessage {
   return {
     type: 'memory',
     id,
     state,
+    merge,
   }
 }
 

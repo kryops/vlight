@@ -1,8 +1,9 @@
 import { Fixture, FixtureType } from '@vlight/entities'
 import React from 'react'
 
-import { changeFixtureState } from '../../api'
+import { mergeFixtureStates } from '../../util/shared'
 import { useMasterDataMaps, useApiStateEntry } from '../../hooks/api'
+import { setFixtureState } from '../../api'
 
 import { FixtureStateWidget } from './fixture-state-widget'
 
@@ -35,7 +36,10 @@ export const FixtureWidget = ({ fixture }: FixtureWidgetProps) => {
       fixtureState={fixtureState}
       mapping={fixtureType.mapping}
       onChange={partialState =>
-        changeFixtureState(fixture.id, fixtureState, partialState)
+        setFixtureState(
+          fixture.id,
+          mergeFixtureStates(fixtureState, partialState)
+        )
       }
     />
   )

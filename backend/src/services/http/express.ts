@@ -23,5 +23,5 @@ export async function initExpressApp(): Promise<void> {
   })
 
   expressApp.use(compression())
-  expressApp.use(express.static(join(__dirname, '../../frontend/dist')))
+  expressApp.use(express.static(join(__dirname, '../../../../frontend/dist')))
 }

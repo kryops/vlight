@@ -1,4 +1,4 @@
-import { MasterData, MasterDataMaps } from '@vlight/entities'
+import { FixtureState, MasterData, MasterDataMaps } from '@vlight/entities'
 
 import { logger } from './log'
 import { FixtureMappingPrefix } from './enums'
@@ -65,4 +65,17 @@ export function mapFixtureList(
       }
       return true
     })
+}
+
+export function mergeFixtureStates(
+  state1: FixtureState | undefined,
+  state2: Partial<FixtureState>
+): FixtureState {
+  return {
+    on: false,
+    ...state1,
+    ...state2,
+    channels: { ...state1?.channels, ...state2.channels },
+    initial: undefined, // reset initial state
+  }
 }

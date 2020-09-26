@@ -10,7 +10,12 @@ import {
   removeUniverse,
   setUniverseChannel,
 } from '../../services/universe'
-import { dictionaryToMap, logger } from '../../util/shared'
+import {
+  dictionaryToMap,
+  logger,
+  forEach,
+  mergeMemoryStates,
+} from '../../util/shared'
 import { howLong } from '../../util/time'
 import { controlRegistry } from '../registry'
 import { registerApiMessageHandler } from '../../services/api/registry'
@@ -64,25 +69,30 @@ function setMemoryStateToUniverse(memory: Memory, state: MemoryState): boolean {
   return changed
 }
 
-function setMemoryState(id: IdType, state: MemoryState): boolean {
+function setMemoryState(
+  id: IdType,
+  state: Partial<MemoryState>,
+  merge = false
+): boolean {
   const memory = masterDataMaps.memories.get(id)
   if (!memory) {
     logger.warn('no memory found for ID', id)
     return false
   }
   const oldState = memoryStates.get(id)!
-  memoryStates.set(id, state)
+  const newState = mergeMemoryStates(merge ? oldState : undefined, state)
+  memoryStates.set(id, newState)
 
   const universe = outgoingUniverses.get(id)!
 
-  if (!oldState.on && state.on) addUniverse(universe)
-  else if (oldState.on && !state.on) removeUniverse(universe)
+  if (!oldState.on && newState.on) addUniverse(universe)
+  else if (oldState.on && !newState.on) removeUniverse(universe)
 
-  return setMemoryStateToUniverse(memory, state)
+  return setMemoryStateToUniverse(memory, newState)
 }
 
 function handleApiMessage(message: ApiMemoryStateMessage) {
-  setMemoryState(message.id, message.state)
+  forEach(message.id, id => setMemoryState(id, message.state))
   return true
 }
 

@@ -63,8 +63,8 @@ const overlay = css`
 const devOverlay = css`
   position: absolute;
   z-index: ${zDevOverlay};
-  bottom: ${baseline(1)};
-  right: ${baseline(1)};
+  bottom: ${baseline(3)};
+  right: ${baseline(3)};
 `
 
 const navBreakpoint = 768

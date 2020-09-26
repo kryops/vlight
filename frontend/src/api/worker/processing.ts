@@ -2,7 +2,13 @@ import { ApiOutMessage, ApiStateMessage } from '@vlight/api'
 import { MasterData } from '@vlight/entities'
 
 import { getUniverseIndex } from '../util'
-import { logger, assertNever } from '../../util/shared'
+import {
+  logger,
+  assertNever,
+  forEach,
+  mergeFixtureStates,
+  mergeMemoryStates,
+} from '../../util/shared'
 
 export type ApiState = {
   [key in keyof Omit<ApiStateMessage, 'type'>]: ApiStateMessage[key] extends
@@ -54,22 +60,45 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
     case 'fixture':
       state.fixtures = {
         ...state.fixtures,
-        [message.id]: message.state,
       }
+
+      forEach(
+        message.id,
+        id =>
+          (state.fixtures[id] = mergeFixtureStates(
+            message.merge ? state.fixtures[id] : undefined,
+            message.state
+          ))
+      )
       break
 
     case 'fixture-group':
       state.fixtureGroups = {
         ...state.fixtureGroups,
-        [message.id]: message.state,
       }
+
+      forEach(
+        message.id,
+        id =>
+          (state.fixtureGroups[id] = mergeFixtureStates(
+            message.merge ? state.fixtureGroups[id] : undefined,
+            message.state
+          ))
+      )
       break
 
     case 'memory':
       state.memories = {
         ...state.memories,
-        [message.id]: message.state,
       }
+      forEach(
+        message.id,
+        id =>
+          (state.memories[id] = mergeMemoryStates(
+            message.merge ? state.memories[id] : undefined,
+            message.state
+          ))
+      )
       break
 
     default:

@@ -1,9 +1,10 @@
 import { FixtureGroup } from '@vlight/entities'
 import React from 'react'
 
-import { changeFixtureGroupState } from '../../api'
+import { setFixtureGroupState } from '../../api'
 import { useApiStateEntry } from '../../hooks/api'
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
+import { mergeFixtureStates } from '../../util/shared'
 import { FixtureStateWidget } from '../fixture/fixture-state-widget'
 
 export interface FixtureGroupWidgetProps {
@@ -24,7 +25,10 @@ export const FixtureGroupWidget = ({ group }: FixtureGroupWidgetProps) => {
       fixtureState={groupState}
       mapping={groupMapping}
       onChange={partialState =>
-        changeFixtureGroupState(group.id, groupState, partialState)
+        setFixtureGroupState(
+          group.id,
+          mergeFixtureStates(groupState, partialState)
+        )
       }
     />
   )

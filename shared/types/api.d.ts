@@ -19,22 +19,25 @@ export interface ApiChannelMessage {
 /** Change the state of a fixture */
 export interface ApiFixtureStateMessage {
   type: 'fixture'
-  id: IdType
-  state: FixtureState
+  id: IdType | IdType[]
+  state: Partial<FixtureState>
+  merge?: boolean
 }
 
 /** Change the state of a fixture group */
 export interface ApiFixtureGroupStateMessage {
   type: 'fixture-group'
-  id: IdType
-  state: FixtureState
+  id: IdType | IdType[]
+  state: Partial<FixtureState>
+  merge?: boolean
 }
 
 /** Change the state of a memory */
 export interface ApiMemoryStateMessage {
   type: 'memory'
-  id: IdType
-  state: MemoryState
+  id: IdType | IdType[]
+  state: Partial<MemoryState>
+  merge?: boolean
 }
 
 // Incoming messages

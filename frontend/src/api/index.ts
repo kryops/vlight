@@ -10,7 +10,6 @@ import {
 import { socketProcessingInterval, useSocketUpdateThrottling } from '../config'
 import { logger } from '../util/shared'
 
-import { updateFixtureState } from './fixture'
 import {
   getApiChannelMessage,
   getApiFixtureStateMessage,
@@ -32,39 +31,35 @@ export function sendApiMessage(message: ApiInMessage): void {
 }
 
 export function setChannel(channel: number, value: number): void {
-  sendApiMessage(getApiChannelMessage(channel, value))
+  sendApiMessage(getApiChannelMessage([channel], value))
 }
 
-export function setFixtureState(id: IdType, state: FixtureState): void {
-  sendApiMessage(getApiFixtureStateMessage(id, state))
+export function setChannels(channels: number[], value: number): void {
+  sendApiMessage(getApiChannelMessage(channels, value))
 }
 
-export function setFixtureGroupState(id: IdType, state: FixtureState): void {
-  sendApiMessage(getApiFixtureGroupStateMessage(id, state))
-}
-
-export function changeFixtureState(
-  id: IdType,
-  oldState: FixtureState,
-  newState: Partial<FixtureState>
+export function setFixtureState(
+  id: IdType | IdType[],
+  state: Partial<FixtureState>,
+  merge = false
 ): void {
-  sendApiMessage(
-    getApiFixtureStateMessage(id, updateFixtureState(oldState, newState))
-  )
+  sendApiMessage(getApiFixtureStateMessage(id, state, merge))
 }
 
-export function changeFixtureGroupState(
-  id: IdType,
-  oldState: FixtureState,
-  newState: Partial<FixtureState>
+export function setFixtureGroupState(
+  id: IdType | IdType[],
+  state: Partial<FixtureState>,
+  merge = false
 ): void {
-  sendApiMessage(
-    getApiFixtureGroupStateMessage(id, updateFixtureState(oldState, newState))
-  )
+  sendApiMessage(getApiFixtureGroupStateMessage(id, state, merge))
 }
 
-export function changeMemoryState(id: IdType, state: MemoryState): void {
-  sendApiMessage(getApiMemoryStateMessage(id, state))
+export function setMemoryState(
+  id: IdType | IdType[],
+  state: Partial<MemoryState>,
+  merge = false
+): void {
+  sendApiMessage(getApiMemoryStateMessage(id, state, merge))
 }
 
 export function removeEntity(entity: EntityName, id: IdType): void {

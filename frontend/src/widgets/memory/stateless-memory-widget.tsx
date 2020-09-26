@@ -1,7 +1,7 @@
 import { Memory, MemoryState } from '@vlight/entities'
 import React from 'react'
 
-import { changeMemoryState } from '../../api'
+import { setMemoryState } from '../../api'
 import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader'
 import { faderContainer } from '../../ui/css/fader-container'
@@ -19,7 +19,7 @@ export const StatelessMemoryWidget = memoInProduction(
         key={memory.id}
         title={memory.name ?? memory.id}
         onTitleClick={() =>
-          changeMemoryState(memory.id, {
+          setMemoryState(memory.id, {
             value: state.value,
             on: !state.on,
           })
@@ -32,7 +32,7 @@ export const StatelessMemoryWidget = memoInProduction(
             step={1}
             value={state.value ?? 0}
             onChange={value =>
-              changeMemoryState(memory.id, {
+              setMemoryState(memory.id, {
                 on: state.on,
                 value,
               })

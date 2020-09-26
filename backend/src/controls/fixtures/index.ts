@@ -3,7 +3,12 @@ import { ApiFixtureStateMessage } from '@vlight/api'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
-import { dictionaryToMap, logger } from '../../util/shared'
+import {
+  dictionaryToMap,
+  logger,
+  mergeFixtureStates,
+  forEach,
+} from '../../util/shared'
 import { howLong } from '../../util/time'
 import {
   addUniverse,
@@ -50,18 +55,28 @@ function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
   })
 }
 
-function setFixtureState(id: IdType, state: FixtureState): boolean {
+function setFixtureState(
+  id: IdType,
+  state: Partial<FixtureState>,
+  merge = false
+): boolean {
   const fixture = masterDataMaps.fixtures.get(id)
   if (!fixture) {
     logger.warn('no fixture found for ID', id)
     return false
   }
-  fixtureStates.set(id, state)
-  return setFixtureStateToUniverse(fixture, state)
+
+  const newState = mergeFixtureStates(
+    merge ? fixtureStates.get(id) : undefined,
+    state
+  )
+
+  fixtureStates.set(id, newState)
+  return setFixtureStateToUniverse(fixture, newState)
 }
 
 function handleApiMessage(message: ApiFixtureStateMessage) {
-  setFixtureState(message.id, message.state)
+  forEach(message.id, id => setFixtureState(id, message.state, message.merge))
   return true
 }
 

@@ -43,6 +43,7 @@ const UniversePage = memoInProduction(() => {
 
   return (
     <>
+      <h1>Universe</h1>
       <div className={cx(pageWithWidgets, universePage)}>
         {universe.map((value, index) => {
           const fixture = fixturesAtIndex[index]

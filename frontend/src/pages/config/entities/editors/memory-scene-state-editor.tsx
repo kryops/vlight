@@ -8,7 +8,6 @@ import {
 
 import { useCommonFixtureMapping } from '../../../../hooks/fixtures'
 import { FixtureStateWidget } from '../../../../widgets/fixture/fixture-state-widget'
-import { updateFixtureState } from '../../../../api/fixture'
 import { Select } from '../../../../ui/forms/select'
 import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
@@ -18,6 +17,7 @@ import { formatNumber } from '../../../../util/format'
 import {
   ensureBetween,
   interpolateGradientPositions,
+  mergeFixtureStates,
 } from '../../../../util/shared'
 import { useClassName } from '../../../../hooks/ui'
 import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
@@ -208,7 +208,7 @@ export function MemorySceneStateEditor({
       fixtureState={localState}
       mapping={mapping}
       onChange={partialState => {
-        const newState = updateFixtureState(localState, partialState)
+        const newState = mergeFixtureStates(localState, partialState)
         setLocalState(newState)
         onChange(newState)
       }}

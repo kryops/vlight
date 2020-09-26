@@ -19,9 +19,10 @@ import {
   FormSelect,
 } from '../../ui/forms/form-input'
 import { Label } from '../../ui/forms/label'
-import { Button } from '../../ui/forms/button'
+import { Button } from '../../ui/buttons/button'
 import { ArrayInput } from '../../ui/forms/array-input'
 import { TextInput } from '../../ui/forms/typed-input'
+import { iconAdd } from '../../ui/icons'
 
 const TestPage = memoInProduction(() => {
   const masterData = useMasterData()
@@ -102,7 +103,7 @@ const TestPage = memoInProduction(() => {
           />
         }
       />
-      <Button onClick={() => {}} block>
+      <Button onDown={() => console.log('sdfdf')} block icon={iconAdd}>
         Foobar
       </Button>
       <h2>Overlay / Modal / Dialog</h2>

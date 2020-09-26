@@ -11,7 +11,7 @@ import { FixtureInput } from '../../../../ui/forms/fixture-input'
 import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
 import { primaryShade, baseline, iconShade } from '../../../../ui/styles'
-import { useClassName } from '../../../../hooks/ui'
+import { useClassNames } from '../../../../hooks/ui'
 import { Select, SelectEntry } from '../../../../ui/forms/select'
 import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
 import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
@@ -61,8 +61,10 @@ export function MemoryEditor({
   const formState = useFormState(entry, { onChange })
   const scenes = useFormStateArray(formState, 'scenes')
 
-  const sceneClass = useClassName(sceneStyle, sceneStyle_light)
-  const stateClass = useClassName(stateStyle, stateStyle_light)
+  const [sceneClass, stateClass] = useClassNames(
+    [sceneStyle, sceneStyle_light],
+    [stateStyle, stateStyle_light]
+  )
 
   function changeSceneProperty<TKey extends keyof MemoryScene>(
     scene: MemoryScene,
