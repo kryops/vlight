@@ -11,6 +11,7 @@ export const entitiesPageRoute = (
 ): string => `/entities/${type}`
 export const testPageRoute = '/test'
 export const universePageRoute = '/universe'
+export const mapPageRoute = '/map'
 export const dynamicPageRoute = (id = ':id'): string => `/dynamic/${id}`
 
-export const _entryRoute = universePageRoute
+export const _entryRoute = mapPageRoute

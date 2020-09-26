@@ -6,7 +6,6 @@ import {
   mdiLoading,
   mdiMenu,
   mdiTuneVertical,
-  mdiWhiteBalanceSunny,
   mdiGroup,
   mdiPaletteOutline,
   mdiFileAccount,
@@ -21,6 +20,8 @@ import {
   mdiCheckboxBlankOutline,
   mdiCheckBoxOutline,
   mdiLightbulbOffOutline,
+  mdiStarFourPoints,
+  mdiMap,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -36,7 +37,8 @@ export const iconAdd = mdiPlusCircle
 export const iconCheckbox = mdiCheckboxBlankOutline
 export const iconCheckbox_checked = mdiCheckBoxOutline
 
-export const iconUniverse = mdiWhiteBalanceSunny
+export const iconMap = mdiMap
+export const iconUniverse = mdiStarFourPoints
 export const iconFader = mdiTuneVertical
 export const iconFixtureType = mdiShape
 export const iconLight = mdiLightbulbOnOutline

@@ -1,5 +1,3 @@
-// @ts-check
-/** @type {import('@vlight/shared/types/entities').FixtureType[]} */
 const fixtureTypes = [
   {
     id: 'generic',
@@ -10,6 +8,9 @@ const fixtureTypes = [
     id: 'rgb',
     name: 'RGB',
     mapping: ['r', 'g', 'b'],
+    shape: 'square',
+    xSize: 4,
+    ySize: 4,
   },
   {
     id: 'rgbwauv',
@@ -20,6 +21,9 @@ const fixtureTypes = [
     id: 'wasserdicht9',
     name: 'Wasserdicht 9ch',
     mapping: ['m', 'r', 'g', 'b', 'a', 'w', 'uv', 'str', 'cur'],
+    shape: 'square',
+    xSize: 6,
+    ySize: 4,
   },
   {
     id: 'blinder19',

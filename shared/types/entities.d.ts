@@ -10,9 +10,14 @@ export interface Dictionary<T> {
 
 // MasterData
 
+export type FixtureShape = 'square' | 'circle'
+
 export interface FixtureType extends DbEntity {
   name: string
   mapping: string[]
+  shape?: FixtureShape
+  xSize?: number
+  ySize?: number
 }
 
 export interface Fixture extends DbEntity {
@@ -20,6 +25,10 @@ export interface Fixture extends DbEntity {
   channel: number
   name?: string
   count?: number
+  x?: number
+  y?: number
+  xOffset?: number
+  yOffset?: number
   originalId?: IdType
 }
 
@@ -130,12 +139,17 @@ export interface MemoryWidgetConfig {
   id: string
 }
 
+export interface MapWidgetConfig {
+  type: 'map'
+}
+
 export type WidgetConfig =
   | UniverseWidgetConfig
   | ChannelsWidgetConfig
   | FixtureWidgetConfig
   | FixtureGroupWidgetConfig
   | MemoryWidgetConfig
+  | MapWidgetConfig
 
 export interface GridCellConfig {
   factor?: number

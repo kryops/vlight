@@ -1,10 +1,26 @@
 import React, { useState } from 'react'
+import { FixtureShape } from '@vlight/entities'
+import { css } from 'linaria'
 
 import { useFormState } from '../../../../hooks/form'
-import { FormTextInput } from '../../../../ui/forms/form-input'
+import {
+  FormNumberInput,
+  FormSelect,
+  FormTextInput,
+} from '../../../../ui/forms/form-input'
 import { EntityEditorProps } from '../entity-ui-mapping'
 import { Label } from '../../../../ui/forms/label'
 import { TextInput } from '../../../../ui/forms/typed-input'
+import { SelectEntry } from '../../../../ui/forms/select'
+
+const fixtureShapeEntries: SelectEntry<FixtureShape>[] = [
+  { value: 'circle', label: 'Circle' },
+  { value: 'square', label: 'Square' },
+]
+
+const sizeInput = css`
+  width: auto;
+`
 
 export function FixtureTypeEditor({
   entry,
@@ -37,6 +53,39 @@ export function FixtureTypeEditor({
               formState.changeValue('mapping', newMapping)
             }}
           />
+        }
+      />
+      <Label
+        label="Shape"
+        input={
+          <FormSelect
+            entries={fixtureShapeEntries}
+            formState={formState}
+            name="shape"
+          />
+        }
+      />
+      <Label
+        label="Size"
+        description="X/Y - 0-100 (Default: 5x5)"
+        input={
+          <>
+            <FormNumberInput
+              formState={formState}
+              name="xSize"
+              min={0}
+              max={100}
+              className={sizeInput}
+            />
+            {' x '}
+            <FormNumberInput
+              formState={formState}
+              name="ySize"
+              min={0}
+              max={100}
+              className={sizeInput}
+            />
+          </>
         }
       />
     </>

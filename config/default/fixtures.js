@@ -1,34 +1,12 @@
-// @ts-check
-/** @type {import('@vlight/shared/types/entities').Fixture[]} */
 const fixtures = [
-  // {
-  //   id: 'gen',
-  //   type: 'generic',
-  //   channel: 1,
-  // },
-  // {
-  //   id: 'rgb',
-  //   type: 'rgb',
-  //   channel: 2,
-  // },
-  // {
-  //   id: 'rgbwauv',
-  //   type: 'rgbwauv',
-  //   channel: 5,
-  // },
-  // {
-  //   id: 'rgb#',
-  //   name: 'RGB Multi',
-  //   type: 'rgb',
-  //   channel: 11,
-  //   count: 4,
-  // },
   {
     id: 'stufe',
     name: 'Stufe',
     type: 'stufe3',
     channel: 1,
     count: 4,
+    x: 38,
+    y: 90,
   },
   {
     id: '3x12',
@@ -36,6 +14,10 @@ const fixtures = [
     type: 'wasserdicht9',
     channel: 25,
     count: 8,
+    x: 9,
+    y: 0,
+    yOffset: 0,
+    xOffset: 12,
   },
   {
     id: '12x12',
@@ -43,6 +25,10 @@ const fixtures = [
     type: 'wasserdicht9',
     channel: 97,
     count: 8,
+    x: 30,
+    y: 20,
+    xOffset: 6,
+    yOffset: 0,
   },
   {
     id: 'blinder',
@@ -50,6 +36,9 @@ const fixtures = [
     type: 'blinder19',
     channel: 169,
     count: 2,
+    x: 10,
+    y: 10,
+    xOffset: 80,
   },
   {
     id: 'bar',
@@ -57,6 +46,8 @@ const fixtures = [
     type: 'bar15',
     channel: 207,
     count: 2,
+    x: 45,
+    y: 30,
   },
   {
     id: 'flach',
@@ -64,6 +55,10 @@ const fixtures = [
     type: 'flach',
     channel: 237,
     count: 4,
+    x: 100,
+    y: 30,
+    xOffset: 0,
+    yOffset: 6,
   },
   {
     id: 'hazer',

@@ -10,6 +10,7 @@ import { ChannelsWidget } from './channels/channels-widget'
 import { FixtureWidget } from './fixture/fixture-widget'
 import { FixtureGroupWidget } from './fixture-group/fixture-group-widget'
 import { MemoryWidget } from './memory/memory-widget'
+import { MapWidget } from './map/map-widget'
 
 export interface DynamicWidgetProps {
   config: WidgetConfig
@@ -49,6 +50,9 @@ export const DynamicWidget = memoInProduction(
       case 'memory':
         const memory = memories.get(config.id)
         return memory ? <MemoryWidget memory={memory} /> : null
+
+      case 'map':
+        return <MapWidget />
 
       default:
         assertNever(config)

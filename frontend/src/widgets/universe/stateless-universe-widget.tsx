@@ -11,7 +11,7 @@ import { baseline, baselinePx } from '../../ui/styles'
 import {
   getFixtureAtChannel,
   getEffectiveFixtureColor,
-} from '../../pages/universe/util'
+} from '../../util/fixtures'
 import { getUniverseIndex } from '../../api/util'
 import { Bar } from '../../ui/controls/bar'
 import { useMasterDataMaps } from '../../hooks/api'

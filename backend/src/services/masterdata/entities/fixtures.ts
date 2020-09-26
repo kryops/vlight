@@ -38,11 +38,20 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
   }
 
   return arrayRange(1, count, index => ({
+    ...fixture,
     id: replaceIndex(id, index),
     originalId: id,
     name: replaceIndex(name, index, true),
     type,
     channel: computeChannel(type, channel, index),
+    x:
+      fixture.x !== undefined
+        ? fixture.x + (index - 1) * (fixture.xOffset ?? 8)
+        : undefined,
+    y:
+      fixture.y !== undefined
+        ? fixture.y + (index - 1) * (fixture.yOffset ?? 0)
+        : undefined,
   }))
 }
 

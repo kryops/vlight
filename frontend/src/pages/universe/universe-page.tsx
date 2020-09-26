@@ -11,8 +11,10 @@ import { pageWithWidgets } from '../../ui/css/page'
 import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-
-import { getFixtureAtChannel, getEffectiveFixtureColor } from './util'
+import {
+  getFixtureAtChannel,
+  getEffectiveFixtureColor,
+} from '../../util/fixtures'
 
 const universePage = css`
   justify-content: flex-start; /* so the universeBar_connected margins work */

@@ -2,6 +2,7 @@ export enum ChannelMapping {
   red = 'r',
   green = 'g',
   blue = 'b',
+  white = 'w',
   master = 'm',
 }
 

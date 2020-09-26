@@ -21,8 +21,8 @@ export interface FormInputProps<
   formState: FormState<TValues>
 }
 
-function wrapTypedInput<TValue>(
-  TypedInput: React.ComponentType<TypedInputProps<TValue>>
+function wrapTypedInput<TValue, TAdditionalProps extends object>(
+  TypedInput: React.ComponentType<TypedInputProps<TValue> & TAdditionalProps>
 ) {
   return function FormInput<
     TValues extends { [key in TName]?: TValue | undefined },
@@ -32,12 +32,13 @@ function wrapTypedInput<TValue>(
     name,
     ...rest
   }: FormInputProps<TValue, TValues, TName> &
-    Omit<TypedInputProps<TValue>, 'value' | 'onChange'>) {
+    Omit<TypedInputProps<TValue>, 'value' | 'onChange'> &
+    Omit<TAdditionalProps, 'value' | 'onChange'>) {
     return (
       <TypedInput
         value={formState.values[name]}
         onChange={value => formState.changeValue(name, value as any)}
-        {...rest}
+        {...(rest as any)}
       />
     )
   }

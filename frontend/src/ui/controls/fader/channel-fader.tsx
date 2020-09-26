@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import { css } from 'linaria'
 
 import { memoInProduction } from '../../../util/development'
-import { getFixtureAtChannel } from '../../../pages/universe/util'
+import { getFixtureAtChannel } from '../../../util/fixtures'
 import { useMasterData, useMasterDataMaps } from '../../../hooks/api'
 
 import { Fader } from './fader'

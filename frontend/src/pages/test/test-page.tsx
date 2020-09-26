@@ -144,6 +144,7 @@ const TestPage = memoInProduction(() => {
         <DynamicWidget config={{ type: 'fixture', id: 'rgb' }} />
         <DynamicWidget config={{ type: 'fixture', id: 'rgb' }} />
         <DynamicWidget config={{ type: 'fixture-group', id: 'multi' }} />
+        <DynamicWidget config={{ type: 'map' }} />
       </div>
       <h2>Master data</h2>
       <pre>{JSON.stringify(masterData, null, 2)}</pre>

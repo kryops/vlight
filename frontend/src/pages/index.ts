@@ -7,6 +7,7 @@ import { configPageNavItem } from './config'
 import { testPageNavItem } from './test'
 import { settingsPageEntry } from './config/settings'
 import { entitiesPageEntry } from './config/entities'
+import { mapPageNavItem } from './map'
 
 export interface RouteEntry {
   route: string
@@ -19,6 +20,7 @@ export interface NavItemEntry extends RouteEntry {
 }
 
 export const mainNavigationItems: NavItemEntry[] = [
+  mapPageNavItem,
   universePageNavItem,
   channelsPageNavItem,
   fixturesPageNavItem,

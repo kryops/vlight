@@ -33,6 +33,9 @@ const dynamicPages = [
           {
             widgets: [{ type: 'memory', id: 'test' }],
           },
+          {
+            widgets: [{ type: 'map' }],
+          },
         ],
       },
     ],
