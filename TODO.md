@@ -2,8 +2,6 @@
 
 ## Roadmap
 
-- Buttons / Pages: Highlight what is active -> disable buttons or make them active?
-- Highlight navigation entries where something is active
 - Multi selector for fixtures, fixture groups and memories
 - Master data / config editor
   - Memories Preview in entity list

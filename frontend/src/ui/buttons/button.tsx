@@ -7,16 +7,6 @@ import { useClassNames } from '../../hooks/ui'
 import { Touchable } from '../components/touchable'
 import { Icon } from '../icons/icon'
 
-export interface ButtonProps {
-  children: React.ReactNode
-  onDown?: () => void
-  onUp?: () => void
-  icon?: string
-  block?: boolean
-  active?: boolean
-  className?: string
-}
-
 const button = css`
   display: inline-block;
   padding: ${baseline(2)} ${baseline(4)};
@@ -46,9 +36,14 @@ const button_active = css`
 `
 
 const button_inactive = css`
-  &:active {
+  &:active,
+  &:hover {
     background: ${primaryShade(2)};
   }
+`
+
+const button_disabled = css`
+  opacity: 0.6;
 `
 
 const button_light = css`
@@ -84,6 +79,17 @@ const iconStyle = css`
   margin-right: ${baseline()};
 `
 
+export interface ButtonProps {
+  children: React.ReactNode
+  onDown?: () => void
+  onUp?: () => void
+  icon?: string
+  block?: boolean
+  active?: boolean
+  disabled?: boolean
+  className?: string
+}
+
 export function Button({
   children,
   onDown,
@@ -92,6 +98,7 @@ export function Button({
   icon,
   className,
   active,
+  disabled,
 }: ButtonProps) {
   const [buttonClass, activeClass, inactiveClass] = useClassNames(
     [button, button_light],
@@ -104,7 +111,8 @@ export function Button({
         buttonClass,
         block && buttonBlock,
         active === true && activeClass,
-        active === false && inactiveClass,
+        (active === false || disabled) && inactiveClass,
+        disabled && button_disabled,
         className
       )}
       onDown={onDown}

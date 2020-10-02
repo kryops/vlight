@@ -1,4 +1,5 @@
 import { iconMemory } from '../../ui/icons'
+import { isAnyOn } from '../../util/state'
 import { NavItemEntry } from '../index'
 import { memoriesPageRoute } from '../routes'
 
@@ -9,4 +10,5 @@ export const memoriesPageNavItem: NavItemEntry = {
   icon: iconMemory,
   label: 'Memories',
   page: MemoriesPage,
+  highlighted: apiState => isAnyOn(apiState.memories ?? {}),
 }

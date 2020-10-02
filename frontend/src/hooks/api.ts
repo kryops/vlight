@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { MasterData, MasterDataMaps } from '@vlight/entities'
 
 import { masterDataMaps } from '../api/masterdata'
@@ -20,6 +20,19 @@ export function useApiConnecting(): boolean {
   }, [])
 
   return state
+}
+
+export function useCompleteApiState(): ApiState {
+  const [, forceUpdate] = useReducer(state => state + 1, 0)
+
+  useEffect(() => {
+    apiStateEmitter.onAny(forceUpdate)
+    return () => {
+      apiStateEmitter.onAny(forceUpdate)
+    }
+  }, [forceUpdate])
+
+  return apiState
 }
 
 export function useApiState<TKey extends keyof ApiState>(

@@ -9,4 +9,6 @@ export const channelsPageNavItem: NavItemEntry = {
   icon: iconFader,
   label: 'Channels',
   page: ChannelsPage,
+  highlighted: apiState =>
+    apiState.channels?.some(value => value !== 0) ?? false,
 }

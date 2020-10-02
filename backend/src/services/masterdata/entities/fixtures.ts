@@ -23,7 +23,8 @@ function computeChannel(type: string, baseChannel: number, index: number) {
 }
 
 function processFixture(fixture: Fixture): Fixture | Fixture[] {
-  const { id, type, channel, name, count } = fixture
+  const { id, type, channel, name } = fixture
+  const { count, xOffset, yOffset, ...resetToKeep } = fixture
 
   const fixtureType = masterDataMaps.fixtureTypes.get(type)
   if (!fixtureType) {
@@ -38,7 +39,7 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
   }
 
   return arrayRange(1, count, index => ({
-    ...fixture,
+    ...resetToKeep,
     id: replaceIndex(id, index),
     originalId: id,
     name: replaceIndex(name, index, true),

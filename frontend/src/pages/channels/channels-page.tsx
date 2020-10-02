@@ -1,7 +1,7 @@
 import React from 'react'
 import { css } from 'linaria'
 
-import { setChannel, setChannels } from '../../api'
+import { setChannel } from '../../api'
 import { getUniverseIndex } from '../../api/util'
 import { useApiState } from '../../hooks/api'
 import { ChannelFader } from '../../ui/controls/fader/channel-fader'
@@ -10,8 +10,8 @@ import { createRangeArray } from '../../util/shared'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { Header } from '../../ui/containers/header'
-import { Button } from '../../ui/buttons/button'
-import { iconLight, iconLightOff } from '../../ui/icons'
+
+import { ChannelsActions } from './channels-actions'
 
 const channelsPage = css`
   justify-content: space-between;
@@ -25,26 +25,7 @@ const ChannelsPage = memoInProduction(() => {
 
   return (
     <>
-      <Header
-        rightContent={
-          <>
-            <Button
-              icon={iconLight}
-              onDown={() => setChannels(allChannels, 255)}
-            >
-              ON
-            </Button>
-            <Button
-              icon={iconLightOff}
-              onDown={() => setChannels(allChannels, 0)}
-            >
-              OFF
-            </Button>
-          </>
-        }
-      >
-        Channels
-      </Header>
+      <Header rightContent={<ChannelsActions />}>Channels</Header>
       <div className={cx(pageWithWidgets, channelsPage)}>
         {allChannels.map(channel => (
           <ChannelFader

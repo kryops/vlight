@@ -1,4 +1,5 @@
 import { iconGroup } from '../../ui/icons'
+import { isAnyOn } from '../../util/state'
 import { NavItemEntry } from '../index'
 import { fixtureGroupsPageRoute } from '../routes'
 
@@ -9,4 +10,5 @@ export const fixtureGroupsPageNavItem: NavItemEntry = {
   icon: iconGroup,
   label: 'Fixture Groups',
   page: FixtureGroupsPage,
+  highlighted: apiState => isAnyOn(apiState.fixtureGroups ?? {}),
 }

@@ -1,4 +1,5 @@
 import { iconLight } from '../../ui/icons'
+import { isAnyOn } from '../../util/state'
 import { NavItemEntry } from '../index'
 import { fixturesPageRoute } from '../routes'
 
@@ -9,4 +10,5 @@ export const fixturesPageNavItem: NavItemEntry = {
   icon: iconLight,
   label: 'Fixtures',
   page: FixturesPage,
+  highlighted: apiState => isAnyOn(apiState.fixtures ?? {}),
 }

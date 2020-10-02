@@ -1,3 +1,5 @@
+import { ApiState } from '../api/worker/processing'
+
 import { universePageNavItem } from './universe'
 import { channelsPageNavItem } from './channels'
 import { fixturesPageNavItem } from './fixtures'
@@ -17,6 +19,7 @@ export interface RouteEntry {
 export interface NavItemEntry extends RouteEntry {
   icon: string
   label: string
+  highlighted?: (apiState: ApiState) => boolean
 }
 
 export const mainNavigationItems: NavItemEntry[] = [

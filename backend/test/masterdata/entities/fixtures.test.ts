@@ -29,6 +29,10 @@ describe('processFixtures', () => {
         name: 'Foo #',
         channel: 1,
         count: 3,
+        x: 10,
+        xOffset: 10,
+        y: 0,
+        yOffset: 5,
       },
     ]
     expect(processFixtures(fixtures)).toEqual([
@@ -38,6 +42,8 @@ describe('processFixtures', () => {
         name: 'Foo 1',
         channel: 1,
         originalId: 'foo',
+        x: 10,
+        y: 0,
       },
       {
         id: 'foo_2',
@@ -45,6 +51,8 @@ describe('processFixtures', () => {
         name: 'Foo 2',
         channel: 4,
         originalId: 'foo',
+        x: 20,
+        y: 5,
       },
       {
         id: 'foo_3',
@@ -52,6 +60,8 @@ describe('processFixtures', () => {
         name: 'Foo 3',
         channel: 7,
         originalId: 'foo',
+        x: 30,
+        y: 10,
       },
     ])
   })
