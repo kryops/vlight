@@ -1,4 +1,4 @@
-import { Dictionary } from '@vlight/entities'
+import { Dictionary } from '@vlight/types'
 
 export function mapToDictionary<V>(
   map: Map<string, V>,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { EntityName, EntityType } from '@vlight/entities'
+import { EntityName, EntityType } from '@vlight/types'
 
 import { showDialog } from '../../../../ui/overlays/dialog'
 import { editEntity } from '../../../../api'

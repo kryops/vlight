@@ -1,6 +1,6 @@
 import React from 'react'
 import { useParams } from 'react-router'
-import { EntityName } from '@vlight/entities'
+import { EntityName } from '@vlight/types'
 import { css } from 'linaria'
 import { Link } from 'react-router-dom'
 

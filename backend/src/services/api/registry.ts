@@ -1,4 +1,4 @@
-import { ApiInMessage } from '@vlight/api'
+import { ApiInMessage } from '@vlight/types'
 
 import { MapRegistry } from '../../util/registry'
 

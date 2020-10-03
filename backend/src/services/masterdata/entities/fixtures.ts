@@ -1,5 +1,5 @@
-import { Fixture } from '@vlight/entities'
-import { arrayRange, logger } from '@vlight/shared'
+import { Fixture } from '@vlight/types'
+import { arrayRange, logger } from '@vlight/utils'
 
 import { masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'

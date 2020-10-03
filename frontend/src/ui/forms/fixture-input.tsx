@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { EntityName } from '@vlight/entities'
+import { EntityName } from '@vlight/types'
 import { css } from 'linaria'
-import { FixtureMappingPrefix } from '@vlight/shared'
+import { FixtureMappingPrefix } from '@vlight/controls'
 
 import { cx } from '../../util/styles'
 

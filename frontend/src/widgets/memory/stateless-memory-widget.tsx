@@ -1,4 +1,4 @@
-import { Memory, MemoryState } from '@vlight/entities'
+import { Memory, MemoryState } from '@vlight/types'
 import React from 'react'
 
 import { setMemoryState } from '../../api'

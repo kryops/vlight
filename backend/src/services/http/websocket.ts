@@ -1,6 +1,6 @@
-import { ApiOutMessage } from '@vlight/api'
+import { ApiOutMessage } from '@vlight/types'
 import ws from 'ws'
-import { removeFromMutableArray, logger } from '@vlight/shared'
+import { removeFromMutableArray, logger } from '@vlight/utils'
 
 import { getFullState } from '../api/messages'
 import { handleApiMessage } from '../api'

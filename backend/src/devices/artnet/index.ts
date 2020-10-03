@@ -1,5 +1,5 @@
 import { Artnet } from 'artnet'
-import { logger } from '@vlight/shared'
+import { logger } from '@vlight/utils'
 
 import { artnetHost, enableArtNetDevices } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'

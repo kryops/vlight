@@ -1,6 +1,7 @@
-import { MasterData, MasterDataMaps } from '@vlight/entities'
+import { MasterData, MasterDataMaps } from '@vlight/types'
+import { entityArrayToMap } from '@vlight/utils'
 
-import { entityArrayToMap, mapFixtureList } from '../src'
+import { mapFixtureList } from '../src'
 
 import { fixtures, fixtureTypes, fixtureGroups } from './mocks'
 

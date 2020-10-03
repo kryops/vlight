@@ -1,5 +1,5 @@
 {
-  "name": "@vlight/shared",
+  "name": "@vlight/controls",
   "version": "0.0.1",
   "main": "dist/src/index.js",
   "repository": "https://github.com/kryops/vlight",
@@ -8,5 +8,9 @@
   "private": true,
   "scripts": {
     "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@vlight/types": "*",
+    "@vlight/utils": "*"
   }
 }

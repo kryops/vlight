@@ -1,4 +1,4 @@
-import { getFraction, getValueForFraction } from './number'
+import { getFraction, getValueForFraction } from '@vlight/utils'
 
 export function interpolateGradientPositions(
   positions: Array<number | null | undefined>

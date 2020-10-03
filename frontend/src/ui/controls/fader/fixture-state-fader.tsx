@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react'
-import { FixtureState } from '@vlight/entities'
+import { FixtureState } from '@vlight/types'
 
 import { memoInProduction } from '../../../util/development'
 

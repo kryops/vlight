@@ -1,7 +1,7 @@
 import { css } from 'linaria'
 import React, { useMemo } from 'react'
-import { MasterData } from '@vlight/entities'
-import { createRangeArray } from '@vlight/shared'
+import { MasterData } from '@vlight/types'
+import { createRangeArray } from '@vlight/utils'
 
 import { Widget } from '../../ui/containers/widget'
 import { memoInProduction } from '../../util/development'

@@ -6,14 +6,12 @@ import {
   ApiRemoveEntityMessage,
   ApiUpdateEntityMessage,
   ApiAddEntityMessage,
-} from '@vlight/api'
-import {
   FixtureState,
   IdType,
   MemoryState,
   EntityName,
   EntityType,
-} from '@vlight/entities'
+} from '@vlight/types'
 
 export function getApiChannelMessage(
   channels: number[],

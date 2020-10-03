@@ -1,4 +1,4 @@
-import { logger } from '@vlight/shared'
+import { logger } from '@vlight/utils'
 
 export class ListRegistry<T> {
   entries: T[] = []

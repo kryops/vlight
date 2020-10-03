@@ -1,4 +1,4 @@
-import { MemoryState } from '@vlight/entities'
+import { MemoryState } from '@vlight/types'
 
 export function mergeMemoryStates(
   state1: MemoryState | undefined,

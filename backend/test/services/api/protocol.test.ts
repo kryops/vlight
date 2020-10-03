@@ -1,4 +1,4 @@
-import { FixtureState, MasterData } from '@vlight/entities'
+import { FixtureState, MasterData } from '@vlight/types'
 
 import {
   getApiFixtureStateMessage,

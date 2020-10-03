@@ -8,5 +8,9 @@
     "incremental": true
   },
   "include": ["."],
-  "references": [{ "path": "../../shared" }]
+  "references": [
+    { "path": "../../shared/controls" },
+    { "path": "../../shared/types" },
+    { "path": "../../shared/utils" }
+  ]
 }

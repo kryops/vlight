@@ -2,8 +2,8 @@ import { join } from 'path'
 import fs from 'fs'
 
 import prettier from 'prettier'
-import { EntityName, EntityArray, EntityType, IdType } from '@vlight/entities'
-import { logger } from '@vlight/shared'
+import { EntityName, EntityArray, EntityType, IdType } from '@vlight/types'
+import { logger } from '@vlight/utils'
 
 import { configDirectoryPath, project } from '../../config'
 

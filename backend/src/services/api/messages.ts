@@ -1,5 +1,5 @@
-import { ApiStateMessage } from '@vlight/api'
-import { mapToDictionary } from '@vlight/shared'
+import { ApiStateMessage } from '@vlight/types'
+import { mapToDictionary } from '@vlight/utils'
 
 import { getDmxUniverse } from '../universe'
 import { channelUniverse } from '../../controls/channels'

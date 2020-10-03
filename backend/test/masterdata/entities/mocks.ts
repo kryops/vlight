@@ -1,4 +1,4 @@
-import { FixtureType, Fixture, FixtureGroup, Memory } from '@vlight/entities'
+import { FixtureType, Fixture, FixtureGroup, Memory } from '@vlight/types'
 
 export const fixtureTypes: FixtureType[] = [
   {

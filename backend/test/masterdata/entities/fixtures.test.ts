@@ -1,4 +1,4 @@
-import { Fixture } from '@vlight/entities'
+import { Fixture } from '@vlight/types'
 
 import { fillMasterDataEntity } from '../../../src/services/masterdata'
 import { processFixtures } from '../../../src/services/masterdata/entities/fixtures'

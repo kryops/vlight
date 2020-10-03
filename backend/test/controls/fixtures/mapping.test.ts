@@ -1,4 +1,4 @@
-import { FixtureState, FixtureType } from '@vlight/entities'
+import { FixtureState, FixtureType } from '@vlight/types'
 
 import { mapFixtureStateToChannels } from '../../../src/controls/fixtures/mapping'
 

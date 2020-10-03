@@ -1,6 +1,6 @@
-import { Fixture, FixtureType } from '@vlight/entities'
 import React from 'react'
-import { mergeFixtureStates } from '@vlight/shared'
+import { Fixture, FixtureType } from '@vlight/types'
+import { mergeFixtureStates } from '@vlight/controls'
 
 import { useMasterDataMaps, useApiStateEntry } from '../../hooks/api'
 import { setFixtureState } from '../../api'

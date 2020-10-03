@@ -1,6 +1,6 @@
 import { createServer, Socket } from 'net'
 
-import { removeFromMutableArray, logger } from '@vlight/shared'
+import { removeFromMutableArray, logger } from '@vlight/utils'
 
 import { tcpPort } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'

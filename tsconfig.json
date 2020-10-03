@@ -21,8 +21,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "@vlight/shared": ["../shared"],
-      "@vlight/*": ["../shared/types/*"],
       "*": ["*", "../@types/*"]
     },
     "resolveJsonModule": true,

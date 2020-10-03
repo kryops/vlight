@@ -1,4 +1,4 @@
-import { FixtureState, MemoryState } from '@vlight/entities'
+import { FixtureState, MemoryState } from '@vlight/types'
 
 import {
   getApiChannelMessage,

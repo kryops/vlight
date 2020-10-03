@@ -1,4 +1,4 @@
-import { addToMutableArray, removeFromMutableArray } from '@vlight/shared'
+import { addToMutableArray, removeFromMutableArray } from '@vlight/utils'
 
 import { broadcastUniverseChannelToDevices } from '../devices'
 

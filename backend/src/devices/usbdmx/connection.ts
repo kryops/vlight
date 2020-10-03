@@ -1,5 +1,5 @@
 import { Device, HID } from 'node-hid'
-import { removeFromMutableArray, logger } from '@vlight/shared'
+import { removeFromMutableArray, logger } from '@vlight/utils'
 
 import { usbDmxPid, usbDmxVid } from '../../services/config'
 import { onWindows } from '../../services/env'

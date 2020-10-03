@@ -1,13 +1,18 @@
-import { IdType, FixtureState, FixtureGroup, Fixture } from '@vlight/entities'
-import { ApiFixtureGroupStateMessage } from '@vlight/api'
+import {
+  IdType,
+  FixtureState,
+  FixtureGroup,
+  Fixture,
+  ApiFixtureGroupStateMessage,
+} from '@vlight/types'
 import {
   dictionaryToMap,
   logger,
   forEach,
   isUnique,
   isTruthy,
-  mergeFixtureStates,
-} from '@vlight/shared'
+} from '@vlight/utils'
+import { mergeFixtureStates } from '@vlight/controls'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'

@@ -4,12 +4,12 @@ import {
   MemorySceneState,
   MemoryScene,
   FixtureStateGradient,
-} from '@vlight/entities'
+} from '@vlight/types'
+import { ensureBetween } from '@vlight/utils'
 import {
-  ensureBetween,
   interpolateGradientPositions,
   mergeFixtureStates,
-} from '@vlight/shared'
+} from '@vlight/controls'
 
 import { useCommonFixtureMapping } from '../../../../hooks/fixtures'
 import { FixtureStateWidget } from '../../../../widgets/fixture/fixture-state-widget'

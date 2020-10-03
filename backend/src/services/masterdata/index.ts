@@ -1,11 +1,13 @@
-import { EntityName, EntityArray, MasterData } from '@vlight/entities'
 import {
+  EntityName,
+  EntityArray,
+  MasterData,
   ApiEntityMessage,
   ApiAddEntityMessage,
   ApiUpdateEntityMessage,
   ApiRemoveEntityMessage,
-} from '@vlight/api'
-import { logger } from '@vlight/shared'
+} from '@vlight/types'
+import { logger } from '@vlight/utils'
 
 import { reloadControls } from '../../controls'
 import {

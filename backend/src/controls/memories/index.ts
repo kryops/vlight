@@ -1,11 +1,11 @@
-import { MemoryState, Memory, IdType } from '@vlight/entities'
-import { ApiMemoryStateMessage } from '@vlight/api'
 import {
-  dictionaryToMap,
-  logger,
-  forEach,
-  mergeMemoryStates,
-} from '@vlight/shared'
+  MemoryState,
+  Memory,
+  IdType,
+  ApiMemoryStateMessage,
+} from '@vlight/types'
+import { dictionaryToMap, logger, forEach } from '@vlight/utils'
+import { mergeMemoryStates } from '@vlight/controls'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'

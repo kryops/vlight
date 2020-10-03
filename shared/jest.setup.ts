@@ -1,3 +1,3 @@
-import { setLogLevel, LogLevel } from '../backend/src/util/shared'
+import { setLogLevel, LogLevel } from './utils/src'
 
 setLogLevel(LogLevel.NONE)

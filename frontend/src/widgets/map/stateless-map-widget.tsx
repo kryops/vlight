@@ -1,6 +1,6 @@
 import { css } from 'linaria'
 import React, { CSSProperties } from 'react'
-import { Fixture } from '@vlight/entities'
+import { Fixture } from '@vlight/types'
 
 import { Widget } from '../../ui/containers/widget'
 import { memoInProduction } from '../../util/development'

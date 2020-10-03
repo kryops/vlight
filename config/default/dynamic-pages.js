@@ -1,5 +1,5 @@
 // @ts-check
-/** @type {import('@vlight/shared/types/entities').DynamicPage[]} */
+/** @type {import('@vlight/types').DynamicPage[]} */
 const dynamicPages = [
   {
     id: 'dyn1',

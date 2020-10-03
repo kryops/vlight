@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useState } from 'react'
-import { MasterData, MasterDataMaps } from '@vlight/entities'
+import { MasterData, MasterDataMaps } from '@vlight/types'
 
 import { masterDataMaps } from '../api/masterdata'
 import { ApiState } from '../api/worker/processing'

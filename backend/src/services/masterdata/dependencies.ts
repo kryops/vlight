@@ -1,5 +1,5 @@
-import { EntityName } from '@vlight/entities'
-import { logger } from '@vlight/shared'
+import { EntityName } from '@vlight/types'
+import { logger } from '@vlight/utils'
 
 import { getMasterDataEntityDefinition } from './registry'
 import { allEntityNames } from './data'

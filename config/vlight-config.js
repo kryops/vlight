@@ -2,7 +2,7 @@
 // found in /backend/src/config.ts
 
 // @ts-check
-/** @type {Partial<import('../backend/src/config').VLightConfiguration>} */
+/** @type {Partial<import('../backend/src/services/config').VLightConfiguration>} */
 const userConfig = {
   enableUsbDmxDevices: false,
   enableVLightDevices: false,

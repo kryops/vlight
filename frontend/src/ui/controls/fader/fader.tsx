@@ -1,6 +1,6 @@
 import { css } from 'linaria'
 import React, { useRef } from 'react'
-import { ensureBetween, roundToStep } from '@vlight/shared'
+import { ensureBetween, roundToStep } from '@vlight/utils'
 
 import { Touchable } from '../../components/touchable'
 import { useDelayedState } from '../../../hooks/delayed-state'

@@ -1,4 +1,4 @@
-import { MasterData, EntityName, MasterDataMaps } from '@vlight/entities'
+import { MasterData, EntityName, MasterDataMaps } from '@vlight/types'
 
 /*
  * Convenience access to the master data.

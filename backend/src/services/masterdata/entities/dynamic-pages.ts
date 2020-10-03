@@ -1,4 +1,4 @@
-import { DynamicPage } from '@vlight/entities'
+import { DynamicPage } from '@vlight/types'
 import * as icons from '@mdi/js'
 
 import { registerMasterDataEntity } from '../registry'

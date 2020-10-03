@@ -1,5 +1,5 @@
 import { Device, HID } from 'node-hid'
-import { LogLevel, logger } from '@vlight/shared'
+import { LogLevel, logger } from '@vlight/utils'
 
 import {
   devicesFlushInterval,

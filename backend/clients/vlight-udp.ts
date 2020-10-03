@@ -1,6 +1,6 @@
 import { createSocket } from 'dgram'
 
-import { logger } from '@vlight/shared'
+import { logger } from '@vlight/utils'
 
 import { udpMulticastAddress, udpPort } from '../src/services/config'
 import { getAddressString } from '../src/util/network'

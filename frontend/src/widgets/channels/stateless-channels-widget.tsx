@@ -1,5 +1,5 @@
 import React from 'react'
-import { createRangeArray } from '@vlight/shared'
+import { createRangeArray } from '@vlight/utils'
 
 import { setChannel } from '../../api'
 import { Widget } from '../../ui/containers/widget'

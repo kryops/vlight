@@ -1,12 +1,6 @@
-import { ApiOutMessage, ApiStateMessage } from '@vlight/api'
-import { MasterData } from '@vlight/entities'
-import {
-  logger,
-  assertNever,
-  forEach,
-  mergeFixtureStates,
-  mergeMemoryStates,
-} from '@vlight/shared'
+import { ApiOutMessage, ApiStateMessage, MasterData } from '@vlight/types'
+import { logger, assertNever, forEach } from '@vlight/utils'
+import { mergeFixtureStates, mergeMemoryStates } from '@vlight/controls'
 
 import { getUniverseIndex } from '../util'
 

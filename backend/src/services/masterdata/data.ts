@@ -1,4 +1,4 @@
-import { MasterData, EntityName, MasterDataMaps } from '@vlight/entities'
+import { MasterData, EntityName, MasterDataMaps } from '@vlight/types'
 
 // This is a dictionary to ensure that TypeScript throws an error if we forget to register a new entity here
 const allEntities: { [key in EntityName]: true } = {

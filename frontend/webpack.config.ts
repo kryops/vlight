@@ -93,7 +93,8 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       extensions: ['.ts', '.tsx', '.js'],
       alias: {
         // transpile from sources in frontend build
-        '@vlight/shared': join(__dirname, '../shared/src'),
+        '@vlight/controls': join(__dirname, '../shared/controls/src'),
+        '@vlight/utils': join(__dirname, '../shared/utils/src'),
         ...(isProduction
           ? profileReact
             ? {

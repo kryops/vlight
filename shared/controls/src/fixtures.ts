@@ -1,8 +1,7 @@
-import { FixtureState, MasterData, MasterDataMaps } from '@vlight/entities'
+import { FixtureState, MasterData, MasterDataMaps } from '@vlight/types'
+import { logger, isUnique } from '@vlight/utils'
 
-import { logger } from './log'
 import { FixtureMappingPrefix } from './enums'
-import { isUnique } from './validation'
 
 /**
  * Maps the following to a list of plain unique fixture IDs:

@@ -1,5 +1,6 @@
-import { Dictionary, FixtureState } from '@vlight/entities'
-import { ensureBetween, ChannelMapping } from '@vlight/shared'
+import { Dictionary, FixtureState } from '@vlight/types'
+import { ensureBetween } from '@vlight/utils'
+import { ChannelMapping } from '@vlight/controls'
 
 export interface ColorPickerColor {
   r: number

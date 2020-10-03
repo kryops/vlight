@@ -1,4 +1,4 @@
-import { EntityName, EntityArray, EntityType, IdType } from '@vlight/entities'
+import { EntityName, EntityArray, EntityType, IdType } from '@vlight/types'
 
 export interface DatabaseEntityOptions {
   global?: boolean

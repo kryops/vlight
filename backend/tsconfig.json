@@ -6,5 +6,9 @@
     "noEmit": true
   },
   "include": ["./src", "./test", "./clients", "../@types"],
-  "references": [{ "path": "../shared" }]
+  "references": [
+    { "path": "../shared/controls" },
+    { "path": "../shared/types" },
+    { "path": "../shared/utils" }
+  ]
 }

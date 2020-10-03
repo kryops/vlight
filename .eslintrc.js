@@ -18,7 +18,7 @@ module.exports = {
     },
   },
   rules: {
-    'no-restricted-imports': ['error', { patterns: ['**/shared/src/**'] }],
+    'no-restricted-imports': ['error', { patterns: ['**/shared/**'] }],
     '@typescript-eslint/ban-ts-ignore': 'off',
     '@typescript-eslint/ban-types': 'off',
     '@typescript-eslint/camelcase': 'off',
@@ -53,9 +53,6 @@ module.exports = {
     },
   ],
   settings: {
-    node: {
-      allowModules: ['@vlight/shared'],
-    },
     react: {
       version: 'detect',
     },

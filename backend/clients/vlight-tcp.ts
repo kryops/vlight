@@ -1,6 +1,6 @@
 import { createConnection } from 'net'
 
-import { logger } from '@vlight/shared'
+import { logger } from '@vlight/utils'
 
 import { tcpPort } from '../src/services/config'
 

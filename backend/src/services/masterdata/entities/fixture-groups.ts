@@ -1,5 +1,5 @@
-import { FixtureGroup } from '@vlight/entities'
-import { mapFixtureList } from '@vlight/shared'
+import { FixtureGroup } from '@vlight/types'
+import { mapFixtureList } from '@vlight/controls'
 
 import { masterData, masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'

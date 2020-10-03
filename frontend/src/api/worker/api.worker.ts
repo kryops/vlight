@@ -1,5 +1,5 @@
-import { ApiInMessage, ApiOutMessage } from '@vlight/api'
-import { logger, assertNever } from '@vlight/shared'
+import { ApiInMessage, ApiOutMessage } from '@vlight/types'
+import { logger, assertNever } from '@vlight/utils'
 
 import {
   useSocketUpdateThrottling,

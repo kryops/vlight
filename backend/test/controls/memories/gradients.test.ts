@@ -3,8 +3,8 @@ import {
   FixtureState,
   FixtureStateGradient,
   Dictionary,
-} from '@vlight/entities'
-import { arrayRange } from '@vlight/shared'
+} from '@vlight/types'
+import { arrayRange } from '@vlight/utils'
 
 import {
   ScenePattern,

@@ -1,4 +1,4 @@
-import { ApiChannelMessage } from '@vlight/api'
+import { ApiChannelMessage } from '@vlight/types'
 
 import { getPersistedState } from '../../services/state'
 import {

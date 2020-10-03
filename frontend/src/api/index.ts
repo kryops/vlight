@@ -1,12 +1,12 @@
-import { ApiInMessage } from '@vlight/api'
 import {
+  ApiInMessage,
   FixtureState,
   IdType,
   MemoryState,
   EntityName,
   EntityType,
-} from '@vlight/entities'
-import { logger } from '@vlight/shared'
+} from '@vlight/types'
+import { logger } from '@vlight/utils'
 
 import { socketProcessingInterval, useSocketUpdateThrottling } from '../config'
 

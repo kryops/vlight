@@ -1,6 +1,6 @@
 import React from 'react'
 import { css } from 'linaria'
-import { Fixture } from '@vlight/shared/types/entities'
+import { Fixture } from '@vlight/types'
 
 import { useFormState } from '../../../../hooks/form'
 import {

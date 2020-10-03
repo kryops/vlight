@@ -1,4 +1,4 @@
-import { EntityName, EntityArray } from '@vlight/entities'
+import { EntityName, EntityArray } from '@vlight/types'
 
 import { MapRegistry } from '../../util/registry'
 

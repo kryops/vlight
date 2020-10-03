@@ -1,11 +1,6 @@
-import {
-  Fixture,
-  FixtureState,
-  FixtureType,
-  MasterData,
-} from '@vlight/entities'
+import { Fixture, FixtureState, FixtureType, MasterData } from '@vlight/types'
+import { ChannelMapping } from '@vlight/controls'
 
-import { ChannelMapping } from '../../../shared/src'
 import { masterDataMaps } from '../api/masterdata'
 
 const rgbw = [

@@ -1,5 +1,5 @@
 // @ts-check
-/** @type {import('@vlight/shared/types/entities').FixtureGroup[]} */
+/** @type {import('@vlight/types').FixtureGroup[]} */
 const fixtureGroups = [
   // {
   //   id: 'test',

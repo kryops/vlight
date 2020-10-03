@@ -1,5 +1,5 @@
 // @ts-check
-/** @type {import('@vlight/shared/types/entities').Memory[]} */
+/** @type {import('@vlight/types').Memory[]} */
 const memories = [
   {
     id: 'test',

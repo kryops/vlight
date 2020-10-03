@@ -1,6 +1,6 @@
 import { join } from 'path'
 
-import { LogLevel } from '@vlight/shared'
+import { LogLevel } from '@vlight/utils'
 
 import { isDevelopment } from './env'
 

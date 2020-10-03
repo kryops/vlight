@@ -1,5 +1,5 @@
 import Emittery from 'emittery'
-import { MasterData } from '@vlight/entities'
+import { MasterData } from '@vlight/types'
 
 import { ApiWorkerState, ApiWorkerCommand } from './worker/api.worker'
 import { ApiState } from './worker/processing'

@@ -9,5 +9,9 @@
     "importsNotUsedAsValues": "preserve"
   },
   "include": ["./src", "./test", "../@types"],
-  "references": [{ "path": "../shared" }]
+  "references": [
+    { "path": "../shared/controls" },
+    { "path": "../shared/types" },
+    { "path": "../shared/utils" }
+  ]
 }

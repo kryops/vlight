@@ -1,6 +1,6 @@
-import { FixtureState } from '@vlight/entities'
+import { FixtureState } from '@vlight/types'
 import React, { useCallback, useRef, useState } from 'react'
-import { ChannelMapping } from '@vlight/shared'
+import { ChannelMapping } from '@vlight/controls'
 
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'

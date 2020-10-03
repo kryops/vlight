@@ -1,6 +1,6 @@
 import React from 'react'
 import { css } from 'linaria'
-import { MemoryScene, MemorySceneState } from '@vlight/entities'
+import { MemoryScene, MemorySceneState } from '@vlight/types'
 
 import { useFormState, useFormStateArray } from '../../../../hooks/form'
 import { FormTextInput } from '../../../../ui/forms/form-input'

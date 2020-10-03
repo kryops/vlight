@@ -4,14 +4,12 @@ import {
   ApiStateMessage,
   ApiUniverseDeltaMessage,
   ApiUniverseMessage,
-} from '@vlight/api'
-import {
   Dictionary,
   FixtureState,
   IdType,
   MemoryState,
   MasterData,
-} from '@vlight/entities'
+} from '@vlight/types'
 
 import { getUniverseIndex } from '../universe'
 

@@ -1,5 +1,5 @@
-import { ApiInMessage, ApiOutMessage } from '@vlight/api'
-import { logger } from '@vlight/shared'
+import { ApiInMessage, ApiOutMessage } from '@vlight/types'
+import { logger } from '@vlight/utils'
 
 import {
   multiChannelUniverseFlushThreshold,

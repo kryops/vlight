@@ -1,8 +1,8 @@
 import { promises } from 'fs'
 import { join } from 'path'
 
-import { Dictionary, FixtureState, MemoryState } from '@vlight/entities'
-import { mapToDictionary, logger } from '@vlight/shared'
+import { Dictionary, FixtureState, MemoryState } from '@vlight/types'
+import { mapToDictionary, logger } from '@vlight/utils'
 
 import { channelUniverse } from '../controls/channels'
 import { fixtureStates } from '../controls/fixtures'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { EntityName } from '@vlight/entities'
+import { EntityName } from '@vlight/types'
 
 import { memoInProduction } from '../../util/development'
 import { settingsPageRoute, entitiesPageRoute } from '../routes'

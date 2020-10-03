@@ -1,6 +1,6 @@
 import React from 'react'
 import { css } from 'linaria'
-import { createRangeArray } from '@vlight/shared'
+import { createRangeArray } from '@vlight/utils'
 
 import { setChannel } from '../../api'
 import { getUniverseIndex } from '../../api/util'

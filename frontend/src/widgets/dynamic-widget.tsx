@@ -1,6 +1,6 @@
 import React from 'react'
-import { WidgetConfig } from '@vlight/entities'
-import { assertNever } from '@vlight/shared'
+import { WidgetConfig } from '@vlight/types'
+import { assertNever } from '@vlight/utils'
 
 import { useMasterDataMaps } from '../hooks/api'
 import { memoInProduction } from '../util/development'

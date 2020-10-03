@@ -1,4 +1,4 @@
-import { EntityArray, EntityName, EntityType, IdType } from '@vlight/entities'
+import { EntityArray, EntityName, EntityType, IdType } from '@vlight/types'
 
 import { howLong } from '../../util/time'
 

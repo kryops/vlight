@@ -1,5 +1,5 @@
 import React from 'react'
-import { IdType } from '@vlight/entities'
+import { IdType } from '@vlight/types'
 
 import { FormState } from '../../hooks/form'
 

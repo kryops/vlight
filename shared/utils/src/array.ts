@@ -1,4 +1,4 @@
-import { IdType } from '@vlight/entities'
+import { IdType } from '@vlight/types'
 
 export function removeFromMutableArray<T>(arr: T[], el: T): void {
   const index = arr.indexOf(el)

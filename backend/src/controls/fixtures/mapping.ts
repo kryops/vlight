@@ -1,5 +1,5 @@
-import { FixtureState, FixtureType } from '@vlight/entities'
-import { ChannelMapping } from '@vlight/shared'
+import { FixtureState, FixtureType } from '@vlight/types'
+import { ChannelMapping } from '@vlight/controls'
 
 export function mapFixtureStateToChannels(
   type: FixtureType,

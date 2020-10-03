@@ -4,7 +4,7 @@ import React, {
   useState,
   PropsWithChildren,
 } from 'react'
-import { addToMutableArray, removeFromMutableArray } from '@vlight/shared'
+import { addToMutableArray, removeFromMutableArray } from '@vlight/utils'
 
 export interface OverlayProps {
   onClose?: () => void

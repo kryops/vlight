@@ -1,4 +1,4 @@
-import { EntityName } from '@vlight/entities'
+import { EntityName } from '@vlight/types'
 
 export const channelsPageRoute = '/channels'
 export const fixturesPageRoute = '/fixtures'

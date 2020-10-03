@@ -1,5 +1,5 @@
-import { MemoryState, Memory, MemoryScene } from '@vlight/entities'
-import { ChannelMapping } from '@vlight/shared'
+import { MemoryState, Memory, MemoryScene } from '@vlight/types'
+import { ChannelMapping } from '@vlight/controls'
 
 import { masterDataMaps } from '../../services/masterdata'
 import {

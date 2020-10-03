@@ -1,6 +1,6 @@
 import React from 'react'
 import { css } from 'linaria'
-import { EntityType, EntityName } from '@vlight/entities'
+import { EntityType, EntityName } from '@vlight/types'
 
 import { removeEntity } from '../../../api'
 import { useClassName } from '../../../hooks/ui'

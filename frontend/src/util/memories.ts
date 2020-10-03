@@ -1,5 +1,5 @@
-import { MemorySceneState } from '@vlight/entities'
-import { interpolateGradientPositions } from '@vlight/shared'
+import { MemorySceneState } from '@vlight/types'
+import { interpolateGradientPositions } from '@vlight/controls'
 
 import { getFixtureStateColor } from './fixtures'
 
