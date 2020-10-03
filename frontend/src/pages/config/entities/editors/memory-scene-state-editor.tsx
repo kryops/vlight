@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { css } from 'linaria'
 import {
   MemorySceneState,
@@ -21,6 +21,8 @@ import { NumberInput } from '../../../../ui/forms/typed-input'
 import { formatNumber } from '../../../../util/format'
 import { useClassName } from '../../../../hooks/ui'
 import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
+import { getFixtureStateColor } from '../../../../util/fixtures'
+import { cx } from '../../../../util/styles'
 
 const widget = css`
   border: none;
@@ -32,12 +34,31 @@ const select = css`
 
 const gradientPreview = css`
   height: ${baseline(8)};
-  margin-top: ${baseline(2)};
+  margin: ${baseline(2)} 0;
   border: 1px solid ${iconShade(0)};
 `
 
 const gradientPreview_light = css`
   border: 1px solid ${iconShade(0, true)};
+`
+
+const stopSelectionContainer = css`
+  display: flex;
+  align-items: center;
+  margin: ${baseline(4)} ${baseline(-0.5)};
+`
+
+const stopSelectionEntry = css`
+  height: ${baseline(8)};
+  flex: 1 1 0;
+  margin: 0 ${baseline(0.5)};
+  min-width: ${baseline(8)};
+`
+
+const stopSelectionEntry_active = css`
+  height: ${baseline(12)};
+  margin-top: 0;
+  margin-bottom: 0;
 `
 
 const optionsContainer = css`
@@ -73,17 +94,40 @@ enum MemoryScenePositionMode {
   MANUAL = 'Manual',
 }
 
+function computeStopWidths(gradientPositions: number[]): number[] {
+  return gradientPositions.map((position, index) => {
+    const before = gradientPositions[index - 1] ?? 0
+    const after = gradientPositions[index + 1] ?? 100
+
+    if (index === 0) {
+      return (after + position) / 2
+    }
+
+    if (index === gradientPositions.length - 1) {
+      return 100 - (position + before) / 2
+    }
+
+    return (after + position) / 2 - (position + before) / 2
+  })
+}
+
 export function MemorySceneStateEditor({
   scene,
   state,
   onChange,
 }: MemorySceneStateEditorProps) {
   const [localState, setLocalState] = useState(state)
+  const [currentStop, setCurrentStop] = useState(0)
   const mapping = useCommonFixtureMapping(scene.members)
   const gradientPreviewClass = useClassName(
     gradientPreview,
     gradientPreview_light
   )
+
+  useEffect(() => {
+    if (Array.isArray(localState) && currentStop >= localState.length)
+      setCurrentStop(localState.length - 1)
+  }, [currentStop, localState])
 
   const type = Array.isArray(localState)
     ? MemorySceneStateType.GRADIENT
@@ -92,6 +136,8 @@ export function MemorySceneStateEditor({
   const gradientPositions = Array.isArray(localState)
     ? interpolateGradientPositions(localState.map(entry => entry.position))
     : []
+
+  const stopWidths = computeStopWidths(gradientPositions)
 
   const setGradientEntry = (
     index: number,
@@ -112,20 +158,44 @@ export function MemorySceneStateEditor({
     onChange(newState)
   }
 
+  const activeGradientStop =
+    Array.isArray(localState) && localState[currentStop]
+
   const content = Array.isArray(localState) ? (
     <>
       <div
         className={gradientPreviewClass}
         style={{ background: getMemorySceneStatePreviewBackground(localState) }}
       />
-      {localState.map((entry, index) => (
+      <div className={stopSelectionContainer}>
+        {localState.map((stop, index) => {
+          const stopColor = getFixtureStateColor({
+            on: true,
+            channels: stop.channels,
+          })
+          return (
+            <div
+              key={index}
+              className={cx(
+                stopSelectionEntry,
+                index === currentStop && stopSelectionEntry_active
+              )}
+              style={{
+                background: stopColor,
+                flexBasis: `${stopWidths[index]}%`,
+              }}
+              onClick={() => setCurrentStop(index)}
+            />
+          )
+        })}
+      </div>
+      {activeGradientStop && (
         <>
           <FixtureStateWidget
-            key={index}
-            fixtureState={{ on: true, channels: entry.channels }}
+            fixtureState={{ on: true, channels: activeGradientStop.channels }}
             mapping={mapping}
             onChange={newState =>
-              setGradientEntry(index, { channels: newState.channels })
+              setGradientEntry(currentStop, { channels: newState.channels })
             }
             disableOn
             className={widget}
@@ -135,30 +205,30 @@ export function MemorySceneStateEditor({
               <Select
                 entries={Object.values(MemoryScenePositionMode)}
                 value={
-                  entry.position !== undefined
+                  activeGradientStop.position !== undefined
                     ? MemoryScenePositionMode.MANUAL
                     : MemoryScenePositionMode.AUTO
                 }
                 onChange={value =>
-                  setGradientEntry(index, {
+                  setGradientEntry(currentStop, {
                     position:
                       value === MemoryScenePositionMode.AUTO
                         ? undefined
-                        : gradientPositions[index],
+                        : gradientPositions[currentStop],
                   })
                 }
               />
               &nbsp; &nbsp;
-              {entry.position === undefined ? (
-                formatNumber(gradientPositions[index])
+              {activeGradientStop.position === undefined ? (
+                formatNumber(gradientPositions[currentStop])
               ) : (
                 <NumberInput
                   className={positionInput}
-                  value={entry.position}
+                  value={activeGradientStop.position}
                   onChange={value => {
                     if (value === undefined) return
                     const position = ensureBetween(value, 0, 100)
-                    setGradientEntry(index, { position })
+                    setGradientEntry(currentStop, { position })
                   }}
                   min={0}
                   max={100}
@@ -169,7 +239,9 @@ export function MemorySceneStateEditor({
             {localState.length > 2 && (
               <a
                 onClick={() => {
-                  const newState = localState.filter((_, i) => i !== index)
+                  const newState = localState.filter(
+                    (_, i) => i !== currentStop
+                  )
                   setLocalState(newState)
                   onChange(newState)
                 }}
@@ -179,7 +251,7 @@ export function MemorySceneStateEditor({
             )}
           </div>
         </>
-      ))}
+      )}
       <a
         className={addLink}
         onClick={() => {
@@ -189,19 +261,18 @@ export function MemorySceneStateEditor({
               channels: {
                 m: 255,
                 r: 255,
+                g: 255,
+                b: 255,
               },
             },
           ]
           setLocalState(newState)
           onChange(newState)
+          setCurrentStop(newState.length - 1)
         }}
       >
-        <Icon icon={iconAdd} inline /> Add entry
+        <Icon icon={iconAdd} inline /> Add stop
       </a>
-      <div
-        className={gradientPreviewClass}
-        style={{ background: getMemorySceneStatePreviewBackground(localState) }}
-      />
     </>
   ) : (
     <FixtureStateWidget

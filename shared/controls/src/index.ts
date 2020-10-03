@@ -1,4 +1,12 @@
 export * from './enums'
-export * from './fixtures'
-export * from './gradient'
-export * from './memories'
+export {
+  mapFixtureList,
+  mergeFixtureStates,
+  mapFixtureStateToChannels,
+} from './fixtures'
+export { interpolateGradientPositions } from './gradient'
+export {
+  ScenePattern,
+  getFixtureStateForMemoryScene,
+  mergeMemoryStates,
+} from './memories'

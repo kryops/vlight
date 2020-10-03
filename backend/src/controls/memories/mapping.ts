@@ -1,5 +1,9 @@
 import { MemoryState, Memory, MemoryScene } from '@vlight/types'
-import { ChannelMapping } from '@vlight/controls'
+import {
+  ChannelMapping,
+  getFixtureStateForMemoryScene,
+  mapFixtureStateToChannels,
+} from '@vlight/controls'
 
 import { masterDataMaps } from '../../services/masterdata'
 import {
@@ -7,9 +11,6 @@ import {
   createUniverse,
   getUniverseIndex,
 } from '../../services/universe'
-import { mapFixtureStateToChannels } from '../fixtures/mapping'
-
-import { getFixtureStateFor } from './gradients'
 
 export function getInitialMemoryState(): MemoryState {
   return {
@@ -59,7 +60,9 @@ function applySceneToPreparedState(
 
     const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.master)
 
-    const state = getFixtureStateFor(scene, memberIndex)
+    const state = getFixtureStateForMemoryScene(scene, memberIndex)
+
+    if (!state) return
 
     mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
       const universeIndex = getUniverseIndex(channel) + offset

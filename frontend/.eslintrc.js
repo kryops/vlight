@@ -4,5 +4,6 @@ module.exports = {
       'error',
       { patterns: ['**/shared/src/**', '@mdi/js'] },
     ],
+    'import/no-nodejs-modules': 'error',
   },
 }

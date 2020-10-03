@@ -10,8 +10,8 @@ import {
   ScenePattern,
   getFixtureStateForGradientFraction,
   getStateIndexAndFractionFor,
-  getFixtureStateFor,
-} from '../../../src/controls/memories/gradients'
+  getFixtureStateForMemoryScene,
+} from '../src/memories'
 
 const channels1 = { r: 255 }
 const channels2 = { g: 255 }
@@ -187,7 +187,7 @@ describe('getFixtureStateFor', () => {
           states,
         }
         const membersStates = arrayRange(0, numMembers - 1, i => i).map(index =>
-          getFixtureStateFor(scene, index)
+          getFixtureStateForMemoryScene(scene, index)
         )
         expect(membersStates).toEqual(expectedMemberStates)
       }
@@ -289,7 +289,7 @@ describe('getFixtureStateFor', () => {
           states,
         }
         const membersStates = arrayRange(0, numMembers - 1, i => i).map(index =>
-          getFixtureStateFor(scene, index)
+          getFixtureStateForMemoryScene(scene, index)
         )
         expect(membersStates).toEqual(
           expectedMemberChannels.map(channels => ({ on: true, channels }))

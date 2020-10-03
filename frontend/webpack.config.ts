@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-nodejs-modules
 import { join } from 'path'
 
 import ForkCheckerPlugin from 'fork-ts-checker-webpack-plugin'

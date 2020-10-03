@@ -4,7 +4,7 @@ import {
   Fixture,
   ApiFixtureStateMessage,
 } from '@vlight/types'
-import { mergeFixtureStates } from '@vlight/controls'
+import { mergeFixtureStates, mapFixtureStateToChannels } from '@vlight/controls'
 import { dictionaryToMap, logger, forEach } from '@vlight/utils'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
@@ -20,7 +20,7 @@ import {
 import { controlRegistry } from '../registry'
 import { registerApiMessageHandler } from '../../services/api/registry'
 
-import { mapFixtureStateToChannels, getInitialFixtureState } from './mapping'
+import { getInitialFixtureState } from './mapping'
 
 let fixtureUniverse: Universe
 

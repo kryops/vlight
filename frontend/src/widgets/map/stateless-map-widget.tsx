@@ -29,7 +29,7 @@ const widget = css`
 
 const widget_light = css`
   border: 1px solid ${iconShade(0, true)};
-  background: #eee;
+  background: #ccc;
 `
 
 const widget_standalone = css`

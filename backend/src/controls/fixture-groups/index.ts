@@ -12,7 +12,7 @@ import {
   isUnique,
   isTruthy,
 } from '@vlight/utils'
-import { mergeFixtureStates } from '@vlight/controls'
+import { mergeFixtureStates, mapFixtureStateToChannels } from '@vlight/controls'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
@@ -24,10 +24,7 @@ import {
   removeUniverse,
 } from '../../services/universe'
 import { howLong } from '../../util/time'
-import {
-  getInitialFixtureState,
-  mapFixtureStateToChannels,
-} from '../fixtures/mapping'
+import { getInitialFixtureState } from '../fixtures/mapping'
 import { controlRegistry } from '../registry'
 import { registerApiMessageHandler } from '../../services/api/registry'
 

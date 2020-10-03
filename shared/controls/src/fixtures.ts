@@ -1,7 +1,12 @@
-import { FixtureState, MasterData, MasterDataMaps } from '@vlight/types'
+import {
+  FixtureState,
+  FixtureType,
+  MasterData,
+  MasterDataMaps,
+} from '@vlight/types'
 import { logger, isUnique } from '@vlight/utils'
 
-import { FixtureMappingPrefix } from './enums'
+import { ChannelMapping, FixtureMappingPrefix } from './enums'
 
 /**
  * Maps the following to a list of plain unique fixture IDs:
@@ -77,4 +82,26 @@ export function mergeFixtureStates(
     channels: { ...state1?.channels, ...state2.channels },
     initial: undefined, // reset initial state
   }
+}
+
+export function mapFixtureStateToChannels(
+  type: FixtureType,
+  state: FixtureState
+): number[] {
+  const mapping = type.mapping
+
+  const masterChannelValue = state.channels[ChannelMapping.master] ?? 255
+
+  return mapping.map(channelType => {
+    if (!state.on) {
+      return 0
+    }
+
+    // TODO this is not optimal either, but allows better mixing than setting the other channels to their max value
+    if (channelType === ChannelMapping.master)
+      return masterChannelValue === 0 ? 0 : 255
+
+    const rawValue = state.channels[channelType] ?? 0
+    return Math.round(rawValue * (masterChannelValue / 255))
+  })
 }
