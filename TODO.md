@@ -2,6 +2,7 @@
 
 ## Roadmap
 
+- Better organization of shared code / splitting into multiple packages
 - Multi selector for fixtures, fixture groups and memories
 - Master data / config editor
   - Memories Preview in entity list

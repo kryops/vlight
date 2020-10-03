@@ -1,10 +1,10 @@
 import { Artnet } from 'artnet'
+import { logger } from '@vlight/shared'
 
 import { artnetHost, enableArtNetDevices } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
 import { howLong } from '../../util/time'
 import { deviceRegistry } from '../registry'
-import { logger } from '../../util/shared'
 
 let server: Artnet
 

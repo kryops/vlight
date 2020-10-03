@@ -1,6 +1,5 @@
 import React from 'react'
-
-import { logger } from './shared'
+import { logger } from '@vlight/shared'
 
 interface ErrorInfo {
   componentStack: string

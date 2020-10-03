@@ -1,14 +1,14 @@
 import { ApiOutMessage, ApiStateMessage } from '@vlight/api'
 import { MasterData } from '@vlight/entities'
-
-import { getUniverseIndex } from '../util'
 import {
   logger,
   assertNever,
   forEach,
   mergeFixtureStates,
   mergeMemoryStates,
-} from '../../util/shared'
+} from '@vlight/shared'
+
+import { getUniverseIndex } from '../util'
 
 export type ApiState = {
   [key in keyof Omit<ApiStateMessage, 'type'>]: ApiStateMessage[key] extends

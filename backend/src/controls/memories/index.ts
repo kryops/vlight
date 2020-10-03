@@ -1,5 +1,11 @@
 import { MemoryState, Memory, IdType } from '@vlight/entities'
 import { ApiMemoryStateMessage } from '@vlight/api'
+import {
+  dictionaryToMap,
+  logger,
+  forEach,
+  mergeMemoryStates,
+} from '@vlight/shared'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
@@ -10,12 +16,6 @@ import {
   removeUniverse,
   setUniverseChannel,
 } from '../../services/universe'
-import {
-  dictionaryToMap,
-  logger,
-  forEach,
-  mergeMemoryStates,
-} from '../../util/shared'
 import { howLong } from '../../util/time'
 import { controlRegistry } from '../registry'
 import { registerApiMessageHandler } from '../../services/api/registry'

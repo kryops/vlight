@@ -1,4 +1,5 @@
 import { Device, HID } from 'node-hid'
+import { LogLevel, logger } from '@vlight/shared'
 
 import {
   devicesFlushInterval,
@@ -12,7 +13,6 @@ import { onWindows } from '../../services/env'
 import { getDmxUniverse } from '../../services/universe'
 import { delay, howLong } from '../../util/time'
 import { deviceRegistry } from '../registry'
-import { LogLevel, logger } from '../../util/shared'
 
 import {
   connectUsbDmxDevices,

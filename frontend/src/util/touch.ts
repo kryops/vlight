@@ -1,6 +1,5 @@
 import { RefObject } from 'react'
-
-import { ensureBetween } from './shared'
+import { ensureBetween } from '@vlight/shared'
 
 export interface NormalizedTouchEvent<T extends HTMLElement = HTMLElement> {
   type: string

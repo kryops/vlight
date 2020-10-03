@@ -1,6 +1,6 @@
 import React from 'react'
+import { createRangeArray } from '@vlight/shared'
 
-import { createRangeArray } from '../../util/shared'
 import { setChannels } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconLight, iconLightOff } from '../../ui/icons'

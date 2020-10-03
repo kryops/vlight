@@ -1,8 +1,9 @@
 import { createServer, Socket } from 'net'
 
+import { removeFromMutableArray, logger } from '@vlight/shared'
+
 import { tcpPort } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
-import { removeFromMutableArray, logger } from '../../util/shared'
 import { getAddressString } from '../../util/network'
 
 import { getBinaryUniverseMessage } from './protocol'

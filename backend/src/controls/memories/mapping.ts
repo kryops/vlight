@@ -1,4 +1,5 @@
 import { MemoryState, Memory, MemoryScene } from '@vlight/entities'
+import { ChannelMapping } from '@vlight/shared'
 
 import { masterDataMaps } from '../../services/masterdata'
 import {
@@ -7,7 +8,6 @@ import {
   getUniverseIndex,
 } from '../../services/universe'
 import { mapFixtureStateToChannels } from '../fixtures/mapping'
-import { ChannelMapping } from '../../util/shared'
 
 import { getFixtureStateFor } from './gradients'
 

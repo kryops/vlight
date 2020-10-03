@@ -1,6 +1,6 @@
 import { Memory } from '@vlight/entities'
+import { mapFixtureList } from '@vlight/shared'
 
-import { mapFixtureList } from '../../../util/shared'
 import { masterData, masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'
 

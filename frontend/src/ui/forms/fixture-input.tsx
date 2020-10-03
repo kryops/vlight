@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { EntityName } from '@vlight/entities'
 import { css } from 'linaria'
+import { FixtureMappingPrefix } from '@vlight/shared'
 
-import { FixtureMappingPrefix } from '../../util/shared'
 import { cx } from '../../util/styles'
 
 import { Select, SelectEntry } from './select'

@@ -4,13 +4,12 @@ import {
   FixtureStateGradient,
   Dictionary,
 } from '@vlight/entities'
-
 import {
   ensureBetween,
   getFraction,
   getValueForFraction,
   interpolateGradientPositions,
-} from '../../util/shared'
+} from '@vlight/shared'
 
 export enum ScenePattern {
   ROW = 'row',

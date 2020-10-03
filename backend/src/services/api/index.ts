@@ -1,4 +1,5 @@
 import { ApiInMessage, ApiOutMessage } from '@vlight/api'
+import { logger } from '@vlight/shared'
 
 import {
   multiChannelUniverseFlushThreshold,
@@ -7,7 +8,6 @@ import {
 import { getDmxUniverse } from '../universe'
 import { howLong } from '../../util/time'
 import { broadcastToSockets, sockets } from '../http/websocket'
-import { logger } from '../../util/shared'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
 import { getFullState } from './messages'

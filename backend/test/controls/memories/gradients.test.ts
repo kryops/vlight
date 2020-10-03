@@ -4,6 +4,7 @@ import {
   FixtureStateGradient,
   Dictionary,
 } from '@vlight/entities'
+import { arrayRange } from '@vlight/shared'
 
 import {
   ScenePattern,
@@ -11,7 +12,6 @@ import {
   getStateIndexAndFractionFor,
   getFixtureStateFor,
 } from '../../../src/controls/memories/gradients'
-import { arrayRange } from '../../../src/util/shared'
 
 const channels1 = { r: 255 }
 const channels2 = { g: 255 }

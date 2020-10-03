@@ -1,7 +1,8 @@
 import { createConnection } from 'net'
 
+import { logger } from '@vlight/shared'
+
 import { tcpPort } from '../src/services/config'
-import { logger } from '../src/util/shared'
 
 const socket = createConnection(tcpPort, undefined, () => {
   logger.info('TCP client connected')

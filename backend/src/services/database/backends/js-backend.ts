@@ -3,9 +3,9 @@ import fs from 'fs'
 
 import prettier from 'prettier'
 import { EntityName, EntityArray, EntityType, IdType } from '@vlight/entities'
+import { logger } from '@vlight/shared'
 
 import { configDirectoryPath, project } from '../../config'
-import { logger } from '../../../util/shared'
 
 import { DatabaseBackend, DatabaseEntityOptions } from './database-backend'
 

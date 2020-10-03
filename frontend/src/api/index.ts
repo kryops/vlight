@@ -6,9 +6,9 @@ import {
   EntityName,
   EntityType,
 } from '@vlight/entities'
+import { logger } from '@vlight/shared'
 
 import { socketProcessingInterval, useSocketUpdateThrottling } from '../config'
-import { logger } from '../util/shared'
 
 import {
   getApiChannelMessage,

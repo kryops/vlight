@@ -1,5 +1,6 @@
 import { FixtureState } from '@vlight/entities'
 import React, { useCallback, useRef, useState } from 'react'
+import { ChannelMapping } from '@vlight/shared'
 
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
@@ -11,7 +12,6 @@ import { memoInProduction } from '../../util/development'
 import { iconColorPicker } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { faderContainer } from '../../ui/css/fader-container'
-import { ChannelMapping } from '../../util/shared'
 import { getFixtureStateColor } from '../../util/fixtures'
 import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
 

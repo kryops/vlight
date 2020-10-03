@@ -1,10 +1,10 @@
 import { ApiInMessage, ApiOutMessage } from '@vlight/api'
+import { logger, assertNever } from '@vlight/shared'
 
 import {
   useSocketUpdateThrottling,
   socketProcessingInterval,
 } from '../../config'
-import { logger, assertNever } from '../../util/shared'
 
 import { ApiState, processApiMessages } from './processing'
 

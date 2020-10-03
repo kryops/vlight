@@ -5,6 +5,11 @@ import {
   MemoryScene,
   FixtureStateGradient,
 } from '@vlight/entities'
+import {
+  ensureBetween,
+  interpolateGradientPositions,
+  mergeFixtureStates,
+} from '@vlight/shared'
 
 import { useCommonFixtureMapping } from '../../../../hooks/fixtures'
 import { FixtureStateWidget } from '../../../../widgets/fixture/fixture-state-widget'
@@ -14,11 +19,6 @@ import { iconAdd, iconDelete } from '../../../../ui/icons'
 import { baseline, iconShade } from '../../../../ui/styles'
 import { NumberInput } from '../../../../ui/forms/typed-input'
 import { formatNumber } from '../../../../util/format'
-import {
-  ensureBetween,
-  interpolateGradientPositions,
-  mergeFixtureStates,
-} from '../../../../util/shared'
 import { useClassName } from '../../../../hooks/ui'
 import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
 

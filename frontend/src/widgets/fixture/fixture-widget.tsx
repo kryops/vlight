@@ -1,7 +1,7 @@
 import { Fixture, FixtureType } from '@vlight/entities'
 import React from 'react'
+import { mergeFixtureStates } from '@vlight/shared'
 
-import { mergeFixtureStates } from '../../util/shared'
 import { useMasterDataMaps, useApiStateEntry } from '../../hooks/api'
 import { setFixtureState } from '../../api'
 

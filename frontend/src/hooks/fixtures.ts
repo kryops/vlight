@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
-
-import { isTruthy, isUnique, mapFixtureList } from '../util/shared'
+import { isTruthy, isUnique, mapFixtureList } from '@vlight/shared'
 
 import { useMasterData, useMasterDataMaps } from './api'
 

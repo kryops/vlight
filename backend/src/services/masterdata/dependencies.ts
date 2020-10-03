@@ -1,6 +1,5 @@
 import { EntityName } from '@vlight/entities'
-
-import { logger } from '../../util/shared'
+import { logger } from '@vlight/shared'
 
 import { getMasterDataEntityDefinition } from './registry'
 import { allEntityNames } from './data'

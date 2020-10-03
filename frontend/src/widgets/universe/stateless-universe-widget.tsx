@@ -1,10 +1,10 @@
 import { css } from 'linaria'
 import React, { useMemo } from 'react'
 import { MasterData } from '@vlight/entities'
+import { createRangeArray } from '@vlight/shared'
 
 import { Widget } from '../../ui/containers/widget'
 import { memoInProduction } from '../../util/development'
-import { createRangeArray } from '../../util/shared'
 import { cx } from '../../util/styles'
 import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
 import { baseline, baselinePx } from '../../ui/styles'

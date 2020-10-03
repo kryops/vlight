@@ -1,7 +1,8 @@
 import { createSocket } from 'dgram'
 
+import { logger } from '@vlight/shared'
+
 import { udpMulticastAddress, udpPort } from '../src/services/config'
-import { logger } from '../src/util/shared'
 import { getAddressString } from '../src/util/network'
 
 const socket = createSocket({ type: 'udp4', reuseAddr: true })

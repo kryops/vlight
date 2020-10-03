@@ -1,12 +1,13 @@
 import { createSocket, Socket } from 'dgram'
 
+import { logger } from '@vlight/shared'
+
 import {
   udpMulticastAddress,
   udpPort,
   udpUniverseInterval,
 } from '../../services/config'
 import { getDmxUniverse } from '../../services/universe'
-import { logger } from '../../util/shared'
 
 import { getBinaryUniverseMessage } from './protocol'
 

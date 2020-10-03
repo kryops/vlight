@@ -1,6 +1,6 @@
 import { MemorySceneState } from '@vlight/entities'
+import { interpolateGradientPositions } from '@vlight/shared'
 
-import { interpolateGradientPositions } from './shared'
 import { getFixtureStateColor } from './fixtures'
 
 export function getMemorySceneStatePreviewBackground(

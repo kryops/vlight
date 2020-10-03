@@ -1,5 +1,13 @@
 import { IdType, FixtureState, FixtureGroup, Fixture } from '@vlight/entities'
 import { ApiFixtureGroupStateMessage } from '@vlight/api'
+import {
+  dictionaryToMap,
+  logger,
+  forEach,
+  isUnique,
+  isTruthy,
+  mergeFixtureStates,
+} from '@vlight/shared'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
@@ -10,14 +18,6 @@ import {
   setUniverseChannel,
   removeUniverse,
 } from '../../services/universe'
-import {
-  dictionaryToMap,
-  logger,
-  forEach,
-  isUnique,
-  isTruthy,
-  mergeFixtureStates,
-} from '../../util/shared'
 import { howLong } from '../../util/time'
 import {
   getInitialFixtureState,

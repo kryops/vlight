@@ -1,10 +1,10 @@
 import { FixtureGroup } from '@vlight/entities'
 import React from 'react'
+import { mergeFixtureStates } from '@vlight/shared'
 
 import { setFixtureGroupState } from '../../api'
 import { useApiStateEntry } from '../../hooks/api'
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
-import { mergeFixtureStates } from '../../util/shared'
 import { FixtureStateWidget } from '../fixture/fixture-state-widget'
 
 export interface FixtureGroupWidgetProps {

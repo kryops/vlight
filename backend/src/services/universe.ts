@@ -1,5 +1,6 @@
+import { addToMutableArray, removeFromMutableArray } from '@vlight/shared'
+
 import { broadcastUniverseChannelToDevices } from '../devices'
-import { addToMutableArray, removeFromMutableArray } from '../util/shared'
 
 import { universeSize } from './config'
 import { broadcastUniverseChannelToApiClients } from './api'

@@ -1,14 +1,14 @@
 import { FixtureState, IdType, Fixture } from '@vlight/entities'
 import { ApiFixtureStateMessage } from '@vlight/api'
-
-import { masterDataMaps, masterData } from '../../services/masterdata'
-import { getPersistedState } from '../../services/state'
 import {
   dictionaryToMap,
   logger,
   mergeFixtureStates,
   forEach,
-} from '../../util/shared'
+} from '@vlight/shared'
+
+import { masterDataMaps, masterData } from '../../services/masterdata'
+import { getPersistedState } from '../../services/state'
 import { howLong } from '../../util/time'
 import {
   addUniverse,

@@ -1,6 +1,7 @@
 const startTime = Date.now()
 
 import sourceMapSupport from 'source-map-support'
+import { setLogLevel, logger } from '@vlight/shared'
 
 import { initApi } from './services/api'
 import { httpServer } from './services/http/express'
@@ -12,7 +13,6 @@ import { isDevelopment } from './services/env'
 import { initHttpServer } from './services/http'
 import { initMasterData } from './services/masterdata'
 import { initPersistedState } from './services/state'
-import { setLogLevel, logger } from './util/shared'
 
 sourceMapSupport.install()
 

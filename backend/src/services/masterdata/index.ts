@@ -5,6 +5,7 @@ import {
   ApiUpdateEntityMessage,
   ApiRemoveEntityMessage,
 } from '@vlight/api'
+import { logger } from '@vlight/shared'
 
 import { reloadControls } from '../../controls'
 import {
@@ -17,7 +18,6 @@ import {
 import { broadcastApplicationStateToApiClients } from '../api'
 import { registerApiMessageHandler } from '../api/registry'
 import { howLong } from '../../util/time'
-import { logger } from '../../util/shared'
 import { DatabaseEntityOptions } from '../database/backends/database-backend'
 
 import { initMasterDataEntities } from './entities'

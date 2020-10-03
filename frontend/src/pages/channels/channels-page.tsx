@@ -1,12 +1,12 @@
 import React from 'react'
 import { css } from 'linaria'
+import { createRangeArray } from '@vlight/shared'
 
 import { setChannel } from '../../api'
 import { getUniverseIndex } from '../../api/util'
 import { useApiState } from '../../hooks/api'
 import { ChannelFader } from '../../ui/controls/fader/channel-fader'
 import { pageWithWidgets } from '../../ui/css/page'
-import { createRangeArray } from '../../util/shared'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { Header } from '../../ui/containers/header'
