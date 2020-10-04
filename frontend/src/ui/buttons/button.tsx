@@ -33,11 +33,18 @@ const button = css`
 
 const button_active = css`
   background: ${primaryShade(0)};
+
+  &:hover,
+  &:active,
+  &:focus {
+    background: ${primaryShade(0)};
+  }
 `
 
 const button_inactive = css`
   &:active,
-  &:hover {
+  &:hover,
+  &:focus {
     background: ${primaryShade(2)};
   }
 `
@@ -61,10 +68,18 @@ const button_light = css`
 
 const button_active_light = css`
   background: ${primaryShade(1, true)};
+
+  &:hover,
+  &:active,
+  &:focus {
+    background: ${primaryShade(1, true)};
+  }
 `
 
 const button_inactive_light = css`
-  &:active {
+  &:hover,
+  &:active,
+  &:focus {
     background: ${primaryShade(3, true)};
   }
 `

@@ -3,6 +3,7 @@
 ## Roadmap
 
 - Multi selector for fixtures, fixture groups and memories => better FixtureInput
+- Mini map on the right (toggle)
 - Master data / config editor
   - Dynamic pages
 - Backend restructuring

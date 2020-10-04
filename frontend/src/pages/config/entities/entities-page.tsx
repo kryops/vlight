@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom'
 import { memoInProduction } from '../../../util/development'
 import { BackArrow } from '../../../ui/components/back-arrow'
 import { configPageRoute } from '../../routes'
-import { useApiState } from '../../../hooks/api'
+import { useRawMasterData } from '../../../hooks/api'
 import { Icon } from '../../../ui/icons/icon'
 import { iconAdd } from '../../../ui/icons'
 import { baseline } from '../../../ui/styles'
@@ -33,7 +33,7 @@ const icon = css`
 
 const EntitiesPage = memoInProduction(() => {
   const { type } = useParams<{ type: EntityName }>()
-  const rawMasterData = useApiState('rawMasterData')
+  const rawMasterData = useRawMasterData()
 
   if (!entityUiMapping[type]) return null
   const entries = rawMasterData[type]

@@ -8,7 +8,7 @@ import { cx } from '../../util/styles'
 import { Select, SelectEntry } from './select'
 import { EntityReferenceSelect } from './entity-reference-select'
 
-export interface FixtureInputProps {
+export interface FixtureSelectInputProps {
   value: string | undefined
   onChange: (value: string | undefined) => void
   className?: string
@@ -43,12 +43,12 @@ function prefixFromValue(value: string | undefined) {
   return allPrefixes.find(prefix => value.startsWith(prefix)) ?? ''
 }
 
-export function FixtureInput({
+export function FixtureSelectInput({
   value,
   onChange,
   className,
   hideGroupMode,
-}: FixtureInputProps) {
+}: FixtureSelectInputProps) {
   const [prefixToUse, setPrefixToUse] = useState(prefixFromValue(value))
 
   useEffect(() => {
@@ -96,8 +96,8 @@ export function FixtureInput({
   )
 }
 
-export function FixtureInputWithoutGroups(
-  props: Omit<FixtureInputProps, 'hideGroupMode'>
+export function FixtureSelectInputWithoutGroups(
+  props: Omit<FixtureSelectInputProps, 'hideGroupMode'>
 ) {
-  return <FixtureInput {...props} hideGroupMode />
+  return <FixtureSelectInput {...props} hideGroupMode />
 }

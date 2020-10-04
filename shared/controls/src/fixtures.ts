@@ -49,7 +49,7 @@ export function mapFixtureList(
       if (fixture.startsWith(FixtureMappingPrefix.all)) {
         const originalId = fixture.slice(FixtureMappingPrefix.all.length)
         const mappedFixtures = masterData.fixtures
-          .filter(f => f.originalId === originalId)
+          .filter(f => f.originalId === originalId || f.id === originalId)
           .map(f => f.id)
         if (!mappedFixtures.length) {
           logger.warn(

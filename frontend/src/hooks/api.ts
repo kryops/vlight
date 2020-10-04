@@ -78,6 +78,7 @@ export function useApiStateEntry<
 }
 
 export const useMasterData = (): MasterData => useApiState('masterData')
+export const useRawMasterData = (): MasterData => useApiState('rawMasterData')
 
 export const useMasterDataMaps = (): MasterDataMaps => {
   // refresh the component when the master data changes

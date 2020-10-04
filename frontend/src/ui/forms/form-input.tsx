@@ -11,6 +11,7 @@ import {
   EntityReferenceSelect,
 } from './entity-reference-select'
 import { ArrayInput, ArrayInputProps } from './array-input'
+import { FixtureListInput, FixtureListInputProps } from './fixture-list-input'
 
 export interface FormInputProps<
   TValue,
@@ -101,6 +102,25 @@ export function FormArrayInput<
   Omit<ArrayInputProps<TValue>, 'value' | 'onChange'>) {
   return (
     <ArrayInput
+      value={formState.values[name] as any}
+      onChange={value => formState.changeValue(name, value as any)}
+      {...rest}
+    />
+  )
+}
+
+export function FormFixtureListInput<
+  TValue,
+  TValues extends { [key in TName]: TValue[] },
+  TName extends keyof TValues
+>({
+  formState,
+  name,
+  ...rest
+}: FormInputProps<TValue[], TValues, TName> &
+  Omit<FixtureListInputProps, 'value' | 'onChange'>) {
+  return (
+    <FixtureListInput
       value={formState.values[name] as any}
       onChange={value => formState.changeValue(name, value as any)}
       {...rest}

@@ -7,7 +7,7 @@ import { FormTextInput } from '../../../../ui/forms/form-input'
 import { EntityEditorProps, entityUiMapping } from '../entity-ui-mapping'
 import { Label } from '../../../../ui/forms/label'
 import { ArrayInput } from '../../../../ui/forms/array-input'
-import { FixtureInput } from '../../../../ui/forms/fixture-input'
+import { FixtureSelectInput } from '../../../../ui/forms/fixture-select-input'
 import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
 import { primaryShade, baseline, iconShade } from '../../../../ui/styles'
@@ -107,7 +107,7 @@ export function MemoryEditor({
                       onChange={newValue =>
                         changeSceneProperty(scene, 'members', newValue)
                       }
-                      Input={FixtureInput}
+                      Input={FixtureSelectInput}
                       displayRemoveButtons
                     />
                   }

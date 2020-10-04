@@ -59,7 +59,7 @@ const modal = css`
   max-width: 98vw;
   box-sizing: border-box;
   padding: ${baseline(6)} ${baseline(8)};
-  background: ${primaryShade(2)};
+  background: ${primaryShade(3)};
 
   @media (max-width: 400px) {
     padding: ${baseline(4)};
