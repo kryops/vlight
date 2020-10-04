@@ -1,10 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import { setFixtureState } from '../../api'
 import { Button } from '../../ui/buttons/button'
-import { iconLight, iconLightOff } from '../../ui/icons'
+import { iconConfig, iconLight, iconLightOff } from '../../ui/icons'
 import { useApiState, useMasterData } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
+import { entitiesPageRoute } from '../routes'
 
 export function FixturesActions() {
   const { fixtures } = useMasterData()
@@ -20,6 +22,9 @@ export function FixturesActions() {
 
   return (
     <>
+      <Link to={entitiesPageRoute('fixtures')}>
+        <Button icon={iconConfig} />
+      </Link>
       <Button
         icon={iconLight}
         onDown={() => setOnForAllFixtures(true)}

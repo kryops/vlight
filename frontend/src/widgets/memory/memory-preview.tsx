@@ -58,10 +58,6 @@ export function MemoryPreview({ scenes }: MemoryPreviewProps) {
   const universe = getMemoryUniverse(scenes, masterData, masterDataMaps)
 
   return (
-    <StatelessMapWidget
-      fixtures={masterData.fixtures}
-      universe={universe}
-      standalone
-    />
+    <StatelessMapWidget fixtures={masterData.fixtures} universe={universe} />
   )
 }

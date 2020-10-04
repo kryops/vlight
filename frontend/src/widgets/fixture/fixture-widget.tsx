@@ -4,6 +4,9 @@ import { mergeFixtureStates } from '@vlight/controls'
 
 import { useMasterDataMaps, useApiStateEntry } from '../../hooks/api'
 import { setFixtureState } from '../../api'
+import { Icon } from '../../ui/icons/icon'
+import { iconConfig } from '../../ui/icons'
+import { openEntityEditorForId } from '../../pages/config/entities/editors'
 
 import { FixtureStateWidget } from './fixture-state-widget'
 
@@ -33,6 +36,17 @@ export const FixtureWidget = ({ fixture }: FixtureWidgetProps) => {
   return (
     <FixtureStateWidget
       title={getFixtureName(fixture, fixtureType)}
+      titleSide={
+        <Icon
+          icon={iconConfig}
+          onClick={() =>
+            openEntityEditorForId('fixtures', fixture.originalId ?? fixture.id)
+          }
+          shade={1}
+          hoverable
+          inline
+        />
+      }
       fixtureState={fixtureState}
       mapping={fixtureType.mapping}
       onChange={partialState =>

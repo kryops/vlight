@@ -9,7 +9,7 @@ import { Icon } from '../icons/icon'
 
 const button = css`
   display: inline-block;
-  padding: ${baseline(2)} ${baseline(4)};
+  padding: ${baseline(2)} ${baseline(3)};
   background: ${primaryShade(2)};
   margin-left: ${baseline()};
   color: ${textShade(0)};
@@ -80,7 +80,7 @@ const iconStyle = css`
 `
 
 export interface ButtonProps {
-  children: React.ReactNode
+  children?: React.ReactNode
   onDown?: () => void
   onUp?: () => void
   icon?: string

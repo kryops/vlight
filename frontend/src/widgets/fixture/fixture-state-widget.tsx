@@ -1,6 +1,7 @@
 import { FixtureState } from '@vlight/types'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { ReactNode, useCallback, useRef, useState } from 'react'
 import { ChannelMapping } from '@vlight/controls'
+import { css } from 'linaria'
 
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
@@ -14,11 +15,17 @@ import { Icon } from '../../ui/icons/icon'
 import { faderContainer } from '../../ui/css/fader-container'
 import { getFixtureStateColor } from '../../util/fixtures'
 import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
+import { baseline } from '../../ui/styles'
+
+const colorPickerIconStyle = css`
+  margin-left: ${baseline(2)};
+`
 
 export interface FixtureStateWidgetProps {
   fixtureState: FixtureState
   mapping: string[]
   title?: string
+  titleSide?: ReactNode
   onChange: (newState: Partial<FixtureState>) => void
   disableOn?: boolean
   className?: string
@@ -29,6 +36,7 @@ export const FixtureStateWidget = memoInProduction(
     fixtureState,
     mapping,
     title,
+    titleSide,
     onChange,
     disableOn,
     className,
@@ -88,12 +96,19 @@ export const FixtureStateWidget = memoInProduction(
                 })
         }
         titleSide={
-          colorPickerCapable ? (
-            <Icon
-              icon={iconColorPicker}
-              onClick={toggleColorPicker}
-              shade={colorPicker ? 1 : 2}
-            />
+          titleSide || colorPickerCapable ? (
+            <>
+              {titleSide}
+              {colorPickerCapable && (
+                <Icon
+                  icon={iconColorPicker}
+                  onClick={toggleColorPicker}
+                  shade={colorPicker ? 1 : 2}
+                  inline
+                  className={colorPickerIconStyle}
+                />
+              )}
+            </>
           ) : undefined
         }
         turnedOn={disableOn ? undefined : fixtureState.on}

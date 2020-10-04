@@ -2,9 +2,12 @@ import { Memory, MemoryState } from '@vlight/types'
 import React from 'react'
 
 import { setMemoryState } from '../../api'
+import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
+import { iconConfig } from '../../ui/icons'
+import { Icon } from '../../ui/icons/icon'
 import { memoInProduction } from '../../util/development'
 
 export interface StatelessMemoryWidgetProps {
@@ -18,6 +21,15 @@ export const StatelessMemoryWidget = memoInProduction(
       <Widget
         key={memory.id}
         title={memory.name ?? memory.id}
+        titleSide={
+          <Icon
+            icon={iconConfig}
+            onClick={() => openEntityEditorForId('memories', memory.id)}
+            shade={1}
+            hoverable
+            inline
+          />
+        }
         onTitleClick={() =>
           setMemoryState(memory.id, {
             value: state.value,

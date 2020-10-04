@@ -23,11 +23,11 @@ export function addToMutableArray<T>(arr: T[], el: T): void {
 export function arrayRange<T>(
   min: number,
   max: number,
-  cb: (index: number) => T
+  cb: (current: number) => T
 ): T[] {
   const entries: T[] = []
-  for (let index = min; index <= max; index++) {
-    entries.push(cb(index))
+  for (let current = min; current <= max; current++) {
+    entries.push(cb(current))
   }
 
   return entries

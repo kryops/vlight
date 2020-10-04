@@ -1,6 +1,11 @@
 import { css } from 'linaria'
 import React, { CSSProperties } from 'react'
-import { Fixture } from '@vlight/types'
+import {
+  Fixture,
+  FixtureBorderStyle,
+  FixtureShape,
+  IdType,
+} from '@vlight/types'
 
 import { Widget } from '../../ui/containers/widget'
 import { memoInProduction } from '../../util/development'
@@ -8,13 +13,14 @@ import { baseline, iconShade, primaryShade } from '../../ui/styles'
 import { getEffectiveFixtureColor } from '../../util/fixtures'
 import { useMasterDataMaps } from '../../hooks/api'
 import { cx } from '../../util/styles'
-import { useClassName } from '../../hooks/ui'
+import { useClassNames } from '../../hooks/ui'
 import { useSettings } from '../../hooks/settings'
 
 const widget = css`
   position: relative;
   display: inline-block;
   width: 100%;
+  min-width: ${baseline(64)};
   max-width: ${baseline(96)};
   border: 1px solid ${iconShade(1)};
   overflow: hidden;
@@ -50,25 +56,71 @@ const fixtureStyle = css`
   height: 5%;
   width: 5%;
   box-sizing: border-box;
+
+  &:hover {
+    box-shadow: 0 0 8px #fff;
+
+    &:before {
+      content: attr(title);
+      position: absolute;
+      top: 125%;
+      left: -100%;
+      width: 300%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      text-shadow: 1px 1px 4px #000;
+      z-index: 3;
+    }
+  }
+`
+
+const fixtureStyle_light = css`
+  &:hover {
+    &:before {
+      text-shadow: 1px 1px 4px #fff;
+    }
+  }
 `
 
 const fixture_circle = css`
   border-radius: 100%;
 `
 
+export interface MapShape {
+  shape: FixtureShape
+  border?: FixtureBorderStyle
+  x: number
+  y: number
+  xSize?: number
+  ySize?: number
+}
+
 export interface StatelessMapWidgetProps {
-  universe: number[]
-  fixtures: Fixture[]
+  fixtures?: Fixture[]
+  universe?: number[]
+  highlightedFixtures?: IdType[]
+  additionalShapes?: MapShape[]
   standalone?: boolean
 }
 
 export const StatelessMapWidget = memoInProduction(
-  ({ universe, fixtures, standalone }: StatelessMapWidgetProps) => {
+  ({
+    universe,
+    fixtures,
+    highlightedFixtures,
+    additionalShapes,
+    standalone,
+  }: StatelessMapWidgetProps) => {
     const { fixtureTypes } = useMasterDataMaps()
-    const widgetClassName = useClassName(widget, widget_light)
+    const [widgetClassName, fixtureClassName] = useClassNames(
+      [widget, widget_light],
+      [fixtureStyle, fixtureStyle_light]
+    )
     const { lightMode } = useSettings()
 
-    const positionedFixtures = fixtures.filter(
+    const positionedFixtures = (fixtures ?? []).filter(
       fixture => fixture.x !== undefined && fixture.y !== undefined
     )
 
@@ -77,34 +129,52 @@ export const StatelessMapWidget = memoInProduction(
         <div className={container}>
           {positionedFixtures.map(fixture => {
             const fixtureType = fixtureTypes.get(fixture.type)
-            const color = getEffectiveFixtureColor(
-              fixture,
-              fixtureType,
-              universe
-            )
+            const color =
+              universe &&
+              getEffectiveFixtureColor(fixture, fixtureType, universe)
+            const isHighlighted = highlightedFixtures?.includes(fixture.id)
             const style: CSSProperties = {
               background: color,
               left: `${fixture.x}%`,
               top: `${fixture.y}%`,
-              borderWidth: color ? '2px' : '1px',
-              borderColor: color
+              width: fixtureType?.xSize ? `${fixtureType.xSize}%` : undefined,
+              height: fixtureType?.ySize ? `${fixtureType.ySize}%` : undefined,
+              borderStyle: fixtureType?.border,
+              borderWidth: color || isHighlighted ? '2px' : undefined,
+              borderColor: isHighlighted
+                ? 'red'
+                : color
                 ? iconShade(0, lightMode)
-                : iconShade(1, lightMode),
+                : undefined,
             }
-            if (fixtureType?.xSize) style.width = `${fixtureType.xSize}%`
-            if (fixtureType?.ySize) style.height = `${fixtureType.ySize}%`
             return (
               <div
                 key={fixture.id}
                 title={fixture.name}
                 style={style}
                 className={cx(
-                  fixtureStyle,
+                  fixtureClassName,
                   fixtureType?.shape !== 'square' && fixture_circle
                 )}
               />
             )
           })}
+          {additionalShapes?.map((shape, index) => (
+            <div
+              key={index}
+              style={{
+                left: `${shape.x}%`,
+                top: `${shape.y}%`,
+                width: shape.xSize ? `${shape.xSize}%` : undefined,
+                height: shape.ySize ? `${shape.ySize}%` : undefined,
+                borderStyle: shape.border,
+              }}
+              className={cx(
+                fixtureClassName,
+                shape.shape !== 'square' && fixture_circle
+              )}
+            />
+          ))}
         </div>
       </Widget>
     )

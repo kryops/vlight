@@ -80,6 +80,8 @@ const fixtureTypes = [
     id: 'stufe3',
     name: 'Stufenlinse 3ch',
     mapping: ['m', 'str', 'cur'],
+    shape: 'circle',
+    border: 'dashed',
   },
   {
     id: 'hazer',

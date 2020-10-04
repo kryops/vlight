@@ -12,10 +12,13 @@ export interface Dictionary<T> {
 
 export type FixtureShape = 'square' | 'circle'
 
+export type FixtureBorderStyle = 'solid' | 'dotted' | 'dashed'
+
 export interface FixtureType extends DbEntity {
   name: string
   mapping: string[]
   shape?: FixtureShape
+  border?: FixtureBorderStyle
   xSize?: number
   ySize?: number
 }

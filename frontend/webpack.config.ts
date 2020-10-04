@@ -146,6 +146,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       !profile &&
         new ForkCheckerPlugin({
           typescript: {
+            enabled: false,
             configFile: join(__dirname, 'tsconfig.json'),
             configOverwrite: {
               compilerOptions: {

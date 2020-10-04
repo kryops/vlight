@@ -2,15 +2,14 @@
 
 ## Roadmap
 
-- Multi selector for fixtures, fixture groups and memories
+- Multi selector for fixtures, fixture groups and memories => better FixtureInput
 - Master data / config editor
-  - Memories Preview in entity list
-  - Memories Preview in map
   - Dynamic pages
-  - Read-only view for viewing from the widgets (=> jump to editor from there?)
 - Backend restructuring
   - easier masterData extension / new entity process?
 - Chases
+  - Pre-configured / presets
+  - Live
 - Speed/Fade control
 - LaunchPad input
 - XTouch input

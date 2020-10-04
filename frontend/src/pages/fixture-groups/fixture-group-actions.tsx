@@ -1,10 +1,12 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 import { setFixtureGroupState } from '../../api'
 import { Button } from '../../ui/buttons/button'
-import { iconLight, iconLightOff } from '../../ui/icons'
+import { iconConfig, iconLight, iconLightOff } from '../../ui/icons'
 import { useApiState, useMasterData } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
+import { entitiesPageRoute } from '../routes'
 
 export function FixtureGroupsActions() {
   const { fixtureGroups } = useMasterData()
@@ -20,6 +22,9 @@ export function FixtureGroupsActions() {
 
   return (
     <>
+      <Link to={entitiesPageRoute('fixtureGroups')}>
+        <Button icon={iconConfig} />
+      </Link>
       <Button
         icon={iconLight}
         onDown={() => setOnForAllFixtureGroups(true)}

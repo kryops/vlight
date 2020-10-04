@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FixtureShape } from '@vlight/types'
+import { FixtureBorderStyle, FixtureShape } from '@vlight/types'
 import { css } from 'linaria'
 
 import { useFormState } from '../../../../hooks/form'
@@ -12,14 +12,26 @@ import { EntityEditorProps } from '../entity-ui-mapping'
 import { Label } from '../../../../ui/forms/label'
 import { TextInput } from '../../../../ui/forms/typed-input'
 import { SelectEntry } from '../../../../ui/forms/select'
+import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
+import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget'
 
 const fixtureShapeEntries: SelectEntry<FixtureShape>[] = [
   { value: 'circle', label: 'Circle' },
   { value: 'square', label: 'Square' },
 ]
 
+const fixtureBorderStyleEntries: SelectEntry<FixtureBorderStyle>[] = [
+  { value: 'solid', label: 'Solid' },
+  { value: 'dotted', label: 'Dotted' },
+  { value: 'dashed', label: 'Dashed' },
+]
+
 const sizeInput = css`
   width: auto;
+`
+
+const previewColumn = css`
+  text-align: center;
 `
 
 export function FixtureTypeEditor({
@@ -34,59 +46,90 @@ export function FixtureTypeEditor({
   return (
     <>
       <h2>{entry.id ? 'Edit' : 'Add'} Fixture Type</h2>
-      <Label
-        label="Name"
-        input={<FormTextInput formState={formState} name="name" />}
-      />
-      <Label
-        label="Mapping"
-        description="Comma-separated - Special values: m, r, g, b"
-        input={
-          <TextInput
-            value={mappingString}
-            onChange={newMappingString => {
-              setMappingString(newMappingString)
-              const newMapping = (newMappingString ?? '')
-                .split(',')
-                .map(it => it.trim())
-                .filter(Boolean)
-              formState.changeValue('mapping', newMapping)
-            }}
-          />
-        }
-      />
-      <Label
-        label="Shape"
-        input={
-          <FormSelect
-            entries={fixtureShapeEntries}
-            formState={formState}
-            name="shape"
-          />
-        }
-      />
-      <Label
-        label="Size"
-        description="X/Y - 0-100 (Default: 5x5)"
-        input={
+      <TwoColumDialogContainer
+        left={
           <>
-            <FormNumberInput
-              formState={formState}
-              name="xSize"
-              min={0}
-              max={100}
-              className={sizeInput}
+            <Label
+              label="Name"
+              input={<FormTextInput formState={formState} name="name" />}
             />
-            {' x '}
-            <FormNumberInput
-              formState={formState}
-              name="ySize"
-              min={0}
-              max={100}
-              className={sizeInput}
+            <Label
+              label="Mapping"
+              description="Comma-separated - Special values: m, r, g, b"
+              input={
+                <TextInput
+                  value={mappingString}
+                  onChange={newMappingString => {
+                    setMappingString(newMappingString)
+                    const newMapping = (newMappingString ?? '')
+                      .split(',')
+                      .map(it => it.trim())
+                      .filter(Boolean)
+                    formState.changeValue('mapping', newMapping)
+                  }}
+                />
+              }
+            />
+            <Label
+              label="Shape"
+              input={
+                <FormSelect
+                  entries={fixtureShapeEntries}
+                  formState={formState}
+                  name="shape"
+                />
+              }
+            />
+            <Label
+              label="Border"
+              input={
+                <FormSelect
+                  entries={fixtureBorderStyleEntries}
+                  formState={formState}
+                  name="border"
+                />
+              }
+            />
+            <Label
+              label="Size"
+              description="X/Y - 0-100 (Default: 5x5)"
+              input={
+                <>
+                  <FormNumberInput
+                    formState={formState}
+                    name="xSize"
+                    min={0}
+                    max={100}
+                    className={sizeInput}
+                  />
+                  {' x '}
+                  <FormNumberInput
+                    formState={formState}
+                    name="ySize"
+                    min={0}
+                    max={100}
+                    className={sizeInput}
+                  />
+                </>
+              }
             />
           </>
         }
+        right={
+          <StatelessMapWidget
+            additionalShapes={[
+              {
+                x: 50,
+                y: 50,
+                xSize: formState.values.xSize,
+                ySize: formState.values.ySize,
+                border: formState.values.border,
+                shape: formState.values.shape ?? 'circle',
+              },
+            ]}
+          />
+        }
+        rightClassName={previewColumn}
       />
     </>
   )

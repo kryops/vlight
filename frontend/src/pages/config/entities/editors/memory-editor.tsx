@@ -17,42 +17,9 @@ import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
 import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
 import { okCancel } from '../../../../ui/overlays/buttons'
 import { MemoryPreview } from '../../../../widgets/memory/memory-preview'
-import { cx } from '../../../../util/styles'
+import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 
 import { MemorySceneStateEditor } from './memory-scene-state-editor'
-
-const breakpoint = '700px'
-
-const container = css`
-  @media (min-width: ${breakpoint}) {
-    width: 80vw;
-    max-width: 1200px;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-`
-
-const column = css`
-  flex: 1 1 auto;
-  flex-basis: 50%;
-
-  margin-right: ${baseline(4)};
-
-  &:last-child {
-    margin-right: 0;
-    margin-top: ${baseline(4)};
-
-    @media (min-width: ${breakpoint}) {
-      margin-top: 0;
-    }
-  }
-`
-
-const previewColumn = css`
-  min-width: ${baseline(64)};
-  max-width: ${baseline(96)};
-`
 
 const sceneStyle = css`
   padding: ${baseline(2)};
@@ -76,6 +43,10 @@ const stateStyle_light = css`
 
 const statePreview = css`
   flex: 1 1 auto;
+`
+
+const previewColumn = css`
+  text-align: center;
 `
 
 const memoryScenePatternEntries: SelectEntry<MemoryScene['pattern']>[] = [
@@ -112,120 +83,123 @@ export function MemoryEditor({
   return (
     <>
       <h2>{entry.id ? 'Edit' : 'Add'} Memory</h2>
-      <div className={container}>
-        <div className={column}>
-          <Label
-            label="Name"
-            input={<FormTextInput formState={formState} name="name" />}
-          />
-          <h3>Scenes</h3>
-          {scenes.value.map((scene, sceneIndex) => (
-            <div key={sceneIndex} className={sceneClass}>
-              <h3>
-                Scene {sceneIndex + 1}{' '}
-                <a onClick={() => scenes.remove(scene)}>
-                  <Icon icon={iconDelete} inline hoverable />
-                </a>
-              </h3>
-              <Label
-                label="Fixtures"
-                input={
-                  <ArrayInput
-                    value={scene.members}
-                    onChange={newValue =>
-                      changeSceneProperty(scene, 'members', newValue)
-                    }
-                    Input={FixtureInput}
-                    displayRemoveButtons
-                  />
-                }
-              />
-              <Label
-                label={
-                  <>
-                    States{' '}
-                    <Icon
-                      icon={iconAdd}
-                      hoverable
-                      inline
-                      onClick={() =>
-                        changeSceneProperty(scene, 'states', [
-                          ...scene.states,
-                          entityUiMapping.memories.newEntityFactory!().scenes[0]
-                            .states[0],
-                        ])
-                      }
-                    />
-                  </>
-                }
-                input={
-                  <>
-                    Pattern: &nbsp;
-                    <Select
-                      entries={memoryScenePatternEntries}
-                      value={scene.pattern}
+      <TwoColumDialogContainer
+        left={
+          <>
+            <Label
+              label="Name"
+              input={<FormTextInput formState={formState} name="name" />}
+            />
+            <h3>Scenes</h3>
+            {scenes.value.map((scene, sceneIndex) => (
+              <div key={sceneIndex} className={sceneClass}>
+                <h3>
+                  Scene {sceneIndex + 1}{' '}
+                  <a onClick={() => scenes.remove(scene)}>
+                    <Icon icon={iconDelete} inline hoverable />
+                  </a>
+                </h3>
+                <Label
+                  label="Fixtures"
+                  input={
+                    <ArrayInput
+                      value={scene.members}
                       onChange={newValue =>
-                        changeSceneProperty(scene, 'pattern', newValue)
+                        changeSceneProperty(scene, 'members', newValue)
                       }
+                      Input={FixtureInput}
+                      displayRemoveButtons
                     />
-                  </>
-                }
-              />
-              {scene.states.map((state, stateIndex) => (
-                <div key={stateIndex} className={stateClass}>
-                  <div
-                    className={statePreview}
-                    style={{
-                      background: getMemorySceneStatePreviewBackground(state),
-                    }}
-                    onClick={async () => {
-                      const result = await showDialogWithReturnValue<
-                        MemorySceneState
-                      >(
-                        onChange => (
-                          <MemorySceneStateEditor
-                            scene={scene}
-                            state={state}
-                            onChange={onChange}
-                          />
-                        ),
-                        okCancel
-                      )
-                      if (result)
+                  }
+                />
+                <Label
+                  label={
+                    <>
+                      States{' '}
+                      <Icon
+                        icon={iconAdd}
+                        hoverable
+                        inline
+                        onClick={() =>
+                          changeSceneProperty(scene, 'states', [
+                            ...scene.states,
+                            entityUiMapping.memories.newEntityFactory!()
+                              .scenes[0].states[0],
+                          ])
+                        }
+                      />
+                    </>
+                  }
+                  input={
+                    <>
+                      Pattern: &nbsp;
+                      <Select
+                        entries={memoryScenePatternEntries}
+                        value={scene.pattern}
+                        onChange={newValue =>
+                          changeSceneProperty(scene, 'pattern', newValue)
+                        }
+                      />
+                    </>
+                  }
+                />
+                {scene.states.map((state, stateIndex) => (
+                  <div key={stateIndex} className={stateClass}>
+                    <div
+                      className={statePreview}
+                      style={{
+                        background: getMemorySceneStatePreviewBackground(state),
+                      }}
+                      onClick={async () => {
+                        const result = await showDialogWithReturnValue<
+                          MemorySceneState
+                        >(
+                          onChange => (
+                            <MemorySceneStateEditor
+                              scene={scene}
+                              state={state}
+                              onChange={onChange}
+                            />
+                          ),
+                          okCancel
+                        )
+                        if (result)
+                          changeSceneProperty(
+                            scene,
+                            'states',
+                            scene.states.map(it => (it === state ? result : it))
+                          )
+                      }}
+                    />
+                    <Icon
+                      icon={iconDelete}
+                      padding
+                      onClick={() =>
                         changeSceneProperty(
                           scene,
                           'states',
-                          scene.states.map(it => (it === state ? result : it))
+                          scene.states.filter(it => it !== state)
                         )
-                    }}
-                  />
-                  <Icon
-                    icon={iconDelete}
-                    padding
-                    onClick={() =>
-                      changeSceneProperty(
-                        scene,
-                        'states',
-                        scene.states.filter(it => it !== state)
-                      )
-                    }
-                  />
-                </div>
-              ))}
-            </div>
-          ))}
-          <a
-            onClick={() =>
-              scenes.add(entityUiMapping.memories.newEntityFactory!().scenes[0])
-            }
-          >
-            <Icon icon={iconAdd} inline /> Add scene
-          </a>
-        </div>
-        <div className={cx(column, previewColumn)}>
-          <MemoryPreview scenes={scenes.value} />
-        </div>
-      </div>
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+            ))}
+            <a
+              onClick={() =>
+                scenes.add(
+                  entityUiMapping.memories.newEntityFactory!().scenes[0]
+                )
+              }
+            >
+              <Icon icon={iconAdd} inline /> Add scene
+            </a>
+          </>
+        }
+        right={<MemoryPreview scenes={scenes.value} />}
+        rightClassName={previewColumn}
+      />
     </>
   )
 }
