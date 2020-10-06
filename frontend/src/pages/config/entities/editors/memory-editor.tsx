@@ -6,8 +6,6 @@ import { useFormState, useFormStateArray } from '../../../../hooks/form'
 import { FormTextInput } from '../../../../ui/forms/form-input'
 import { EntityEditorProps, entityUiMapping } from '../entity-ui-mapping'
 import { Label } from '../../../../ui/forms/label'
-import { ArrayInput } from '../../../../ui/forms/array-input'
-import { FixtureSelectInput } from '../../../../ui/forms/fixture-select-input'
 import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
 import { primaryShade, baseline, iconShade } from '../../../../ui/styles'
@@ -18,6 +16,7 @@ import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
 import { okCancel } from '../../../../ui/overlays/buttons'
 import { MemoryPreview } from '../../../../widgets/memory/memory-preview'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
+import { FixtureListInput } from '../../../../ui/forms/fixture-list-input'
 
 import { MemorySceneStateEditor } from './memory-scene-state-editor'
 
@@ -102,13 +101,11 @@ export function MemoryEditor({
                 <Label
                   label="Fixtures"
                   input={
-                    <ArrayInput
+                    <FixtureListInput
                       value={scene.members}
                       onChange={newValue =>
                         changeSceneProperty(scene, 'members', newValue)
                       }
-                      Input={FixtureSelectInput}
-                      displayRemoveButtons
                     />
                   }
                 />

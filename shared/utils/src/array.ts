@@ -54,3 +54,14 @@ export function forEach<T>(entry: T | T[], cb: (it: T) => void): void {
     cb(entry)
   }
 }
+
+export function sortByKey<T extends object>(arr: T[], key: keyof T): T[] {
+  return [...arr].sort((a, b) => {
+    const aVal = a[key]
+    const bVal = b[key]
+
+    if (aVal === bVal) return 0
+    if (aVal === null || aVal === undefined) return -1
+    return aVal < bVal ? -1 : 1
+  })
+}

@@ -1,6 +1,7 @@
 import React from 'react'
 import { css } from 'linaria'
 import { EntityType, EntityName } from '@vlight/types'
+import { sortByKey } from '@vlight/utils'
 
 import { removeEntity } from '../../../api'
 import { useClassName } from '../../../hooks/ui'
@@ -55,9 +56,11 @@ export function EntityList<T extends EntityName>({
 }: EntityListProps<T>) {
   const listEntryClassName = useClassName(listEntry, listEntry_light)
 
+  const orderedEntries = sortByKey(entries, 'name')
+
   return (
     <>
-      {entries.map(entry => (
+      {orderedEntries.map(entry => (
         <div key={entry.id} className={listEntryClassName}>
           <div
             className={entryContent}
