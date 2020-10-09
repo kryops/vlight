@@ -98,16 +98,12 @@ export function MemoryEditor({
                     <Icon icon={iconDelete} inline hoverable />
                   </a>
                 </h3>
-                <Label
-                  label="Fixtures"
-                  input={
-                    <FixtureListInput
-                      value={scene.members}
-                      onChange={newValue =>
-                        changeSceneProperty(scene, 'members', newValue)
-                      }
-                    />
+                <FixtureListInput
+                  value={scene.members}
+                  onChange={newValue =>
+                    changeSceneProperty(scene, 'members', newValue)
                   }
+                  ordering
                 />
                 <Label
                   label={

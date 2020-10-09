@@ -8,6 +8,8 @@ import { useMasterData, useRawMasterData } from '../../hooks/api'
 import { Button } from '../buttons/button'
 import { baseline } from '../styles'
 
+import { SortableFixtureMapping } from './sortable-fixture-mapping'
+
 const container = css`
   flex: 1 1 auto;
 `
@@ -55,7 +57,7 @@ const fixtureCategory: FixtureListCategory = {
 }
 
 const allFixturesCategory: FixtureListCategory = {
-  label: 'By Definition',
+  label: 'All',
   entity: 'fixtures',
   prefix: FixtureMappingPrefix.all,
   useRawMasterData: true,
@@ -104,23 +106,28 @@ export interface FixtureListInputProps {
   value: string[] | undefined
   onChange: (value: string[]) => void
   hideGroupMode?: boolean
+  ordering?: boolean
 }
 
-// TODO change order
 export function FixtureListInput({
   value,
   onChange,
   hideGroupMode,
+  ordering,
 }: FixtureListInputProps) {
   const rawMasterData = useRawMasterData()
   const masterData = useMasterData()
-  const [activeCategory, setActiveCategory] = useState(categories[0])
+  const [activeCategory, setActiveCategory] = useState(
+    ordering ? null : categories[0]
+  )
 
-  const base = activeCategory.useRawMasterData ? rawMasterData : masterData
+  const base = activeCategory?.useRawMasterData ? rawMasterData : masterData
 
-  const allEntities = base[activeCategory.entity] as Array<
-    FixtureType | Fixture | FixtureGroup
-  >
+  const allEntities = activeCategory
+    ? (base[activeCategory.entity] as Array<
+        FixtureType | Fixture | FixtureGroup
+      >)
+    : []
 
   const fixtureCountByEntity = new Map<ListEntityType, number>([
     ...allEntities
@@ -157,6 +164,15 @@ export function FixtureListInput({
   return (
     <div className={container}>
       <div className={categoryContainer}>
+        {ordering && (
+          <Button
+            className={categoryEntry}
+            active={activeCategory === null}
+            onDown={() => setActiveCategory(null)}
+          >
+            Selected
+          </Button>
+        )}
         {availableCategories.map((category, index) => {
           const count = countByCategory.get(category) ?? 0
 
@@ -173,31 +189,36 @@ export function FixtureListInput({
           )
         })}
       </div>
-      <div className={scrollContainer}>
-        {entities.map(entity => {
-          const entry = activeCategory.prefix + entity.id
-          const active = value?.includes(entry)
-          return (
-            <Button
-              key={entity.id}
-              className={listEntry}
-              active={active}
-              block
-              onDown={() =>
-                onChange(
-                  active
-                    ? (value ?? []).filter(it => it !== entry)
-                    : [...(value ?? []), entry]
-                )
-              }
-            >
-              {entity.name}
-              {activeCategory !== fixtureCategory &&
-                ` [${fixtureCountByEntity.get(entity)}]`}
-            </Button>
-          )
-        })}
-      </div>
+      {activeCategory === null && (
+        <SortableFixtureMapping value={value ?? []} onChange={onChange} />
+      )}
+      {activeCategory && (
+        <div className={scrollContainer}>
+          {entities.map(entity => {
+            const entry = activeCategory?.prefix + entity.id
+            const active = value?.includes(entry)
+            return (
+              <Button
+                key={entity.id}
+                className={listEntry}
+                active={active}
+                block
+                onDown={() =>
+                  onChange(
+                    active
+                      ? (value ?? []).filter(it => it !== entry)
+                      : [...(value ?? []), entry]
+                  )
+                }
+              >
+                {entity.name}
+                {activeCategory !== fixtureCategory &&
+                  ` [${fixtureCountByEntity.get(entity)}]`}
+              </Button>
+            )
+          })}
+        </div>
+      )}
     </div>
   )
 }

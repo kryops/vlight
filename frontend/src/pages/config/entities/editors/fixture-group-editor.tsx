@@ -40,15 +40,12 @@ export function FixtureGroupEditor({
               label="Name"
               input={<FormTextInput formState={formState} name="name" />}
             />
-            <Label
-              label="Fixtures"
-              input={
-                <FormFixtureListInput
-                  formState={formState}
-                  name="fixtures"
-                  hideGroupMode
-                />
-              }
+            <p>Fixtures</p>
+            <FormFixtureListInput
+              formState={formState}
+              name="fixtures"
+              hideGroupMode
+              ordering
             />
           </>
         }
