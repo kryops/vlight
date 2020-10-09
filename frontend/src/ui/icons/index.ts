@@ -22,6 +22,9 @@ import {
   mdiLightbulbOffOutline,
   mdiStarFourPoints,
   mdiMap,
+  mdiLightbulbGroupOutline,
+  mdiFormatListNumbered,
+  mdiDrag,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -42,6 +45,7 @@ export const iconUniverse = mdiStarFourPoints
 export const iconFader = mdiTuneVertical
 export const iconFixtureType = mdiShape
 export const iconLight = mdiLightbulbOnOutline
+export const iconLights = mdiLightbulbGroupOutline
 export const iconLightOff = mdiLightbulbOffOutline
 export const iconGroup = mdiGroup
 export const iconMemory = mdiImageFrame
@@ -49,3 +53,5 @@ export const iconExperiment = mdiFlaskOutline
 export const iconColorPicker = mdiPaletteOutline
 export const iconDynamicPage = mdiFileAccount
 export const iconConfig = mdiCog
+export const iconList = mdiFormatListNumbered
+export const iconDrag = mdiDrag

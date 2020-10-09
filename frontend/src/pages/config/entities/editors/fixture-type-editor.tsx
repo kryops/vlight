@@ -26,6 +26,10 @@ const fixtureBorderStyleEntries: SelectEntry<FixtureBorderStyle>[] = [
   { value: 'dashed', label: 'Dashed' },
 ]
 
+const title = css`
+  margin-top: 0;
+`
+
 const sizeInput = css`
   width: auto;
 `
@@ -45,7 +49,7 @@ export function FixtureTypeEditor({
 
   return (
     <>
-      <h2>{entry.id ? 'Edit' : 'Add'} Fixture Type</h2>
+      <h2 className={title}>{entry.id ? 'Edit' : 'Add'} Fixture Type</h2>
       <TwoColumDialogContainer
         left={
           <>

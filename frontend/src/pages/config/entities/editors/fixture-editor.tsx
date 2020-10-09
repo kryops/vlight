@@ -15,6 +15,10 @@ import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget
 import { useMasterData } from '../../../../hooks/api'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 
+const title = css`
+  margin-top: 0;
+`
+
 const positionInput = css`
   width: auto;
 `
@@ -54,7 +58,7 @@ export function FixtureEditor({
 
   return (
     <>
-      <h2>{entry.id ? 'Edit' : 'Add'} Fixture</h2>
+      <h2 className={title}>{entry.id ? 'Edit' : 'Add'} Fixture</h2>
       <TwoColumDialogContainer
         left={
           <>

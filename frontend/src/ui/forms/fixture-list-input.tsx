@@ -1,11 +1,23 @@
-import { FixtureMappingPrefix } from '@vlight/controls'
+import { FixtureMappingPrefix, mapFixtureList } from '@vlight/controls'
 import { EntityName, Fixture, FixtureGroup, FixtureType } from '@vlight/types'
 import { sortByKey } from '@vlight/utils'
 import { css } from 'linaria'
 import React, { useState } from 'react'
 
-import { useMasterData, useRawMasterData } from '../../hooks/api'
+import {
+  useMasterData,
+  useMasterDataMaps,
+  useRawMasterData,
+} from '../../hooks/api'
 import { Button } from '../buttons/button'
+import {
+  iconList,
+  iconFixtureType,
+  iconGroup,
+  iconLight,
+  iconLights,
+} from '../icons'
+import { Icon } from '../icons/icon'
 import { baseline } from '../styles'
 
 import { SortableFixtureMapping } from './sortable-fixture-mapping'
@@ -30,18 +42,21 @@ const categoryEntry = css`
 `
 
 const scrollContainer = css`
+  margin-top: ${baseline()};
   height: ${baseline(84)};
   max-height: 80vh;
   overflow-y: auto;
 `
 
 const listEntry = css`
+  margin-top: 0;
   margin-bottom: ${baseline()};
   text-align: left;
   width: auto;
 `
 
 interface FixtureListCategory {
+  icon: string
   label: string
   entity: EntityName
   useRawMasterData?: boolean
@@ -51,25 +66,29 @@ interface FixtureListCategory {
 type ListEntityType = Fixture | FixtureType | FixtureGroup
 
 const fixtureCategory: FixtureListCategory = {
+  icon: iconLight,
   label: 'Fixture',
   entity: 'fixtures',
   prefix: '',
 }
 
 const allFixturesCategory: FixtureListCategory = {
-  label: 'All',
+  icon: iconLights,
+  label: 'All by definition',
   entity: 'fixtures',
   prefix: FixtureMappingPrefix.all,
   useRawMasterData: true,
 }
 
 const fixtureTypeCategory: FixtureListCategory = {
+  icon: iconFixtureType,
   label: 'Type',
   entity: 'fixtureTypes',
   prefix: FixtureMappingPrefix.type,
 }
 
 const groupCategory: FixtureListCategory = {
+  icon: iconGroup,
   label: 'Group',
   entity: 'fixtureGroups',
   prefix: FixtureMappingPrefix.group,
@@ -117,6 +136,7 @@ export function FixtureListInput({
 }: FixtureListInputProps) {
   const rawMasterData = useRawMasterData()
   const masterData = useMasterData()
+  const masterDataMaps = useMasterDataMaps()
   const [activeCategory, setActiveCategory] = useState(
     ordering ? null : categories[0]
   )
@@ -157,6 +177,13 @@ export function FixtureListInput({
     'name'
   )
 
+  const allMappedFixtures = new Set(
+    mapFixtureList(value ?? [], {
+      masterData,
+      masterDataMaps,
+    })
+  )
+
   const availableCategories = hideGroupMode
     ? categories.filter(it => it !== groupCategory)
     : categories
@@ -170,7 +197,7 @@ export function FixtureListInput({
             active={activeCategory === null}
             onDown={() => setActiveCategory(null)}
           >
-            Selected
+            <Icon icon={iconList} />
           </Button>
         )}
         {availableCategories.map((category, index) => {
@@ -182,9 +209,10 @@ export function FixtureListInput({
               className={categoryEntry}
               active={category === activeCategory}
               onDown={() => setActiveCategory(category)}
+              title={category.label}
             >
-              {category.label}
-              {count > 0 && ` [${count}]`}
+              <Icon icon={category.icon} />
+              {count > 0 && ` ${count}`}
             </Button>
           )
         })}
@@ -209,6 +237,11 @@ export function FixtureListInput({
                       ? (value ?? []).filter(it => it !== entry)
                       : [...(value ?? []), entry]
                   )
+                }
+                disabled={
+                  activeCategory === fixtureCategory &&
+                  !active &&
+                  allMappedFixtures.has(entity.id)
                 }
               >
                 {entity.name}

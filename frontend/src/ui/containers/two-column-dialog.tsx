@@ -20,12 +20,19 @@ const container = css`
 const column = css`
   flex: 1 1 auto;
 
-  margin-right: ${baseline(4)};
   margin-bottom: ${baseline(6)};
+
+  @media (min-width: ${breakpoint}) {
+    margin-right: ${baseline(4)};
+  }
 
   &:last-child {
     margin-right: 0;
   }
+`
+
+const column_fixed = css`
+  flex-basis: 0;
 `
 
 export interface TwoColumDialogContainerProps {
@@ -34,6 +41,7 @@ export interface TwoColumDialogContainerProps {
   className?: string
   leftClassName?: string
   rightClassName?: string
+  fixed?: boolean
 }
 
 export function TwoColumDialogContainer({
@@ -42,11 +50,18 @@ export function TwoColumDialogContainer({
   className,
   leftClassName,
   rightClassName,
+  fixed,
 }: TwoColumDialogContainerProps) {
   return (
     <div className={cx(container, className)}>
-      <div className={cx(column, leftClassName)}>{left}</div>
-      {right && <div className={cx(column, rightClassName)}>{right}</div>}
+      <div className={cx(column, fixed && column_fixed, leftClassName)}>
+        {left}
+      </div>
+      {right && (
+        <div className={cx(column, fixed && column_fixed, rightClassName)}>
+          {right}
+        </div>
+      )}
     </div>
   )
 }

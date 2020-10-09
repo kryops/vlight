@@ -2,7 +2,8 @@
 
 ## Roadmap
 
-- Multi selector for fixtures, fixture groups and memories => better FixtureInput
+- Better color interpolation for mixing with white channel (currently grey)
+- Multi selector for fixtures, fixture groups and memories
 - Mini map on the right (toggle)
 - Master data / config editor
   - Dynamic pages

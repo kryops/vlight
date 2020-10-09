@@ -23,12 +23,13 @@ export interface TouchableProps {
   onUp?: TouchEventListener
   onMove?: TouchEventListener
   className?: string
+  title?: string
 }
 
 export const Touchable = React.forwardRef<
   HTMLDivElement,
   TouchableProps & { children: any }
->(({ onTouch, onDown, onUp, onMove, className, children }, ref) => {
+>(({ onTouch, onDown, onUp, onMove, className, children, title }, ref) => {
   const pointerActive = useRef(false)
 
   const downListener: RawTouchEventListener | undefined =
@@ -74,6 +75,7 @@ export const Touchable = React.forwardRef<
   return (
     <div
       className={cx(touchable, className)}
+      title={title}
       ref={ref}
       onPointerDown={
         pointerEventSupport

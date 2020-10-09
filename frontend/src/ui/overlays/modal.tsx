@@ -40,7 +40,7 @@ const modalContainer = css`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: ${baseline(4)};
+  padding: ${baseline(2)};
   box-sizing: border-box;
   align-items: center;
   justify-content: center;
@@ -61,7 +61,8 @@ const modal = css`
   padding: ${baseline(6)} ${baseline(8)};
   background: ${primaryShade(3)};
 
-  @media (max-width: 400px) {
+  @media (max-width: 500px) {
+    width: 94vw;
     padding: ${baseline(4)};
   }
 `
@@ -144,6 +145,7 @@ export function Modal<T>({
             <Icon
               icon={iconClose}
               className={closeButton}
+              hoverable
               onClick={() => onClose(null as any)}
             />
           )}

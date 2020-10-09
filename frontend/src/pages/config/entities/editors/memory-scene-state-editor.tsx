@@ -24,6 +24,10 @@ import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
 import { getFixtureStateColor } from '../../../../util/fixtures'
 import { cx } from '../../../../util/styles'
 
+const title = css`
+  margin-top: 0;
+`
+
 const widget = css`
   border: none;
 `
@@ -290,7 +294,7 @@ export function MemorySceneStateEditor({
 
   return (
     <>
-      <h2>Edit Memory Scene State</h2>
+      <h2 className={title}>Edit Memory Scene State</h2>
       <Select
         className={select}
         entries={Object.values(MemorySceneStateType)}

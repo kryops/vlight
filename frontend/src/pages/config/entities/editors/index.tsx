@@ -43,7 +43,8 @@ export async function openEntityEditor<T extends EntityName>(
         newEntry = newValue
       }}
     />,
-    okCancel
+    okCancel,
+    { showCloseButton: true }
   )
   if (result) {
     editEntity(type, newEntry)

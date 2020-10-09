@@ -56,6 +56,7 @@ export function FixtureGroupEditor({
           />
         }
         rightClassName={previewColumn}
+        fixed
       />
     </>
   )

@@ -103,6 +103,7 @@ export interface ButtonProps {
   active?: boolean
   disabled?: boolean
   className?: string
+  title?: string
 }
 
 export function Button({
@@ -111,9 +112,10 @@ export function Button({
   onUp,
   block,
   icon,
-  className,
   active,
   disabled,
+  className,
+  title,
 }: ButtonProps) {
   const [buttonClass, activeClass, inactiveClass] = useClassNames(
     [button, button_light],
@@ -130,6 +132,7 @@ export function Button({
         disabled && button_disabled,
         className
       )}
+      title={title}
       onDown={onDown}
       onUp={onUp}
     >

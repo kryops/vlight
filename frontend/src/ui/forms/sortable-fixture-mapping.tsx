@@ -3,21 +3,21 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { css } from 'linaria'
 import { FixtureMappingPrefix } from '@vlight/controls'
 
-import { iconDelete } from '../icons'
+import { iconDelete, iconDrag } from '../icons'
 import { Icon } from '../icons/icon'
 import { useMasterDataMaps, useRawMasterData } from '../../hooks/api'
 import { baseline, primaryShade, textShade } from '../styles'
 import { useClassName } from '../../hooks/ui'
 
-// for some reason the FixtureListInput's scroll container is 4px lower
 const container = css`
-  min-height: ${baseline(83)};
+  margin-top: ${baseline()};
+  min-height: ${baseline(84)};
 `
 
 const entryStyle = css`
   display: flex;
   background: ${primaryShade(2)};
-  margin: ${baseline()} 0;
+  margin-bottom: ${baseline()};
 `
 
 const entryStyle_light = css`
@@ -32,7 +32,7 @@ const entryButton = css`
 
 const entryName = css`
   flex: 1 1 auto;
-  padding: ${baseline(2)} ${baseline(3)};
+  padding: ${baseline(2)} 0;
 `
 
 export interface SortableFixtureMappingProps {
@@ -83,6 +83,7 @@ const InnerMapping = React.memo(
                   {...provided.draggableProps}
                   {...provided.dragHandleProps}
                 >
+                  <Icon className={entryButton} icon={iconDrag} />
                   <div className={entryName}>{name}</div>
                   <Icon
                     className={entryButton}
