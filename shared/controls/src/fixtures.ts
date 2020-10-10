@@ -90,6 +90,7 @@ export function mapFixtureStateToChannels(
 ): number[] {
   const mapping = type.mapping
 
+  const hasMasterChannel = mapping.includes(ChannelMapping.master)
   const masterChannelValue = state.channels[ChannelMapping.master] ?? 255
 
   return mapping.map(channelType => {
@@ -97,11 +98,12 @@ export function mapFixtureStateToChannels(
       return 0
     }
 
-    // TODO this is not optimal either, but allows better mixing than setting the other channels to their max value
-    if (channelType === ChannelMapping.master)
-      return masterChannelValue === 0 ? 0 : 255
+    if (channelType === ChannelMapping.master) masterChannelValue
 
     const rawValue = state.channels[channelType] ?? 0
-    return Math.round(rawValue * (masterChannelValue / 255))
+
+    if (hasMasterChannel) return rawValue
+
+    return Math.round((rawValue * masterChannelValue) / 255)
   })
 }
