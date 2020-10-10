@@ -40,7 +40,7 @@ const modalContainer = css`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: ${baseline(2)};
+  padding: ${baseline(2)} ${baseline(0.5)};
   box-sizing: border-box;
   align-items: center;
   justify-content: center;
@@ -56,7 +56,7 @@ const modalContainer_light = css`
 
 const modal = css`
   min-width: ${baseline(64)};
-  max-width: 98vw;
+  max-width: 96vw;
   box-sizing: border-box;
   padding: ${baseline(6)} ${baseline(8)};
   background: ${primaryShade(3)};

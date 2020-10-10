@@ -173,10 +173,11 @@ export function MemorySceneStateEditor({
       />
       <div className={stopSelectionContainer}>
         {localState.map((stop, index) => {
-          const stopColor = getFixtureStateColor({
-            on: true,
-            channels: stop.channels,
-          })
+          const stopColor =
+            getFixtureStateColor({
+              on: true,
+              channels: stop.channels,
+            }) ?? 'black'
           return (
             <div
               key={index}

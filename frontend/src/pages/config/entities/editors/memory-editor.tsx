@@ -27,7 +27,7 @@ const title = css`
 
 const sceneStyle = css`
   padding: ${baseline(2)};
-  margin: 0 ${baseline(-2)} ${baseline(2)} ${baseline(-2)};
+  margin: ${baseline(2)} ${baseline(-2)};
   background: ${primaryShade(1)};
 `
 
@@ -94,7 +94,6 @@ export function MemoryEditor({
               label="Name"
               input={<FormTextInput formState={formState} name="name" />}
             />
-            <h3>Scenes</h3>
             {scenes.value.map((scene, sceneIndex) => (
               <div key={sceneIndex} className={sceneClass}>
                 <h3>
@@ -129,16 +128,18 @@ export function MemoryEditor({
                     </>
                   }
                   input={
-                    <>
-                      Pattern: &nbsp;
-                      <Select
-                        entries={memoryScenePatternEntries}
-                        value={scene.pattern}
-                        onChange={newValue =>
-                          changeSceneProperty(scene, 'pattern', newValue)
-                        }
-                      />
-                    </>
+                    scene.states.length >= 2 && (
+                      <>
+                        Pattern: &nbsp;
+                        <Select
+                          entries={memoryScenePatternEntries}
+                          value={scene.pattern}
+                          onChange={newValue =>
+                            changeSceneProperty(scene, 'pattern', newValue)
+                          }
+                        />
+                      </>
+                    )
                   }
                 />
                 <DragDropContext

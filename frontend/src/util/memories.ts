@@ -11,10 +11,11 @@ export function getMemorySceneStatePreviewBackground(
       state.map(entry => entry.position)
     )
     const gradientStops = state.map((entry, index) => {
-      const color = getFixtureStateColor({
-        on: true,
-        channels: entry.channels,
-      })
+      const color =
+        getFixtureStateColor({
+          on: true,
+          channels: entry.channels,
+        }) ?? 'transparent'
       return `${color} ${positions[index]}%`
     })
     return `linear-gradient(to right, ${gradientStops.join(', ')})`
