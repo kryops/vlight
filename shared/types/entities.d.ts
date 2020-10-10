@@ -154,19 +154,19 @@ export type WidgetConfig =
   | MemoryWidgetConfig
   | MapWidgetConfig
 
-export interface GridCellConfig {
+export interface DynamicPageCell {
   factor?: number
   widgets: WidgetConfig[]
 }
 
-export interface GridRowConfig {
+export interface DynamicPageRow {
   headline?: string
-  cells: GridCellConfig[]
+  cells: DynamicPageCell[]
 }
 
 export interface DynamicPage extends DbEntity {
   name?: string
   icon?: string
   headline?: string
-  rows: GridRowConfig[]
+  rows: DynamicPageRow[]
 }

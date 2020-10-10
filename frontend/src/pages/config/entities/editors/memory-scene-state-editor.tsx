@@ -23,10 +23,7 @@ import { useClassName } from '../../../../hooks/ui'
 import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
 import { getFixtureStateColor } from '../../../../util/fixtures'
 import { cx } from '../../../../util/styles'
-
-const title = css`
-  margin-top: 0;
-`
+import { editorTitle } from '../../../../ui/css/editor-styles'
 
 const widget = css`
   border: none;
@@ -295,7 +292,7 @@ export function MemorySceneStateEditor({
 
   return (
     <>
-      <h2 className={title}>Edit Memory Scene State</h2>
+      <h2 className={editorTitle}>Edit Memory Scene State</h2>
       <Select
         className={select}
         entries={Object.values(MemorySceneStateType)}

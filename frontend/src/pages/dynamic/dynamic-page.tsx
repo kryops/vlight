@@ -5,6 +5,9 @@ import { useMasterData } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'
 import { Grid } from '../../ui/containers/grid'
 import { DynamicWidget } from '../../widgets/dynamic-widget'
+import { Header } from '../../ui/containers/header'
+
+import { DynamicPageActions } from './dynamic-page-actions'
 
 const DynamicPage = memoInProduction(() => {
   const { id } = useParams<{ id: string }>()
@@ -16,7 +19,9 @@ const DynamicPage = memoInProduction(() => {
 
   return (
     <div>
-      {headline && <h1>{headline}</h1>}
+      <Header rightContent={<DynamicPageActions dynamicPage={page} />}>
+        {headline}
+      </Header>
       {rows.map(({ headline, cells }, index) => (
         <Grid
           key={index}

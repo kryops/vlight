@@ -13,6 +13,7 @@ import { FixtureTypeEditor } from './editors/fixture-type-editor'
 import { FixtureEditor } from './editors/fixture-editor'
 import { FixtureGroupEditor } from './editors/fixture-group-editor'
 import { MemoryEditor } from './editors/memory-editor'
+import { DynamicPageEditor } from './editors/dynamic-page-editor'
 
 export interface EntityEditorProps<T extends EntityName> {
   entry: EntityType<T>
@@ -79,5 +80,17 @@ export const entityUiMapping: { [key in EntityName]: EntityEntry<key> } = {
   dynamicPages: {
     name: 'Dynamic Pages',
     icon: iconDynamicPage,
+    editor: DynamicPageEditor,
+    newEntityFactory: () => ({
+      rows: [
+        {
+          cells: [
+            {
+              widgets: [],
+            },
+          ],
+        },
+      ],
+    }),
   },
 }

@@ -1,5 +1,4 @@
 import React from 'react'
-import { css } from 'linaria'
 import { Fixture } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'
 
@@ -14,18 +13,11 @@ import { Label } from '../../../../ui/forms/label'
 import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget'
 import { useMasterData } from '../../../../hooks/api'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
-
-const title = css`
-  margin-top: 0;
-`
-
-const positionInput = css`
-  width: auto;
-`
-
-const previewColumn = css`
-  text-align: center;
-`
+import {
+  autoWidthInput,
+  editorPreviewColumn,
+  editorTitle,
+} from '../../../../ui/css/editor-styles'
 
 export function FixtureEditor({
   entry,
@@ -58,7 +50,7 @@ export function FixtureEditor({
 
   return (
     <>
-      <h2 className={title}>{entry.id ? 'Edit' : 'Add'} Fixture</h2>
+      <h2 className={editorTitle}>{entry.id ? 'Edit' : 'Add'} Fixture</h2>
       <TwoColumDialogContainer
         left={
           <>
@@ -90,7 +82,7 @@ export function FixtureEditor({
                     name="x"
                     min={0}
                     max={100}
-                    className={positionInput}
+                    className={autoWidthInput}
                   />
                   {' / '}
                   <FormNumberInput
@@ -98,7 +90,7 @@ export function FixtureEditor({
                     name="y"
                     min={0}
                     max={100}
-                    className={positionInput}
+                    className={autoWidthInput}
                   />
                 </>
               }
@@ -119,7 +111,7 @@ export function FixtureEditor({
                     name="xOffset"
                     min={-100}
                     max={100}
-                    className={positionInput}
+                    className={autoWidthInput}
                   />
                   {' / '}
                   <FormNumberInput
@@ -127,7 +119,7 @@ export function FixtureEditor({
                     name="yOffset"
                     min={-100}
                     max={100}
-                    className={positionInput}
+                    className={autoWidthInput}
                   />
                 </>
               }
@@ -144,7 +136,7 @@ export function FixtureEditor({
             }
           />
         }
-        rightClassName={previewColumn}
+        rightClassName={editorPreviewColumn}
       />
     </>
   )

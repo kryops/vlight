@@ -26,6 +26,7 @@ export const globalStyles = css`
     a {
       color: ${textShade(0)};
       text-decoration: none;
+      cursor: pointer;
     }
 
     h1 {

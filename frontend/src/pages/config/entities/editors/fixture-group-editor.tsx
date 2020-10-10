@@ -1,6 +1,5 @@
 import React from 'react'
 import { mapFixtureList } from '@vlight/controls'
-import { css } from 'linaria'
 
 import { useFormState } from '../../../../hooks/form'
 import {
@@ -12,10 +11,7 @@ import { Label } from '../../../../ui/forms/label'
 import { useMasterData, useMasterDataMaps } from '../../../../hooks/api'
 import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
-
-const previewColumn = css`
-  text-align: center;
-`
+import { editorPreviewColumn } from '../../../../ui/css/editor-styles'
 
 export function FixtureGroupEditor({
   entry,
@@ -55,7 +51,7 @@ export function FixtureGroupEditor({
             highlightedFixtures={fixtureIds}
           />
         }
-        rightClassName={previewColumn}
+        rightClassName={editorPreviewColumn}
         fixed
       />
     </>

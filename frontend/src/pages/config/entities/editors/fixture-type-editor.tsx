@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { FixtureBorderStyle, FixtureShape } from '@vlight/types'
-import { css } from 'linaria'
 
 import { useFormState } from '../../../../hooks/form'
 import {
@@ -14,6 +13,11 @@ import { TextInput } from '../../../../ui/forms/typed-input'
 import { SelectEntry } from '../../../../ui/forms/select'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget'
+import {
+  autoWidthInput,
+  editorPreviewColumn,
+  editorTitle,
+} from '../../../../ui/css/editor-styles'
 
 const fixtureShapeEntries: SelectEntry<FixtureShape>[] = [
   { value: 'circle', label: 'Circle' },
@@ -26,18 +30,6 @@ const fixtureBorderStyleEntries: SelectEntry<FixtureBorderStyle>[] = [
   { value: 'dashed', label: 'Dashed' },
 ]
 
-const title = css`
-  margin-top: 0;
-`
-
-const sizeInput = css`
-  width: auto;
-`
-
-const previewColumn = css`
-  text-align: center;
-`
-
 export function FixtureTypeEditor({
   entry,
   onChange,
@@ -49,7 +41,7 @@ export function FixtureTypeEditor({
 
   return (
     <>
-      <h2 className={title}>{entry.id ? 'Edit' : 'Add'} Fixture Type</h2>
+      <h2 className={editorTitle}>{entry.id ? 'Edit' : 'Add'} Fixture Type</h2>
       <TwoColumDialogContainer
         left={
           <>
@@ -104,7 +96,7 @@ export function FixtureTypeEditor({
                     name="xSize"
                     min={0}
                     max={100}
-                    className={sizeInput}
+                    className={autoWidthInput}
                   />
                   {' x '}
                   <FormNumberInput
@@ -112,7 +104,7 @@ export function FixtureTypeEditor({
                     name="ySize"
                     min={0}
                     max={100}
-                    className={sizeInput}
+                    className={autoWidthInput}
                   />
                 </>
               }
@@ -133,7 +125,7 @@ export function FixtureTypeEditor({
             ]}
           />
         }
-        rightClassName={previewColumn}
+        rightClassName={editorPreviewColumn}
       />
     </>
   )

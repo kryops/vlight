@@ -18,12 +18,12 @@ import { okCancel } from '../../../../ui/overlays/buttons'
 import { MemoryPreview } from '../../../../widgets/memory/memory-preview'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 import { FixtureListInput } from '../../../../ui/forms/fixture-list-input'
+import {
+  editorPreviewColumn,
+  editorTitle,
+} from '../../../../ui/css/editor-styles'
 
 import { MemorySceneStateEditor } from './memory-scene-state-editor'
-
-const title = css`
-  margin-top: 0;
-`
 
 const sceneStyle = css`
   padding: ${baseline(2)};
@@ -47,10 +47,6 @@ const stateStyle_light = css`
 
 const statePreview = css`
   flex: 1 1 auto;
-`
-
-const previewColumn = css`
-  text-align: center;
 `
 
 const memoryScenePatternEntries: SelectEntry<MemoryScene['pattern']>[] = [
@@ -86,7 +82,7 @@ export function MemoryEditor({
 
   return (
     <>
-      <h2 className={title}>{entry.id ? 'Edit' : 'Add'} Memory</h2>
+      <h2 className={editorTitle}>{entry.id ? 'Edit' : 'Add'} Memory</h2>
       <TwoColumDialogContainer
         left={
           <>
@@ -239,7 +235,7 @@ export function MemoryEditor({
           </>
         }
         right={<MemoryPreview scenes={scenes.value} />}
-        rightClassName={previewColumn}
+        rightClassName={editorPreviewColumn}
         fixed
       />
     </>
