@@ -6,9 +6,10 @@ import { StatelessMapWidget } from './stateless-map-widget'
 
 export interface MapWidgetProps {
   standalone?: boolean
+  className?: string
 }
 
-export const MapWidget = ({ standalone }: MapWidgetProps) => {
+export const MapWidget = ({ standalone, className }: MapWidgetProps) => {
   const universe = useDmxUniverse()
   const masterData = useMasterData()
 
@@ -17,6 +18,7 @@ export const MapWidget = ({ standalone }: MapWidgetProps) => {
       universe={universe}
       fixtures={masterData.fixtures}
       standalone={standalone}
+      className={className}
     />
   )
 }

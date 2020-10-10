@@ -3,7 +3,7 @@ import React, { Suspense, useCallback, useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
 
 import { RoutesOutlet } from '../../pages/routes-outlet'
-import { iconClose, iconMenu, iconLight } from '../icons'
+import { iconClose, iconMenu } from '../icons'
 import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
 import {
@@ -12,16 +12,14 @@ import {
   zNavigation,
   backgroundColorLight,
   textShade,
-  zDevOverlay,
+  iconShade,
 } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-import { useSettings } from '../../hooks/settings'
-import { devMode } from '../../config'
-import { Icon } from '../icons/icon'
-import { useClassName } from '../../hooks/ui'
+import { useClassNames } from '../../hooks/ui'
 
 import { LoadingScreen } from './loading-screen'
+import { CornerOverlay } from './corner-overlay'
 
 const mainContainer = css`
   display: flex;
@@ -42,7 +40,31 @@ const content = css`
   padding: ${baseline(4)};
   height: 100%;
   box-sizing: border-box;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  @media (min-width: 800px) {
+    ::-webkit-scrollbar {
+      width: ${baseline()};
+      background: ${iconShade(3)};
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: ${iconShade(1)};
+    }
+  }
+`
+
+const content_light = css`
+  @media (min-width: 800px) {
+    ::-webkit-scrollbar {
+      background: ${iconShade(4, true)};
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: ${iconShade(2, true)};
+    }
+  }
 `
 
 const content_blurred = css`
@@ -60,21 +82,16 @@ const overlay = css`
   z-index: ${zNavigation};
 `
 
-const devOverlay = css`
-  position: absolute;
-  z-index: ${zDevOverlay};
-  bottom: ${baseline(3)};
-  right: ${baseline(3)};
-`
-
 const navBreakpoint = 768
 const alwaysShowNav = window.innerWidth >= navBreakpoint
 
 export const MainContainer = memoInProduction(() => {
   const [nav, setNav] = useState(alwaysShowNav)
   const location = useLocation()
-  const { lightMode, updateSettings } = useSettings()
-  const className = useClassName(mainContainer, mainContainer_light)
+  const [mainContainerClassName, contentClassName] = useClassNames(
+    [mainContainer, mainContainer_light],
+    [content, content_light]
+  )
 
   const toggleNav = useCallback(() => setNav(!nav), [nav])
 
@@ -85,7 +102,7 @@ export const MainContainer = memoInProduction(() => {
   const navOverlayed = nav && !alwaysShowNav
 
   return (
-    <div className={className}>
+    <div className={mainContainerClassName}>
       {navOverlayed && <div className={overlay} onClick={toggleNav} />}
       {nav && (
         <Navigation showLabels={!alwaysShowNav} floating={!alwaysShowNav} />
@@ -97,19 +114,12 @@ export const MainContainer = memoInProduction(() => {
           onClick={toggleNav}
         />
       )}
-      <div className={cx(content, navOverlayed && content_blurred)}>
+      <div className={cx(contentClassName, navOverlayed && content_blurred)}>
         <Suspense fallback={<LoadingScreen />}>
           <RoutesOutlet />
         </Suspense>
       </div>
-      {devMode && (
-        <div className={devOverlay}>
-          <Icon
-            icon={iconLight}
-            onClick={() => updateSettings({ lightMode: !lightMode })}
-          />
-        </div>
-      )}
+      <CornerOverlay />
     </div>
   )
 })

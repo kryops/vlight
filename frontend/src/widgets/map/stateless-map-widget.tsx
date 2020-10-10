@@ -7,7 +7,6 @@ import {
   IdType,
 } from '@vlight/types'
 
-import { Widget } from '../../ui/containers/widget'
 import { memoInProduction } from '../../util/development'
 import { baseline, iconShade, primaryShade } from '../../ui/styles'
 import { getEffectiveFixtureColor } from '../../util/fixtures'
@@ -16,12 +15,15 @@ import { cx } from '../../util/styles'
 import { useClassNames } from '../../hooks/ui'
 import { useSettings } from '../../hooks/settings'
 
+// We use separate styles from the standard widget component because this one looks very different
 const widget = css`
+  flex: 1 1 auto;
   position: relative;
   display: inline-block;
   width: 100%;
   min-width: ${baseline(64)};
   max-width: ${baseline(96)};
+  margin: ${baseline()};
   border: 1px solid ${iconShade(1)};
   overflow: hidden;
   background: ${primaryShade(3)};
@@ -56,6 +58,11 @@ const fixtureStyle = css`
   height: 5%;
   width: 5%;
   box-sizing: border-box;
+  font-size: 0.65rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     box-shadow: 0 0 8px #fff;
@@ -103,6 +110,7 @@ export interface StatelessMapWidgetProps {
   highlightedFixtures?: IdType[]
   additionalShapes?: MapShape[]
   standalone?: boolean
+  className?: string
 }
 
 export const StatelessMapWidget = memoInProduction(
@@ -112,6 +120,7 @@ export const StatelessMapWidget = memoInProduction(
     highlightedFixtures,
     additionalShapes,
     standalone,
+    className,
   }: StatelessMapWidgetProps) => {
     const { fixtureTypes } = useMasterDataMaps()
     const [widgetClassName, fixtureClassName] = useClassNames(
@@ -125,14 +134,22 @@ export const StatelessMapWidget = memoInProduction(
     )
 
     return (
-      <Widget className={cx(widgetClassName, standalone && widget_standalone)}>
+      <div
+        className={cx(
+          widgetClassName,
+          standalone && widget_standalone,
+          className
+        )}
+      >
         <div className={container}>
           {positionedFixtures.map(fixture => {
             const fixtureType = fixtureTypes.get(fixture.type)
             const color =
               universe &&
               getEffectiveFixtureColor(fixture, fixtureType, universe)
-            const isHighlighted = highlightedFixtures?.includes(fixture.id)
+            const highlightedIndex =
+              highlightedFixtures?.indexOf(fixture.id) ?? -1
+            const isHighlighted = highlightedIndex !== -1
             const style: CSSProperties = {
               background: color,
               left: `${fixture.x}%`,
@@ -140,7 +157,7 @@ export const StatelessMapWidget = memoInProduction(
               width: fixtureType?.xSize ? `${fixtureType.xSize}%` : undefined,
               height: fixtureType?.ySize ? `${fixtureType.ySize}%` : undefined,
               borderStyle: fixtureType?.border,
-              borderWidth: color || isHighlighted ? '2px' : undefined,
+              borderWidth: isHighlighted ? '2px' : undefined,
               borderColor: isHighlighted
                 ? 'red'
                 : color
@@ -156,7 +173,9 @@ export const StatelessMapWidget = memoInProduction(
                   fixtureClassName,
                   fixtureType?.shape !== 'square' && fixture_circle
                 )}
-              />
+              >
+                {isHighlighted && highlightedIndex + 1}
+              </div>
             )
           })}
           {additionalShapes?.map((shape, index) => (
@@ -176,7 +195,7 @@ export const StatelessMapWidget = memoInProduction(
             />
           ))}
         </div>
-      </Widget>
+      </div>
     )
   }
 )

@@ -2,6 +2,7 @@ import React, { useState, useMemo, PropsWithChildren } from 'react'
 
 export interface Settings {
   lightMode: boolean
+  miniMap: boolean
 }
 
 export interface SettingsWithUpdate extends Settings {
@@ -12,6 +13,7 @@ const localStorageKey = 'vlightSettings'
 
 const defaultSettings: Settings = {
   lightMode: true,
+  miniMap: false,
 }
 
 const initialSettings = localStorage[localStorageKey]
