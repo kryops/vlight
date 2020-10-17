@@ -40,7 +40,7 @@ function flushUsbDmxDevices() {
 
   for (const block of changedBlocks) {
     const message = getChannelBlockMessage(getDmxUniverse(), block)
-    if (logLevel === LogLevel.TRACE) {
+    if (logLevel === LogLevel.Trace) {
       logger.trace(`broadcast UsbDmx message: <${message.join(' ')}>`)
     }
     usbDmxDevices.forEach(device => writeToUsbDmxDevice(device, message))

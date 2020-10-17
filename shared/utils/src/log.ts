@@ -1,12 +1,12 @@
 export type LogAppenderFn = (...args: any[]) => void
 
 export enum LogLevel {
-  TRACE = 'trace',
-  DEBUG = 'debug',
-  INFO = 'info',
-  WARN = 'warn',
-  ERROR = 'error',
-  NONE = 'none',
+  Trace = 'trace',
+  Debug = 'debug',
+  Info = 'info',
+  Warn = 'warn',
+  Error = 'error',
+  None = 'none',
 }
 
 export interface LogAppender {
@@ -41,7 +41,7 @@ export class ConsoleLogAppender implements LogAppender {
 
 let appender = new ConsoleLogAppender()
 let logLevel =
-  process.env.NODE_ENV === 'development' ? LogLevel.DEBUG : LogLevel.INFO
+  process.env.NODE_ENV === 'development' ? LogLevel.Debug : LogLevel.Info
 
 export function setLogAppender(newAppender: LogAppender): void {
   appender = newAppender
@@ -53,28 +53,28 @@ export function setLogLevel(newLogLevel: LogLevel): void {
 
 export const logger = {
   trace(...args: any[]): void {
-    if (logLevel !== LogLevel.TRACE) return
+    if (logLevel !== LogLevel.Trace) return
     appender.trace(...args)
   },
   debug(...args: any[]): void {
-    if (logLevel !== LogLevel.TRACE && logLevel !== LogLevel.DEBUG) return
+    if (logLevel !== LogLevel.Trace && logLevel !== LogLevel.Debug) return
     appender.debug(...args)
   },
   info(...args: any[]): void {
     if (
-      logLevel === LogLevel.ERROR ||
-      logLevel === LogLevel.WARN ||
-      logLevel === LogLevel.NONE
+      logLevel === LogLevel.Error ||
+      logLevel === LogLevel.Warn ||
+      logLevel === LogLevel.None
     )
       return
     appender.info(...args)
   },
   warn(...args: any[]): void {
-    if (logLevel === LogLevel.ERROR || logLevel === LogLevel.NONE) return
+    if (logLevel === LogLevel.Error || logLevel === LogLevel.None) return
     appender.warn(...args)
   },
   error(...args: any[]): void {
-    if (logLevel === LogLevel.NONE) return
+    if (logLevel === LogLevel.None) return
     appender.error(...args)
   },
 }

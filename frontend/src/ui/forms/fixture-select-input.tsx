@@ -32,9 +32,9 @@ const valueSelect = css`
 const allPrefixes = Object.values(FixtureMappingPrefix)
 
 const entityByPrefix: { [key: string]: EntityName } = {
-  [FixtureMappingPrefix.type]: 'fixtureTypes',
-  [FixtureMappingPrefix.all]: 'fixtures',
-  [FixtureMappingPrefix.group]: 'fixtureGroups',
+  [FixtureMappingPrefix.Type]: 'fixtureTypes',
+  [FixtureMappingPrefix.All]: 'fixtures',
+  [FixtureMappingPrefix.Group]: 'fixtureGroups',
   '': 'fixtures',
 }
 
@@ -59,13 +59,13 @@ export function FixtureSelectInput({
 
   const prefixEntries: SelectEntry<string>[] = [
     { value: '', label: 'Fixture' },
-    { value: FixtureMappingPrefix.all, label: 'All Fixtures' },
-    { value: FixtureMappingPrefix.type, label: 'All of Type' },
+    { value: FixtureMappingPrefix.All, label: 'All Fixtures' },
+    { value: FixtureMappingPrefix.Type, label: 'All of Type' },
   ]
 
   if (!hideGroupMode) {
     prefixEntries.push({
-      value: FixtureMappingPrefix.group,
+      value: FixtureMappingPrefix.Group,
       label: 'Group',
     })
   }
@@ -88,7 +88,7 @@ export function FixtureSelectInput({
           if (newValue === undefined) onChange(undefined)
           else onChange(`${prefixToUse}${newValue}`)
         }}
-        useOriginalId={prefixToUse === FixtureMappingPrefix.all}
+        useOriginalId={prefixToUse === FixtureMappingPrefix.All}
         addUndefinedOption
         className={valueSelect}
       />

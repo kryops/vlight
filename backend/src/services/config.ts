@@ -66,7 +66,7 @@ export const multiChannelUniverseFlushThreshold = c(
 
 export const logLevel = c(
   'logLevel',
-  isDevelopment ? LogLevel.DEBUG : LogLevel.INFO
+  isDevelopment ? LogLevel.Debug : LogLevel.Info
 )
 
 // application config

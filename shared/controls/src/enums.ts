@@ -1,13 +1,13 @@
 export enum ChannelMapping {
-  red = 'r',
-  green = 'g',
-  blue = 'b',
-  white = 'w',
-  master = 'm',
+  Red = 'r',
+  Green = 'g',
+  Blue = 'b',
+  White = 'w',
+  Master = 'm',
 }
 
 export enum FixtureMappingPrefix {
-  all = 'all:',
-  type = 'type:',
-  group = 'group:',
+  All = 'all:',
+  Type = 'type:',
+  Group = 'group:',
 }

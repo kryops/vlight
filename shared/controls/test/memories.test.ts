@@ -49,44 +49,44 @@ describe('getStateIndexAndFractionFor', () => {
     /* ROW */
 
     // only 1 state
-    [ScenePattern.ROW, 5, 1, [0, 0, 0, 0, 0], [0, 0.25, 0.5, 0.75, 1]],
+    [ScenePattern.Row, 5, 1, [0, 0, 0, 0, 0], [0, 0.25, 0.5, 0.75, 1]],
     // states = members
-    [ScenePattern.ROW, 5, 5, [0, 1, 2, 3, 4], [0, 0, 0, 0, 0]],
+    [ScenePattern.Row, 5, 5, [0, 1, 2, 3, 4], [0, 0, 0, 0, 0]],
     // pefect fit
-    [ScenePattern.ROW, 6, 2, [0, 0, 0, 1, 1, 1], [0, 0.5, 1, 0, 0.5, 1]],
+    [ScenePattern.Row, 6, 2, [0, 0, 0, 1, 1, 1], [0, 0.5, 1, 0, 0.5, 1]],
     // last one cut
-    [ScenePattern.ROW, 5, 3, [0, 0, 1, 1, 2], [0, 1, 0, 1, 0]],
+    [ScenePattern.Row, 5, 3, [0, 0, 1, 1, 2], [0, 1, 0, 1, 0]],
     // last one cut - position is shrunk to fit
     [
-      ScenePattern.ROW,
+      ScenePattern.Row,
       8,
       3,
       [0, 0, 0, 1, 1, 1, 2, 2],
       [0, 0.5, 1, 0, 0.5, 1, 0, 1],
     ],
     // only one cut
-    [ScenePattern.ROW, 5, 7, [0, 1, 2, 3, 4], [0, 0, 0, 0, 0]],
+    [ScenePattern.Row, 5, 7, [0, 1, 2, 3, 4], [0, 0, 0, 0, 0]],
 
     /* ALTERNATE */
 
     // only 1 state
-    [ScenePattern.ALTERNATE, 5, 1, [0, 0, 0, 0, 0], [0, 0.25, 0.5, 0.75, 1]],
+    [ScenePattern.Alternate, 5, 1, [0, 0, 0, 0, 0], [0, 0.25, 0.5, 0.75, 1]],
     // states = members
-    [ScenePattern.ALTERNATE, 5, 5, [0, 1, 2, 3, 4], [0, 0, 0, 0, 0]],
+    [ScenePattern.Alternate, 5, 5, [0, 1, 2, 3, 4], [0, 0, 0, 0, 0]],
     // pefect fit
-    [ScenePattern.ALTERNATE, 6, 2, [0, 1, 0, 1, 0, 1], [0, 0, 0.5, 0.5, 1, 1]],
+    [ScenePattern.Alternate, 6, 2, [0, 1, 0, 1, 0, 1], [0, 0, 0.5, 0.5, 1, 1]],
     // last one cut
-    [ScenePattern.ALTERNATE, 5, 3, [0, 1, 2, 0, 1], [0, 0, 0, 1, 1]],
+    [ScenePattern.Alternate, 5, 3, [0, 1, 2, 0, 1], [0, 0, 0, 1, 1]],
     // last one cut - position is not shrunk
     [
-      ScenePattern.ALTERNATE,
+      ScenePattern.Alternate,
       8,
       3,
       [0, 1, 2, 0, 1, 2, 0, 1],
       [0, 0, 0, 0.5, 0.5, 0.5, 1, 1],
     ],
     // only one cut
-    [ScenePattern.ALTERNATE, 5, 7, [0, 1, 2, 3, 4], [0, 0, 0, 0, 0]],
+    [ScenePattern.Alternate, 5, 7, [0, 1, 2, 3, 4], [0, 0, 0, 0, 0]],
   ])(
     '%p - %p members, %p states => %p / %p',
     (
@@ -151,28 +151,28 @@ describe('getFixtureStateFor', () => {
   describe('plain states', () => {
     it.each<[ScenePattern, string, number, FixtureState[], FixtureState[]]>([
       [
-        ScenePattern.ROW,
+        ScenePattern.Row,
         'single state',
         5,
         [state1],
         [state1, state1, state1, state1, state1],
       ],
       [
-        ScenePattern.ROW,
+        ScenePattern.Row,
         'two states',
         5,
         [state1, state2],
         [state1, state1, state1, state2, state2],
       ],
       [
-        ScenePattern.ALTERNATE,
+        ScenePattern.Alternate,
         'single state',
         5,
         [state1],
         [state1, state1, state1, state1, state1],
       ],
       [
-        ScenePattern.ALTERNATE,
+        ScenePattern.Alternate,
         'two states',
         5,
         [state1, state2],
@@ -207,7 +207,7 @@ describe('getFixtureStateFor', () => {
       // linear
 
       [
-        ScenePattern.ROW,
+        ScenePattern.Row,
         'single linear gradient',
         5,
         [linearGradient],
@@ -220,14 +220,14 @@ describe('getFixtureStateFor', () => {
         ],
       ],
       [
-        ScenePattern.ROW,
+        ScenePattern.Row,
         'linear gradient mixed with plain state',
         5,
         [linearGradient, state1],
         [channels1, channels2, channels3, channels1, channels1],
       ],
       [
-        ScenePattern.ALTERNATE,
+        ScenePattern.Alternate,
         'single linear gradient',
         5,
         [linearGradient],
@@ -240,7 +240,7 @@ describe('getFixtureStateFor', () => {
         ],
       ],
       [
-        ScenePattern.ALTERNATE,
+        ScenePattern.Alternate,
         'linear gradient mixed with plain state',
         5,
         [linearGradient, state1],
@@ -250,7 +250,7 @@ describe('getFixtureStateFor', () => {
       // positional
 
       [
-        ScenePattern.ROW,
+        ScenePattern.Row,
         'single positional gradient',
         5,
         [positionGradient],
@@ -258,7 +258,7 @@ describe('getFixtureStateFor', () => {
       ],
 
       [
-        ScenePattern.ROW,
+        ScenePattern.Row,
         'positional gradient mixed with plain state',
         5,
         [positionGradient, state1],
@@ -266,7 +266,7 @@ describe('getFixtureStateFor', () => {
       ],
 
       [
-        ScenePattern.ALTERNATE,
+        ScenePattern.Alternate,
         'single positional gradient',
         5,
         [positionGradient],
@@ -274,7 +274,7 @@ describe('getFixtureStateFor', () => {
       ],
 
       [
-        ScenePattern.ALTERNATE,
+        ScenePattern.Alternate,
         'positional gradient mixed with plain state',
         5,
         [positionGradient, state1],

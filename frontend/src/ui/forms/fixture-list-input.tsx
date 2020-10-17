@@ -76,7 +76,7 @@ const allFixturesCategory: FixtureListCategory = {
   icon: iconLights,
   label: 'All by definition',
   entity: 'fixtures',
-  prefix: FixtureMappingPrefix.all,
+  prefix: FixtureMappingPrefix.All,
   useRawMasterData: true,
 }
 
@@ -84,14 +84,14 @@ const fixtureTypeCategory: FixtureListCategory = {
   icon: iconFixtureType,
   label: 'Type',
   entity: 'fixtureTypes',
-  prefix: FixtureMappingPrefix.type,
+  prefix: FixtureMappingPrefix.Type,
 }
 
 const groupCategory: FixtureListCategory = {
   icon: iconGroup,
   label: 'Group',
   entity: 'fixtureGroups',
-  prefix: FixtureMappingPrefix.group,
+  prefix: FixtureMappingPrefix.Group,
 }
 
 const categories: FixtureListCategory[] = [

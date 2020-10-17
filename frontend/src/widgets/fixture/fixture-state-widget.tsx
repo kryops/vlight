@@ -57,7 +57,7 @@ export const FixtureStateWidget = memoInProduction(
 
     const fadersToRender = mapping.filter(
       c =>
-        c !== ChannelMapping.master &&
+        c !== ChannelMapping.Master &&
         (!hasColorPicker || !colorPickerColors.includes(c))
     )
 

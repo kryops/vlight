@@ -10,8 +10,8 @@ import { ensureBetween, getFraction, getValueForFraction } from '@vlight/utils'
 import { interpolateGradientPositions } from './gradient'
 
 export enum ScenePattern {
-  ROW = 'row',
-  ALTERNATE = 'alternate',
+  Row = 'row',
+  Alternate = 'alternate',
 }
 
 export function mergeMemoryStates(
@@ -33,7 +33,7 @@ export function getStateIndexAndFractionFor(
   const numMembers = scene.members.length
   const numStates = scene.states.length
   switch (scene.pattern) {
-    case ScenePattern.ALTERNATE: {
+    case ScenePattern.Alternate: {
       const stateIndex = memberIndex % numStates
       const firstForState = stateIndex
       const membersPerState = Math.ceil(numMembers / numStates)
@@ -41,7 +41,7 @@ export function getStateIndexAndFractionFor(
       const lastForState = (membersPerState - 1) * numStates + stateIndex
       return [stateIndex, getFraction(memberIndex, firstForState, lastForState)]
     }
-    case ScenePattern.ROW:
+    case ScenePattern.Row:
     default: {
       const fixturesPerState = Math.ceil(numMembers / numStates)
       const stateIndex = Math.floor(memberIndex / fixturesPerState)

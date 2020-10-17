@@ -58,17 +58,17 @@ export function SortableFixtureMapping({
       renderEntryContent={entry => {
         let name: string
 
-        if (entry.startsWith(FixtureMappingPrefix.all)) {
-          const id = entry.slice(FixtureMappingPrefix.all.length)
+        if (entry.startsWith(FixtureMappingPrefix.All)) {
+          const id = entry.slice(FixtureMappingPrefix.All.length)
           name = `[All]: ${
             rawMasterData.fixtures.find(fixture => fixture.id === id)?.name ??
             id
           }`
-        } else if (entry.startsWith(FixtureMappingPrefix.group)) {
-          const id = entry.slice(FixtureMappingPrefix.group.length)
+        } else if (entry.startsWith(FixtureMappingPrefix.Group)) {
+          const id = entry.slice(FixtureMappingPrefix.Group.length)
           name = `[Group]: ${masterDataMaps.fixtureGroups.get(id)?.name ?? id}`
-        } else if (entry.startsWith(FixtureMappingPrefix.type)) {
-          const id = entry.slice(FixtureMappingPrefix.type.length)
+        } else if (entry.startsWith(FixtureMappingPrefix.Type)) {
+          const id = entry.slice(FixtureMappingPrefix.Type.length)
           name = `[Type]: ${masterDataMaps.fixtureTypes.get(id)?.name ?? id}`
         } else {
           name = masterDataMaps.fixtures.get(entry)?.name ?? entry

@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- enums konsistent
 - Entity ordering (not just dynamic pages / fixtureTypes are better sorted alphabetically)
 - Entity list preview per entity
 - Multi selector for fixtures, fixture groups and memories

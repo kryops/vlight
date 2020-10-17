@@ -2,7 +2,7 @@ import { FixtureState } from '@vlight/types'
 import { ChannelMapping } from '@vlight/controls'
 
 export function getInitialFixtureState(mapping?: string[]): FixtureState {
-  const colors = [ChannelMapping.red, ChannelMapping.green, ChannelMapping.blue]
+  const colors = [ChannelMapping.Red, ChannelMapping.Green, ChannelMapping.Blue]
   if (mapping && colors.every(c => mapping.includes(c))) {
     return {
       initial: true,

@@ -25,8 +25,8 @@ export function mapFixtureList(
   return fixtureList
     .flatMap(fixture => {
       // `type:foobar`
-      if (fixture.startsWith(FixtureMappingPrefix.type)) {
-        const type = fixture.slice(FixtureMappingPrefix.type.length)
+      if (fixture.startsWith(FixtureMappingPrefix.Type)) {
+        const type = fixture.slice(FixtureMappingPrefix.Type.length)
         if (!masterDataMaps.fixtureTypes.has(type)) {
           logger.warn(`Fixture type "${type}" not found, skipping mapping...`)
           return []
@@ -34,8 +34,8 @@ export function mapFixtureList(
         return masterData.fixtures.filter(f => f.type === type).map(f => f.id)
       }
       // `group:foobar`
-      if (fixture.startsWith(FixtureMappingPrefix.group)) {
-        const groupId = fixture.slice(FixtureMappingPrefix.group.length)
+      if (fixture.startsWith(FixtureMappingPrefix.Group)) {
+        const groupId = fixture.slice(FixtureMappingPrefix.Group.length)
         const group = masterDataMaps.fixtureGroups.get(groupId)
         if (!group) {
           logger.warn(
@@ -46,8 +46,8 @@ export function mapFixtureList(
         return group.fixtures
       }
       // `all:foobar`
-      if (fixture.startsWith(FixtureMappingPrefix.all)) {
-        const originalId = fixture.slice(FixtureMappingPrefix.all.length)
+      if (fixture.startsWith(FixtureMappingPrefix.All)) {
+        const originalId = fixture.slice(FixtureMappingPrefix.All.length)
         const mappedFixtures = masterData.fixtures
           .filter(f => f.originalId === originalId || f.id === originalId)
           .map(f => f.id)
@@ -90,15 +90,15 @@ export function mapFixtureStateToChannels(
 ): number[] {
   const mapping = type.mapping
 
-  const hasMasterChannel = mapping.includes(ChannelMapping.master)
-  const masterChannelValue = state.channels[ChannelMapping.master] ?? 255
+  const hasMasterChannel = mapping.includes(ChannelMapping.Master)
+  const masterChannelValue = state.channels[ChannelMapping.Master] ?? 255
 
   return mapping.map(channelType => {
     if (!state.on) {
       return 0
     }
 
-    if (channelType === ChannelMapping.master) masterChannelValue
+    if (channelType === ChannelMapping.Master) masterChannelValue
 
     const rawValue = state.channels[channelType] ?? 0
 

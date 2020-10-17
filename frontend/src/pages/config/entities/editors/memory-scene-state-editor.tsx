@@ -86,13 +86,13 @@ export interface MemorySceneStateEditorProps {
 }
 
 enum MemorySceneStateType {
-  COLOR = 'Single Color',
-  GRADIENT = 'Gradient',
+  Color = 'Single Color',
+  Gradient = 'Gradient',
 }
 
 enum MemoryScenePositionMode {
-  AUTO = 'Automatic',
-  MANUAL = 'Manual',
+  Auto = 'Automatic',
+  Manual = 'Manual',
 }
 
 function computeStopWidths(gradientPositions: number[]): number[] {
@@ -131,8 +131,8 @@ export function MemorySceneStateEditor({
   }, [currentStop, localState])
 
   const type = Array.isArray(localState)
-    ? MemorySceneStateType.GRADIENT
-    : MemorySceneStateType.COLOR
+    ? MemorySceneStateType.Gradient
+    : MemorySceneStateType.Color
 
   const gradientPositions = Array.isArray(localState)
     ? interpolateGradientPositions(localState.map(entry => entry.position))
@@ -208,13 +208,13 @@ export function MemorySceneStateEditor({
                 entries={Object.values(MemoryScenePositionMode)}
                 value={
                   activeGradientStop.position !== undefined
-                    ? MemoryScenePositionMode.MANUAL
-                    : MemoryScenePositionMode.AUTO
+                    ? MemoryScenePositionMode.Manual
+                    : MemoryScenePositionMode.Auto
                 }
                 onChange={value =>
                   setGradientEntry(currentStop, {
                     position:
-                      value === MemoryScenePositionMode.AUTO
+                      value === MemoryScenePositionMode.Auto
                         ? undefined
                         : gradientPositions[currentStop],
                   })
@@ -300,7 +300,7 @@ export function MemorySceneStateEditor({
         onChange={value => {
           let newState = localState
           if (
-            value === MemorySceneStateType.GRADIENT &&
+            value === MemorySceneStateType.Gradient &&
             !Array.isArray(localState)
           ) {
             newState = [
@@ -308,7 +308,7 @@ export function MemorySceneStateEditor({
               { channels: localState.channels },
             ]
           } else if (
-            value === MemorySceneStateType.COLOR &&
+            value === MemorySceneStateType.Color &&
             Array.isArray(localState)
           ) {
             newState = { on: true, channels: localState[0].channels }

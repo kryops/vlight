@@ -4,10 +4,10 @@ import { ChannelMapping } from '@vlight/controls'
 import { masterDataMaps } from '../api/masterdata'
 
 const rgbwMapping = [
-  ChannelMapping.red,
-  ChannelMapping.green,
-  ChannelMapping.blue,
-  ChannelMapping.white,
+  ChannelMapping.Red,
+  ChannelMapping.Green,
+  ChannelMapping.Blue,
+  ChannelMapping.White,
 ]
 
 const minOpacity = 0.25
@@ -74,7 +74,7 @@ export function getFixtureStateColor(
 ): string | undefined {
   if (!fixtureState.on) return undefined
 
-  const masterValue = fixtureState.channels[ChannelMapping.master] ?? 255
+  const masterValue = fixtureState.channels[ChannelMapping.Master] ?? 255
   const values = rgbwMapping.map(mapping => fixtureState.channels[mapping])
 
   return getColor(masterValue, values)
@@ -93,8 +93,8 @@ export function getEffectiveFixtureColor(
     return universe[fixture.channel - 1 + offset]
   }
 
-  const hasMaster = fixtureType.mapping.includes(ChannelMapping.master)
-  const masterValue = hasMaster ? getMappingValue(ChannelMapping.master)! : 255
+  const hasMaster = fixtureType.mapping.includes(ChannelMapping.Master)
+  const masterValue = hasMaster ? getMappingValue(ChannelMapping.Master)! : 255
   const values = rgbwMapping.map(getMappingValue)
 
   return getColor(masterValue, values)

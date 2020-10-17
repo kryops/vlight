@@ -58,7 +58,7 @@ function applySceneToPreparedState(
     const { channel } = fixture
     const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)!
 
-    const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.master)
+    const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.Master)
 
     const state = getFixtureStateForMemoryScene(scene, memberIndex)
 

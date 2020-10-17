@@ -16,9 +16,9 @@ export interface ColorPickerPosition {
 const black = { r: 0, g: 0, b: 0 }
 
 export const colorPickerColors: string[] = [
-  ChannelMapping.red,
-  ChannelMapping.green,
-  ChannelMapping.blue,
+  ChannelMapping.Red,
+  ChannelMapping.Green,
+  ChannelMapping.Blue,
 ]
 
 export const colorPresets: ColorPickerColor[] = [
