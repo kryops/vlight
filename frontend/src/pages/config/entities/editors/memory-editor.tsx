@@ -1,7 +1,6 @@
 import React from 'react'
 import { css } from 'linaria'
 import { MemoryScene, MemorySceneState } from '@vlight/types'
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 
 import { useFormState, useFormStateArray } from '../../../../hooks/form'
 import { FormTextInput } from '../../../../ui/forms/form-input'
@@ -22,6 +21,7 @@ import {
   editorPreviewColumn,
   editorTitle,
 } from '../../../../ui/css/editor-styles'
+import { SortableList } from '../../../../ui/containers/sortable-list'
 
 import { MemorySceneStateEditor } from './memory-scene-state-editor'
 
@@ -138,89 +138,59 @@ export function MemoryEditor({
                     )
                   }
                 />
-                <DragDropContext
-                  onDragEnd={result => {
-                    if (!result.destination) return
-
-                    const newValue = [...scene.states]
-                    const [removed] = newValue.splice(result.source.index, 1)
-                    newValue.splice(result.destination.index, 0, removed)
-
+                <SortableList
+                  entries={scene.states}
+                  onChange={newValue =>
                     changeSceneProperty(scene, 'states', newValue)
-                  }}
-                >
-                  <Droppable
-                    droppableId="memoryEditor_states"
-                    isDropDisabled={scene.states.length < 2}
-                  >
-                    {provided => (
-                      <div ref={provided.innerRef} {...provided.droppableProps}>
-                        {scene.states.map((state, stateIndex) => (
-                          <Draggable
-                            key={stateIndex}
-                            draggableId={String(stateIndex)}
-                            index={stateIndex}
-                            isDragDisabled={scene.states.length < 2}
-                          >
-                            {provided => (
-                              <div
-                                key={stateIndex}
-                                className={stateClass}
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                              >
-                                <div
-                                  className={statePreview}
-                                  style={{
-                                    background: getMemorySceneStatePreviewBackground(
-                                      state
-                                    ),
-                                  }}
-                                  onClick={async () => {
-                                    const result = await showDialogWithReturnValue<
-                                      MemorySceneState
-                                    >(
-                                      onChange => (
-                                        <MemorySceneStateEditor
-                                          scene={scene}
-                                          state={state}
-                                          onChange={onChange}
-                                        />
-                                      ),
-                                      okCancel,
-                                      { showCloseButton: true }
-                                    )
-                                    if (result)
-                                      changeSceneProperty(
-                                        scene,
-                                        'states',
-                                        scene.states.map(it =>
-                                          it === state ? result : it
-                                        )
-                                      )
-                                  }}
-                                />
-                                <Icon
-                                  icon={iconDelete}
-                                  padding
-                                  onClick={() =>
-                                    changeSceneProperty(
-                                      scene,
-                                      'states',
-                                      scene.states.filter(it => it !== state)
-                                    )
-                                  }
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </DragDropContext>
+                  }
+                  entryClassName={stateClass}
+                  renderEntryContent={state => (
+                    <>
+                      <div
+                        className={statePreview}
+                        style={{
+                          background: getMemorySceneStatePreviewBackground(
+                            state
+                          ),
+                        }}
+                        onClick={async () => {
+                          const result = await showDialogWithReturnValue<
+                            MemorySceneState
+                          >(
+                            onChange => (
+                              <MemorySceneStateEditor
+                                scene={scene}
+                                state={state}
+                                onChange={onChange}
+                              />
+                            ),
+                            okCancel,
+                            { showCloseButton: true }
+                          )
+                          if (result)
+                            changeSceneProperty(
+                              scene,
+                              'states',
+                              scene.states.map(it =>
+                                it === state ? result : it
+                              )
+                            )
+                        }}
+                      />
+                      <Icon
+                        icon={iconDelete}
+                        padding
+                        onClick={() =>
+                          changeSceneProperty(
+                            scene,
+                            'states',
+                            scene.states.filter(it => it !== state)
+                          )
+                        }
+                      />
+                    </>
+                  )}
+                />
               </div>
             ))}
             <a

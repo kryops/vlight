@@ -114,10 +114,10 @@ function computeStopWidths(gradientPositions: number[]): number[] {
 
 export function MemorySceneStateEditor({
   scene,
-  state,
+  state: initialState,
   onChange,
 }: MemorySceneStateEditorProps) {
-  const [localState, setLocalState] = useState(state)
+  const [localState, setLocalState] = useState(initialState)
   const [currentStop, setCurrentStop] = useState(0)
   const mapping = useCommonFixtureMapping(scene.members)
   const gradientPreviewClass = useClassName(
