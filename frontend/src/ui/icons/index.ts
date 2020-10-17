@@ -25,6 +25,8 @@ import {
   mdiLightbulbGroupOutline,
   mdiFormatListNumbered,
   mdiDrag,
+  mdiArrowUp,
+  mdiArrowDown,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -36,6 +38,8 @@ export const iconOn = mdiPower
 export const iconBack = mdiChevronLeft
 export const iconDelete = mdiDelete
 export const iconAdd = mdiPlusCircle
+export const iconUp = mdiArrowUp
+export const iconDown = mdiArrowDown
 
 export const iconCheckbox = mdiCheckboxBlankOutline
 export const iconCheckbox_checked = mdiCheckBoxOutline

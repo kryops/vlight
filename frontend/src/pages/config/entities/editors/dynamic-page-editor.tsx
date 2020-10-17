@@ -13,12 +13,17 @@ import { FormTextInput } from '../../../../ui/forms/form-input'
 import { EntityEditorProps, entityUiMapping } from '../entity-ui-mapping'
 import { editorTitle } from '../../../../ui/css/editor-styles'
 import { Label } from '../../../../ui/forms/label'
-import { iconAdd, iconDelete } from '../../../../ui/icons'
+import { iconAdd, iconDelete, iconDown, iconUp } from '../../../../ui/icons'
 import { Icon } from '../../../../ui/icons/icon'
 import { baseline, primaryShade } from '../../../../ui/styles'
 import { useClassNames } from '../../../../hooks/ui'
 import { TextInput } from '../../../../ui/forms/typed-input'
 import { useMasterDataMaps } from '../../../../hooks/api'
+import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
+import { okCancel } from '../../../../ui/overlays/buttons'
+import { SortableList } from '../../../../ui/containers/sortable-list'
+
+import { DynamicPageCellEditor } from './dynamic-page-cell-editor'
 
 function getWidgetDisplayString(
   widget: WidgetConfig,
@@ -75,14 +80,21 @@ const cellStyle = css`
   padding: ${baseline(2)};
   margin: ${baseline()} ${baseline(-2)};
   background: ${primaryShade(2)};
+  cursor: pointer;
 `
 
 const cellStyle_light = css`
   background: ${primaryShade(3, true)};
 `
 
-const cellDeleteIcon = css`
+const cellDeleteContainer = css`
   float: right;
+  margin-left: ${baseline(3)};
+`
+
+const cellDeleteIcon = css`
+  padding: ${baseline(2)};
+  margin: ${baseline(-2)};
 `
 
 export function DynamicPageEditor({
@@ -106,17 +118,12 @@ export function DynamicPageEditor({
     rows.update(row, { ...row, [key]: value })
   }
 
-  function changeCellProperty<TKey extends keyof DynamicPageCell>(
-    row: DynamicPageRow,
-    cell: DynamicPageCell,
-    key: TKey,
-    value: DynamicPageCell[TKey]
-  ) {
-    changeRowProperty(
-      row,
-      'cells',
-      row.cells.map(it => (it === cell ? { ...it, [key]: value } : it))
-    )
+  function moveRow(rowIndex: number, offset: 1 | -1) {
+    const newRows = [...rows.value]
+    const row = newRows[rowIndex]
+    newRows[rowIndex] = newRows[rowIndex + offset]
+    newRows[rowIndex + offset] = row
+    formState.changeValue('rows', newRows)
   }
 
   return (
@@ -161,35 +168,60 @@ export function DynamicPageEditor({
               />
             }
           />
-          {row.cells.map((cell, cellIndex) => (
-            <div key={cellIndex} className={cellClassName}>
-              <div className={cellDeleteIcon}>
-                {cell.factor && `x${cell.factor}`}
-                <Icon
-                  icon={iconDelete}
-                  hoverable
-                  inline
-                  onClick={() =>
+          <SortableList
+            entries={row.cells}
+            onChange={newCells => changeRowProperty(row, 'cells', newCells)}
+            entryClassName={cellClassName}
+            renderEntryContent={cell => (
+              <div
+                onClick={async () => {
+                  const result = await showDialogWithReturnValue<
+                    DynamicPageCell
+                  >(
+                    onChange => (
+                      <DynamicPageCellEditor cell={cell} onChange={onChange} />
+                    ),
+                    okCancel,
+                    { showCloseButton: true }
+                  )
+                  if (result)
                     changeRowProperty(
                       row,
                       'cells',
-                      row.cells.filter(it => it !== cell)
+                      row.cells.map(it => (it === cell ? result : it))
                     )
-                  }
-                />
+                }}
+              >
+                <div className={cellDeleteContainer}>
+                  {cell.factor && `x${cell.factor}`}
+                  <Icon
+                    icon={iconDelete}
+                    className={cellDeleteIcon}
+                    hoverable
+                    inline
+                    onClick={event => {
+                      event.stopPropagation()
+                      changeRowProperty(
+                        row,
+                        'cells',
+                        row.cells.filter(it => it !== cell)
+                      )
+                    }}
+                  />
+                </div>
+                {cell.widgets.map((widget, widgetIndex) => (
+                  <p key={widgetIndex}>
+                    {getWidgetDisplayString(widget, masterDataMaps)}
+                  </p>
+                ))}
+                {cell.widgets.length === 0 && (
+                  <p>
+                    <i>(empty)</i>
+                  </p>
+                )}
               </div>
-              {cell.widgets.map((widget, widgetIndex) => (
-                <p key={widgetIndex}>
-                  {getWidgetDisplayString(widget, masterDataMaps)}
-                </p>
-              ))}
-              {cell.widgets.length === 0 && (
-                <p>
-                  <i>(empty)</i>
-                </p>
-              )}
-            </div>
-          ))}
+            )}
+          />
           <a
             onClick={() =>
               changeRowProperty(row, 'cells', [
@@ -205,6 +237,22 @@ export function DynamicPageEditor({
           <a onClick={() => rows.remove(row)}>
             <Icon icon={iconDelete} inline /> Remove row
           </a>
+          {rowIndex > 0 && (
+            <>
+              &nbsp; &nbsp;
+              <a onClick={() => moveRow(rowIndex, -1)}>
+                <Icon icon={iconUp} inline /> Move up
+              </a>
+            </>
+          )}
+          {rowIndex < rows.value.length - 1 && (
+            <>
+              &nbsp; &nbsp;
+              <a onClick={() => moveRow(rowIndex, 1)}>
+                <Icon icon={iconDown} inline /> Move down
+              </a>
+            </>
+          )}
         </div>
       ))}
       <a

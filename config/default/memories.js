@@ -20,13 +20,13 @@ const memories = [
           },
           [
             {
-              channels: { r: 255 },
+              channels: { m: 255, r: 255 },
             },
             {
-              channels: { g: 255 },
+              channels: { m: 255, g: 255 },
             },
             {
-              channels: { b: 255 },
+              channels: { m: 255, b: 255 },
             },
           ],
         ],

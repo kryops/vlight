@@ -48,7 +48,7 @@ export interface IconProps {
   inline?: boolean
   padding?: boolean
   hoverable?: boolean
-  onClick?: () => void
+  onClick?: (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => void
 }
 
 export const Icon = memoInProduction(

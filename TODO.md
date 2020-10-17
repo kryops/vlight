@@ -2,7 +2,9 @@
 
 ## Roadmap
 
-- Dynamic Page ordering
+- enums konsistent
+- Entity ordering (not just dynamic pages / fixtureTypes are better sorted alphabetically)
+- Entity list preview per entity
 - Multi selector for fixtures, fixture groups and memories
 - Master data / config editor
   - Dynamic pages
@@ -18,6 +20,6 @@
 
 ## Experiments / Tech
 
-- webpack 5 Beta
+- webpack 5
 - Node.js worker threads
 - react-router 6 Alpha

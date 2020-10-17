@@ -95,7 +95,7 @@ describe('mapFixtureStateToChannels', () => {
       'example state (with master)',
       fixtureTypeWithMaster,
       exampleState,
-      [78, 118, 0, 255],
+      [100, 150, 0, 200],
     ],
     [
       'example state (without master)',
