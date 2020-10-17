@@ -6,6 +6,7 @@ import {
   ApiRemoveEntityMessage,
   ApiUpdateEntityMessage,
   ApiAddEntityMessage,
+  ApiEntityMessage,
   FixtureState,
   IdType,
   MemoryState,
@@ -83,5 +84,16 @@ export function getApiRemoveEntityMessage<T extends EntityName>(
     type: 'remove-entity',
     entity,
     id,
+  }
+}
+
+export function getApiSetEntitiesMessage<T extends EntityName>(
+  entity: T,
+  entries: EntityType<T>[]
+): ApiEntityMessage<T> {
+  return {
+    type: 'entity',
+    entity,
+    entries,
   }
 }

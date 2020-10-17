@@ -23,6 +23,14 @@ export const globalStyles = css`
       user-select: none;
     }
 
+    div,
+    span,
+    p {
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      word-break: break-word;
+    }
+
     a {
       color: ${textShade(0)};
       text-decoration: none;

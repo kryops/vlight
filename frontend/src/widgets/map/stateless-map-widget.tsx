@@ -1,5 +1,5 @@
 import { css } from 'linaria'
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import {
   Fixture,
   FixtureBorderStyle,
@@ -13,7 +13,8 @@ import { getEffectiveFixtureColor } from '../../util/fixtures'
 import { useMasterDataMaps } from '../../hooks/api'
 import { cx } from '../../util/styles'
 import { useClassNames } from '../../hooks/ui'
-import { useSettings } from '../../hooks/settings'
+
+import { FixtureTypeMapShape, MapShape } from './map-shape'
 
 // We use separate styles from the standard widget component because this one looks very different
 const widget = css`
@@ -54,15 +55,6 @@ const container = css`
 
 const fixtureStyle = css`
   position: absolute;
-  border: 1px solid ${iconShade(1)};
-  height: 5%;
-  width: 5%;
-  box-sizing: border-box;
-  font-size: 0.65rem;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &:hover {
     box-shadow: 0 0 8px #fff;
@@ -91,11 +83,7 @@ const fixtureStyle_light = css`
   }
 `
 
-const fixture_circle = css`
-  border-radius: 100%;
-`
-
-export interface MapShape {
+export interface AdditionalMapShape {
   shape: FixtureShape
   border?: FixtureBorderStyle
   x: number
@@ -103,12 +91,11 @@ export interface MapShape {
   xSize?: number
   ySize?: number
 }
-
 export interface StatelessMapWidgetProps {
   fixtures?: Fixture[]
   universe?: number[]
   highlightedFixtures?: IdType[]
-  additionalShapes?: MapShape[]
+  additionalShapes?: AdditionalMapShape[]
   standalone?: boolean
   className?: string
 }
@@ -127,8 +114,6 @@ export const StatelessMapWidget = memoInProduction(
       [widget, widget_light],
       [fixtureStyle, fixtureStyle_light]
     )
-    const { lightMode } = useSettings()
-
     const positionedFixtures = (fixtures ?? []).filter(
       fixture => fixture.x !== undefined && fixture.y !== undefined
     )
@@ -144,54 +129,37 @@ export const StatelessMapWidget = memoInProduction(
         <div className={container}>
           {positionedFixtures.map(fixture => {
             const fixtureType = fixtureTypes.get(fixture.type)
-            const color =
-              universe &&
-              getEffectiveFixtureColor(fixture, fixtureType, universe)
+            if (!fixtureType) return null
+
             const highlightedIndex =
               highlightedFixtures?.indexOf(fixture.id) ?? -1
-            const isHighlighted = highlightedIndex !== -1
-            const style: CSSProperties = {
-              background: color,
-              left: `${fixture.x}%`,
-              top: `${fixture.y}%`,
-              width: fixtureType?.xSize ? `${fixtureType.xSize}%` : undefined,
-              height: fixtureType?.ySize ? `${fixtureType.ySize}%` : undefined,
-              borderStyle: fixtureType?.border,
-              borderWidth: isHighlighted ? '2px' : undefined,
-              borderColor: isHighlighted
-                ? 'red'
-                : color
-                ? iconShade(0, lightMode)
-                : undefined,
-            }
+            const highlighted = highlightedIndex !== -1
+
             return (
-              <div
+              <FixtureTypeMapShape
                 key={fixture.id}
+                fixtureType={fixtureType}
+                x={fixture.x}
+                y={fixture.y}
+                color={
+                  universe &&
+                  getEffectiveFixtureColor(fixture, fixtureType, universe)
+                }
+                highlighted={highlighted}
                 title={fixture.name}
-                style={style}
-                className={cx(
-                  fixtureClassName,
-                  fixtureType?.shape !== 'square' && fixture_circle
-                )}
+                className={fixtureClassName}
+                percentages
               >
-                {isHighlighted && highlightedIndex + 1}
-              </div>
+                {highlighted && highlightedIndex + 1}
+              </FixtureTypeMapShape>
             )
           })}
           {additionalShapes?.map((shape, index) => (
-            <div
+            <MapShape
               key={index}
-              style={{
-                left: `${shape.x}%`,
-                top: `${shape.y}%`,
-                width: shape.xSize ? `${shape.xSize}%` : undefined,
-                height: shape.ySize ? `${shape.ySize}%` : undefined,
-                borderStyle: shape.border,
-              }}
-              className={cx(
-                fixtureClassName,
-                shape.shape !== 'square' && fixture_circle
-              )}
+              {...shape}
+              className={fixtureClassName}
+              percentages
             />
           ))}
         </div>

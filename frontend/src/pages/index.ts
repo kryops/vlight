@@ -30,8 +30,11 @@ export const mainNavigationItems: NavItemEntry[] = [
   fixtureGroupsPageNavItem,
   memoriesPageNavItem,
   configPageNavItem,
-  testPageNavItem,
 ]
+
+if (process.env.NODE_ENV === 'development') {
+  mainNavigationItems.push(testPageNavItem)
+}
 
 export const standaloneRoutes: RouteEntry[] = [
   settingsPageEntry,

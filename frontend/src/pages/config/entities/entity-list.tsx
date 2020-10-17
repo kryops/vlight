@@ -1,17 +1,20 @@
 import React from 'react'
 import { css } from 'linaria'
-import { EntityType, EntityName } from '@vlight/types'
-import { sortByKey } from '@vlight/utils'
+import { EntityType, EntityName, MasterData } from '@vlight/types'
 
-import { removeEntity } from '../../../api'
+import { removeEntity, setEntities } from '../../../api'
+import { apiStateEmitter, apiState } from '../../../api/api-state'
 import { useClassName } from '../../../hooks/ui'
 import { baseline, primaryShade } from '../../../ui/styles'
 import { Icon } from '../../../ui/icons/icon'
-import { iconDelete } from '../../../ui/icons'
+import { iconDelete, iconDrag } from '../../../ui/icons'
 import { showDialog } from '../../../ui/overlays/dialog'
 import { yesNo } from '../../../ui/overlays/buttons'
+import { SortableList } from '../../../ui/containers/sortable-list'
+import { useMasterDataMaps } from '../../../hooks/api'
 
 import { openEntityEditor } from './editors'
+import { entityUiMapping } from './entity-ui-mapping'
 
 const padding = 3
 
@@ -55,18 +58,36 @@ export function EntityList<T extends EntityName>({
   entries,
 }: EntityListProps<T>) {
   const listEntryClassName = useClassName(listEntry, listEntry_light)
-
-  const orderedEntries = sortByKey(entries, 'name')
+  const masterDataMaps = useMasterDataMaps()
 
   return (
-    <>
-      {orderedEntries.map(entry => (
-        <div key={entry.id} className={listEntryClassName}>
+    <SortableList
+      entries={entries}
+      onChange={newEntries => {
+        // Update the client in real-time to prevent flickering
+        ;(apiState.rawMasterData as MasterData) = {
+          ...(apiState.rawMasterData as MasterData),
+          [type]: newEntries as any,
+        }
+        apiStateEmitter.emit('rawMasterData')
+
+        setEntities(type, newEntries)
+      }}
+      entryClassName={listEntryClassName}
+      getKey={entry => entry.id}
+      renderEntryContent={entry => (
+        <>
           <div
             className={entryContent}
             onClick={() => openEntityEditor(type, entry)}
           >
-            {entry.name ?? entry.id}
+            <Icon icon={iconDrag} inline />
+            {entityUiMapping[type].listPreview?.(
+              entry as any,
+              masterDataMaps
+            ) ??
+              entry.name ??
+              entry.id}
           </div>
           <Icon
             icon={iconDelete}
@@ -83,8 +104,8 @@ export function EntityList<T extends EntityName>({
               }
             }}
           />
-        </div>
-      ))}
-    </>
+        </>
+      )}
+    />
   )
 }

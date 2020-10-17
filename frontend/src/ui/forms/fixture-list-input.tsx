@@ -1,6 +1,5 @@
 import { FixtureMappingPrefix, mapFixtureList } from '@vlight/controls'
 import { EntityName, Fixture, FixtureGroup, FixtureType } from '@vlight/types'
-import { sortByKey } from '@vlight/utils'
 import { css } from 'linaria'
 import React, { useState } from 'react'
 
@@ -169,13 +168,10 @@ export function FixtureListInput({
 
   const countByCategory = getCountByCategory(value ?? [])
 
-  const entities = sortByKey(
-    allEntities.filter(entity => {
-      const fixtureCount = fixtureCountByEntity.get(entity) ?? 0
-      return fixtureCount >= 1
-    }),
-    'name'
-  )
+  const entities = allEntities.filter(entity => {
+    const fixtureCount = fixtureCountByEntity.get(entity) ?? 0
+    return fixtureCount >= 1
+  })
 
   const allMappedFixtures = new Set(
     mapFixtureList(value ?? [], {
