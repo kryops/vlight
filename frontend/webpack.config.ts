@@ -11,10 +11,9 @@ import {
   Configuration,
   DefinePlugin,
   HotModuleReplacementPlugin,
-  Plugin,
+  WebpackPluginInstance,
 } from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
-import WorkerPlugin from 'worker-plugin'
 
 interface Env {
   analyze?: any
@@ -40,7 +39,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
     entry: [
       isProduction && join(__dirname, 'src/polyfills.ts'),
       join(__dirname, 'src/index.tsx'),
-    ].filter(Boolean) as string[],
+    ].filter(Boolean) as [string, ...string[]],
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? 'source-map' : 'cheap-module-source-map',
     target: 'web',
@@ -141,8 +140,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       }),
       new ExtractCssPlugin({
         ignoreOrder: true,
-      } as any),
-      new WorkerPlugin(),
+      }) as WebpackPluginInstance,
       !profile &&
         new ForkCheckerPlugin({
           typescript: {
@@ -178,18 +176,15 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
 
       // analyze
       analyze && new BundleAnalyzerPlugin(),
-    ].filter(Boolean) as Plugin[],
+    ].filter(Boolean) as WebpackPluginInstance[],
 
     optimization: {
       minimizer: [
         new TerserPlugin({
-          cache: true,
           parallel: true,
-          sourceMap: true,
           terserOptions: {
             mangle: true,
             ie8: false,
-            sourceMap: true,
             ...(profileReact
               ? {
                   keep_classnames: true,
@@ -197,16 +192,17 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
                 }
               : {}),
           },
-        }),
+        }) as WebpackPluginInstance,
       ],
       splitChunks: {
         chunks: 'all',
         minSize: 1000,
         maxAsyncRequests: 10,
         cacheGroups: {
-          vendors: false,
+          defaultVendors: false,
           styles: {
             name: 'styles',
+            idHint: 'styles',
             test: /\.css$/,
             chunks: 'all',
             enforce: true,
@@ -214,6 +210,17 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
         },
       },
     },
+
+    cache:
+      profile || profileReact
+        ? undefined
+        : {
+            type: 'filesystem',
+            name: isProduction ? 'production' : 'development',
+            buildDependencies: {
+              config: [__filename, join(__dirname, '../yarn.lock')],
+            },
+          },
   }
 
   if (profile) {

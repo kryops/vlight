@@ -1,10 +1,8 @@
 import { memo } from 'react'
 
-export function memoInProduction<T>(
-  component: React.FC<T>
-): React.MemoExoticComponent<React.FC<T>> {
-  // This was necessary because react-hot-loader did not support updating memo-components.
-  // We leave it in place in case this happens again
-  return memo(component)
-  // return process.env.NODE_ENV === 'production' ? memo(component) : component
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export function memoInProduction<T>(component: React.FC<T>) {
+  // This is necessary because react-hot-loader does not support updating memo-components again.
+  // return memo(component)
+  return process.env.NODE_ENV === 'production' ? memo(component) : component
 }

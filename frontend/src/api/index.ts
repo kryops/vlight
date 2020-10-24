@@ -21,9 +21,11 @@ import {
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
 
-export const apiWorker = new Worker('./worker/api.worker.ts', {
-  type: 'module',
-})
+export const apiWorker = new Worker(
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore cannot change module type, as otherwise the webpack configuration won't compile
+  new URL('./worker/api.worker.ts', import.meta.url)
+)
 
 export function sendApiMessage(message: ApiInMessage): void {
   logger.trace('Sending WebSocket message', message)

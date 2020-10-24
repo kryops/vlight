@@ -14,7 +14,7 @@
         "--config",
         "frontend/webpack.config.ts",
         "--progress",
-        "--env.profile"
+        "--env profile"
       ],
       "runtimeArgs": ["--nolazy"],
       "cwd": "${workspaceRoot}",
