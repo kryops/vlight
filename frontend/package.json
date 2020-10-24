@@ -54,7 +54,7 @@
     "emittery": "^0.7.1",
     "fork-ts-checker-webpack-plugin": "^5.2.0",
     "html-webpack-plugin": "^4.5.0",
-    "linaria": "2.0.0-alpha.5",
+    "linaria": "2.0.0-rc.3",
     "mini-css-extract-plugin": "^1.0.0",
     "normalize.css": "^8.0.1",
     "optimize-css-assets-webpack-plugin": "^5.0.4",
