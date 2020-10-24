@@ -107,3 +107,29 @@ export function mapFixtureStateToChannels(
     return Math.round((rawValue * masterChannelValue) / 255)
   })
 }
+
+export function getCommonFixtureState(
+  fixtureStates: FixtureState[]
+): FixtureState {
+  const commonFixtureState: FixtureState = {
+    on: fixtureStates.some(fixtureState => fixtureState.on),
+    channels: {},
+  }
+
+  if (fixtureStates.length === 0) return commonFixtureState
+
+  // TODO only respect fixtures whose mapping has the respective channel
+  for (const [channel, value] of Object.entries(fixtureStates[0].channels)) {
+    if (value === undefined) continue
+
+    if (
+      fixtureStates.every(
+        fixtureState => fixtureState.channels[channel] === value
+      )
+    ) {
+      commonFixtureState.channels[channel] = value
+    }
+  }
+
+  return commonFixtureState
+}

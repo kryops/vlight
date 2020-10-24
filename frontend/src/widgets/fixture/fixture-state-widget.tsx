@@ -45,7 +45,7 @@ export const FixtureStateWidget = memoInProduction(
     stateRef.current = fixtureState
 
     const colorPickerCapable = colorPickerColors.every(c => mapping.includes(c))
-    const [colorPicker, setColorPicker] = useState(colorPickerCapable)
+    const [colorPicker, setColorPicker] = useState(true)
     const toggleColorPicker = useCallback(
       () => setColorPicker(prev => !prev),
       []

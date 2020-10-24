@@ -17,6 +17,11 @@ const container = css`
   }
 `
 
+const container_full = css`
+  width: auto;
+  max-width: 100vw;
+`
+
 const column = css`
   flex: 1 1 auto;
 
@@ -42,6 +47,7 @@ export interface TwoColumDialogContainerProps {
   leftClassName?: string
   rightClassName?: string
   fixed?: boolean
+  fullWidth?: boolean
 }
 
 export function TwoColumDialogContainer({
@@ -51,9 +57,10 @@ export function TwoColumDialogContainer({
   leftClassName,
   rightClassName,
   fixed,
+  fullWidth,
 }: TwoColumDialogContainerProps) {
   return (
-    <div className={cx(container, className)}>
+    <div className={cx(container, fullWidth && container_full, className)}>
       <div className={cx(column, fixed && column_fixed, leftClassName)}>
         {left}
       </div>

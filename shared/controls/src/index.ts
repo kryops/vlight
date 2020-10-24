@@ -3,6 +3,7 @@ export {
   mapFixtureList,
   mergeFixtureStates,
   mapFixtureStateToChannels,
+  getCommonFixtureState,
 } from './fixtures'
 export { interpolateGradientPositions } from './gradient'
 export {

@@ -27,6 +27,8 @@ import {
   mdiDrag,
   mdiArrowUp,
   mdiArrowDown,
+  mdiChevronDown,
+  mdiChevronUp,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -40,6 +42,8 @@ export const iconDelete = mdiDelete
 export const iconAdd = mdiPlusCircle
 export const iconUp = mdiArrowUp
 export const iconDown = mdiArrowDown
+export const iconExpand = mdiChevronDown
+export const iconCollapse = mdiChevronUp
 
 export const iconCheckbox = mdiCheckboxBlankOutline
 export const iconCheckbox_checked = mdiCheckBoxOutline

@@ -5,6 +5,7 @@ import { Header } from '../../ui/containers/header'
 import { useMasterData } from '../../hooks/api'
 
 import { FixturesActions } from './fixtures-actions'
+import { FixturesMultiControl } from './fixtures-multi-control'
 
 const FixturesPage = memoInProduction(() => {
   const { fixtures } = useMasterData()
@@ -12,6 +13,7 @@ const FixturesPage = memoInProduction(() => {
   return (
     <>
       <Header rightContent={<FixturesActions />}>Fixtures</Header>
+      <FixturesMultiControl />
       <div className={pageWithWidgets}>
         {fixtures.map(fixture => (
           <FixtureWidget key={fixture.id} fixture={fixture} />
