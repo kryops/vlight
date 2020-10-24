@@ -1,4 +1,3 @@
-import React from 'react'
 import { EntityName, WidgetConfig } from '@vlight/types'
 import { css } from 'linaria'
 import { ensureBetween } from '@vlight/utils'

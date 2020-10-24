@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import { useCallback } from 'react'
 import { FixtureState } from '@vlight/types'
 
 import { memoInProduction } from '../../../util/development'

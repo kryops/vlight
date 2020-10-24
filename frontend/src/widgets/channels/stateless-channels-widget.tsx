@@ -1,4 +1,3 @@
-import React from 'react'
 import { createRangeArray } from '@vlight/utils'
 
 import { setChannel } from '../../api'

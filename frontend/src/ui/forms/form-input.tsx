@@ -1,5 +1,5 @@
-import React from 'react'
 import { IdType } from '@vlight/types'
+import { ComponentType } from 'react'
 
 import { FormState } from '../../hooks/form'
 
@@ -23,7 +23,7 @@ export interface FormInputProps<
 }
 
 function wrapTypedInput<TValue, TAdditionalProps extends object>(
-  TypedInput: React.ComponentType<TypedInputProps<TValue> & TAdditionalProps>
+  TypedInput: ComponentType<TypedInputProps<TValue> & TAdditionalProps>
 ) {
   return function FormInput<
     TValues extends { [key in TName]?: TValue | undefined },

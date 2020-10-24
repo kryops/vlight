@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import React from 'react'
 
 import { Icon } from '../icons/icon'
 import { iconBack } from '../icons'

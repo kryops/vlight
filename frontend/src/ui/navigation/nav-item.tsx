@@ -1,5 +1,4 @@
 import { css } from 'linaria'
-import React from 'react'
 import { NavLink } from 'react-router-dom'
 
 import { Icon } from '../icons/icon'

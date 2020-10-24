@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useDmxUniverse, useMasterData } from '../../hooks/api'
 
 import { StatelessUniverseWidget } from './stateless-universe-widget'

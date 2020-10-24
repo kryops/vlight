@@ -1,5 +1,7 @@
-import React, { ReactNode, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+
+import { memoInProduction } from '../../util/development'
 
 export interface SortableListProps<T> {
   entries: T[]
@@ -13,7 +15,7 @@ export interface SortableListProps<T> {
 let sortableListIndex = 0
 
 // recommended performance optimization
-const InnerSortableList = React.memo(
+const InnerSortableList = memoInProduction(
   ({
     entries,
     entryClassName,

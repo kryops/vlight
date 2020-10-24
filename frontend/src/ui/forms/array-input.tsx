@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import { ComponentType, useRef, useState } from 'react'
 import { css } from 'linaria'
 
 import { Icon } from '../icons/icon'
@@ -11,7 +11,7 @@ import { TypedInputProps } from './typed-input'
 export interface ArrayInputProps<T> {
   value: Array<T | undefined>
   onChange: (value: Array<T>) => void
-  Input: React.ComponentType<TypedInputProps<T>>
+  Input: ComponentType<TypedInputProps<T>>
   displayRemoveButtons?: boolean
   className?: string
   entryClassName?: string

@@ -51,7 +51,7 @@ async function init() {
     initDevices(),
   ])
 
-  await new Promise(resolve => httpServer.listen(httpPort, resolve))
+  await new Promise<void>(resolve => httpServer.listen(httpPort, resolve))
 
   const startDuration = (Date.now() - startTime) / 1000
   logger.info(

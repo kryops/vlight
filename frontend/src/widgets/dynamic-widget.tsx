@@ -1,4 +1,3 @@
-import React from 'react'
 import { WidgetConfig } from '@vlight/types'
 import { assertNever } from '@vlight/utils'
 

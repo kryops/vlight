@@ -1,9 +1,4 @@
-import React, {
-  ComponentType,
-  useEffect,
-  useState,
-  PropsWithChildren,
-} from 'react'
+import { ComponentType, useEffect, useState, PropsWithChildren } from 'react'
 import { addToMutableArray, removeFromMutableArray } from '@vlight/utils'
 
 export interface OverlayProps {

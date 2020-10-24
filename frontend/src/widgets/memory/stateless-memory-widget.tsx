@@ -1,5 +1,4 @@
 import { Memory, MemoryState } from '@vlight/types'
-import React from 'react'
 
 import { setMemoryState } from '../../api'
 import { openEntityEditorForId } from '../../pages/config/entities/editors'

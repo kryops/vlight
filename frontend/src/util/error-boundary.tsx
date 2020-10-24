@@ -1,4 +1,4 @@
-import React from 'react'
+import { Component } from 'react'
 import { logger } from '@vlight/utils'
 
 interface ErrorInfo {
@@ -11,7 +11,7 @@ interface ErrorBoundaryState {
   componentStack?: string
 }
 
-export class ErrorBoundary extends React.Component<{}, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<{}, ErrorBoundaryState> {
   state: ErrorBoundaryState = {}
 
   componentDidCatch(error: Error, info: ErrorInfo) {

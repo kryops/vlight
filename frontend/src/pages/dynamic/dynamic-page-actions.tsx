@@ -1,4 +1,3 @@
-import React from 'react'
 import { DynamicPage } from '@vlight/types'
 
 import { Icon } from '../../ui/icons/icon'

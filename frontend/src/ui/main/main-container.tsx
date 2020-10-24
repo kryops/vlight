@@ -1,5 +1,5 @@
 import { css } from 'linaria'
-import React, { Suspense, useCallback, useState, useEffect } from 'react'
+import { Suspense, useCallback, useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
 
 import { RoutesOutlet } from '../../pages/routes-outlet'

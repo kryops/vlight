@@ -1,3 +1,5 @@
+import { ComponentType } from 'react'
+
 import { ApiState } from '../api/worker/processing'
 
 import { universePageNavItem } from './universe'
@@ -13,7 +15,7 @@ import { mapPageNavItem } from './map'
 
 export interface RouteEntry {
   route: string
-  page: React.ComponentType
+  page: ComponentType
 }
 
 export interface NavItemEntry extends RouteEntry {

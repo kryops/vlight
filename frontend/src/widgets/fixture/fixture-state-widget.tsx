@@ -1,5 +1,5 @@
 import { FixtureState } from '@vlight/types'
-import React, { ReactNode, useCallback, useRef, useState } from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 import { ChannelMapping } from '@vlight/controls'
 import { css } from 'linaria'
 

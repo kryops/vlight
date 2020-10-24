@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { FixtureBorderStyle, FixtureShape } from '@vlight/types'
 
 import { useFormState } from '../../../../hooks/form'

@@ -1,5 +1,5 @@
-import React from 'react'
 import { DbEntity, EntityName, EntityType, IdType } from '@vlight/types'
+import { ComponentType } from 'react'
 
 import { showDialog } from '../../../../ui/overlays/dialog'
 import { editEntity } from '../../../../api'
@@ -24,7 +24,7 @@ export async function openEntityEditor<T extends EntityName>(
   entry?: EntityType<T>
 ) {
   const Editor:
-    | React.ComponentType<EntityEditorProps<T>>
+    | ComponentType<EntityEditorProps<T>>
     | undefined = entityUiMapping[type].editor as any
 
   if (!Editor) return

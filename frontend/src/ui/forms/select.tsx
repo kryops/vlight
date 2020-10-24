@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { css } from 'linaria'
 
 import { cx } from '../../util/styles'

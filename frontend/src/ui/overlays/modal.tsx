@@ -1,4 +1,4 @@
-import React, { ReactElement, ComponentType } from 'react'
+import { ReactElement, ComponentType } from 'react'
 import { css } from 'linaria'
 
 import { Icon } from '../icons/icon'

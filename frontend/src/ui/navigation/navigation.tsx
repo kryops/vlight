@@ -1,5 +1,4 @@
 import { css } from 'linaria'
-import React from 'react'
 
 import { mainNavigationItems } from '../../pages'
 import { primaryShade, zNavigation, backgroundColorLight } from '../styles'

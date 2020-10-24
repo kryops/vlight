@@ -1,5 +1,4 @@
 import { css } from 'linaria'
-import React from 'react'
 
 import { rotateAnimation } from '../animations/rotate'
 import { iconLoading } from '../icons'

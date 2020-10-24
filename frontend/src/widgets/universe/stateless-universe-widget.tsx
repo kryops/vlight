@@ -1,5 +1,5 @@
 import { css } from 'linaria'
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { MasterData } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'
 

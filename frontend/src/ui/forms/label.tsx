@@ -1,14 +1,14 @@
-import React from 'react'
 import { css } from 'linaria'
+import { ReactNode } from 'react'
 
 import { baseline, textShade } from '../styles'
 import { cx } from '../../util/styles'
 import { useClassName } from '../../hooks/ui'
 
 export interface LabelProps {
-  label: string | React.ReactNode
-  description?: string | React.ReactNode
-  input: React.ReactNode
+  label: string | ReactNode
+  description?: string | ReactNode
+  input: ReactNode
   forceSmall?: boolean
 }
 

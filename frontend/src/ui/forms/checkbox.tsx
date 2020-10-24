@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Icon } from '../icons/icon'
 import { iconCheckbox_checked, iconCheckbox } from '../icons'
 

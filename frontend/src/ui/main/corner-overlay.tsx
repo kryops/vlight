@@ -1,5 +1,4 @@
 import { css } from 'linaria'
-import React from 'react'
 
 import { useSettings } from '../../hooks/settings'
 import { MapWidget } from '../../widgets/map/map-widget'

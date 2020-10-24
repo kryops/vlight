@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { LoadingScreen } from '../ui/main/loading-screen'
 import { useApiConnecting, useMasterData } from '../hooks/api'
 

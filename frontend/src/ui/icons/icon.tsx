@@ -1,5 +1,5 @@
 import { css } from 'linaria'
-import React from 'react'
+import { MouseEvent as ReactMouseEvent } from 'react'
 
 import { ColorShade } from '../../types'
 import { baseline, iconShade } from '../styles'
@@ -48,7 +48,7 @@ export interface IconProps {
   inline?: boolean
   padding?: boolean
   hoverable?: boolean
-  onClick?: (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => void
+  onClick?: (event: ReactMouseEvent<SVGSVGElement, MouseEvent>) => void
 }
 
 export const Icon = memoInProduction(

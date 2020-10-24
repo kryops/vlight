@@ -1,5 +1,5 @@
-import React from 'react'
 import { css } from 'linaria'
+import { InputHTMLAttributes } from 'react'
 
 import { cx } from '../../util/styles'
 import { useClassName } from '../../hooks/ui'
@@ -11,7 +11,7 @@ import {
   inputWidth,
 } from '../styles'
 
-export interface InputProps extends React.InputHTMLAttributes<any> {
+export interface InputProps extends InputHTMLAttributes<any> {
   type?: 'text' | 'number' | 'date' | 'time' | 'password'
   value: string
   onChange: (value: any) => void

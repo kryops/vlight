@@ -18,7 +18,7 @@ export async function initUdpMulticast(): Promise<void> {
     sendUdpMulticastMessage(getBinaryUniverseMessage(getDmxUniverse()))
   }, udpUniverseInterval)
 
-  await new Promise(resolve => {
+  await new Promise<void>(resolve => {
     udpSocket = createSocket({ type: 'udp4', reuseAddr: true })
     udpSocket.bind(udpPort, () => {
       udpSocket.setBroadcast(true)

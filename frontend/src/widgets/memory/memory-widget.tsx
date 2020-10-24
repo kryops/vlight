@@ -1,5 +1,4 @@
 import { Memory } from '@vlight/types'
-import React from 'react'
 
 import { useApiStateEntry } from '../../hooks/api'
 

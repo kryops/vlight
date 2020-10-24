@@ -1,5 +1,4 @@
 import { FixtureGroup } from '@vlight/types'
-import React from 'react'
 import { mergeFixtureStates } from '@vlight/controls'
 
 import { setFixtureGroupState } from '../../api'

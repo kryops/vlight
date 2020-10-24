@@ -1,5 +1,5 @@
 import { css } from 'linaria'
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 
 import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
 import { Touchable } from '../../components/touchable'

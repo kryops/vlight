@@ -1,6 +1,6 @@
 const isTest = process.env.NODE_ENV === 'test'
 
-module.exports = function(api) {
+module.exports = function (api) {
   api.cache(true)
 
   return {
@@ -13,7 +13,12 @@ module.exports = function(api) {
           corejs: 3,
         },
       ],
-      '@babel/preset-react',
+      [
+        '@babel/preset-react',
+        {
+          runtime: 'automatic',
+        },
+      ],
       '@babel/preset-typescript',
       'linaria/babel',
     ],

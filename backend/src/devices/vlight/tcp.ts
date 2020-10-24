@@ -27,7 +27,7 @@ function handleConnection(socket: Socket) {
 
 export async function initTcpServer(): Promise<void> {
   const server = createServer(handleConnection)
-  await new Promise(resolve => server.listen(tcpPort, () => resolve()))
+  await new Promise<void>(resolve => server.listen(tcpPort, () => resolve()))
 }
 
 export function sendTcpBroadcastMessage(message: Buffer): void {

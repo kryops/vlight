@@ -1,4 +1,3 @@
-import React from 'react'
 import { mapFixtureList } from '@vlight/controls'
 
 import { useFormState } from '../../../../hooks/form'

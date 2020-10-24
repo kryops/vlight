@@ -16,6 +16,5 @@
 
 ## Experiments / Tech
 
-- webpack 5
 - Node.js worker threads
 - react-router 6 Alpha

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { css } from 'linaria'
 
 import { memoInProduction } from '../../../util/development'

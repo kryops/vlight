@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 import { useHistory } from 'react-router'
 import { css } from 'linaria'
 

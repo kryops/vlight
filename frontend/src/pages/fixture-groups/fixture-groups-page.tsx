@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useMasterData } from '../../hooks/api'
 import { FixtureGroupWidget } from '../../widgets/fixture-group/fixture-group-widget'
 import { pageWithWidgets } from '../../ui/css/page'

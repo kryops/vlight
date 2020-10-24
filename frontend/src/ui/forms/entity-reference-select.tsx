@@ -1,4 +1,3 @@
-import React from 'react'
 import { EntityName, IdType, EntityType } from '@vlight/types'
 
 import { useApiState } from '../../hooks/api'

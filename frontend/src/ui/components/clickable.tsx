@@ -1,4 +1,3 @@
-import React from 'react'
 import { css } from 'linaria'
 
 import { cx } from '../../util/styles'

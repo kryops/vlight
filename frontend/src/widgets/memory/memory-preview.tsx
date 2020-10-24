@@ -4,7 +4,6 @@ import {
   mapFixtureStateToChannels,
 } from '@vlight/controls'
 import { MasterData, MasterDataMaps, MemoryScene } from '@vlight/types'
-import React from 'react'
 
 import { useMasterData, useMasterDataMaps } from '../../hooks/api'
 import { StatelessMapWidget } from '../map/stateless-map-widget'

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ComponentType, ReactNode } from 'react'
 import { EntityName, EntityType, MasterDataMaps } from '@vlight/types'
 import { css } from 'linaria'
 import { mapFixtureList } from '@vlight/controls'
@@ -40,7 +40,7 @@ export interface EntityEditorProps<T extends EntityName> {
 export interface EntityEntry<T extends EntityName> {
   name: string
   icon: string
-  editor?: React.ComponentType<EntityEditorProps<T>>
+  editor?: ComponentType<EntityEditorProps<T>>
   listPreview?: (
     entity: EntityType<T>,
     masterDataMaps: MasterDataMaps

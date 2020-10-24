@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "es2019",
     "lib": ["es2019", "dom"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "noEmit": true,
     "incremental": true,
     "importsNotUsedAsValues": "preserve"

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Fixture } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'
 

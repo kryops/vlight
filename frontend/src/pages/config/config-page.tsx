@@ -1,4 +1,3 @@
-import React from 'react'
 import { EntityName } from '@vlight/types'
 
 import { memoInProduction } from '../../util/development'

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useApiState } from '../../hooks/api'
 
 import { StatelessChannelsWidget } from './stateless-channels-widget'

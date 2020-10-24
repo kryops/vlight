@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { pageWithWidgets } from '../../ui/css/page'
 import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
 import { memoInProduction } from '../../util/development'

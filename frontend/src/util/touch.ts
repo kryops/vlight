@@ -1,18 +1,18 @@
-import { RefObject } from 'react'
+import { PointerEvent, RefObject, TouchEvent } from 'react'
 import { ensureBetween } from '@vlight/utils'
 
 export interface NormalizedTouchEvent<T extends HTMLElement = HTMLElement> {
   type: string
   clientX: number
   clientY: number
-  originalEvent: React.PointerEvent<T> | React.TouchEvent<T>
+  originalEvent: PointerEvent<T> | TouchEvent<T>
 }
 
 export function normalizeTouchEvent<T extends HTMLElement = HTMLElement>(
-  e: React.PointerEvent<T> | React.TouchEvent<T>
+  e: PointerEvent<T> | TouchEvent<T>
 ): NormalizedTouchEvent<T> {
   if ((e as any).clientX) {
-    const pointerEvent = e as React.PointerEvent<T>
+    const pointerEvent = e as PointerEvent<T>
     return {
       type: e.type,
       clientX: pointerEvent.clientX,
@@ -21,7 +21,7 @@ export function normalizeTouchEvent<T extends HTMLElement = HTMLElement>(
     }
   }
 
-  const touchEvent = e as React.TouchEvent<T>
+  const touchEvent = e as TouchEvent<T>
   const touch = touchEvent.targetTouches?.[0] ?? touchEvent.changedTouches?.[0]
   return {
     type: e.type,

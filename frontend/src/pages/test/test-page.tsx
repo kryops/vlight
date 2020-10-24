@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useMasterData } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'

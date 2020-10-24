@@ -1,5 +1,4 @@
 import { css } from 'linaria'
-import React from 'react'
 
 import { ColorShade } from '../../types'
 import { Icon } from '../icons/icon'

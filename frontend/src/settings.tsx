@@ -1,4 +1,4 @@
-import React, { useState, useMemo, PropsWithChildren } from 'react'
+import { useState, useMemo, PropsWithChildren, createContext } from 'react'
 
 export interface Settings {
   lightMode: boolean
@@ -20,7 +20,7 @@ const initialSettings = localStorage[localStorageKey]
   ? JSON.parse(localStorage[localStorageKey])
   : defaultSettings
 
-export const SettingsContext = React.createContext<SettingsWithUpdate>({
+export const SettingsContext = createContext<SettingsWithUpdate>({
   ...initialSettings,
   updateSettings: () => {},
 })

@@ -1,5 +1,5 @@
 import { css } from 'linaria'
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren, ReactElement } from 'react'
 
 import { Icon } from '../icons/icon'
 import {
@@ -80,8 +80,8 @@ const bottomLine = css`
 `
 
 export interface WidgetProps {
-  title?: string | React.ReactElement
-  titleSide?: string | React.ReactElement
+  title?: string | ReactElement
+  titleSide?: string | ReactElement
   onTitleClick?: () => void
   turnedOn?: boolean
   bottomLineColor?: string

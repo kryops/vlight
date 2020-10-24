@@ -1,5 +1,5 @@
-import React from 'react'
 import { css } from 'linaria'
+import { ReactNode } from 'react'
 
 import { baseline, primaryShade, textShade } from '../styles'
 import { cx } from '../../util/styles'
@@ -95,7 +95,7 @@ const iconStyle = css`
 `
 
 export interface ButtonProps {
-  children?: React.ReactNode
+  children?: ReactNode
   onDown?: () => void
   onUp?: () => void
   icon?: string

@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { useMasterData } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'
 import { pageWithWidgets } from '../../ui/css/page'

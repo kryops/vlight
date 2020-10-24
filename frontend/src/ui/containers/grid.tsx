@@ -1,5 +1,5 @@
-import React from 'react'
 import { css } from 'linaria'
+import { ReactNode } from 'react'
 
 import { baseline } from '../styles'
 import { flexEndSpacer } from '../css/flex-end-spacer'
@@ -28,7 +28,7 @@ const gridCell = css`
 
 export interface GridCell {
   factor?: number
-  children: React.ReactNode
+  children: ReactNode
   className?: string
 }
 

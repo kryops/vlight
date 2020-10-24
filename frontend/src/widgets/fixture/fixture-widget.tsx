@@ -1,4 +1,3 @@
-import React from 'react'
 import { Fixture, FixtureType } from '@vlight/types'
 import { mergeFixtureStates } from '@vlight/controls'
 

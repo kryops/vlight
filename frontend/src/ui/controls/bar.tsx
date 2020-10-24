@@ -1,5 +1,4 @@
 import { css } from 'linaria'
-import React from 'react'
 import { ensureBetween, getFraction } from '@vlight/utils'
 
 import { baseline, iconShade, primaryShade, textShade } from '../styles'

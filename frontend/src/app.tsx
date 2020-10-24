@@ -1,7 +1,7 @@
 import './ui/global-styles'
 
 import { hot } from 'react-hot-loader/root'
-import React, { StrictMode } from 'react'
+import { StrictMode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
 import { ApiWrapper } from './api/api-wrapper'
