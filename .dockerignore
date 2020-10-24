@@ -2,10 +2,7 @@
 .gitignore
 .editorconfig
 .eslintcache
-.eslintrc.js
 .linaria-cache
-.prettierignore
-.prettierrc
 .vscode
 assets
 coverage
