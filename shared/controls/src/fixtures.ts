@@ -4,7 +4,7 @@ import {
   MasterData,
   MasterDataMaps,
 } from '@vlight/types'
-import { logger, isUnique } from '@vlight/utils'
+import { logger, isUnique, average, isTruthy } from '@vlight/utils'
 
 import { ChannelMapping, FixtureMappingPrefix } from './enums'
 
@@ -71,17 +71,38 @@ export function mapFixtureList(
     })
 }
 
+/**
+ * Mutates the original object
+ */
+export function cleanFixtureState(
+  state: FixtureState,
+  mapping: string[] | undefined
+): FixtureState {
+  if (!mapping) return state
+
+  for (const channel of Object.keys(state.channels)) {
+    if (!mapping.includes(channel)) delete state.channels[channel]
+  }
+
+  console.log('CLEAN', state, mapping)
+
+  return state
+}
+
 export function mergeFixtureStates(
   state1: FixtureState | undefined,
-  state2: Partial<FixtureState>
+  state2: Partial<FixtureState>,
+  mapping?: string[]
 ): FixtureState {
-  return {
+  const mergedState = {
     on: false,
     ...state1,
     ...state2,
     channels: { ...state1?.channels, ...state2.channels },
     initial: undefined, // reset initial state
   }
+
+  return cleanFixtureState(mergedState, mapping)
 }
 
 export function mapFixtureStateToChannels(
@@ -108,28 +129,50 @@ export function mapFixtureStateToChannels(
   })
 }
 
+export interface CommonFixtureStateEntry {
+  state: FixtureState
+  mapping: string[]
+}
+
 export function getCommonFixtureState(
-  fixtureStates: FixtureState[]
+  entries: CommonFixtureStateEntry[]
 ): FixtureState {
   const commonFixtureState: FixtureState = {
-    on: fixtureStates.some(fixtureState => fixtureState.on),
+    on: entries.some(entry => entry.state.on),
     channels: {},
   }
 
-  if (fixtureStates.length === 0) return commonFixtureState
+  if (entries.length === 0) return commonFixtureState
 
-  // TODO only respect fixtures whose mapping has the respective channel
-  for (const [channel, value] of Object.entries(fixtureStates[0].channels)) {
-    if (value === undefined) continue
+  const allMappings = new Set(entries.flatMap(entry => entry.mapping))
 
-    if (
-      fixtureStates.every(
-        fixtureState => fixtureState.channels[channel] === value
-      )
-    ) {
-      commonFixtureState.channels[channel] = value
+  for (const channel of allMappings) {
+    const values = entries
+      .map(entry => entry.state.channels[channel])
+      .filter(value => value !== undefined)
+
+    if (values.length) {
+      commonFixtureState.channels[channel] = average(values)
     }
   }
 
   return commonFixtureState
+}
+
+export function getCommonFixtureMapping(
+  fixtureStrings: string[],
+  masterDataAndMaps: { masterData: MasterData; masterDataMaps: MasterDataMaps }
+): string[] {
+  const fixtureIds = mapFixtureList(fixtureStrings, masterDataAndMaps)
+
+  const { masterDataMaps } = masterDataAndMaps
+
+  const fixtures = fixtureIds
+    .map(id => masterDataMaps.fixtures.get(id))
+    .filter(isTruthy)
+  const commonFixtureTypes = fixtures
+    .map(({ type }) => masterDataMaps.fixtureTypes.get(type))
+    .filter(isTruthy)
+    .filter(isUnique)
+  return commonFixtureTypes.flatMap(({ mapping }) => mapping).filter(isUnique)
 }

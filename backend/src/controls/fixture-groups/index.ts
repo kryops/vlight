@@ -96,7 +96,8 @@ function setFixtureGroupState(
   const oldState = fixtureGroupStates.get(id)!
   const newState = mergeFixtureStates(
     merge ? fixtureGroupStates.get(id) : undefined,
-    state
+    state,
+    getFixtureGroupMapping(fixtureGroup)
   )
 
   fixtureGroupStates.set(id, newState)

@@ -3,7 +3,7 @@ import { css } from 'linaria'
 
 import { memoInProduction } from '../../../util/development'
 import { getFixtureAtChannel } from '../../../util/fixtures'
-import { useMasterData, useMasterDataMaps } from '../../../hooks/api'
+import { useMasterDataAndMaps } from '../../../hooks/api'
 
 import { Fader } from './fader'
 
@@ -24,12 +24,12 @@ export const ChannelFader = memoInProduction(
       [channel, onChange]
     )
 
-    const masterData = useMasterData()
+    const { masterData, masterDataMaps } = useMasterDataAndMaps()
     const fixture = useMemo(() => getFixtureAtChannel(masterData, channel), [
       masterData,
       channel,
     ])
-    const { fixtureTypes } = useMasterDataMaps()
+    const { fixtureTypes } = masterDataMaps
     const fixtureType = fixture ? fixtureTypes.get(fixture.type) : undefined
     const channelOffset = fixture ? channel - fixture.channel : -1
     const channelMapping = fixtureType?.mapping[channelOffset]

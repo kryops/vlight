@@ -1,8 +1,13 @@
-import { mapFixtureList, getCommonFixtureState } from '@vlight/controls'
+import {
+  mapFixtureList,
+  getCommonFixtureState,
+  mergeFixtureStates,
+} from '@vlight/controls'
+import { isTruthy } from '@vlight/utils'
 import { useState } from 'react'
 
 import { setFixtureState } from '../../api'
-import { useApiState, useMasterData, useMasterDataMaps } from '../../hooks/api'
+import { useApiState, useMasterDataAndMaps } from '../../hooks/api'
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
@@ -10,17 +15,25 @@ import { FixtureListInput } from '../../ui/forms/fixture-list-input'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 
 export function FixturesMultiControl() {
-  const [fixtures, setFixtures] = useState<string[]>([])
+  const [fixtureStrings, setFixtureStrings] = useState<string[]>([])
 
-  const masterData = useMasterData()
-  const masterDataMaps = useMasterDataMaps()
-  const mapping = useCommonFixtureMapping(fixtures)
+  const masterDataAndMaps = useMasterDataAndMaps()
+  const { masterDataMaps } = masterDataAndMaps
+  const mapping = useCommonFixtureMapping(fixtureStrings)
   const fixtureStates = useApiState('fixtures')
 
-  const allFixtures = mapFixtureList(fixtures, { masterData, masterDataMaps })
+  const allFixtureIds = mapFixtureList(fixtureStrings, masterDataAndMaps)
+  const allFixtures = allFixtureIds
+    .map(id => masterDataMaps.fixtures.get(id))
+    .filter(isTruthy)
 
   const commonFixtureState = getCommonFixtureState(
-    allFixtures.map(fixture => fixtureStates[fixture]).filter(Boolean)
+    allFixtures
+      .map(fixture => ({
+        state: fixtureStates[fixture.id],
+        mapping: masterDataMaps.fixtureTypes.get(fixture.type)?.mapping ?? [],
+      }))
+      .filter(Boolean)
   )
 
   return (
@@ -28,22 +41,39 @@ export function FixturesMultiControl() {
       <TwoColumDialogContainer
         left={
           <FixtureListInput
-            value={fixtures}
-            onChange={setFixtures}
-            hideGroupMode
+            value={fixtureStrings}
+            onChange={setFixtureStrings}
           />
         }
         right={
-          allFixtures.length > 0 && (
+          allFixtureIds.length > 0 && (
             <FixtureStateWidget
-              title={`${allFixtures.length} Fixtures`}
+              title={`${allFixtureIds.length} Fixtures`}
               mapping={mapping}
               fixtureState={commonFixtureState}
               onChange={newState => {
-                // TODO respect each fixture's mapping (do not set colors for monochrome fixture)
                 const stateToApply = { ...newState }
-                if (commonFixtureState.on) stateToApply.on = true
-                setFixtureState(allFixtures, stateToApply, true)
+                if (stateToApply.on === undefined && commonFixtureState.on)
+                  stateToApply.on = true
+
+                // We group fixtures by type to reduce the mapping accordingly
+                const allTypeIds = new Set(
+                  allFixtures.map(fixture => fixture.type)
+                )
+
+                for (const typeId of allTypeIds) {
+                  const mapping = masterDataMaps.fixtureTypes.get(typeId)
+                    ?.mapping
+                  const fixtureIds = allFixtures
+                    .filter(fixture => fixture.type === typeId)
+                    .map(fixture => fixture.id)
+                  const stateForFixtures = mergeFixtureStates(
+                    undefined,
+                    stateToApply,
+                    mapping
+                  )
+                  setFixtureState(fixtureIds, stateForFixtures, true)
+                }
               }}
             />
           )

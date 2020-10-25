@@ -1,5 +1,3 @@
-import { mapFixtureList } from '@vlight/controls'
-
 import { useFormState } from '../../../../hooks/form'
 import {
   FormTextInput,
@@ -7,10 +5,11 @@ import {
 } from '../../../../ui/forms/form-input'
 import { EntityEditorProps } from '../entity-ui-mapping'
 import { Label } from '../../../../ui/forms/label'
-import { useMasterData, useMasterDataMaps } from '../../../../hooks/api'
+import { useMasterData } from '../../../../hooks/api'
 import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 import { editorPreviewColumn } from '../../../../ui/css/editor-styles'
+import { useFixtureList } from '../../../../hooks/fixtures'
 
 export function FixtureGroupEditor({
   entry,
@@ -18,12 +17,8 @@ export function FixtureGroupEditor({
 }: EntityEditorProps<'fixtureGroups'>) {
   const formState = useFormState(entry, { onChange })
   const masterData = useMasterData()
-  const masterDataMaps = useMasterDataMaps()
 
-  const fixtureIds = mapFixtureList(formState.values.fixtures, {
-    masterData,
-    masterDataMaps,
-  })
+  const fixtureIds = useFixtureList(formState.values.fixtures)
 
   return (
     <>

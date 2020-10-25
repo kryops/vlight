@@ -28,3 +28,7 @@ export function getValueForFraction(
   if (value === -0) return 0
   return value
 }
+
+export function average(numbers: number[]): number {
+  return numbers.reduce((a, b) => a + b, 0) / numbers.length
+}

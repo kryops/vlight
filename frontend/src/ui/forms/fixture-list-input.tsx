@@ -3,11 +3,7 @@ import { EntityName, Fixture, FixtureGroup, FixtureType } from '@vlight/types'
 import { css } from 'linaria'
 import { useState } from 'react'
 
-import {
-  useMasterData,
-  useMasterDataMaps,
-  useRawMasterData,
-} from '../../hooks/api'
+import { useMasterDataAndMaps, useRawMasterData } from '../../hooks/api'
 import { Button } from '../buttons/button'
 import {
   iconList,
@@ -134,8 +130,7 @@ export function FixtureListInput({
   ordering,
 }: FixtureListInputProps) {
   const rawMasterData = useRawMasterData()
-  const masterData = useMasterData()
-  const masterDataMaps = useMasterDataMaps()
+  const { masterData, masterDataMaps } = useMasterDataAndMaps()
   const [activeCategory, setActiveCategory] = useState(
     ordering ? null : categories[0]
   )

@@ -1,11 +1,7 @@
 import { useMemo } from 'react'
 import { css } from 'linaria'
 
-import {
-  useDmxUniverse,
-  useMasterData,
-  useMasterDataMaps,
-} from '../../hooks/api'
+import { useDmxUniverse, useMasterDataAndMaps } from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'
 import { pageWithWidgets } from '../../ui/css/page'
 import { baseline } from '../../ui/styles'
@@ -34,8 +30,8 @@ const universeBar_connected = css`
 
 const UniversePage = memoInProduction(() => {
   const universe = useDmxUniverse()
-  const masterData = useMasterData()
-  const { fixtureTypes } = useMasterDataMaps()
+  const { masterData, masterDataMaps } = useMasterDataAndMaps()
+  const { fixtureTypes } = masterDataMaps
 
   const fixturesAtIndex = useMemo(() => {
     return universe.map((_, index) =>

@@ -2,7 +2,7 @@
 
 ## Roadmap
 
-- Multi selector for fixtures, fixture groups and memories
+- Multi control for fixture groups and memories
 - Dynamic Pages: in-place editing
 - Backend restructuring
   - easier masterData extension / new entity process?

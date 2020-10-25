@@ -66,9 +66,12 @@ function setFixtureState(
     return false
   }
 
+  const mapping = masterDataMaps.fixtureTypes.get(fixture.type)?.mapping
+
   const newState = mergeFixtureStates(
     merge ? fixtureStates.get(id) : undefined,
-    state
+    state,
+    mapping
   )
 
   fixtureStates.set(id, newState)

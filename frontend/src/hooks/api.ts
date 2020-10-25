@@ -86,4 +86,14 @@ export const useMasterDataMaps = (): MasterDataMaps => {
   return masterDataMaps
 }
 
+interface MasterDataWithMaps {
+  masterData: MasterData
+  masterDataMaps: MasterDataMaps
+}
+
+export function useMasterDataAndMaps(): MasterDataWithMaps {
+  const masterData = useMasterData()
+  return { masterData, masterDataMaps }
+}
+
 export const useDmxUniverse = (): number[] => useApiState('universe')

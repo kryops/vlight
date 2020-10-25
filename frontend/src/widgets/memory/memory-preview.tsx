@@ -5,7 +5,7 @@ import {
 } from '@vlight/controls'
 import { MasterData, MasterDataMaps, MemoryScene } from '@vlight/types'
 
-import { useMasterData, useMasterDataMaps } from '../../hooks/api'
+import { useMasterDataAndMaps } from '../../hooks/api'
 import { StatelessMapWidget } from '../map/stateless-map-widget'
 
 export interface MemoryPreviewProps {
@@ -51,8 +51,7 @@ function getMemoryUniverse(
 }
 
 export function MemoryPreview({ scenes }: MemoryPreviewProps) {
-  const masterData = useMasterData()
-  const masterDataMaps = useMasterDataMaps()
+  const { masterData, masterDataMaps } = useMasterDataAndMaps()
 
   const universe = getMemoryUniverse(scenes, masterData, masterDataMaps)
 
