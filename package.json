@@ -15,7 +15,7 @@
   },
   "scripts": {
     "all": "yarn lint && yarn test && yarn build",
-    "clean": "yarn workspaces run clean && rimraf node_modules/.cache .linaria-cache .eslintcache",
+    "clean": "yarn workspaces run clean && rimraf node_modules/.cache .linaria-cache .eslintcache tsconfig.tsbuildinfo",
     "backend": "yarn --cwd backend",
     "build": "yarn run clean && run-p 'backend build' 'frontend build'",
     "client:tcp": "ts-node backend/clients/vlight-tcp.ts",
@@ -38,16 +38,16 @@
     "test": "jest"
   },
   "dependencies": {
-    "@mdi/js": "^5.6.55",
+    "@mdi/js": "^5.8.55",
     "cross-env": "^7.0.2",
     "tslib": "^2.0.2"
   },
   "devDependencies": {
     "@types/jest": "^26.0.14",
-    "@typescript-eslint/eslint-plugin": "^4.4.0",
-    "@typescript-eslint/parser": "^4.4.0",
-    "eslint": "^7.10.0",
-    "eslint-config-prettier": "^6.12.0",
+    "@typescript-eslint/eslint-plugin": "^4.6.0",
+    "@typescript-eslint/parser": "^4.6.0",
+    "eslint": "^7.12.1",
+    "eslint-config-prettier": "^6.15.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jest": "^24.1.0",
     "eslint-plugin-node": "^11.1.0",
