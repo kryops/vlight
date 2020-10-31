@@ -84,8 +84,6 @@ export function cleanFixtureState(
     if (!mapping.includes(channel)) delete state.channels[channel]
   }
 
-  console.log('CLEAN', state, mapping)
-
   return state
 }
 

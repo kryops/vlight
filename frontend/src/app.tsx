@@ -1,6 +1,5 @@
 import './ui/global-styles'
 
-import { hot } from 'react-hot-loader/root'
 import { StrictMode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
@@ -26,4 +25,4 @@ const App = () => (
   </StrictMode>
 )
 
-export default hot(App)
+export default App

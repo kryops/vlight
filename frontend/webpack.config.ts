@@ -14,6 +14,7 @@ import {
   WebpackPluginInstance,
 } from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 
 interface Env {
   analyze?: any
@@ -42,7 +43,9 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
     ].filter(Boolean) as [string, ...string[]],
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? 'source-map' : 'cheap-module-source-map',
-    target: 'web',
+    // https://github.com/webpack/webpack-dev-server/issues/2758
+    // https://github.com/pmmmwh/react-refresh-webpack-plugin/issues/235
+    target: isProduction ? 'browserslist' : 'web',
     output: {
       path: join(__dirname, 'dist'),
       publicPath: '/',
@@ -118,7 +121,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       clientLogLevel: 'error',
       disableHostCheck: true,
       historyApiFallback: true,
-      overlay: true,
+      // overlay: true,
       proxy: {
         '/api': {
           target: 'http://localhost:8000/',
@@ -162,6 +165,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
 
       // development
       !isProduction && new HotModuleReplacementPlugin(),
+      !isProduction && new ReactRefreshPlugin(),
 
       // production
       isProduction &&

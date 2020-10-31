@@ -1,4 +1,5 @@
 const isTest = process.env.NODE_ENV === 'test'
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 module.exports = function (api) {
   api.cache(true)
@@ -23,8 +24,6 @@ module.exports = function (api) {
       'linaria/babel',
     ],
     plugins: [
-      'react-hot-loader/babel',
-
       [
         '@babel/plugin-transform-runtime',
         {
@@ -40,6 +39,9 @@ module.exports = function (api) {
 
       // optimization
       '@babel/plugin-transform-react-constant-elements',
-    ],
+
+      // development
+      isDevelopment && 'react-refresh/babel',
+    ].filter(Boolean),
   }
 }
