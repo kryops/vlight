@@ -5,6 +5,7 @@ import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
 
 import { FixtureGroupsActions } from './fixture-group-actions'
+import { FixtureGroupMultiControl } from './fixture-group-multi-control'
 
 const FixtureGroupsPage = memoInProduction(() => {
   const { fixtureGroups } = useMasterData()
@@ -12,6 +13,7 @@ const FixtureGroupsPage = memoInProduction(() => {
   return (
     <>
       <Header rightContent={<FixtureGroupsActions />}>Groups</Header>
+      <FixtureGroupMultiControl />
       <div className={pageWithWidgets}>
         {fixtureGroups.map(group => (
           <FixtureGroupWidget key={group.id} group={group} />

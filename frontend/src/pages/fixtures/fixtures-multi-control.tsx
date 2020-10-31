@@ -28,12 +28,10 @@ export function FixturesMultiControl() {
     .filter(isTruthy)
 
   const commonFixtureState = getCommonFixtureState(
-    allFixtures
-      .map(fixture => ({
-        state: fixtureStates[fixture.id],
-        mapping: masterDataMaps.fixtureTypes.get(fixture.type)?.mapping ?? [],
-      }))
-      .filter(Boolean)
+    allFixtures.map(fixture => ({
+      state: fixtureStates[fixture.id],
+      mapping: masterDataMaps.fixtureTypes.get(fixture.type)?.mapping ?? [],
+    }))
   )
 
   return (
@@ -62,15 +60,13 @@ export function FixturesMultiControl() {
                 )
 
                 for (const typeId of allTypeIds) {
-                  const mapping = masterDataMaps.fixtureTypes.get(typeId)
-                    ?.mapping
                   const fixtureIds = allFixtures
                     .filter(fixture => fixture.type === typeId)
                     .map(fixture => fixture.id)
                   const stateForFixtures = mergeFixtureStates(
                     undefined,
                     stateToApply,
-                    mapping
+                    masterDataMaps.fixtureTypes.get(typeId)?.mapping
                   )
                   setFixtureState(fixtureIds, stateForFixtures, true)
                 }
