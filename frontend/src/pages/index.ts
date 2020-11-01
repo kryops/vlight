@@ -8,7 +8,6 @@ import { fixturesPageNavItem } from './fixtures'
 import { fixtureGroupsPageNavItem } from './fixture-groups'
 import { memoriesPageNavItem } from './memories'
 import { configPageNavItem } from './config'
-import { testPageNavItem } from './test'
 import { settingsPageEntry } from './config/settings'
 import { entitiesPageEntry } from './config/entities'
 import { mapPageNavItem } from './map'
@@ -33,10 +32,6 @@ export const mainNavigationItems: NavItemEntry[] = [
   memoriesPageNavItem,
   configPageNavItem,
 ]
-
-if (process.env.NODE_ENV === 'development') {
-  mainNavigationItems.push(testPageNavItem)
-}
 
 export const standaloneRoutes: RouteEntry[] = [
   settingsPageEntry,
