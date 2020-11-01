@@ -5,6 +5,7 @@ import { MemoryWidget } from '../../widgets/memory/memory-widget'
 import { Header } from '../../ui/containers/header'
 
 import { MemoriesActions } from './memories-actions'
+import { MemoriesMultiControl } from './memories-multi-control'
 
 const MemoriesPage = memoInProduction(() => {
   const { memories } = useMasterData()
@@ -12,6 +13,7 @@ const MemoriesPage = memoInProduction(() => {
   return (
     <>
       <Header rightContent={<MemoriesActions />}>Memories</Header>
+      <MemoriesMultiControl />
       <div className={pageWithWidgets}>
         {memories.map(memory => (
           <MemoryWidget key={memory.id} memory={memory} />

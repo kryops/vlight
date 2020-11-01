@@ -1,5 +1,3 @@
-// @ts-check
-/** @type {import('@vlight/types').Memory[]} */
 const memories = [
   {
     id: 'test',
@@ -20,16 +18,55 @@ const memories = [
           },
           [
             {
-              channels: { m: 255, r: 255 },
+              channels: {
+                m: 255,
+                r: 255,
+              },
             },
             {
-              channels: { m: 255, g: 255 },
+              channels: {
+                m: 255,
+                g: 255,
+              },
             },
             {
-              channels: { m: 255, b: 255 },
+              channels: {
+                m: 255,
+                b: 255,
+              },
             },
           ],
         ],
+      },
+    ],
+  },
+  {
+    id: '1',
+    name: 'New Memory',
+    scenes: [
+      {
+        members: ['stufe_3', 'stufe_2', 'all:12x12'],
+        states: [
+          {
+            on: true,
+            channels: {
+              m: 255,
+              r: 0,
+              g: 255,
+              b: 10,
+            },
+          },
+          {
+            on: true,
+            channels: {
+              m: 255,
+              r: 255,
+              g: 0,
+              b: 1,
+            },
+          },
+        ],
+        pattern: 'alternate',
       },
     ],
   },

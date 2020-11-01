@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- Multi control for memories
 - Dynamic Pages: in-place editing
 - State Reset
 - Live memories
