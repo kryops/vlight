@@ -96,6 +96,10 @@ const cellDeleteIcon = css`
   margin: ${baseline(-2)};
 `
 
+const paragraph = css`
+  margin: ${baseline()} 0;
+`
+
 export function DynamicPageEditor({
   entry,
   onChange,
@@ -209,12 +213,12 @@ export function DynamicPageEditor({
                   />
                 </div>
                 {cell.widgets.map((widget, widgetIndex) => (
-                  <p key={widgetIndex}>
+                  <p key={widgetIndex} className={paragraph}>
                     {getWidgetDisplayString(widget, masterDataMaps)}
                   </p>
                 ))}
                 {cell.widgets.length === 0 && (
-                  <p>
+                  <p className={paragraph}>
                     <i>(empty)</i>
                   </p>
                 )}

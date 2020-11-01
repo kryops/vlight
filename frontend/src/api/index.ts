@@ -18,6 +18,7 @@ import {
   getApiRemoveEntityMessage,
   getApiEditEntityMessage,
   getApiSetEntitiesMessage,
+  getResetStateMessage,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
 
@@ -81,6 +82,10 @@ export function setEntities<T extends EntityName>(
   entries: EntityType<T>[]
 ): void {
   sendApiMessage(getApiSetEntitiesMessage(entity, entries))
+}
+
+export function resetState(): void {
+  sendApiMessage(getResetStateMessage())
 }
 
 export function initApiWorker(): void {

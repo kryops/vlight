@@ -15,11 +15,9 @@ import { registerApiMessageHandler } from '../../services/api/registry'
 export let channelUniverse: Universe
 
 function loadChannels() {
-  channelUniverse = createUniverse()
   for (const [index, value] of Object.entries(getPersistedState().channels)) {
     channelUniverse[+index] = value
   }
-  addUniverse(channelUniverse)
 }
 
 function setChannel(channel: number, value: number) {
@@ -36,14 +34,20 @@ function handleApiMessage(message: ApiChannelMessage) {
   return changed
 }
 
-function reload() {
+function reload(reloadState?: boolean) {
+  if (!reloadState) return
+
   removeUniverse(channelUniverse)
+  channelUniverse.fill(0)
   loadChannels()
+  addUniverse(channelUniverse)
 }
 
 export function init(): void {
   const start = Date.now()
+  channelUniverse = createUniverse()
   loadChannels()
+  addUniverse(channelUniverse)
 
   controlRegistry.register({ reload })
   registerApiMessageHandler('channels', handleApiMessage)

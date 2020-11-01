@@ -83,15 +83,19 @@ function handleApiMessage(message: ApiFixtureStateMessage) {
   return true
 }
 
-function reload() {
+function reload(reloadState?: boolean) {
   removeUniverse(fixtureUniverse)
   fixtureUniverse.fill(0)
-  addUniverse(fixtureUniverse)
 
   const oldFixtureStates = new Map(fixtureStates)
   fixtureStates.clear()
 
-  setFixtureStatesFrom(oldFixtureStates)
+  setFixtureStatesFrom(
+    reloadState
+      ? dictionaryToMap(getPersistedState().fixtures)
+      : oldFixtureStates
+  )
+  addUniverse(fixtureUniverse)
 }
 
 export function init(): void {

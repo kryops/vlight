@@ -21,7 +21,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "*": ["*", "../@types/*"]
+      "*": ["*", "../@types/*"],
+      "@vlight/controls": ["../shared/controls/src"],
+      "@vlight/types": ["../shared/types/src"],
+      "@vlight/utils": ["../shared/utils/src"],
     },
     "resolveJsonModule": true,
     "strict": true,

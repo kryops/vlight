@@ -2,8 +2,6 @@
 
 ## Roadmap
 
-- Dynamic Pages: in-place editing
-- State Reset
 - Live memories
 - Chases
   - Pre-configured / presets
@@ -13,9 +11,11 @@
   - kick off multiple changes at once
 - Speed/Fade control
   - global pause/halt
+- Keyboard shortcuts/keybindings
 - LaunchPad input
 - XTouch input
 - External input mapping
+- Improved dynamic pages layout + editing
 
 ## Tech
 

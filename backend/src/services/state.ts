@@ -9,12 +9,15 @@ import { fixtureStates } from '../controls/fixtures'
 import { fixtureGroupStates } from '../controls/fixture-groups'
 import { memoryStates } from '../controls/memories'
 import { howLong } from '../util/time'
+import { reloadControls } from '../controls'
 
 import {
   statePersistenceFlushInterval,
   project,
   configDirectoryPath,
 } from './config'
+import { broadcastApplicationStateToApiClients } from './api'
+import { registerApiMessageHandler } from './api/registry'
 
 const { writeFile } = promises
 
@@ -27,12 +30,16 @@ export interface PersistedState {
 
 const stateConfigFileName = 'state'
 
-let persistedState: PersistedState = {
-  channels: {},
-  fixtures: {},
-  fixtureGroups: {},
-  memories: {},
+function getEmptyPersistedState(): PersistedState {
+  return {
+    channels: {},
+    fixtures: {},
+    fixtureGroups: {},
+    memories: {},
+  }
 }
+
+let persistedState: PersistedState = getEmptyPersistedState()
 let persistedStateString: string
 
 function isNotInitialState({ initial }: FixtureState | MemoryState) {
@@ -75,6 +82,12 @@ export function getPersistedState(): PersistedState {
   return persistedState
 }
 
+export function resetState(): void {
+  persistedState = getEmptyPersistedState()
+  reloadControls(true)
+  broadcastApplicationStateToApiClients()
+}
+
 export function initPersistedState(): void {
   const start = Date.now()
   try {
@@ -85,6 +98,11 @@ export function initPersistedState(): void {
   }
 
   persistedStateString = serializeState(persistedState)
+
+  registerApiMessageHandler('reset-state', () => {
+    resetState()
+    return false
+  })
 
   setInterval(checkAndPersistCurrentState, statePersistenceFlushInterval)
   howLong(start, 'initPersistedState')

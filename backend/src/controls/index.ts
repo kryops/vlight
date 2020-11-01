@@ -10,6 +10,6 @@ export async function initControls(): Promise<void> {
   )
 }
 
-export function reloadControls(): Promise<void> {
-  return controlRegistry.runParallel(entry => entry.reload())
+export function reloadControls(reloadState?: boolean): Promise<void> {
+  return controlRegistry.runParallel(entry => entry.reload(reloadState))
 }

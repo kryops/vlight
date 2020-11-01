@@ -96,7 +96,7 @@ function handleApiMessage(message: ApiMemoryStateMessage) {
   return true
 }
 
-function reload() {
+function reload(reloadState?: boolean) {
   const oldMemoryStates = new Map(memoryStates)
   memoryStates.clear()
 
@@ -106,7 +106,14 @@ function reload() {
   outgoingUniverses.clear()
   preparedStates.clear()
 
-  masterData.memories.forEach(memory => initMemory(memory, oldMemoryStates))
+  masterData.memories.forEach(memory =>
+    initMemory(
+      memory,
+      reloadState
+        ? dictionaryToMap(getPersistedState().memories)
+        : oldMemoryStates
+    )
+  )
 }
 
 export function init(): void {

@@ -117,7 +117,7 @@ function handleApiMessage(message: ApiFixtureGroupStateMessage) {
   return true
 }
 
-function reload() {
+function reload(reloadState?: boolean) {
   const oldFixtureGroupStates = new Map(fixtureGroupStates)
   fixtureGroupStates.clear()
 
@@ -127,7 +127,12 @@ function reload() {
   universes.clear()
 
   masterData.fixtureGroups.forEach(fixtureGroup =>
-    initFixtureGroup(fixtureGroup, oldFixtureGroupStates)
+    initFixtureGroup(
+      fixtureGroup,
+      reloadState
+        ? dictionaryToMap(getPersistedState().fixtureGroups)
+        : oldFixtureGroupStates
+    )
   )
 }
 

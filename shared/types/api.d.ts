@@ -66,6 +66,10 @@ export interface ApiRemoveEntityMessage<T extends EntityName> {
   id: IdType
 }
 
+export interface ApiResetStateMessage {
+  type: 'reset-state'
+}
+
 export type ApiInMessage<T extends EntityName = any> =
   | ApiChannelMessage
   | ApiFixtureStateMessage
@@ -75,6 +79,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiAddEntityMessage<T>
   | ApiUpdateEntityMessage<T>
   | ApiRemoveEntityMessage<T>
+  | ApiResetStateMessage
 
 // Outgoing messages
 
