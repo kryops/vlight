@@ -76,10 +76,6 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
           use: [
             {
               loader: ExtractCssPlugin.loader,
-              options: {
-                hmr: true,
-                reloadAll: true,
-              },
             },
             {
               loader: 'css-loader',
