@@ -13,6 +13,8 @@ import {
   EntityName,
   EntityType,
   ApiResetStateMessage,
+  LiveMemory,
+  ApiLiveMemoryMessage,
 } from '@vlight/types'
 
 export function getApiChannelMessage(
@@ -101,4 +103,17 @@ export function getApiSetEntitiesMessage<T extends EntityName>(
 
 export function getResetStateMessage(): ApiResetStateMessage {
   return { type: 'reset-state' }
+}
+
+export function getLiveMemoryMessage(
+  id: IdType,
+  liveMemory: LiveMemory,
+  merge: boolean
+): ApiLiveMemoryMessage {
+  return {
+    type: 'live-memory',
+    id,
+    state: liveMemory,
+    merge,
+  }
 }

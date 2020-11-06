@@ -1,5 +1,10 @@
-import { ApiOutMessage, ApiStateMessage, MasterData } from '@vlight/types'
-import { logger, assertNever, forEach } from '@vlight/utils'
+import {
+  ApiOutMessage,
+  ApiStateMessage,
+  LiveMemory,
+  MasterData,
+} from '@vlight/types'
+import { logger, assertNever, forEach, mergeObjects } from '@vlight/utils'
 import { mergeFixtureStates, mergeMemoryStates } from '@vlight/controls'
 
 import { getUniverseIndex } from '../util'
@@ -93,6 +98,15 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
             message.state
           ))
       )
+      break
+
+    case 'live-memory':
+      state.liveMemories = {
+        ...state.liveMemories,
+        [message.id]: message.merge
+          ? mergeObjects(state.liveMemories[message.id], message.state)
+          : (message.state as LiveMemory),
+      }
       break
 
     default:

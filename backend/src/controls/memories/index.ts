@@ -26,6 +26,9 @@ import {
   createPreparedState,
   mapMemoryStateToChannel,
 } from './mapping'
+import { initLiveMemories, liveMemories } from './live-memories'
+
+export { liveMemories }
 
 const outgoingUniverses: Map<IdType, Universe> = new Map()
 const preparedStates: Map<IdType, MemoryPreparedState> = new Map()
@@ -123,6 +126,8 @@ export function init(): void {
 
   controlRegistry.register({ reload })
   registerApiMessageHandler('memory', handleApiMessage)
+
+  initLiveMemories()
 
   howLong(start, 'initMemories')
 }

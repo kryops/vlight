@@ -9,6 +9,7 @@ import {
   IdType,
   MemoryState,
   MasterData,
+  LiveMemory,
 } from '@vlight/types'
 
 import { getUniverseIndex } from '../universe'
@@ -21,6 +22,7 @@ export function getApiStateMessage({
   fixtures,
   fixtureGroups,
   memories,
+  liveMemories,
 }: {
   masterData: MasterData
   rawMasterData: MasterData
@@ -29,6 +31,7 @@ export function getApiStateMessage({
   fixtures: Dictionary<FixtureState>
   fixtureGroups: Dictionary<FixtureState>
   memories: Dictionary<MemoryState>
+  liveMemories: Dictionary<LiveMemory>
 }): ApiStateMessage {
   return {
     type: 'state',
@@ -39,6 +42,7 @@ export function getApiStateMessage({
     fixtures,
     fixtureGroups,
     memories,
+    liveMemories,
   }
 }
 

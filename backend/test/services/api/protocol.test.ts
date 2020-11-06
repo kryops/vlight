@@ -1,4 +1,10 @@
-import { FixtureState, MasterData } from '@vlight/types'
+import {
+  Dictionary,
+  FixtureState,
+  LiveMemory,
+  MasterData,
+  MemoryState,
+} from '@vlight/types'
 
 import {
   getApiFixtureStateMessage,
@@ -23,14 +29,17 @@ describe('api/protocol', () => {
   it('getApiStateMessage', () => {
     const universe = Buffer.alloc(universeSize)
     const channels = Buffer.alloc(universeSize)
-    const fixtures = {
+    const fixtures: Dictionary<FixtureState> = {
       '2': { on: true, channels: { r: 100 } },
     }
-    const fixtureGroups = {
+    const fixtureGroups: Dictionary<FixtureState> = {
       '2': { on: true, channels: { r: 100 } },
     }
-    const memories = {
+    const memories: Dictionary<MemoryState> = {
       '2': { on: true, value: 100 },
+    }
+    const liveMemories: Dictionary<LiveMemory> = {
+      '2': { on: true, value: 100, members: [], states: [] },
     }
     expect(
       getApiStateMessage({
@@ -41,6 +50,7 @@ describe('api/protocol', () => {
         fixtures,
         fixtureGroups,
         memories,
+        liveMemories,
       })
     ).toEqual({
       type: 'state',
@@ -51,6 +61,7 @@ describe('api/protocol', () => {
       fixtures,
       fixtureGroups,
       memories,
+      liveMemories,
     })
   })
 

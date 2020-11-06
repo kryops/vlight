@@ -15,6 +15,7 @@ export const apiState: ApiState = {
   fixtures: {},
   fixtureGroups: {},
   memories: {},
+  liveMemories: {},
 }
 
 export const workerState = {

@@ -6,6 +6,7 @@ import {
   MemoryState,
   EntityName,
   EntityArray,
+  LiveMemory,
 } from './entities'
 
 // Both ingoing + outgoing
@@ -37,6 +38,13 @@ export interface ApiMemoryStateMessage {
   type: 'memory'
   id: IdType | IdType[]
   state: Partial<MemoryState>
+  merge?: boolean
+}
+
+export interface ApiLiveMemoryMessage {
+  type: 'live-memory'
+  id: IdType
+  state: Partial<LiveMemory>
   merge?: boolean
 }
 
@@ -75,6 +83,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiFixtureStateMessage
   | ApiFixtureGroupStateMessage
   | ApiMemoryStateMessage
+  | ApiLiveMemoryMessage
   | ApiEntityMessage<T>
   | ApiAddEntityMessage<T>
   | ApiUpdateEntityMessage<T>
@@ -96,6 +105,7 @@ export interface ApiStateMessage {
   fixtures: Dictionary<FixtureState>
   fixtureGroups: Dictionary<FixtureState>
   memories: Dictionary<MemoryState>
+  liveMemories: Dictionary<LiveMemory>
 }
 
 export interface ApiMasterDataMessage {
@@ -125,3 +135,4 @@ export type ApiOutMessage =
   | ApiFixtureStateMessage
   | ApiFixtureGroupStateMessage
   | ApiMemoryStateMessage
+  | ApiLiveMemoryMessage

@@ -111,6 +111,11 @@ export interface MemoryState {
   initial?: boolean
 }
 
+export interface LiveMemory extends MemoryScene {
+  on: boolean
+  value: number
+}
+
 // Widgets
 
 export interface UniverseWidgetConfig {

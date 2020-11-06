@@ -28,9 +28,10 @@ export function mergeMemoryStates(
 
 export function getStateIndexAndFractionFor(
   scene: MemoryScene,
-  memberIndex: number
+  memberIndex: number,
+  members?: string[]
 ): [number, number] {
-  const numMembers = scene.members.length
+  const numMembers = members?.length ?? scene.members.length
   const numStates = scene.states.length
   switch (scene.pattern) {
     case ScenePattern.Alternate: {
@@ -118,9 +119,14 @@ export function getFixtureStateForGradientFraction(
 
 export function getFixtureStateForMemoryScene(
   scene: MemoryScene,
-  memberIndex: number
+  memberIndex: number,
+  members?: string[]
 ): FixtureState | undefined {
-  const [stateIndex, fraction] = getStateIndexAndFractionFor(scene, memberIndex)
+  const [stateIndex, fraction] = getStateIndexAndFractionFor(
+    scene,
+    memberIndex,
+    members
+  )
   const stateOrGradient = scene.states[stateIndex]
 
   if (Array.isArray(stateOrGradient)) {
