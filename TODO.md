@@ -2,6 +2,7 @@
 
 ## Roadmap
 
+- Bug: Memory not fading for fixtures without colors
 - Live memories
 - Chases
   - Pre-configured / presets

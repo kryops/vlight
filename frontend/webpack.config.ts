@@ -4,7 +4,7 @@ import { join } from 'path'
 import ForkCheckerPlugin from 'fork-ts-checker-webpack-plugin'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ExtractCssPlugin from 'mini-css-extract-plugin'
-import OptimizeCssAssetsPlugin from 'optimize-css-assets-webpack-plugin'
+import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import stylis from 'stylis'
 import TerserPlugin from 'terser-webpack-plugin'
 import {
@@ -163,17 +163,6 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       !isProduction && new HotModuleReplacementPlugin(),
       !isProduction && new ReactRefreshPlugin(),
 
-      // production
-      isProduction &&
-        new OptimizeCssAssetsPlugin({
-          cssProcessorOptions: {
-            map: {
-              inline: false,
-              annotation: true,
-            },
-          },
-        }),
-
       // analyze
       analyze && new BundleAnalyzerPlugin(),
     ].filter(Boolean) as WebpackPluginInstance[],
@@ -192,7 +181,13 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
                 }
               : {}),
           },
-        }) as WebpackPluginInstance,
+        }),
+        new CssMinimizerPlugin({
+          sourceMap: {
+            inline: false,
+            annotation: true,
+          },
+        }),
       ],
       splitChunks: {
         chunks: 'all',
