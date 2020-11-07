@@ -117,7 +117,6 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       clientLogLevel: 'error',
       disableHostCheck: true,
       historyApiFallback: true,
-      // overlay: true,
       proxy: {
         '/api': {
           target: 'http://localhost:8000/',
@@ -206,16 +205,18 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       },
     },
 
-    cache:
-      profile || profileReact
-        ? undefined
-        : {
-            type: 'filesystem',
-            name: isProduction ? 'production' : 'development',
-            buildDependencies: {
-              config: [__filename, join(__dirname, '../yarn.lock')],
-            },
-          },
+    // disable for now as it might be responsible for CSS problems
+
+    // cache:
+    //   profile || profileReact
+    //     ? undefined
+    //     : {
+    //         type: 'filesystem',
+    //         name: isProduction ? 'production' : 'development',
+    //         buildDependencies: {
+    //           config: [__filename, join(__dirname, '../yarn.lock')],
+    //         },
+    //       },
   }
 
   if (profile) {
