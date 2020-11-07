@@ -58,11 +58,16 @@ function applySceneToPreparedState(
     const { channel } = fixture
     const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)!
 
-    const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.Master)
-
     const state = getFixtureStateForMemoryScene(scene, memberIndex)
 
     if (!state) return
+
+    const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.Master)
+    const hasMasterChannel = masterIndex !== -1
+
+    if (hasMasterChannel) {
+      fadedChannels.add(channel + masterIndex)
+    }
 
     mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
       const universeIndex = getUniverseIndex(channel) + offset
@@ -72,7 +77,7 @@ function applySceneToPreparedState(
 
       if (value !== 0) {
         affectedChannels.push(channel + offset)
-        if (offset !== masterIndex) fadedChannels.add(channel + offset)
+        if (!hasMasterChannel) fadedChannels.add(channel + offset)
       }
     })
   })

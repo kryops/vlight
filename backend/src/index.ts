@@ -13,6 +13,7 @@ import { isDevelopment } from './services/env'
 import { initHttpServer } from './services/http'
 import { initMasterData } from './services/masterdata'
 import { initPersistedState } from './services/state'
+import { initUniverse } from './services/universe'
 
 sourceMapSupport.install()
 
@@ -43,6 +44,8 @@ async function init() {
   await initDatabase()
 
   await Promise.all([initPersistedState(), initMasterData()])
+
+  await initUniverse()
 
   await Promise.all([
     initHttpServer(),

@@ -1,9 +1,16 @@
-import { addToMutableArray, removeFromMutableArray } from '@vlight/utils'
+import {
+  addToMutableArray,
+  createRangeArray,
+  removeFromMutableArray,
+} from '@vlight/utils'
+import { ChannelMapping } from '@vlight/controls'
 
 import { broadcastUniverseChannelToDevices } from '../devices'
+import { howLong } from '../util/time'
 
 import { universeSize } from './config'
 import { broadcastUniverseChannelToApiClients } from './api'
+import { masterData, masterDataMaps } from './masterdata'
 
 export type Universe = Buffer
 
@@ -11,13 +18,65 @@ const dmxUniverse = createUniverse()
 
 const universes: Universe[] = []
 
+const affectedChannelsByMasterChannel = new Map<number, number[]>()
+const masterChannelByChannel = new Map<number, number>()
+
+function initMasterChannelMaps() {
+  for (const fixture of masterData.fixtures) {
+    const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
+    if (!fixtureType) continue
+
+    const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.Master)
+    if (masterIndex === -1) continue
+
+    const masterChannel = fixture.channel + masterIndex
+    const affectedChannels = createRangeArray(
+      fixture.channel,
+      fixture.channel + fixtureType.mapping.length
+    ).filter(channel => channel !== masterChannel)
+
+    affectedChannelsByMasterChannel.set(masterChannel, affectedChannels)
+    affectedChannels.forEach(channel =>
+      masterChannelByChannel.set(channel, masterChannel)
+    )
+  }
+}
+
+function broadcastUniverseChannel(channel: number) {
+  broadcastUniverseChannelToDevices(
+    channel,
+    dmxUniverse[getUniverseIndex(channel)]
+  )
+  broadcastUniverseChannelToApiClients(channel)
+}
+
 function assertValidChannel(channel: number) {
   if (channel < 1 || channel > universeSize) {
     throw new Error(`invalid channel: ${channel}`)
   }
 }
 
-function computeDmxChannel(
+function getChannelValueCorrectedForMaster(
+  universe: Buffer,
+  channel: number,
+  value: number
+) {
+  if (value === 0) return value
+
+  const affectingMasterChannel = masterChannelByChannel.get(channel)
+  if (!affectingMasterChannel) return value
+
+  const masterIndex = getUniverseIndex(affectingMasterChannel)
+  const highestMaster = dmxUniverse[masterIndex]
+  const sameUniverseMaster = universe[masterIndex]
+
+  if (sameUniverseMaster >= highestMaster) return value
+
+  const factor = sameUniverseMaster / highestMaster
+  return Math.round(value * factor)
+}
+
+function computeDmxChannelChange(
   channel: number,
   newUniverseValue: number,
   oldUniverseValue: number
@@ -68,22 +127,50 @@ function computeDmxChannel(
   return true
 }
 
-function computeAndBroadcastDmxChannel(
+function computeAndBroadcastDmxChannelChange(
   channel: number,
   newUniverseValue: number,
   oldUniverseValue: number
 ): boolean {
-  const changedDmx = computeDmxChannel(
+  const changedDmx = computeDmxChannelChange(
     channel,
     newUniverseValue,
     oldUniverseValue
   )
 
   if (changedDmx) {
-    broadcastUniverseChannelToDevices(channel, newUniverseValue)
-    broadcastUniverseChannelToApiClients(channel)
+    broadcastUniverseChannel(channel)
   }
 
+  return changedDmx
+}
+
+function recomputeDmxChannel(channel: number): boolean {
+  const index = getUniverseIndex(channel)
+  const oldValue = dmxUniverse[index]
+  let newValue = 0
+
+  for (const universe of universes) {
+    const value = getChannelValueCorrectedForMaster(
+      universe,
+      channel,
+      universe[index]
+    )
+    if (value > newValue) newValue = value
+
+    if (value === 255) break
+  }
+
+  if (oldValue !== newValue) {
+    dmxUniverse[index] = newValue
+    return true
+  }
+  return false
+}
+
+function recomputeAndBroadcastDmxChannel(channel: number): boolean {
+  const changedDmx = recomputeDmxChannel(channel)
+  if (changedDmx) broadcastUniverseChannel(channel)
   return changedDmx
 }
 
@@ -104,7 +191,14 @@ export function setUniverseChannel(
 
   if (!universes.includes(universe)) return true
 
-  computeAndBroadcastDmxChannel(channel, value, oldValue)
+  const finalValue = getChannelValueCorrectedForMaster(universe, channel, value)
+  computeAndBroadcastDmxChannelChange(channel, finalValue, oldValue)
+
+  affectedChannelsByMasterChannel
+    .get(channel)
+    ?.forEach(affectedChannel =>
+      recomputeAndBroadcastDmxChannel(affectedChannel)
+    )
 
   return true
 }
@@ -125,7 +219,7 @@ export function addUniverse(universe: Universe): void {
   addToMutableArray(universes, universe)
   if (universe.some(x => x !== 0)) {
     universe.forEach((value, index) =>
-      computeAndBroadcastDmxChannel(
+      computeAndBroadcastDmxChannelChange(
         getChannelFromUniverseIndex(index),
         value,
         0
@@ -138,7 +232,7 @@ export function removeUniverse(universe: Universe): void {
   removeFromMutableArray(universes, universe)
   if (universe.some(x => x !== 0)) {
     universe.forEach((value, index) =>
-      computeAndBroadcastDmxChannel(
+      computeAndBroadcastDmxChannelChange(
         getChannelFromUniverseIndex(index),
         0,
         value
@@ -153,4 +247,21 @@ export function getUniverseIndex(channel: number): number {
 
 export function getChannelFromUniverseIndex(index: number): number {
   return index + 1
+}
+
+export function reloadUniverse(): void {
+  affectedChannelsByMasterChannel.clear()
+  masterChannelByChannel.clear()
+  initMasterChannelMaps()
+  for (let channel = 1; channel <= universeSize; channel++) {
+    recomputeAndBroadcastDmxChannel(channel)
+  }
+}
+
+export async function initUniverse(): Promise<void> {
+  const start = Date.now()
+
+  initMasterChannelMaps()
+
+  howLong(start, 'initUniverse')
 }
