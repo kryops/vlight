@@ -2,6 +2,7 @@
 
 ## Roadmap
 
+- BUG: Universe mixing
 - Live memories
 - Chases
   - Pre-configured / presets
@@ -19,6 +20,7 @@
 
 ## Tech
 
+- yarn 2 pnp / pnpm => blocked by linaria
 - Backend restructuring
   - easier masterData extension / new entity process?
 - Node.js worker threads
