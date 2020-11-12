@@ -1,4 +1,4 @@
-import { useSettings } from './settings'
+import { useSettings } from '../../hooks/settings'
 
 export function useClassName(
   className: string,

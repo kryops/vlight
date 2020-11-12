@@ -1,4 +1,17 @@
-import { useState, useMemo, PropsWithChildren, createContext } from 'react'
+import { css } from 'linaria'
+import {
+  useState,
+  useMemo,
+  PropsWithChildren,
+  createContext,
+  useEffect,
+} from 'react'
+
+import { getCssVariableDefinitions } from './ui/styles'
+
+const lightTheme = css`
+  ${getCssVariableDefinitions(true)}
+`
 
 export interface Settings {
   lightMode: boolean
@@ -28,6 +41,14 @@ export const SettingsContext = createContext<SettingsWithUpdate>({
 export function SettingsWrapper({ children }: PropsWithChildren<{}>) {
   const [settings, setSettings] = useState<Settings>(initialSettings)
 
+  const { lightMode } = settings
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (lightMode) root.classList.add(lightTheme)
+    else root.classList.remove(lightTheme)
+  }, [lightMode])
+
   const settingsWithUpdate: SettingsWithUpdate = useMemo<SettingsWithUpdate>(
     () => ({
       ...settings,
@@ -38,7 +59,7 @@ export function SettingsWrapper({ children }: PropsWithChildren<{}>) {
           return newSettings
         }),
     }),
-    [settings, setSettings]
+    [settings]
   )
 
   return (

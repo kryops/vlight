@@ -5,7 +5,6 @@ import { ColorShade } from '../../types'
 import { baseline, iconShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-import { useSettings } from '../../hooks/settings'
 
 const iconSize = baseline(6)
 
@@ -63,8 +62,6 @@ export const Icon = memoInProduction(
     hoverable,
     onClick,
   }: IconProps) => {
-    const { lightMode } = useSettings()
-
     return (
       <svg
         viewBox="0 0 24 24"
@@ -81,7 +78,7 @@ export const Icon = memoInProduction(
         <path
           d={icon}
           className={pathClassName}
-          style={{ fill: color ?? iconShade(shade, lightMode) }}
+          style={{ fill: color ?? iconShade(shade) }}
         />
       </svg>
     )

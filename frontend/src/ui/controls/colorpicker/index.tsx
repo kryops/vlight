@@ -7,7 +7,6 @@ import { useDelayedState } from '../../../hooks/delayed-state'
 import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
 import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
-import { useClassName } from '../../../hooks/ui'
 
 import { ColorPickerBackground } from './background'
 import {
@@ -39,10 +38,6 @@ const colorPicker = css`
   /* to make the SVG not scale beyond the max-height */
   height: 0;
   flex-grow: 1;
-`
-
-const colorPicker_light = css`
-  border: 1px solid ${iconShade(3, true)};
 `
 
 const markerContainer = css`
@@ -96,7 +91,6 @@ export interface ColorPickerProps {
 
 export const ColorPicker = memoInProduction(
   ({ r = 0, g = 0, b = 0, onChange, setDefaultHeight }: ColorPickerProps) => {
-    const className = useClassName(colorPicker, colorPicker_light)
     const [
       localColor,
       setLocalColor,
@@ -119,7 +113,7 @@ export const ColorPicker = memoInProduction(
     return (
       <div className={cx(container, setDefaultHeight && defaultHeight)}>
         <Touchable
-          className={className}
+          className={colorPicker}
           ref={touchRef}
           onTouch={event => {
             const offset = getTouchEventOffset(event, touchRef)

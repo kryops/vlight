@@ -2,10 +2,19 @@ import 'normalize.css'
 
 import { css } from 'linaria'
 
-import { backgroundColor, fontSizePx, textShade } from './styles'
+import {
+  backgroundColor,
+  fontSizePx,
+  getCssVariableDefinitions,
+  textShade,
+} from './styles'
 
 export const globalStyles = css`
   :global() {
+    :root {
+      ${getCssVariableDefinitions()}
+    }
+
     html,
     body {
       height: 100%;

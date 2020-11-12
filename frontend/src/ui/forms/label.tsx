@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 
 import { baseline, textShade } from '../styles'
 import { cx } from '../../util/styles'
-import { useClassName } from '../../hooks/ui'
 
 export interface LabelProps {
   label: string | ReactNode
@@ -51,15 +50,7 @@ const descriptionStyle = css`
   font-size: 80%;
 `
 
-const descriptionStyle_light = css`
-  color: ${textShade(2, true)};
-`
-
 export function Label({ label, input, description, forceSmall }: LabelProps) {
-  const descriptionClass = useClassName(
-    descriptionStyle,
-    descriptionStyle_light
-  )
   return (
     <>
       <div className={cx(container, !forceSmall && containerResponsive)}>
@@ -73,7 +64,7 @@ export function Label({ label, input, description, forceSmall }: LabelProps) {
         </div>
         <div className={inputContainer}>{input}</div>
       </div>
-      {description && <div className={descriptionClass}>{description}</div>}
+      {description && <div className={descriptionStyle}>{description}</div>}
     </>
   )
 }

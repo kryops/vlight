@@ -4,8 +4,7 @@ import { FixtureMappingPrefix } from '@vlight/controls'
 import { iconDelete, iconDrag } from '../icons'
 import { Icon } from '../icons/icon'
 import { useMasterDataMaps, useRawMasterData } from '../../hooks/api'
-import { baseline, primaryShade, textShade } from '../styles'
-import { useClassName } from '../../hooks/ui'
+import { baseline, primaryShade } from '../styles'
 import { SortableList } from '../containers/sortable-list'
 
 const container = css`
@@ -17,11 +16,6 @@ const entryStyle = css`
   display: flex;
   background: ${primaryShade(2)};
   margin-bottom: ${baseline()};
-`
-
-const entryStyle_light = css`
-  background: ${primaryShade(3, true)};
-  color: ${textShade(0, true)};
 `
 
 const entryButton = css`
@@ -45,7 +39,6 @@ export function SortableFixtureMapping({
 }: SortableFixtureMappingProps) {
   const rawMasterData = useRawMasterData()
   const masterDataMaps = useMasterDataMaps()
-  const entryClassName = useClassName(entryStyle, entryStyle_light)
 
   return (
     <SortableList
@@ -53,7 +46,7 @@ export function SortableFixtureMapping({
       getKey={value => value}
       onChange={onChange}
       containerClassName={container}
-      entryClassName={entryClassName}
+      entryClassName={entryStyle}
       renderEntryContent={entry => {
         let name: string
 

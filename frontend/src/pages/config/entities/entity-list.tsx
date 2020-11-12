@@ -3,7 +3,6 @@ import { EntityType, EntityName, MasterData } from '@vlight/types'
 
 import { removeEntity, setEntities } from '../../../api'
 import { apiStateEmitter, apiState } from '../../../api/api-state'
-import { useClassName } from '../../../hooks/ui'
 import { baseline, primaryShade } from '../../../ui/styles'
 import { Icon } from '../../../ui/icons/icon'
 import { iconDelete, iconDrag } from '../../../ui/icons'
@@ -29,14 +28,6 @@ const listEntry = css`
   }
 `
 
-const listEntry_light = css`
-  background: ${primaryShade(3, true)};
-
-  &:hover {
-    background: ${primaryShade(2, true)};
-  }
-`
-
 const entryContent = css`
   padding: ${baseline(padding)};
   flex: 1 1 auto;
@@ -56,7 +47,6 @@ export function EntityList<T extends EntityName>({
   type,
   entries,
 }: EntityListProps<T>) {
-  const listEntryClassName = useClassName(listEntry, listEntry_light)
   const masterDataMaps = useMasterDataMaps()
 
   return (
@@ -72,7 +62,7 @@ export function EntityList<T extends EntityName>({
 
         setEntities(type, newEntries)
       }}
-      entryClassName={listEntryClassName}
+      entryClassName={listEntry}
       getKey={entry => entry.id}
       renderEntryContent={entry => (
         <>

@@ -4,7 +4,6 @@ import { css } from 'linaria'
 
 import { Icon } from '../icons/icon'
 import { primaryShade, baseline } from '../styles'
-import { useClassName } from '../../hooks/ui'
 
 const tileGrid = css`
   display: flex;
@@ -30,14 +29,6 @@ const tile = css`
   }
 `
 
-const tile_light = css`
-  background: ${primaryShade(2, true)};
-
-  &:hover {
-    background: ${primaryShade(1, true)};
-  }
-`
-
 const iconSize = baseline(16)
 
 const tileIcon = css`
@@ -60,7 +51,6 @@ export interface TileProps {
 
 export function Tile({ icon, title, target, onClick }: TileProps) {
   const history = useHistory()
-  const className = useClassName(tile, tile_light)
 
   const clickHandler = () => {
     if (target) history.push(target)
@@ -68,7 +58,7 @@ export function Tile({ icon, title, target, onClick }: TileProps) {
   }
 
   return (
-    <div className={className} onClick={clickHandler}>
+    <div className={tile} onClick={clickHandler}>
       <Icon icon={icon} shade={1} className={tileIcon} />
       <div className={titleTitle}>{title}</div>
     </div>

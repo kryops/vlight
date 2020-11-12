@@ -6,17 +6,9 @@ import { RoutesOutlet } from '../../pages/routes-outlet'
 import { iconClose, iconMenu } from '../icons'
 import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
-import {
-  backgroundColor,
-  baseline,
-  zNavigation,
-  backgroundColorLight,
-  textShade,
-  iconShade,
-} from '../styles'
+import { baseline, zNavigation, iconShade, backgroundColor } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-import { useClassNames } from '../../hooks/ui'
 
 import { LoadingScreen } from './loading-screen'
 import { CornerOverlay } from './corner-overlay'
@@ -24,15 +16,6 @@ import { CornerOverlay } from './corner-overlay'
 const mainContainer = css`
   display: flex;
   height: 100%;
-`
-
-const mainContainer_light = css`
-  background: ${backgroundColorLight};
-  color: ${textShade(0, true)};
-
-  & a {
-    color: ${textShade(0, true)};
-  }
 `
 
 const content = css`
@@ -51,18 +34,6 @@ const content = css`
 
     ::-webkit-scrollbar-thumb {
       background: ${iconShade(1)};
-    }
-  }
-`
-
-const content_light = css`
-  @media (min-width: 800px) {
-    ::-webkit-scrollbar {
-      background: ${iconShade(4, true)};
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: ${iconShade(2, true)};
     }
   }
 `
@@ -88,10 +59,6 @@ const alwaysShowNav = window.innerWidth >= navBreakpoint
 export const MainContainer = memoInProduction(() => {
   const [nav, setNav] = useState(alwaysShowNav)
   const location = useLocation()
-  const [mainContainerClassName, contentClassName] = useClassNames(
-    [mainContainer, mainContainer_light],
-    [content, content_light]
-  )
 
   const toggleNav = useCallback(() => setNav(!nav), [nav])
 
@@ -102,7 +69,7 @@ export const MainContainer = memoInProduction(() => {
   const navOverlayed = nav && !alwaysShowNav
 
   return (
-    <div className={mainContainerClassName}>
+    <div className={mainContainer}>
       {navOverlayed && <div className={overlay} onClick={toggleNav} />}
       {nav && (
         <Navigation showLabels={!alwaysShowNav} floating={!alwaysShowNav} />
@@ -114,7 +81,7 @@ export const MainContainer = memoInProduction(() => {
           onClick={toggleNav}
         />
       )}
-      <div className={cx(contentClassName, navOverlayed && content_blurred)}>
+      <div className={cx(content, navOverlayed && content_blurred)}>
         <Suspense fallback={<LoadingScreen />}>
           <RoutesOutlet />
         </Suspense>

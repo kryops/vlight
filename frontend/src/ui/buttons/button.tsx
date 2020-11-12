@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 
 import { baseline, primaryShade, textShade } from '../styles'
 import { cx } from '../../util/styles'
-import { useClassNames } from '../../hooks/ui'
 import { Touchable } from '../components/touchable'
 import { Icon } from '../icons/icon'
 
@@ -17,7 +16,8 @@ const button = css`
   text-align: center;
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &:active {
     background: ${primaryShade(1)};
   }
 
@@ -25,20 +25,10 @@ const button = css`
   &:focus {
     outline: none;
   }
-
-  &:active {
-    background: ${primaryShade(0)};
-  }
 `
 
 const button_active = css`
-  background: ${primaryShade(0)};
-
-  &:hover,
-  &:active,
-  &:focus {
-    background: ${primaryShade(0)};
-  }
+  background: ${primaryShade(1)};
 `
 
 const button_inactive = css`
@@ -51,37 +41,6 @@ const button_inactive = css`
 
 const button_disabled = css`
   opacity: 0.6;
-`
-
-const button_light = css`
-  background: ${primaryShade(3, true)};
-  color: ${textShade(0, true)};
-
-  &:hover {
-    background: ${primaryShade(2, true)};
-  }
-
-  &:active {
-    background: ${primaryShade(1, true)};
-  }
-`
-
-const button_active_light = css`
-  background: ${primaryShade(1, true)};
-
-  &:hover,
-  &:active,
-  &:focus {
-    background: ${primaryShade(1, true)};
-  }
-`
-
-const button_inactive_light = css`
-  &:hover,
-  &:active,
-  &:focus {
-    background: ${primaryShade(3, true)};
-  }
 `
 
 const buttonBlock = css`
@@ -117,18 +76,13 @@ export function Button({
   className,
   title,
 }: ButtonProps) {
-  const [buttonClass, activeClass, inactiveClass] = useClassNames(
-    [button, button_light],
-    [button_active, button_active_light],
-    [button_inactive, button_inactive_light]
-  )
   return (
     <Touchable
       className={cx(
-        buttonClass,
+        button,
         block && buttonBlock,
-        active === true && activeClass,
-        (active === false || disabled) && inactiveClass,
+        active === true && button_active,
+        (active === false || disabled) && button_inactive,
         disabled && button_disabled,
         className
       )}

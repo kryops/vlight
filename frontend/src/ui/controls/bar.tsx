@@ -4,7 +4,6 @@ import { ensureBetween, getFraction } from '@vlight/utils'
 import { baseline, iconShade, primaryShade, textShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-import { useClassNames } from '../../hooks/ui'
 
 const bar = css`
   position: relative;
@@ -13,10 +12,6 @@ const bar = css`
   justify-content: center;
   border: 1px solid ${iconShade(2)};
   padding: ${baseline(2)};
-`
-
-const bar_light = css`
-  border: 1px solid ${iconShade(2, true)};
 `
 
 const barLabel = css`
@@ -28,10 +23,6 @@ const barCornerLabel = css`
   font-size: 0.65rem;
   color: ${textShade(0)};
   z-index: 2;
-`
-
-const barCornerLabel_light = css`
-  color: ${textShade(0, true)};
 `
 
 const barTopCornerLabel = css`
@@ -82,26 +73,22 @@ export const Bar = memoInProduction(
     color,
     className,
   }: BarProps) => {
-    const [barClassName, cornerLabelClassName] = useClassNames(
-      [bar, bar_light],
-      [barCornerLabel, barCornerLabel_light]
-    )
     const fraction = ensureBetween(getFraction(value, min, max), 0, 1)
     return (
       <div
-        className={cx(barClassName, className)}
+        className={cx(bar, className)}
         style={color ? { borderBottomColor: color } : undefined}
       >
         <div className={barLabel}>{label}</div>
         {topCornerLabel && (
-          <div className={cx(cornerLabelClassName, barTopCornerLabel)}>
+          <div className={cx(barCornerLabel, barTopCornerLabel)}>
             {topCornerLabel}
           </div>
         )}
         {bottomCornerLabel && (
           <div
             className={cx(
-              cornerLabelClassName,
+              barCornerLabel,
               barBottomCornerLabel,
               bottomCornerLabelOverflow && barBottomCornerLabel_overflow
             )}

@@ -7,14 +7,12 @@ import {
   primaryShade,
   errorShade,
   successShade,
-  backgroundColor,
   baselinePx,
-  backgroundColorLight,
+  backgroundColor,
 } from '../styles'
 import { cx } from '../../util/styles'
 import { Clickable } from '../components/clickable'
 import { iconOn } from '../icons'
-import { useClassName } from '../../hooks/ui'
 
 const widget = css`
   flex: 1 1 auto;
@@ -55,19 +53,9 @@ const widgetTurnedOff = css`
   }
 `
 
-const widgetTurnedOff_light = css`
-  &::after {
-    background: linear-gradient(to top, ${backgroundColorLight}, transparent);
-  }
-`
-
 const widgetTurnedOn = css`
   border-color: ${primaryShade(0)};
-  background: ${primaryShade(2)};
-`
-
-const widgetTurnedOn_light = css`
-  background: ${primaryShade(4, true)};
+  background: ${primaryShade(3)};
 `
 
 const widgetIndicator = css`
@@ -97,10 +85,7 @@ export function Widget({
   className,
   children,
 }: PropsWithChildren<WidgetProps>) {
-  const stateClassName = useClassName(
-    turnedOn ? widgetTurnedOn : widgetTurnedOff,
-    turnedOn ? widgetTurnedOn_light : widgetTurnedOff_light
-  )
+  const stateClassName = turnedOn ? widgetTurnedOn : widgetTurnedOff
 
   return (
     <div

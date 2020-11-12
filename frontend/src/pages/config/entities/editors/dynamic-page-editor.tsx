@@ -15,7 +15,6 @@ import { Label } from '../../../../ui/forms/label'
 import { iconAdd, iconDelete, iconDown, iconUp } from '../../../../ui/icons'
 import { Icon } from '../../../../ui/icons/icon'
 import { baseline, primaryShade } from '../../../../ui/styles'
-import { useClassNames } from '../../../../hooks/ui'
 import { TextInput } from '../../../../ui/forms/typed-input'
 import { useMasterDataMaps } from '../../../../hooks/api'
 import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
@@ -71,19 +70,11 @@ const rowStyle = css`
   border: 1px solid ${primaryShade(1)};
 `
 
-const rowStyle_light = css`
-  border-color: ${primaryShade(2, true)};
-`
-
 const cellStyle = css`
   padding: ${baseline(2)};
   margin: ${baseline()} ${baseline(-2)};
   background: ${primaryShade(2)};
   cursor: pointer;
-`
-
-const cellStyle_light = css`
-  background: ${primaryShade(3, true)};
 `
 
 const cellDeleteContainer = css`
@@ -107,11 +98,6 @@ export function DynamicPageEditor({
   const formState = useFormState(entry, { onChange })
   const rows = useFormStateArray(formState, 'rows')
   const masterDataMaps = useMasterDataMaps()
-
-  const [rowClassName, cellClassName] = useClassNames(
-    [rowStyle, rowStyle_light],
-    [cellStyle, cellStyle_light]
-  )
 
   function changeRowProperty<TKey extends keyof DynamicPageRow>(
     row: DynamicPageRow,
@@ -159,7 +145,7 @@ export function DynamicPageEditor({
         }
       />
       {rows.value.map((row, rowIndex) => (
-        <div key={rowIndex} className={rowClassName}>
+        <div key={rowIndex} className={rowStyle}>
           <Label
             label="Headline"
             input={
@@ -174,7 +160,7 @@ export function DynamicPageEditor({
           <SortableList
             entries={row.cells}
             onChange={newCells => changeRowProperty(row, 'cells', newCells)}
-            entryClassName={cellClassName}
+            entryClassName={cellStyle}
             renderEntryContent={cell => (
               <div
                 onClick={async () => {

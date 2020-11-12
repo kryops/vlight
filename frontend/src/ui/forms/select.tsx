@@ -2,13 +2,7 @@ import { useEffect } from 'react'
 import { css } from 'linaria'
 
 import { cx } from '../../util/styles'
-import { useClassName } from '../../hooks/ui'
-import {
-  backgroundColor,
-  textShade,
-  baseline,
-  backgroundColorLight,
-} from '../styles'
+import { backgroundColor, textShade, baseline } from '../styles'
 
 export interface SelectEntry<T> {
   value: T
@@ -36,20 +30,12 @@ const select = css`
   max-width: 95vw;
 `
 
-const select_light = css`
-  background: ${backgroundColorLight};
-  color: ${textShade(0, true)};
-  border-color: ${textShade(0, true)};
-`
-
 export function Select<T>({
   entries,
   value,
   onChange,
   className,
 }: SelectProps<T>) {
-  const inputClassName = useClassName(select, select_light)
-
   const normalizedEntries = entries.map(entry => {
     if (entry === undefined) return undefinedSelectEntry
     if (typeof entry === 'string') return { value: entry, label: entry }
@@ -73,7 +59,7 @@ export function Select<T>({
         const newIndex = parseInt(event.target.value)
         onChange(normalizedEntries[newIndex]?.value ?? (null as any))
       }}
-      className={cx(inputClassName, className)}
+      className={cx(select, className)}
     >
       {normalizedEntries.map(({ label }, index) => (
         <option key={index} value={String(index)}>

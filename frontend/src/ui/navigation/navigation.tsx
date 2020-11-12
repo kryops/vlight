@@ -1,13 +1,12 @@
 import { css } from 'linaria'
 
 import { mainNavigationItems } from '../../pages'
-import { primaryShade, zNavigation, backgroundColorLight } from '../styles'
+import { primaryShade, zNavigation } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { useCompleteApiState, useMasterData } from '../../hooks/api'
 import { iconDynamicPage } from '../icons'
 import { dynamicPageRoute } from '../../pages/routes'
-import { useClassName } from '../../hooks/ui'
 
 import { NavItem } from './nav-item'
 
@@ -17,10 +16,6 @@ const navigation = css`
   overflow: auto;
   overflow-x: hidden;
   background: ${primaryShade(4)};
-`
-
-const navigation_light = css`
-  background: ${backgroundColorLight};
 `
 
 const navigation_floating = css`
@@ -38,13 +33,12 @@ export interface NavigationProps {
 
 export const Navigation = memoInProduction(
   ({ showLabels, floating }: NavigationProps) => {
-    const className = useClassName(navigation, navigation_light)
     const masterData = useMasterData()
     const apiState = useCompleteApiState()
     const { dynamicPages } = masterData
 
     return (
-      <div className={cx(className, floating && navigation_floating)}>
+      <div className={cx(navigation, floating && navigation_floating)}>
         {mainNavigationItems.map(({ route, icon, label, highlighted }) => (
           <NavItem
             key={route}

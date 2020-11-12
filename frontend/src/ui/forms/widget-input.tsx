@@ -3,7 +3,6 @@ import { css } from 'linaria'
 import { ensureBetween } from '@vlight/utils'
 
 import { baseline, primaryShade } from '../styles'
-import { useClassName } from '../../hooks/ui'
 import { cx } from '../../util/styles'
 import { Icon } from '../icons/icon'
 import { iconDelete } from '../icons'
@@ -83,10 +82,6 @@ const container = css`
   cursor: pointer;
 `
 
-const container_light = css`
-  background: ${primaryShade(3, true)};
-`
-
 const deleteIcon = css`
   float: right;
   padding: ${baseline(2)};
@@ -107,10 +102,8 @@ export function WidgetInput({
   onDelete,
   className,
 }: WidgetInputProps) {
-  const containerClass = useClassName(container, container_light)
-
   return (
-    <div className={cx(containerClass, className)}>
+    <div className={cx(container, className)}>
       {onDelete && (
         <Icon
           icon={iconDelete}

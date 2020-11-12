@@ -2,7 +2,6 @@ import { FixtureBorderStyle, FixtureShape, FixtureType } from '@vlight/types'
 import { css, cx } from 'linaria'
 import { CSSProperties, ReactNode } from 'react'
 
-import { useSettings } from '../../hooks/settings'
 import { baselinePx, iconShade } from '../../ui/styles'
 
 const shapeStyle = css`
@@ -50,8 +49,6 @@ export function MapShape({
   percentages,
   children,
 }: MapShapeProps) {
-  const { lightMode } = useSettings()
-
   const defaultSize = 5
 
   const finalStyle: CSSProperties = {
@@ -67,11 +64,7 @@ export function MapShape({
       : baselinePx * (ySize ?? defaultSize),
     borderStyle: border,
     borderWidth: highlighted ? '2px' : undefined,
-    borderColor: highlighted
-      ? 'red'
-      : color
-      ? iconShade(0, lightMode)
-      : undefined,
+    borderColor: highlighted ? 'red' : color ? iconShade(0) : undefined,
   }
 
   return (

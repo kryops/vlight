@@ -2,15 +2,8 @@ import { ReactElement, ComponentType } from 'react'
 import { css } from 'linaria'
 
 import { Icon } from '../icons/icon'
-import {
-  zOverlay,
-  primaryShade,
-  baseline,
-  iconShade,
-  textShade,
-} from '../styles'
+import { zOverlay, primaryShade, baseline, iconShade } from '../styles'
 import { iconClose } from '../icons'
-import { useClassNames } from '../../hooks/ui'
 
 import { removeOverlay, addOverlay } from './overlay'
 import { ModalButton } from './buttons'
@@ -46,14 +39,6 @@ const modalContainer = css`
   justify-content: center;
 `
 
-const modalContainer_light = css`
-  color: ${textShade(0, true)};
-
-  & a {
-    color: ${textShade(0, true)};
-  }
-`
-
 const modal = css`
   min-width: ${baseline(64)};
   max-width: 96vw;
@@ -65,10 +50,6 @@ const modal = css`
     width: 94vw;
     padding: ${baseline(4)};
   }
-`
-
-const modal_light = css`
-  background: ${primaryShade(4, true)};
 `
 
 const closeButton = css`
@@ -108,12 +89,6 @@ const buttonStyle = css`
   }
 `
 
-const buttonStyle_light = css`
-  &:active {
-    background: ${primaryShade(2, true)};
-  }
-`
-
 const buttonIcon = css`
   flex: 0 0 auto;
   padding-right: ${baseline(2)};
@@ -128,19 +103,13 @@ export function Modal<T>({
   closeOnBackDrop,
   showCloseButton,
 }: ModalProps<T>) {
-  const [containerClassName, modalClassName, buttonClassName] = useClassNames(
-    [modalContainer, modalContainer_light],
-    [modal, modal_light],
-    [buttonStyle, buttonStyle_light]
-  )
-
   return (
     <div
       className={backDrop}
       onClick={closeOnBackDrop ? () => onClose(null as any) : undefined}
     >
-      <div className={containerClassName}>
-        <div className={modalClassName}>
+      <div className={modalContainer}>
+        <div className={modal}>
           {showCloseButton && (
             <Icon
               icon={iconClose}
@@ -157,7 +126,7 @@ export function Modal<T>({
               {buttons.map(({ icon, label, value }, index) => (
                 <a
                   key={index}
-                  className={buttonClassName}
+                  className={buttonStyle}
                   onClick={() => onClose?.(value)}
                 >
                   <Icon icon={icon} className={buttonIcon} />

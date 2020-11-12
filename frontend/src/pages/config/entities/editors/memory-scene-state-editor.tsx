@@ -19,7 +19,6 @@ import { iconAdd, iconDelete } from '../../../../ui/icons'
 import { baseline, iconShade } from '../../../../ui/styles'
 import { NumberInput } from '../../../../ui/forms/typed-input'
 import { formatNumber } from '../../../../util/format'
-import { useClassName } from '../../../../hooks/ui'
 import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
 import { getFixtureStateColor } from '../../../../util/fixtures'
 import { cx } from '../../../../util/styles'
@@ -37,10 +36,6 @@ const gradientPreview = css`
   height: ${baseline(8)};
   margin: ${baseline(2)} 0;
   border: 1px solid ${iconShade(0)};
-`
-
-const gradientPreview_light = css`
-  border: 1px solid ${iconShade(0, true)};
 `
 
 const stopSelectionContainer = css`
@@ -120,10 +115,6 @@ export function MemorySceneStateEditor({
   const [localState, setLocalState] = useState(initialState)
   const [currentStop, setCurrentStop] = useState(0)
   const mapping = useCommonFixtureMapping(scene.members)
-  const gradientPreviewClass = useClassName(
-    gradientPreview,
-    gradientPreview_light
-  )
 
   useEffect(() => {
     if (Array.isArray(localState) && currentStop >= localState.length)
@@ -165,7 +156,7 @@ export function MemorySceneStateEditor({
   const content = Array.isArray(localState) ? (
     <>
       <div
-        className={gradientPreviewClass}
+        className={gradientPreview}
         style={{ background: getMemorySceneStatePreviewBackground(localState) }}
       />
       <div className={stopSelectionContainer}>

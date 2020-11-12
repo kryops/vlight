@@ -8,7 +8,6 @@ import { getTouchEventOffset } from '../../../util/touch'
 import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
 import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
-import { useClassNames } from '../../../hooks/ui'
 
 const faderWidth = baselinePx * 12
 const faderHeight = baselinePx * 60
@@ -36,29 +35,21 @@ const track = css`
   position: absolute;
   top: ${buttonHeight / 2}px;
   left: ${trackMargin}px;
-  background: ${iconShade(2)};
+  background: ${iconShade(3)};
   width: ${trackWidth}px;
   height: ${trackHeight}px;
-`
-
-const track_light = css`
-  background: ${iconShade(3, true)};
 `
 
 const button = css`
   position: relative;
   width: ${faderWidth};
   height: ${buttonHeight}px;
-  background: ${primaryShade(1)};
+  background: ${primaryShade(0)};
+  color: #fff;
   z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
-`
-
-const button_light = css`
-  background: ${primaryShade(0, true)};
-  color: #fff;
 `
 
 const subLabelStyle = css`
@@ -112,10 +103,6 @@ export const Fader = memoInProduction(
   }: FaderProps) => {
     const trackRef = useRef<HTMLDivElement>(null)
     const [localValue, setLocalValue] = useDelayedState<number | null>(null)
-    const [trackClassName, buttonClassName] = useClassNames(
-      [track, track_light],
-      [button, button_light]
-    )
 
     const valueToUse = localValue ?? value
     const currentFraction = (valueToUse - min) / (max - min)
@@ -140,11 +127,8 @@ export const Fader = memoInProduction(
         }}
         onUp={() => setLocalValue(null, true)}
       >
-        <div className={trackClassName} ref={trackRef} />
-        <div
-          className={buttonClassName}
-          style={{ transform: `translateY(${y}px)` }}
-        >
+        <div className={track} ref={trackRef} />
+        <div className={button} style={{ transform: `translateY(${y}px)` }}>
           {label}
           {subLabel && <div className={subLabelStyle}>{subLabel}</div>}
         </div>

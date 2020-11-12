@@ -8,7 +8,6 @@ import { Label } from '../../../../ui/forms/label'
 import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
 import { primaryShade, baseline, iconShade } from '../../../../ui/styles'
-import { useClassNames } from '../../../../hooks/ui'
 import { Select, SelectEntry } from '../../../../ui/forms/select'
 import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
 import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
@@ -27,21 +26,13 @@ import { MemorySceneStateEditor } from './memory-scene-state-editor'
 const sceneStyle = css`
   padding: ${baseline(2)};
   margin: ${baseline(2)} ${baseline(-2)};
-  background: ${primaryShade(1)};
-`
-
-const sceneStyle_light = css`
-  background: ${primaryShade(2, true)};
+  border: 1px solid ${primaryShade(1)};
 `
 
 const stateStyle = css`
   display: flex;
   margin-bottom: ${baseline()};
   border: 1px solid ${iconShade(0)};
-`
-
-const stateStyle_light = css`
-  border: 1px solid ${iconShade(0, true)};
 `
 
 const statePreview = css`
@@ -66,11 +57,6 @@ export function MemoryEditor({
   const formState = useFormState(entry, { onChange })
   const scenes = useFormStateArray(formState, 'scenes')
 
-  const [sceneClass, stateClass] = useClassNames(
-    [sceneStyle, sceneStyle_light],
-    [stateStyle, stateStyle_light]
-  )
-
   function changeSceneProperty<TKey extends keyof MemoryScene>(
     scene: MemoryScene,
     key: TKey,
@@ -90,7 +76,7 @@ export function MemoryEditor({
               input={<FormTextInput formState={formState} name="name" />}
             />
             {scenes.value.map((scene, sceneIndex) => (
-              <div key={sceneIndex} className={sceneClass}>
+              <div key={sceneIndex} className={sceneStyle}>
                 <h3>
                   Scene {sceneIndex + 1}{' '}
                   <a onClick={() => scenes.remove(scene)}>
@@ -142,7 +128,7 @@ export function MemoryEditor({
                   onChange={newValue =>
                     changeSceneProperty(scene, 'states', newValue)
                   }
-                  entryClassName={stateClass}
+                  entryClassName={stateStyle}
                   renderEntryContent={state => (
                     <>
                       <div
