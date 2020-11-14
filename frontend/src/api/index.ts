@@ -5,6 +5,7 @@ import {
   MemoryState,
   EntityName,
   EntityType,
+  LiveMemory,
 } from '@vlight/types'
 import { logger } from '@vlight/utils'
 
@@ -19,6 +20,7 @@ import {
   getApiEditEntityMessage,
   getApiSetEntitiesMessage,
   getResetStateMessage,
+  getApiLiveMemoryMessage,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
 
@@ -64,6 +66,14 @@ export function setMemoryState(
   merge = false
 ): void {
   sendApiMessage(getApiMemoryStateMessage(id, state, merge))
+}
+
+export function setLiveMemoryState(
+  id: IdType,
+  state: Partial<LiveMemory>,
+  merge = false
+): void {
+  sendApiMessage(getApiLiveMemoryMessage(id, state, merge))
 }
 
 export function removeEntity(entity: EntityName, id: IdType): void {

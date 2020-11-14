@@ -105,9 +105,9 @@ export function getResetStateMessage(): ApiResetStateMessage {
   return { type: 'reset-state' }
 }
 
-export function getLiveMemoryMessage(
+export function getApiLiveMemoryMessage(
   id: IdType,
-  liveMemory: LiveMemory,
+  liveMemory: Partial<LiveMemory>,
   merge: boolean
 ): ApiLiveMemoryMessage {
   return {

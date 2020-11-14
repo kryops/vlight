@@ -42,6 +42,7 @@ export interface IconProps {
   icon: string
   shade?: ColorShade
   color?: string
+  size?: number
   className?: string
   pathClassName?: string
   inline?: boolean
@@ -57,6 +58,7 @@ export const Icon = memoInProduction(
     className,
     pathClassName,
     color,
+    size,
     inline,
     padding,
     hoverable,
@@ -73,6 +75,9 @@ export const Icon = memoInProduction(
           padding && iconPadding,
           className
         )}
+        style={
+          size ? { width: baseline(size), height: baseline(size) } : undefined
+        }
         onClick={onClick}
       >
         <path

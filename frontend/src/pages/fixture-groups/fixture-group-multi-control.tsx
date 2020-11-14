@@ -36,6 +36,8 @@ export function FixtureGroupMultiControl() {
     }))
   )
 
+  if (masterData.fixtureGroups.length < 2) return null
+
   return (
     <Collapsible title="Multi Control">
       <TwoColumDialogContainer

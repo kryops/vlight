@@ -4,7 +4,9 @@ import { css } from 'linaria'
 import { useState } from 'react'
 
 import { useMasterDataAndMaps, useRawMasterData } from '../../hooks/api'
+import { cx } from '../../util/styles'
 import { Button } from '../buttons/button'
+import { flexAuto } from '../css/flex'
 import {
   iconList,
   iconFixtureType,
@@ -16,10 +18,6 @@ import { Icon } from '../icons/icon'
 import { baseline } from '../styles'
 
 import { SortableFixtureMapping } from './sortable-fixture-mapping'
-
-const container = css`
-  flex: 1 1 auto;
-`
 
 const categoryContainer = css`
   display: flex;
@@ -41,6 +39,10 @@ const scrollContainer = css`
   height: ${baseline(84)};
   max-height: 80vh;
   overflow-y: auto;
+`
+
+const scrollContainer_compact = css`
+  height: ${baseline(64)};
 `
 
 const listEntry = css`
@@ -121,6 +123,7 @@ export interface FixtureListInputProps {
   onChange: (value: string[]) => void
   hideGroupMode?: boolean
   ordering?: boolean
+  compact?: boolean
 }
 
 export function FixtureListInput({
@@ -128,6 +131,7 @@ export function FixtureListInput({
   onChange,
   hideGroupMode,
   ordering,
+  compact,
 }: FixtureListInputProps) {
   const rawMasterData = useRawMasterData()
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
@@ -180,7 +184,7 @@ export function FixtureListInput({
     : categories
 
   return (
-    <div className={container}>
+    <div className={flexAuto}>
       <div className={categoryContainer}>
         {ordering && (
           <Button
@@ -209,10 +213,16 @@ export function FixtureListInput({
         })}
       </div>
       {activeCategory === null && (
-        <SortableFixtureMapping value={value ?? []} onChange={onChange} />
+        <SortableFixtureMapping
+          value={value ?? []}
+          onChange={onChange}
+          compact={compact}
+        />
       )}
       {activeCategory && (
-        <div className={scrollContainer}>
+        <div
+          className={cx(scrollContainer, compact && scrollContainer_compact)}
+        >
           {entities.map(entity => {
             const entry = activeCategory?.prefix + entity.id
             const active = value?.includes(entry)

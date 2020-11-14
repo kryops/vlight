@@ -9,7 +9,7 @@ import {
 import { ApiState, processApiMessages } from './processing'
 
 export interface ApiWorkerState {
-  state: Partial<ApiState>
+  state: Partial<ApiState> | undefined
   connecting: boolean
 }
 
@@ -21,8 +21,8 @@ export type ApiWorkerCommand =
 let socket: WebSocket | undefined
 
 let connecting: boolean
-let apiState: ApiState
-let clientApiState: ApiState
+let apiState: ApiState | undefined
+let clientApiState: ApiState | undefined
 let messageQueue: ApiOutMessage[] = []
 
 function sendState() {
@@ -45,20 +45,21 @@ function sendClientUpdate() {
   // On the other side the references will always change, so only here we know what did not change
   // without doing a deep compare
   const changedState: Partial<ApiState> = {}
-  Object.entries(apiState).forEach(([key, value]) => {
+  Object.entries(apiState ?? {}).forEach(([key, value]) => {
     const k = key as keyof ApiState
     if (!clientApiState || clientApiState[k] !== value) {
       // partial update 2 levels deep
       if (
         clientApiState &&
-        typeof apiState[k] === 'object' &&
-        !Array.isArray(apiState[k]) &&
+        typeof apiState?.[k] === 'object' &&
+        !Array.isArray(apiState?.[k]) &&
+        // if any of these keys change, we always want it all
         k !== 'masterData' &&
-        k !== 'rawMasterData' // if masterData changes, we always want it all
+        k !== 'rawMasterData'
       ) {
         changedState[k] = {} as any
         Object.entries(apiState[k] as any).forEach(([key2, value2]) => {
-          if ((clientApiState[k] as any)[key2] !== value2) {
+          if ((clientApiState![k] as any)[key2] !== value2) {
             ;(changedState[k] as any)[key2] = value2
           }
         })
@@ -69,7 +70,7 @@ function sendClientUpdate() {
   })
 
   const message: ApiWorkerState = { state: changedState, connecting }
-  logger.trace('Sending changed state', message)
+  logger.debug('Sending changed state', changedState, connecting)
   // TypeScript wants DOM API, but we are in a Web Worker
   const postMessageFn = postMessage as any
   postMessageFn(message)
@@ -104,6 +105,8 @@ function connectWebSocket() {
   socket.onclose = () => {
     logger.warn('WebSocket connection was closed, reconnecting...')
     connecting = true
+    apiState = undefined
+    clientApiState = undefined
     sendState()
     setTimeout(connectWebSocket, 1000)
   }

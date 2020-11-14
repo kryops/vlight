@@ -17,6 +17,9 @@ export function MemoriesMultiControl() {
   const { masterData, masterDataMaps } = masterDataAndMaps
 
   const memoryStates = useApiState('memories')
+
+  if (masterData.memories.length < 2) return null
+
   const on = selectedMemoryIds.some(id => memoryStates[id]?.on)
   const commonValue = average(
     selectedMemoryIds.map(id => memoryStates[id]?.value ?? 0)

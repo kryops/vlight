@@ -2,7 +2,7 @@ import { css } from 'linaria'
 import { ReactNode } from 'react'
 
 import { baseline } from '../styles'
-import { flexEndSpacer } from '../css/flex-end-spacer'
+import { flexEndSpacer, flexWrap } from '../css/flex'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 
@@ -19,8 +19,6 @@ const grid = css`
 `
 
 const gridCell = css`
-  display: flex;
-  flex-wrap: wrap;
   justify-content: stretch;
 
   ${flexEndSpacer}
@@ -48,7 +46,7 @@ export const Grid = memoInProduction(
           {cells.map(({ factor, children, className }, index) => (
             <div
               key={index}
-              className={cx(gridCell, className)}
+              className={cx(flexWrap, gridCell, className)}
               style={{ flexBasis: ((factor ?? 1) / factorSum) * 100 + '%' }}
             >
               {children}

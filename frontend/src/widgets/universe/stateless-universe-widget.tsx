@@ -6,7 +6,7 @@ import { createRangeArray } from '@vlight/utils'
 import { Widget } from '../../ui/containers/widget'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-import { flexEndSpacer } from '../../ui/css/flex-end-spacer'
+import { flexEndSpacer, flexWrap } from '../../ui/css/flex'
 import { baseline, baselinePx } from '../../ui/styles'
 import {
   getFixtureAtChannel,
@@ -19,8 +19,6 @@ import { useMasterDataMaps } from '../../hooks/api'
 const barRows = 3
 
 const container = css`
-  display: flex;
-  flex-wrap: wrap;
   justify-content: flex-start; /* so the universeBar_connected margins work */
 
   ${flexEndSpacer}
@@ -62,7 +60,10 @@ export const StatelessUniverseWidget = memoInProduction(
 
     return (
       <Widget title={title ?? `Universe ${from} - ${to}`}>
-        <div className={container} style={{ maxWidth: maxWidth + 'px' }}>
+        <div
+          className={cx(flexWrap, container)}
+          style={{ maxWidth: maxWidth + 'px' }}
+        >
           {range.map(channel => {
             const index = getUniverseIndex(channel)
             const value = universe[index]

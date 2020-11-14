@@ -10,6 +10,7 @@ import { StatelessMapWidget } from '../map/stateless-map-widget'
 
 export interface MemoryPreviewProps {
   scenes: MemoryScene[]
+  className?: string
 }
 
 function getMemoryUniverse(
@@ -50,12 +51,16 @@ function getMemoryUniverse(
   return universe
 }
 
-export function MemoryPreview({ scenes }: MemoryPreviewProps) {
+export function MemoryPreview({ scenes, className }: MemoryPreviewProps) {
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
 
   const universe = getMemoryUniverse(scenes, masterData, masterDataMaps)
 
   return (
-    <StatelessMapWidget fixtures={masterData.fixtures} universe={universe} />
+    <StatelessMapWidget
+      fixtures={masterData.fixtures}
+      universe={universe}
+      className={className}
+    />
   )
 }

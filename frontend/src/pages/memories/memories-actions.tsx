@@ -11,7 +11,7 @@ export function MemoriesActions() {
   const { memories } = useMasterData()
   const memoriesState = useApiState('memories')
 
-  function setOnForAllmemories(on: boolean) {
+  function setOnForAllMemories(on: boolean) {
     setMemoryState(
       memories.map(it => it.id),
       { on },
@@ -26,14 +26,14 @@ export function MemoriesActions() {
       </Link>
       <Button
         icon={iconLight}
-        onDown={() => setOnForAllmemories(true)}
+        onDown={() => setOnForAllMemories(true)}
         disabled={isAllOn(memoriesState)}
       >
         ON
       </Button>
       <Button
         icon={iconLightOff}
-        onDown={() => setOnForAllmemories(false)}
+        onDown={() => setOnForAllMemories(false)}
         disabled={!isAnyOn(memoriesState)}
       >
         OFF

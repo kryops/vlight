@@ -7,16 +7,20 @@ import { updateMasterData } from './masterdata'
 
 import { apiWorker } from '.'
 
-export const apiState: ApiState = {
-  masterData: undefined,
-  rawMasterData: undefined,
-  universe: undefined,
-  channels: undefined,
-  fixtures: {},
-  fixtureGroups: {},
-  memories: {},
-  liveMemories: {},
+function getEmptyState(): ApiState {
+  return {
+    masterData: undefined,
+    rawMasterData: undefined,
+    universe: undefined,
+    channels: undefined,
+    fixtures: {},
+    fixtureGroups: {},
+    memories: {},
+    liveMemories: {},
+  }
 }
+
+export const apiState: ApiState = getEmptyState()
 
 export const workerState = {
   connecting: true,
@@ -26,18 +30,25 @@ export const apiStateEmitter = new Emittery()
 
 function messageListener(event: MessageEvent) {
   const message: ApiWorkerState = event.data
+  const oldConnecting = workerState.connecting
   workerState.connecting = message.connecting
+
   if (message.state) {
+    // reset after version change
+    if (message.state.version && message.state.version !== apiState.version) {
+      Object.assign(apiState, getEmptyState(), message.state)
+    }
+
     // partial update 2 levels deep
     Object.entries(message.state).forEach(([key, value]) => {
       const k = key as keyof ApiState
       if (
-        typeof message.state[k] === 'object' &&
-        !Array.isArray(message.state[k])
+        typeof message.state![k] === 'object' &&
+        !Array.isArray(message.state![k])
       ) {
         ;(apiState[k] as any) = {
-          ...apiState[k],
-          ...message.state[k],
+          ...(apiState as any)[k],
+          ...(message.state as any)[k],
         }
       } else {
         ;(apiState[k] as any) = value!
@@ -48,6 +59,10 @@ function messageListener(event: MessageEvent) {
 
       apiStateEmitter.emit(k)
     })
+  }
+
+  if (oldConnecting !== workerState.connecting) {
+    apiStateEmitter.emit('connecting')
   }
 }
 

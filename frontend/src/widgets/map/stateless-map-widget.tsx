@@ -7,12 +7,7 @@ import {
 } from '@vlight/types'
 
 import { memoInProduction } from '../../util/development'
-import {
-  backgroundColor,
-  baseline,
-  iconShade,
-  primaryShade,
-} from '../../ui/styles'
+import { backgroundColor, baseline, iconShade } from '../../ui/styles'
 import { getEffectiveFixtureColor } from '../../util/fixtures'
 import { useMasterDataMaps } from '../../hooks/api'
 import { cx } from '../../util/styles'
@@ -30,7 +25,7 @@ const widget = css`
   margin: ${baseline()};
   border: 1px solid ${iconShade(1)};
   overflow: hidden;
-  background: ${primaryShade(3)};
+  background: ${iconShade(3)};
 
   :before {
     content: '';
@@ -55,7 +50,7 @@ const fixtureStyle = css`
   position: absolute;
 
   &:hover {
-    box-shadow: 0 0 8px ${iconShade(0)};
+    box-shadow: 0 0 8px ${iconShade(1)};
 
     &:before {
       content: attr(title);

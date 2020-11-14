@@ -4,14 +4,10 @@ import { css } from 'linaria'
 
 import { Icon } from '../icons/icon'
 import { primaryShade, baseline } from '../styles'
-
-const tileGrid = css`
-  display: flex;
-  flex-wrap: wrap;
-`
+import { flexWrap } from '../css/flex'
 
 export const TileGrid = ({ children }: PropsWithChildren<{}>) => (
-  <div className={tileGrid}>{children}</div>
+  <div className={flexWrap}>{children}</div>
 )
 
 const tile = css`

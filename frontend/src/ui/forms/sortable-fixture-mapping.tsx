@@ -6,10 +6,15 @@ import { Icon } from '../icons/icon'
 import { useMasterDataMaps, useRawMasterData } from '../../hooks/api'
 import { baseline, primaryShade } from '../styles'
 import { SortableList } from '../containers/sortable-list'
+import { cx } from '../../util/styles'
 
 const container = css`
   margin-top: ${baseline()};
-  min-height: ${baseline(84)};
+  min-height: min(${baseline(84)}, 80vh);
+`
+
+const container_compact = css`
+  min-height: min(${baseline(64)}, 80vh);
 `
 
 const entryStyle = css`
@@ -31,11 +36,13 @@ const entryName = css`
 export interface SortableFixtureMappingProps {
   value: string[]
   onChange: (newValue: string[]) => void
+  compact?: boolean
 }
 
 export function SortableFixtureMapping({
   value,
   onChange,
+  compact,
 }: SortableFixtureMappingProps) {
   const rawMasterData = useRawMasterData()
   const masterDataMaps = useMasterDataMaps()
@@ -45,7 +52,7 @@ export function SortableFixtureMapping({
       entries={value}
       getKey={value => value}
       onChange={onChange}
-      containerClassName={container}
+      containerClassName={cx(container, compact && container_compact)}
       entryClassName={entryStyle}
       renderEntryContent={entry => {
         let name: string

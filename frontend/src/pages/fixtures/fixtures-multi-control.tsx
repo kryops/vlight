@@ -18,9 +18,11 @@ export function FixturesMultiControl() {
   const [fixtureStrings, setFixtureStrings] = useState<string[]>([])
 
   const masterDataAndMaps = useMasterDataAndMaps()
-  const { masterDataMaps } = masterDataAndMaps
+  const { masterData, masterDataMaps } = masterDataAndMaps
   const mapping = useCommonFixtureMapping(fixtureStrings)
   const fixtureStates = useApiState('fixtures')
+
+  if (masterData.fixtures.length < 2) return null
 
   const allFixtureIds = mapFixtureList(fixtureStrings, masterDataAndMaps)
   const allFixtures = allFixtureIds

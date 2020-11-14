@@ -74,6 +74,7 @@ export interface WidgetProps {
   turnedOn?: boolean
   bottomLineColor?: string
   className?: string
+  contentClassName?: string
 }
 
 export function Widget({
@@ -83,6 +84,7 @@ export function Widget({
   turnedOn,
   bottomLineColor,
   className,
+  contentClassName,
   children,
 }: PropsWithChildren<WidgetProps>) {
   const stateClassName = turnedOn ? widgetTurnedOn : widgetTurnedOff
@@ -95,7 +97,7 @@ export function Widget({
         turnedOn !== undefined && stateClassName
       )}
     >
-      {(title || titleSide) && (
+      {(title || titleSide || turnedOn !== undefined) && (
         <div className={cx(section, widgetTitle)}>
           <Clickable onClick={onTitleClick}>
             {title}
@@ -111,7 +113,7 @@ export function Widget({
           {titleSide && <div className={titleSideContainer}>{titleSide}</div>}
         </div>
       )}
-      <div className={section}>{children}</div>
+      <div className={cx(section, contentClassName)}>{children}</div>
       {bottomLineColor && (
         <div className={bottomLine} style={{ background: bottomLineColor }} />
       )}

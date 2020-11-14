@@ -3,14 +3,18 @@ import { Link } from 'react-router-dom'
 import { Icon } from '../icons/icon'
 import { iconBack } from '../icons'
 
+import { BackLink } from './back-link'
+
 export interface BackArrowProps {
-  to: string
+  to?: string
 }
 
 export function BackArrow({ to }: BackArrowProps) {
-  return (
-    <Link to={to}>
-      <Icon icon={iconBack} inline shade={1} />
-    </Link>
-  )
+  const backArrow = <Icon icon={iconBack} inline shade={1} />
+
+  if (!to) {
+    return <BackLink>{backArrow}</BackLink>
+  }
+
+  return <Link to={to}>{backArrow}</Link>
 }

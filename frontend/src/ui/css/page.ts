@@ -2,7 +2,7 @@ import { css } from 'linaria'
 
 import { baseline } from '../styles'
 
-import { flexEndSpacer } from './flex-end-spacer'
+import { flexEndSpacer } from './flex'
 
 export const pageWithWidgets = css`
   display: flex;

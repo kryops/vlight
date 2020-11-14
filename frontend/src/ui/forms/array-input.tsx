@@ -5,6 +5,7 @@ import { Icon } from '../icons/icon'
 import { iconDelete } from '../icons'
 import { cx } from '../../util/styles'
 import { baseline } from '../styles'
+import { flexAuto } from '../css/flex'
 
 import { TypedInputProps } from './typed-input'
 
@@ -16,10 +17,6 @@ export interface ArrayInputProps<T> {
   className?: string
   entryClassName?: string
 }
-
-const container = css`
-  flex: 1 1 auto;
-`
 
 const entry = css`
   display: flex;
@@ -67,7 +64,7 @@ export function ArrayInput<T>({
   const toRender = [...valueToUse, undefined]
 
   return (
-    <div className={cx(container, className)}>
+    <div className={cx(flexAuto, className)}>
       {toRender.map((singleValue, index) => {
         const changeSingleValue = (newSingleValue: T | undefined) => {
           if (newSingleValue !== undefined && index === valueToUse.length) {

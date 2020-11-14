@@ -9,12 +9,16 @@ import { mergeFixtureStates, mergeMemoryStates } from '@vlight/controls'
 
 import { getUniverseIndex } from '../util'
 
+let stateVersion = 0
+
 export type ApiState = {
   [key in keyof Omit<ApiStateMessage, 'type'>]: ApiStateMessage[key] extends
     | any[]
     | MasterData
     ? ApiStateMessage[key] | undefined
     : ApiStateMessage[key]
+} & {
+  version?: number
 }
 
 function processChannelDeltaMap(
@@ -28,7 +32,7 @@ function processChannelDeltaMap(
   return newUniverse
 }
 
-function processApiMessage(message: ApiOutMessage, state: ApiState) {
+function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
   switch (message.type) {
     case 'state':
       const { type, ...rest } = message
@@ -37,6 +41,7 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
       const partialState: ApiState = rest
 
       Object.assign(state, partialState)
+      state.version = ++stateVersion
 
       break
 
@@ -64,8 +69,8 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
       forEach(
         message.id,
         id =>
-          (state.fixtures[id] = mergeFixtureStates(
-            message.merge ? state.fixtures[id] : undefined,
+          (state.fixtures![id] = mergeFixtureStates(
+            message.merge ? state.fixtures![id] : undefined,
             message.state
           ))
       )
@@ -79,8 +84,8 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
       forEach(
         message.id,
         id =>
-          (state.fixtureGroups[id] = mergeFixtureStates(
-            message.merge ? state.fixtureGroups[id] : undefined,
+          (state.fixtureGroups![id] = mergeFixtureStates(
+            message.merge ? state.fixtureGroups![id] : undefined,
             message.state
           ))
       )
@@ -93,8 +98,8 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
       forEach(
         message.id,
         id =>
-          (state.memories[id] = mergeMemoryStates(
-            message.merge ? state.memories[id] : undefined,
+          (state.memories![id] = mergeMemoryStates(
+            message.merge ? state.memories![id] : undefined,
             message.state
           ))
       )
@@ -104,7 +109,7 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
       state.liveMemories = {
         ...state.liveMemories,
         [message.id]: message.merge
-          ? mergeObjects(state.liveMemories[message.id], message.state)
+          ? mergeObjects(state.liveMemories?.[message.id], message.state)
           : (message.state as LiveMemory),
       }
       break
@@ -117,7 +122,7 @@ function processApiMessage(message: ApiOutMessage, state: ApiState) {
 
 export function processApiMessages(
   messages: ApiOutMessage[],
-  apiState: ApiState
+  apiState: ApiState | undefined
 ): ApiState {
   logger.debug(`Processing ${messages.length} API messages`)
 
@@ -127,5 +132,5 @@ export function processApiMessages(
     processApiMessage(message, newState)
   }
 
-  return newState
+  return newState as ApiState
 }

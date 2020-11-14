@@ -18,6 +18,7 @@ import {
   setUniverseChannel,
   Universe,
 } from '../../services/universe'
+import { controlRegistry } from '../registry'
 
 export const liveMemories: Map<IdType, LiveMemory> = new Map()
 
@@ -44,16 +45,27 @@ function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe | null {
       if (!state) return
 
       const originalMaster = state.channels[ChannelMapping.Master] ?? 255
-      state.channels[ChannelMapping.Master] = Math.round(
-        (originalMaster * liveMemory.value) / 255
-      )
+      const masterValue = (originalMaster * liveMemory.value) / 255
 
-      mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
-        const universeIndex = getUniverseIndex(channel) + offset
-        if (universe[universeIndex] < value) {
-          universe[universeIndex] = value
+      const finalState =
+        liveMemory.value === 255
+          ? state
+          : {
+              on: state.on,
+              channels: {
+                ...state.channels,
+                [ChannelMapping.Master]: masterValue,
+              },
+            }
+
+      mapFixtureStateToChannels(fixtureType, finalState).forEach(
+        (value, offset) => {
+          const universeIndex = getUniverseIndex(channel) + offset
+          if (universe[universeIndex] < value) {
+            universe[universeIndex] = value
+          }
         }
-      })
+      )
     }
   )
 
@@ -95,6 +107,15 @@ function handleApiMessage(message: ApiLiveMemoryMessage) {
   return true
 }
 
+function reload(reloadState?: boolean) {
+  if (!reloadState) return
+
+  liveMemories.clear()
+  ;[...outgoingUniverses.values()].forEach(removeUniverse)
+  outgoingUniverses.clear()
+}
+
 export function initLiveMemories(): void {
+  controlRegistry.register({ reload })
   registerApiMessageHandler('live-memory', handleApiMessage)
 }

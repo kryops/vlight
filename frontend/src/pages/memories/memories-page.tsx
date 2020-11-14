@@ -6,6 +6,7 @@ import { Header } from '../../ui/containers/header'
 
 import { MemoriesActions } from './memories-actions'
 import { MemoriesMultiControl } from './memories-multi-control'
+import { LiveMemories } from './live-memories'
 
 const MemoriesPage = memoInProduction(() => {
   const { memories } = useMasterData()
@@ -19,6 +20,7 @@ const MemoriesPage = memoInProduction(() => {
           <MemoryWidget key={memory.id} memory={memory} />
         ))}
       </div>
+      <LiveMemories />
     </>
   )
 })
