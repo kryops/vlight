@@ -32,7 +32,7 @@ function initMasterChannelMaps() {
     const masterChannel = fixture.channel + masterIndex
     const affectedChannels = createRangeArray(
       fixture.channel,
-      fixture.channel + fixtureType.mapping.length
+      fixture.channel + fixtureType.mapping.length - 1
     ).filter(channel => channel !== masterChannel)
 
     affectedChannelsByMasterChannel.set(masterChannel, affectedChannels)

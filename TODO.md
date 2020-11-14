@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- BUG: Universe mixing
 - Live memories
 - Chases
   - Pre-configured / presets
