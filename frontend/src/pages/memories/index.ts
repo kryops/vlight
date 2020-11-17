@@ -10,5 +10,6 @@ export const memoriesPageNavItem: NavItemEntry = {
   icon: iconMemory,
   label: 'Memories',
   page: MemoriesPage,
-  highlighted: apiState => isAnyOn(apiState.memories ?? {}),
+  highlighted: apiState =>
+    isAnyOn(apiState.memories ?? {}) || isAnyOn(apiState.liveMemories ?? {}),
 }

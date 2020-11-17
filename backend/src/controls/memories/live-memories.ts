@@ -1,5 +1,5 @@
 import {
-  ChannelMapping,
+  applyAdditionalMaster,
   getFixtureStateForMemoryScene,
   mapFixtureList,
   mapFixtureStateToChannels,
@@ -12,10 +12,9 @@ import { masterData, masterDataMaps } from '../../services/masterdata'
 import {
   addUniverse,
   createUniverse,
-  getChannelFromUniverseIndex,
   getUniverseIndex,
+  mergeUniverse,
   removeUniverse,
-  setUniverseChannel,
   Universe,
 } from '../../services/universe'
 import { controlRegistry } from '../registry'
@@ -44,19 +43,7 @@ function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe | null {
 
       if (!state) return
 
-      const originalMaster = state.channels[ChannelMapping.Master] ?? 255
-      const masterValue = (originalMaster * liveMemory.value) / 255
-
-      const finalState =
-        liveMemory.value === 255
-          ? state
-          : {
-              on: state.on,
-              channels: {
-                ...state.channels,
-                [ChannelMapping.Master]: masterValue,
-              },
-            }
+      const finalState = applyAdditionalMaster(state, liveMemory.value)
 
       mapFixtureStateToChannels(fixtureType, finalState).forEach(
         (value, offset) => {
@@ -89,16 +76,7 @@ function handleApiMessage(message: ApiLiveMemoryMessage) {
   const universe = outgoingUniverses.get(id)!
 
   if (existing && newUniverse) {
-    universe.forEach((value, index) => {
-      const newValue = newUniverse[index]
-      if (newValue !== value) {
-        setUniverseChannel(
-          universe,
-          getChannelFromUniverseIndex(index),
-          newValue
-        )
-      }
-    })
+    mergeUniverse(universe, newUniverse)
   }
 
   if (!existing?.on && liveMemory.on) addUniverse(universe)

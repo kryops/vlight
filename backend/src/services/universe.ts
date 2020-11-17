@@ -273,6 +273,19 @@ export function removeUniverse(universe: Universe): void {
   }
 }
 
+export function mergeUniverse(universe1: Universe, universe2: Universe): void {
+  universe1.forEach((value, index) => {
+    const newValue = universe2[index]
+    if (newValue !== value) {
+      setUniverseChannel(
+        universe1,
+        getChannelFromUniverseIndex(index),
+        newValue
+      )
+    }
+  })
+}
+
 export function getUniverseIndex(channel: number): number {
   return channel - 1
 }

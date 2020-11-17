@@ -6,6 +6,7 @@ import {
   EntityName,
   EntityType,
   LiveMemory,
+  LiveChase,
 } from '@vlight/types'
 import { logger } from '@vlight/utils'
 
@@ -21,6 +22,7 @@ import {
   getApiSetEntitiesMessage,
   getResetStateMessage,
   getApiLiveMemoryMessage,
+  getApiLiveChaseMessage,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
 
@@ -74,6 +76,14 @@ export function setLiveMemoryState(
   merge = false
 ): void {
   sendApiMessage(getApiLiveMemoryMessage(id, state, merge))
+}
+
+export function setLiveChaseState(
+  id: IdType,
+  state: Partial<LiveChase>,
+  merge = false
+): void {
+  sendApiMessage(getApiLiveChaseMessage(id, state, merge))
 }
 
 export function removeEntity(entity: EntityName, id: IdType): void {

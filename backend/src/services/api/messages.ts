@@ -6,6 +6,7 @@ import { channelUniverse } from '../../controls/channels'
 import { fixtureStates } from '../../controls/fixtures'
 import { fixtureGroupStates } from '../../controls/fixture-groups'
 import { memoryStates, liveMemories } from '../../controls/memories'
+import { liveChases } from '../../controls/chases/live-chases'
 import { masterData, rawMasterData } from '../masterdata'
 
 import { getApiStateMessage } from './protocol'
@@ -20,5 +21,6 @@ export function getFullState(): ApiStateMessage {
     fixtureGroups: mapToDictionary(fixtureGroupStates),
     memories: mapToDictionary(memoryStates),
     liveMemories: mapToDictionary(liveMemories),
+    liveChases: mapToDictionary(liveChases),
   })
 }

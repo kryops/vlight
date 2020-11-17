@@ -4,6 +4,7 @@ export const channelsPageRoute = '/channels'
 export const fixturesPageRoute = '/fixtures'
 export const fixtureGroupsPageRoute = '/fixture-groups'
 export const memoriesPageRoute = '/memories'
+export const chasesPageRoute = '/chases'
 export const configPageRoute = '/config'
 export const settingsPageRoute = configPageRoute + '/settings'
 export const entitiesPageRoute = (

@@ -7,6 +7,7 @@ import { channelsPageNavItem } from './channels'
 import { fixturesPageNavItem } from './fixtures'
 import { fixtureGroupsPageNavItem } from './fixture-groups'
 import { memoriesPageNavItem } from './memories'
+import { chasesPageNavItem } from './chases'
 import { configPageNavItem } from './config'
 import { settingsPageEntry } from './config/settings'
 import { entitiesPageEntry } from './config/entities'
@@ -30,6 +31,7 @@ export const mainNavigationItems: NavItemEntry[] = [
   fixturesPageNavItem,
   fixtureGroupsPageNavItem,
   memoriesPageNavItem,
+  chasesPageNavItem,
   configPageNavItem,
 ]
 

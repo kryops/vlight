@@ -1,6 +1,7 @@
 import {
   Dictionary,
   FixtureState,
+  LiveChase,
   LiveMemory,
   MasterData,
   MemoryState,
@@ -41,6 +42,16 @@ describe('api/protocol', () => {
     const liveMemories: Dictionary<LiveMemory> = {
       '2': { on: true, value: 100, members: [], states: [] },
     }
+    const liveChases: Dictionary<LiveChase> = {
+      '2': {
+        on: true,
+        value: 100,
+        members: [],
+        colors: [],
+        speed: 0,
+        light: 1,
+      },
+    }
     expect(
       getApiStateMessage({
         masterData: getMasterDataMock(),
@@ -51,6 +62,7 @@ describe('api/protocol', () => {
         fixtureGroups,
         memories,
         liveMemories,
+        liveChases,
       })
     ).toEqual({
       type: 'state',
@@ -62,6 +74,7 @@ describe('api/protocol', () => {
       fixtureGroups,
       memories,
       liveMemories,
+      liveChases,
     })
   })
 

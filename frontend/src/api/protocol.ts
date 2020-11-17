@@ -15,6 +15,8 @@ import {
   ApiResetStateMessage,
   LiveMemory,
   ApiLiveMemoryMessage,
+  ApiLiveChaseMessage,
+  LiveChase,
 } from '@vlight/types'
 
 export function getApiChannelMessage(
@@ -114,6 +116,19 @@ export function getApiLiveMemoryMessage(
     type: 'live-memory',
     id,
     state: liveMemory,
+    merge,
+  }
+}
+
+export function getApiLiveChaseMessage(
+  id: IdType,
+  liveChase: Partial<LiveChase>,
+  merge: boolean
+): ApiLiveChaseMessage {
+  return {
+    type: 'live-chase',
+    id,
+    state: liveChase,
     merge,
   }
 }

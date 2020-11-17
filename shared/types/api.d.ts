@@ -7,6 +7,7 @@ import {
   EntityName,
   EntityArray,
   LiveMemory,
+  LiveChase,
 } from './entities'
 
 // Both ingoing + outgoing
@@ -41,10 +42,19 @@ export interface ApiMemoryStateMessage {
   merge?: boolean
 }
 
+/** Create/update a live memory */
 export interface ApiLiveMemoryMessage {
   type: 'live-memory'
   id: IdType
   state: Partial<LiveMemory>
+  merge?: boolean
+}
+
+/** Create/update a live chase */
+export interface ApiLiveChaseMessage {
+  type: 'live-chase'
+  id: IdType
+  state: Partial<LiveChase>
   merge?: boolean
 }
 
@@ -84,6 +94,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiFixtureGroupStateMessage
   | ApiMemoryStateMessage
   | ApiLiveMemoryMessage
+  | ApiLiveChaseMessage
   | ApiEntityMessage<T>
   | ApiAddEntityMessage<T>
   | ApiUpdateEntityMessage<T>
@@ -106,6 +117,7 @@ export interface ApiStateMessage {
   fixtureGroups: Dictionary<FixtureState>
   memories: Dictionary<MemoryState>
   liveMemories: Dictionary<LiveMemory>
+  liveChases: Dictionary<LiveChase>
 }
 
 export interface ApiMasterDataMessage {
@@ -136,3 +148,4 @@ export type ApiOutMessage =
   | ApiFixtureGroupStateMessage
   | ApiMemoryStateMessage
   | ApiLiveMemoryMessage
+  | ApiLiveChaseMessage

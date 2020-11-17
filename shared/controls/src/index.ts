@@ -6,6 +6,7 @@ export {
   getCommonFixtureState,
   getCommonFixtureMapping,
   cleanFixtureState,
+  applyAdditionalMaster,
 } from './fixtures'
 export { interpolateGradientPositions } from './gradient'
 export {
@@ -13,3 +14,4 @@ export {
   getFixtureStateForMemoryScene,
   mergeMemoryStates,
 } from './memories'
+export { getLiveChaseFixtureStates } from './chases'

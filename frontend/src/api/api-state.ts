@@ -17,6 +17,7 @@ function getEmptyState(): ApiState {
     fixtureGroups: {},
     memories: {},
     liveMemories: {},
+    liveChases: {},
   }
 }
 

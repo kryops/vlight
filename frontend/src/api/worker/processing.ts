@@ -1,6 +1,7 @@
 import {
   ApiOutMessage,
   ApiStateMessage,
+  LiveChase,
   LiveMemory,
   MasterData,
 } from '@vlight/types'
@@ -111,6 +112,15 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
         [message.id]: message.merge
           ? mergeObjects(state.liveMemories?.[message.id], message.state)
           : (message.state as LiveMemory),
+      }
+      break
+
+    case 'live-chase':
+      state.liveChases = {
+        ...state.liveChases,
+        [message.id]: message.merge
+          ? mergeObjects(state.liveChases?.[message.id], message.state)
+          : (message.state as LiveChase),
       }
       break
 

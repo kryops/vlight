@@ -1,3 +1,5 @@
+import { ValueOrRandom } from './util'
+
 export type IdType = string
 
 export interface DbEntity {
@@ -90,6 +92,11 @@ export type MasterDataMaps = {
   >
 }
 
+export interface MasterDataWithMaps {
+  masterData: MasterData
+  masterDataMaps: MasterDataMaps
+}
+
 export type EntityName = keyof MasterDataMapping
 export type EntityDictionary<T = string> = { [key in EntityName]: T }
 export type EntityArray<T extends EntityName = EntityName> = Array<
@@ -114,6 +121,28 @@ export interface MemoryState {
 export interface LiveMemory extends MemoryScene {
   on: boolean
   value: number
+}
+
+export type RandomChannels = Dictionary<ValueOrRandom<number>>
+
+export interface ChaseColor {
+  channels: RandomChannels
+  /** default: 1 */
+  // distribution?: number
+}
+
+export interface LiveChase {
+  on: boolean
+  members: string[]
+  value: number
+  /** in seconds */
+  speed: number
+  /** in seconds */
+  // fade?: number
+  stopped?: boolean
+  /** between 0 and 1 */
+  light: ValueOrRandom<number>
+  colors: ChaseColor[]
 }
 
 // Widgets

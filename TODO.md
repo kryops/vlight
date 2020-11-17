@@ -2,17 +2,24 @@
 
 ## Roadmap
 
+- Fixtures: Draw multiple shapes on map
 - Memories extension
   - in a row: repeat n times
   - alternating: alternate after n fixtures
 - Chases
   - Pre-configured / presets
-  - Live
+  - Color distribution: random, equal, relative
+  - LiveChase: Recompute when colors change
+  - Change master/value without recomputing
+  - Fading
+  - Sync speed
 - Prepare changes before applying
   - Fade/transition
   - kick off multiple changes at once
 - Speed/Fade control
+  - global vs local speed
   - global pause/halt
+  - global fading (outgoing universe)
 - Keyboard shortcuts/keybindings
 - LaunchPad input
 - XTouch input
