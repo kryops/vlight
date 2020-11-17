@@ -57,7 +57,7 @@ function assertValidChannel(channel: number) {
 }
 
 function getChannelValueCorrectedForMaster(
-  universe: Buffer,
+  universe: Universe,
   channel: number,
   value: number
 ) {
@@ -108,7 +108,11 @@ function computeDmxChannelChange(
   let newDmxValue = newUniverseValue
 
   for (const universe of universes) {
-    const universeValue = universe[index]
+    const universeValue = getChannelValueCorrectedForMaster(
+      universe,
+      getChannelFromUniverseIndex(index),
+      universe[index]
+    )
     // shortcut: If any universe is set to 255, the overall value will not have changed.
     // value can't be 255 here, as that would have been >= currentValue
     if (universeValue === 255) {
@@ -174,8 +178,39 @@ function recomputeAndBroadcastDmxChannel(channel: number): boolean {
   return changedDmx
 }
 
+function computeUniverseChannelChange(
+  universe: Universe,
+  channel: number,
+  value: number,
+  oldValue: number
+) {
+  const finalNewValue = getChannelValueCorrectedForMaster(
+    universe,
+    channel,
+    value
+  )
+  const finalOldValue = getChannelValueCorrectedForMaster(
+    universe,
+    channel,
+    oldValue
+  )
+  const changedOutgoing = computeAndBroadcastDmxChannelChange(
+    channel,
+    finalNewValue,
+    finalOldValue
+  )
+
+  if (changedOutgoing) {
+    affectedChannelsByMasterChannel
+      .get(channel)
+      ?.forEach(affectedChannel =>
+        recomputeAndBroadcastDmxChannel(affectedChannel)
+      )
+  }
+}
+
 export function setUniverseChannel(
-  universe: Buffer,
+  universe: Universe,
   channel: number,
   value: number
 ): boolean {
@@ -191,14 +226,7 @@ export function setUniverseChannel(
 
   if (!universes.includes(universe)) return true
 
-  const finalValue = getChannelValueCorrectedForMaster(universe, channel, value)
-  computeAndBroadcastDmxChannelChange(channel, finalValue, oldValue)
-
-  affectedChannelsByMasterChannel
-    .get(channel)
-    ?.forEach(affectedChannel =>
-      recomputeAndBroadcastDmxChannel(affectedChannel)
-    )
+  computeUniverseChannelChange(universe, channel, value, oldValue)
 
   return true
 }
@@ -218,26 +246,30 @@ export function createUniverse(): Universe {
 export function addUniverse(universe: Universe): void {
   addToMutableArray(universes, universe)
   if (universe.some(x => x !== 0)) {
-    universe.forEach((value, index) =>
-      computeAndBroadcastDmxChannelChange(
-        getChannelFromUniverseIndex(index),
-        value,
-        0
-      )
-    )
+    universe.forEach((value, index) => {
+      if (value !== 0)
+        computeUniverseChannelChange(
+          universe,
+          getChannelFromUniverseIndex(index),
+          value,
+          0
+        )
+    })
   }
 }
 
 export function removeUniverse(universe: Universe): void {
   removeFromMutableArray(universes, universe)
   if (universe.some(x => x !== 0)) {
-    universe.forEach((value, index) =>
-      computeAndBroadcastDmxChannelChange(
-        getChannelFromUniverseIndex(index),
-        0,
-        value
-      )
-    )
+    universe.forEach((value, index) => {
+      if (value !== 0)
+        computeUniverseChannelChange(
+          universe,
+          getChannelFromUniverseIndex(index),
+          0,
+          value
+        )
+    })
   }
 }
 
