@@ -1,3 +1,4 @@
+import { LiveChase } from '@vlight/types'
 import { css } from 'linaria'
 
 import { setLiveChaseState } from '../../api'
@@ -8,6 +9,7 @@ import { iconAdd } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
+import { StatelessLiveChaseWidget } from '../../widgets/chase/stateless-live-chase-widget'
 
 const container = css`
   margin-top: ${baseline(4)};
@@ -16,6 +18,17 @@ const container = css`
 const widgetContainer = css`
   margin-right: ${baseline(0)};
 `
+
+function getNewLiveChase(): LiveChase {
+  return {
+    on: false,
+    value: 255,
+    members: [],
+    light: { from: 0.2, to: 1 },
+    speed: 1,
+    colors: [{ channels: { m: 255, r: 255 } }],
+  }
+}
 
 export function LiveChases() {
   const liveChases = useApiState('liveChases')
@@ -37,19 +50,7 @@ export function LiveChases() {
                   ...Object.keys(liveChases).map(it => parseInt(it))
                 ) + 1
               )
-
-              // TODO
-              setLiveChaseState(newId, {
-                on: true,
-                value: 255,
-                members: ['all:12x12'],
-                light: { from: 0.2, to: 1 },
-                speed: 1,
-                colors: [
-                  { channels: { m: 255, r: 255 } },
-                  { channels: { m: 255, g: 255 } },
-                ],
-              })
+              setLiveChaseState(newId, getNewLiveChase())
             }}
           />
         }
@@ -57,6 +58,15 @@ export function LiveChases() {
         Live Chases
       </Header>
       <div className={cx(pageWithWidgets, widgetContainer)}>
+        {Object.entries(liveChases).map(([id, liveChase]) => (
+          <StatelessLiveChaseWidget
+            key={id}
+            title={`Live Chase ${id}`}
+            id={id}
+            state={liveChase}
+          />
+        ))}
+        <br />
         {Object.entries(liveChases).map(([id, liveChase]) => (
           <p key={id}>
             {id}: {JSON.stringify(liveChase)}

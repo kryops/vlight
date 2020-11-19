@@ -5,8 +5,24 @@ import {
   ValueRange,
 } from '@vlight/types'
 
-function isValueRange(x: unknown): x is ValueRange<any> {
+export function isValueRange(x: unknown): x is ValueRange<any> {
   return typeof x === 'object' && x !== null && 'from' in x && 'to' in x
+}
+
+export function lowestRandomValue<T extends number>(
+  value: ValueOrRandom<T>
+): T {
+  if (isValueRange(value)) return value.from
+  if (Array.isArray(value)) return Math.min(...value) as T
+  return value
+}
+
+export function highestRandomValue<T extends number>(
+  value: ValueOrRandom<T>
+): T {
+  if (isValueRange(value)) return value.to
+  if (Array.isArray(value)) return Math.max(...value) as T
+  return value
 }
 
 export function randomNumber(min = 0, max = 1, round = false): number {

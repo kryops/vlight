@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 
-import { setMemoryState } from '../../api'
+import { setLiveMemoryState, setMemoryState } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconConfig, iconLight, iconLightOff } from '../../ui/icons'
 import { useApiState, useMasterData } from '../../hooks/api'
@@ -10,6 +10,7 @@ import { entitiesPageRoute } from '../routes'
 export function MemoriesActions() {
   const { memories } = useMasterData()
   const memoriesState = useApiState('memories')
+  const liveMemoriesState = useApiState('liveMemories')
 
   function setOnForAllMemories(on: boolean) {
     setMemoryState(
@@ -17,6 +18,11 @@ export function MemoriesActions() {
       { on },
       true
     )
+    Object.entries(liveMemoriesState).forEach(([id, liveMemory]) => {
+      if (liveMemory.on !== on) {
+        setLiveMemoryState(id, { on }, true)
+      }
+    })
   }
 
   return (
@@ -27,14 +33,14 @@ export function MemoriesActions() {
       <Button
         icon={iconLight}
         onDown={() => setOnForAllMemories(true)}
-        disabled={isAllOn(memoriesState)}
+        disabled={isAllOn(memoriesState) && isAllOn(liveMemoriesState)}
       >
         ON
       </Button>
       <Button
         icon={iconLightOff}
         onDown={() => setOnForAllMemories(false)}
-        disabled={!isAnyOn(memoriesState)}
+        disabled={!isAnyOn(memoriesState) && !isAnyOn(liveMemoriesState)}
       >
         OFF
       </Button>

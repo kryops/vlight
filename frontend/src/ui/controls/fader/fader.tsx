@@ -50,6 +50,11 @@ const button = css`
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
+`
+
+const button_small = css`
+  font-size: 0.75rem;
 `
 
 const subLabelStyle = css`
@@ -128,7 +133,10 @@ export const Fader = memoInProduction(
         onUp={() => setLocalValue(null, true)}
       >
         <div className={track} ref={trackRef} />
-        <div className={button} style={{ transform: `translateY(${y}px)` }}>
+        <div
+          className={cx(button, label && label.length > 3 && button_small)}
+          style={{ transform: `translateY(${y}px)` }}
+        >
           {label}
           {subLabel && <div className={subLabelStyle}>{subLabel}</div>}
         </div>

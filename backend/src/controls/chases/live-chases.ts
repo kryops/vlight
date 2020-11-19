@@ -106,7 +106,11 @@ function handleApiMessage(message: ApiLiveChaseMessage): boolean {
   if (!existing?.on) addUniverse(outgoingUniverses.get(id)!)
 
   if (liveChase.stopped) removeInterval(id)
-  else if (existing?.stopped || existing?.speed !== liveChase.speed)
+  else if (
+    !existing?.on ||
+    existing?.stopped ||
+    existing?.speed !== liveChase.speed
+  )
     addInterval(id, liveChase)
 
   return true

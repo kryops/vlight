@@ -48,15 +48,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
     return (
       <Widget
         title={title}
-        onTitleClick={() =>
-          setLiveMemoryState(
-            id,
-            {
-              on: !state.on,
-            },
-            true
-          )
-        }
+        onTitleClick={() => setLiveMemoryState(id, { on: !state.on }, true)}
         turnedOn={state.on}
         contentClassName={flexWrap}
       >
@@ -73,15 +65,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
             max={255}
             step={1}
             value={state.value ?? 0}
-            onChange={value =>
-              setLiveMemoryState(
-                id,
-                {
-                  value,
-                },
-                true
-              )
-            }
+            onChange={value => setLiveMemoryState(id, { value }, true)}
           />
           <MemoryPreview className={preview} scenes={[state]} />
         </div>
