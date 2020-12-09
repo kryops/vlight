@@ -1,7 +1,4 @@
-import {
-  getLiveChaseFixtureStates,
-  mapFixtureStateToChannels,
-} from '@vlight/controls'
+import { getLiveChaseFixtureStates } from '@vlight/controls'
 import { ApiLiveChaseMessage, IdType, LiveChase } from '@vlight/types'
 import { logger, mergeObjects } from '@vlight/utils'
 
@@ -10,8 +7,7 @@ import { masterData, masterDataMaps } from '../../services/masterdata'
 import {
   addUniverse,
   createUniverse,
-  getUniverseIndex,
-  mergeUniverse,
+  overwriteUniverse,
   removeUniverse,
   Universe,
 } from '../../services/universe'
@@ -19,34 +15,25 @@ import { controlRegistry } from '../registry'
 
 export const liveChases: Map<IdType, LiveChase> = new Map()
 
+export interface LiveChasePreparedState {
+  fullUniverse: Universe
+  computedTime: number
+}
+
+const preparedStates: Map<IdType, LiveChasePreparedState> = new Map()
 const outgoingUniverses: Map<IdType, Universe> = new Map()
 const intervals: Map<IdType, any> = new Map()
 
-function getUniverseForLiveChase(liveChase: LiveChase): Universe | null {
-  if (!liveChase.on) return null
-
-  const universe = createUniverse()
-
+function prepareLiveChase(liveChase: LiveChase): LiveChasePreparedState {
   const fixtureStates = getLiveChaseFixtureStates(liveChase, {
     masterData,
     masterDataMaps,
   })
 
-  Object.entries(fixtureStates).forEach(([fixtureId, state]) => {
-    const fixture = masterDataMaps.fixtures.get(fixtureId)
-    if (!fixture) return
-    const { channel } = fixture
-    const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)!
-
-    mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
-      const universeIndex = getUniverseIndex(channel) + offset
-      if (universe[universeIndex] < value) {
-        universe[universeIndex] = value
-      }
-    })
-  })
-
-  return universe
+  return {
+    fullUniverse: createUniverse(fixtureStates),
+    computedTime: Date.now(),
+  }
 }
 
 function recomputeLiveChase(id: IdType) {
@@ -54,12 +41,15 @@ function recomputeLiveChase(id: IdType) {
   const liveChase = liveChases.get(id)
   if (!liveChase) return
   const universe = outgoingUniverses.get(id)!
-  const newUniverse = getUniverseForLiveChase(liveChase)!
+  const preparedState = prepareLiveChase(liveChase)!
+  preparedStates.set(id, preparedState)
 
-  mergeUniverse(universe, newUniverse)
+  overwriteUniverse(universe, preparedState.fullUniverse)
 }
 
 function addInterval(id: IdType, liveChase: LiveChase) {
+  // TODO execute immediately / set timeout for first run
+
   const interval = setInterval(
     () => recomputeLiveChase(id),
     // max speed: 25 fps
@@ -95,23 +85,23 @@ function handleApiMessage(message: ApiLiveChaseMessage): boolean {
 
   if (!liveChase.on) {
     removeInterval(id)
-    if (existing?.on) removeUniverse(universe)
+    removeUniverse(universe)
     return true
   }
 
-  // Only recompute chase here when it's new - otherwise we would flicker lots of colors when fading / changing speed
-  // TODO deep equal? => recompute when colors change
-  // TODO apply master/value later (without recomputing) => persist current fixture states?
-  if (!existing) recomputeLiveChase(id)
-  if (!existing?.on) addUniverse(outgoingUniverses.get(id)!)
+  // Only recompute chase here when it's new or turned on
+  // otherwise we would flicker lots of colors when fading, changing speed or colors
+  if (!existing?.on) recomputeLiveChase(id)
+  addUniverse(universe, { masterValue: liveChase.value })
 
   if (liveChase.stopped) removeInterval(id)
   else if (
     !existing?.on ||
     existing?.stopped ||
     existing?.speed !== liveChase.speed
-  )
+  ) {
     addInterval(id, liveChase)
+  }
 
   return true
 }
@@ -120,6 +110,7 @@ function reload(reloadState?: boolean) {
   if (!reloadState) return
 
   liveChases.clear()
+  preparedStates.clear()
   ;[...outgoingUniverses.values()].forEach(removeUniverse)
   outgoingUniverses.clear()
   ;[...intervals.keys()].forEach(removeInterval)

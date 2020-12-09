@@ -1,9 +1,6 @@
-import {
-  addToMutableArray,
-  createRangeArray,
-  removeFromMutableArray,
-} from '@vlight/utils'
-import { ChannelMapping } from '@vlight/controls'
+import { createRangeArray } from '@vlight/utils'
+import { ChannelMapping, mapFixtureStateToChannels } from '@vlight/controls'
+import { Dictionary, FixtureState } from '@vlight/types'
 
 import { broadcastUniverseChannelToDevices } from '../devices'
 import { howLong } from '../util/time'
@@ -13,23 +10,36 @@ import { broadcastUniverseChannelToApiClients } from './api'
 import { masterData, masterDataMaps } from './masterdata'
 
 export type Universe = Buffer
+export interface UniverseState {
+  masterValue?: number
+}
 
 const dmxUniverse = createUniverse()
 
-const universes: Universe[] = []
+const universes = new Set<Universe>()
+const universeStates = new Map<Universe, UniverseState>()
 
 const affectedChannelsByMasterChannel = new Map<number, number[]>()
 const masterChannelByChannel = new Map<number, number>()
+const fadedChannels = new Set<number>()
 
 function initMasterChannelMaps() {
+  fadedChannels.clear()
+
   for (const fixture of masterData.fixtures) {
     const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
     if (!fixtureType) continue
 
     const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.Master)
-    if (masterIndex === -1) continue
+    if (masterIndex === -1) {
+      for (let offset = 0; offset < fixtureType.mapping.length; offset++) {
+        fadedChannels.add(fixture.channel + offset)
+      }
+      continue
+    }
 
     const masterChannel = fixture.channel + masterIndex
+    fadedChannels.add(masterChannel)
     const affectedChannels = createRangeArray(
       fixture.channel,
       fixture.channel + fixtureType.mapping.length - 1
@@ -56,63 +66,80 @@ function assertValidChannel(channel: number) {
   }
 }
 
-function getChannelValueCorrectedForMaster(
+/**
+ * returns the universe's channel value
+ * - corrected for master channel across all universes
+ * - with its masterValue applied if the channel is faded
+ */
+function getFinalChannelValue(
   universe: Universe,
   channel: number,
-  value: number
+  overrideValue?: number
 ) {
+  const value = overrideValue ?? universe[getUniverseIndex(channel)]
+
   if (value === 0) return value
 
+  let factor = 1
+
+  // we apply the masterValue first, which is necessary for the affecting master channel later
+  const universeMasterChannelValue = universeStates.get(universe)?.masterValue
+  if (
+    universeMasterChannelValue !== undefined &&
+    universeMasterChannelValue !== 255 &&
+    fadedChannels.has(channel)
+  ) {
+    factor *= universeMasterChannelValue / 255
+  }
+
   const affectingMasterChannel = masterChannelByChannel.get(channel)
-  if (!affectingMasterChannel) return value
+  if (affectingMasterChannel) {
+    const highestMaster = dmxUniverse[getUniverseIndex(affectingMasterChannel)]
+    const sameUniverseMaster = getFinalChannelValue(
+      universe,
+      affectingMasterChannel
+    )
+    if (sameUniverseMaster < highestMaster) {
+      factor *= sameUniverseMaster / highestMaster
+    }
+  }
 
-  const masterIndex = getUniverseIndex(affectingMasterChannel)
-  const highestMaster = dmxUniverse[masterIndex]
-  const sameUniverseMaster = universe[masterIndex]
-
-  if (sameUniverseMaster >= highestMaster) return value
-
-  const factor = sameUniverseMaster / highestMaster
-  return Math.round(value * factor)
+  return factor === 1 ? value : Math.round(value * factor)
 }
 
 function computeDmxChannelChange(
   channel: number,
-  newUniverseValue: number,
-  oldUniverseValue: number
+  finalNewUniverseValue: number,
+  finalOldUniverseValue: number
 ): boolean {
-  if (newUniverseValue === oldUniverseValue) {
+  if (finalNewUniverseValue === finalOldUniverseValue) {
     return false
   }
 
   const index = getUniverseIndex(channel)
   const currentDmxValue = dmxUniverse[index]
 
-  if (newUniverseValue === currentDmxValue) {
+  if (finalNewUniverseValue === currentDmxValue) {
     return false
   }
 
   // no change because another universe has the highest value
   if (
-    oldUniverseValue < currentDmxValue &&
-    newUniverseValue < currentDmxValue
+    finalOldUniverseValue < currentDmxValue &&
+    finalNewUniverseValue < currentDmxValue
   ) {
     return false
   }
 
-  if (newUniverseValue > currentDmxValue) {
-    dmxUniverse[index] = newUniverseValue
+  if (finalNewUniverseValue > currentDmxValue) {
+    dmxUniverse[index] = finalNewUniverseValue
     return true
   }
 
-  let newDmxValue = newUniverseValue
+  let newDmxValue = finalNewUniverseValue
 
   for (const universe of universes) {
-    const universeValue = getChannelValueCorrectedForMaster(
-      universe,
-      getChannelFromUniverseIndex(index),
-      universe[index]
-    )
+    const universeValue = getFinalChannelValue(universe, channel)
     // shortcut: If any universe is set to 255, the overall value will not have changed.
     // value can't be 255 here, as that would have been >= currentValue
     if (universeValue === 255) {
@@ -133,17 +160,23 @@ function computeDmxChannelChange(
 
 function computeAndBroadcastDmxChannelChange(
   channel: number,
-  newUniverseValue: number,
-  oldUniverseValue: number
+  finalNewUniverseValue: number,
+  finalOldUniverseValue: number
 ): boolean {
   const changedDmx = computeDmxChannelChange(
     channel,
-    newUniverseValue,
-    oldUniverseValue
+    finalNewUniverseValue,
+    finalOldUniverseValue
   )
 
   if (changedDmx) {
     broadcastUniverseChannel(channel)
+
+    affectedChannelsByMasterChannel
+      .get(channel)
+      ?.forEach(affectedChannel =>
+        recomputeAndBroadcastDmxChannel(affectedChannel)
+      )
   }
 
   return changedDmx
@@ -155,11 +188,7 @@ function recomputeDmxChannel(channel: number): boolean {
   let newValue = 0
 
   for (const universe of universes) {
-    const value = getChannelValueCorrectedForMaster(
-      universe,
-      channel,
-      universe[index]
-    )
+    const value = getFinalChannelValue(universe, channel)
     if (value > newValue) newValue = value
 
     if (value === 255) break
@@ -178,35 +207,17 @@ function recomputeAndBroadcastDmxChannel(channel: number): boolean {
   return changedDmx
 }
 
-function computeUniverseChannelChange(
+function computeUniverseChannelRawValueChange(
   universe: Universe,
   channel: number,
-  value: number,
-  oldValue: number
+  rawValue: number,
+  rawOldValue: number
 ) {
-  const finalNewValue = getChannelValueCorrectedForMaster(
-    universe,
+  computeAndBroadcastDmxChannelChange(
     channel,
-    value
+    getFinalChannelValue(universe, channel, rawValue),
+    getFinalChannelValue(universe, channel, rawOldValue)
   )
-  const finalOldValue = getChannelValueCorrectedForMaster(
-    universe,
-    channel,
-    oldValue
-  )
-  const changedOutgoing = computeAndBroadcastDmxChannelChange(
-    channel,
-    finalNewValue,
-    finalOldValue
-  )
-
-  if (changedOutgoing) {
-    affectedChannelsByMasterChannel
-      .get(channel)
-      ?.forEach(affectedChannel =>
-        recomputeAndBroadcastDmxChannel(affectedChannel)
-      )
-  }
 }
 
 export function setUniverseChannel(
@@ -224,9 +235,9 @@ export function setUniverseChannel(
 
   universe[index] = value
 
-  if (!universes.includes(universe)) return true
+  if (!universes.has(universe)) return true
 
-  computeUniverseChannelChange(universe, channel, value, oldValue)
+  computeUniverseChannelRawValueChange(universe, channel, value, oldValue)
 
   return true
 }
@@ -239,51 +250,124 @@ export function getDmxUniverse(): Buffer {
   return dmxUniverse
 }
 
-export function createUniverse(): Universe {
-  return Buffer.alloc(universeSize)
-}
+export function createUniverse(
+  fixtureStates?: Dictionary<FixtureState>
+): Universe {
+  const universe = Buffer.alloc(universeSize)
 
-export function addUniverse(universe: Universe): void {
-  addToMutableArray(universes, universe)
-  if (universe.some(x => x !== 0)) {
-    universe.forEach((value, index) => {
-      if (value !== 0)
-        computeUniverseChannelChange(
-          universe,
-          getChannelFromUniverseIndex(index),
-          value,
-          0
-        )
+  if (fixtureStates) {
+    Object.entries(fixtureStates).forEach(([fixtureId, state]) => {
+      const fixture = masterDataMaps.fixtures.get(fixtureId)
+      if (!fixture) return
+      const { channel } = fixture
+      const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)!
+
+      mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
+        const index = getUniverseIndex(channel) + offset
+        if (universe[index] < value) {
+          universe[index] = value
+        }
+      })
     })
   }
+
+  return universe
+}
+
+export function addUniverse(universe: Universe, state?: UniverseState): void {
+  if (universes.has(universe)) {
+    if (state) setUniverseState(universe, state)
+    return
+  }
+
+  universes.add(universe)
+  if (state) universeStates.set(universe, state)
+
+  universe.forEach((value, index) => {
+    if (value !== 0)
+      computeUniverseChannelRawValueChange(
+        universe,
+        getChannelFromUniverseIndex(index),
+        value,
+        0
+      )
+  })
 }
 
 export function removeUniverse(universe: Universe): void {
-  removeFromMutableArray(universes, universe)
-  if (universe.some(x => x !== 0)) {
-    universe.forEach((value, index) => {
-      if (value !== 0)
-        computeUniverseChannelChange(
-          universe,
-          getChannelFromUniverseIndex(index),
-          0,
-          value
-        )
-    })
-  }
+  if (!universes.has(universe)) return
+
+  universes.delete(universe)
+  universeStates.delete(universe)
+
+  universe.forEach((value, index) => {
+    if (value !== 0)
+      computeUniverseChannelRawValueChange(
+        universe,
+        getChannelFromUniverseIndex(index),
+        0,
+        value
+      )
+  })
 }
 
-export function mergeUniverse(universe1: Universe, universe2: Universe): void {
+export function overwriteUniverse(
+  universe1: Universe,
+  universe2: Universe
+): boolean {
+  let changed = false
+
   universe1.forEach((value, index) => {
+    const channel = getChannelFromUniverseIndex(index)
     const newValue = universe2[index]
+
     if (newValue !== value) {
-      setUniverseChannel(
-        universe1,
-        getChannelFromUniverseIndex(index),
-        newValue
-      )
+      setUniverseChannel(universe1, channel, newValue)
+      changed = true
     }
   })
+
+  return changed
+}
+
+export function setUniverseState(
+  universe: Universe,
+  state: UniverseState
+): void {
+  if (!universes.has(universe)) return
+
+  const oldState = universeStates.get(universe)
+  const masterValueChanged =
+    'masterValue' in state && oldState?.masterValue !== state.masterValue
+
+  // to do an efficient diff, we first have to generate the final values for the old masterValue
+  const oldFinalChannelValues = new Map<number, number>()
+  if (masterValueChanged) {
+    universe.forEach((value, index) => {
+      if (value !== 0) {
+        const channel = getChannelFromUniverseIndex(index)
+        oldFinalChannelValues.set(
+          channel,
+          getFinalChannelValue(universe, channel, value)
+        )
+      }
+    })
+  }
+
+  universeStates.set(universe, { ...oldState, ...state })
+
+  if (masterValueChanged) {
+    universe.forEach((value, index) => {
+      if (value !== 0) {
+        const channel = getChannelFromUniverseIndex(index)
+        computeAndBroadcastDmxChannelChange(
+          channel,
+          getFinalChannelValue(universe, channel, value),
+          oldFinalChannelValues.get(channel)!
+        )
+      }
+    })
+  }
 }
 
 export function getUniverseIndex(channel: number): number {

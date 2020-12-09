@@ -121,7 +121,7 @@ export function getFixtureStateForMemoryScene(
   scene: MemoryScene,
   memberIndex: number,
   members?: string[]
-): FixtureState | undefined {
+): FixtureState {
   const [stateIndex, fraction] = getStateIndexAndFractionFor(
     scene,
     memberIndex,

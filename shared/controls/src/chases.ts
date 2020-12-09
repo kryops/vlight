@@ -11,7 +11,7 @@ import {
   randomArrayIndex,
 } from '@vlight/utils'
 
-import { applyAdditionalMaster, mapFixtureList } from './fixtures'
+import { mapFixtureList } from './fixtures'
 
 export function getLiveChaseFixtureStates(
   liveChase: LiveChase,
@@ -29,16 +29,13 @@ export function getLiveChaseFixtureStates(
   const activeMembers = filterArrayRandomly(members, light)
 
   activeMembers.forEach(member => {
-    // TODO distribution
+    // TODO color distribution (random, equal, relative) - now just equal
     const color = liveChase.colors[randomArrayIndex(liveChase.colors)]
 
-    fixtureStates[member] = applyAdditionalMaster(
-      {
-        on: true,
-        channels: computeRandomChannels(color.channels),
-      },
-      liveChase.value
-    )
+    fixtureStates[member] = {
+      on: true,
+      channels: computeRandomChannels(color.channels),
+    }
   })
 
   return fixtureStates

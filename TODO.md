@@ -9,8 +9,7 @@
 - Chases
   - Pre-configured / presets
   - Color distribution: random, equal, relative
-  - LiveChase: Recompute when colors change
-  - Change master/value without recomputing
+  - LiveChase: Better handling of speed changes (do not just restart the interval)
   - Fading
   - Sync speed
 - Prepare changes before applying

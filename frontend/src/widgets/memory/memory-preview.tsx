@@ -37,8 +37,6 @@ function getMemoryUniverse(
         memberIndex
       )
 
-      if (!state) return
-
       mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
         const universeIndex = fixture.channel - 1 + offset
         if (universe[universeIndex] < value) {

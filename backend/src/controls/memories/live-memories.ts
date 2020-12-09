@@ -1,10 +1,11 @@
+import { getFixtureStateForMemoryScene, mapFixtureList } from '@vlight/controls'
 import {
-  applyAdditionalMaster,
-  getFixtureStateForMemoryScene,
-  mapFixtureList,
-  mapFixtureStateToChannels,
-} from '@vlight/controls'
-import { ApiLiveMemoryMessage, IdType, LiveMemory } from '@vlight/types'
+  ApiLiveMemoryMessage,
+  Dictionary,
+  FixtureState,
+  IdType,
+  LiveMemory,
+} from '@vlight/types'
 import { mergeObjects } from '@vlight/utils'
 
 import { registerApiMessageHandler } from '../../services/api/registry'
@@ -12,8 +13,7 @@ import { masterData, masterDataMaps } from '../../services/masterdata'
 import {
   addUniverse,
   createUniverse,
-  getUniverseIndex,
-  mergeUniverse,
+  overwriteUniverse,
   removeUniverse,
   Universe,
 } from '../../services/universe'
@@ -23,43 +23,23 @@ export const liveMemories: Map<IdType, LiveMemory> = new Map()
 
 const outgoingUniverses: Map<IdType, Universe> = new Map()
 
-function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe | null {
-  if (!liveMemory.on) return null
-
-  const universe = createUniverse()
+function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe {
+  const fixtureStates: Dictionary<FixtureState> = {}
 
   mapFixtureList(liveMemory.members, { masterData, masterDataMaps }).forEach(
     (member, memberIndex, members) => {
-      const fixture = masterDataMaps.fixtures.get(member)
-      if (!fixture) return
-      const { channel } = fixture
-      const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)!
-
-      const state = getFixtureStateForMemoryScene(
+      fixtureStates[member] = getFixtureStateForMemoryScene(
         liveMemory,
         memberIndex,
         members
       )
-
-      if (!state) return
-
-      const finalState = applyAdditionalMaster(state, liveMemory.value)
-
-      mapFixtureStateToChannels(fixtureType, finalState).forEach(
-        (value, offset) => {
-          const universeIndex = getUniverseIndex(channel) + offset
-          if (universe[universeIndex] < value) {
-            universe[universeIndex] = value
-          }
-        }
-      )
     }
   )
 
-  return universe
+  return createUniverse(fixtureStates)
 }
 
-function handleApiMessage(message: ApiLiveMemoryMessage) {
+function handleApiMessage(message: ApiLiveMemoryMessage): boolean {
   const id = message.id
 
   const existing = liveMemories.get(id)
@@ -70,17 +50,25 @@ function handleApiMessage(message: ApiLiveMemoryMessage) {
 
   liveMemories.set(id, liveMemory)
 
-  const newUniverse = getUniverseForLiveMemory(liveMemory)
-
-  if (!existing) outgoingUniverses.set(id, newUniverse ?? createUniverse())
+  if (!existing) outgoingUniverses.set(id, getUniverseForLiveMemory(liveMemory))
   const universe = outgoingUniverses.get(id)!
 
-  if (existing && newUniverse) {
-    mergeUniverse(universe, newUniverse)
+  if (!liveMemory.on) {
+    removeUniverse(universe)
+    return true
   }
 
-  if (!existing?.on && liveMemory.on) addUniverse(universe)
-  else if (existing?.on && !liveMemory.on) removeUniverse(universe)
+  if (
+    existing &&
+    (!existing.on ||
+      message.state.members ||
+      message.state.pattern ||
+      message.state.states)
+  ) {
+    overwriteUniverse(universe, getUniverseForLiveMemory(liveMemory)!)
+  }
+
+  addUniverse(universe, { masterValue: liveMemory.value })
 
   return true
 }
