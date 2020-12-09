@@ -1,7 +1,7 @@
 {
   "extends": [
     "stylelint-config-recommended",
-    "linaria/stylelint-config",
+    "@linaria/stylelint"
   ],
   "rules": {
     "block-no-empty": null,

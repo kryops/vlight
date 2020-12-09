@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { PropsWithChildren, ReactElement } from 'react'
 
 import { Icon } from '../icons/icon'

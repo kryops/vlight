@@ -1,5 +1,5 @@
 import { LiveChase } from '@vlight/types'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { setLiveChaseState } from '../../api'
 import { useApiState } from '../../hooks/api'

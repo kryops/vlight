@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { mainNavigationItems } from '../../pages'
 import { primaryShade, zNavigation } from '../styles'

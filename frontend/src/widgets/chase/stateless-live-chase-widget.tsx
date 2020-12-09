@@ -1,6 +1,6 @@
 import { IdType, LiveChase } from '@vlight/types'
 import { lowestRandomValue, highestRandomValue } from '@vlight/utils'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { setLiveChaseState } from '../../api'
 import { Widget } from '../../ui/containers/widget'

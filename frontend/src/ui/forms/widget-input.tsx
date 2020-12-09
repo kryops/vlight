@@ -1,5 +1,5 @@
 import { EntityName, WidgetConfig } from '@vlight/types'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { ensureBetween } from '@vlight/utils'
 
 import { baseline, primaryShade } from '../styles'

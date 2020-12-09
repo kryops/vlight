@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { MemoryScene, MemorySceneState } from '@vlight/types'
 
 import { entityUiMapping } from '../entity-ui-mapping'

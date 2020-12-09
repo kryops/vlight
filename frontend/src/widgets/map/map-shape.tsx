@@ -1,5 +1,5 @@
 import { FixtureBorderStyle, FixtureShape, FixtureType } from '@vlight/types'
-import { css, cx } from 'linaria'
+import { css, cx } from '@linaria/core'
 import { CSSProperties, ReactNode } from 'react'
 
 import { baselinePx, iconShade } from '../../ui/styles'

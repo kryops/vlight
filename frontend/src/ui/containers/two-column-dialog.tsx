@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { ReactNode } from 'react'
 
 import { cx } from '../../util/styles'

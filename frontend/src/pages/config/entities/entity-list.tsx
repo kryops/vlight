@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { EntityType, EntityName, MasterData } from '@vlight/types'
 
 import { removeEntity, setEntities } from '../../../api'

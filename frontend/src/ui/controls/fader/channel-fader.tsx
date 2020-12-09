@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { memoInProduction } from '../../../util/development'
 import { getFixtureAtChannel } from '../../../util/fixtures'

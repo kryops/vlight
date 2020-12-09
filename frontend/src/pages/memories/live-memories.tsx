@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { setLiveMemoryState } from '../../api'
 import { useApiState } from '../../hooks/api'

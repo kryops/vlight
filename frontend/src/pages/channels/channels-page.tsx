@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { createRangeArray } from '@vlight/utils'
 
 import { setChannel } from '../../api'

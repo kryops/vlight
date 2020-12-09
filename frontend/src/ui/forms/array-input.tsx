@@ -1,5 +1,5 @@
 import { ComponentType, useRef, useState } from 'react'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { Icon } from '../icons/icon'
 import { iconDelete } from '../icons'

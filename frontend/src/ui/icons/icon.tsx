@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { MouseEvent as ReactMouseEvent } from 'react'
 
 import { ColorShade } from '../../types'

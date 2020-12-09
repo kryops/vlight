@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { useSettings } from '../../hooks/settings'
 import { MapWidget } from '../../widgets/map/map-widget'

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { cx } from '../../util/styles'
 import { baseline } from '../styles'

@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'

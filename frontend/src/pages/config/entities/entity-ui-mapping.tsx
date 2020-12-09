@@ -1,6 +1,6 @@
 import { ComponentType, ReactNode } from 'react'
 import { EntityName, EntityType, MasterDataMaps } from '@vlight/types'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { mapFixtureList } from '@vlight/controls'
 
 import {

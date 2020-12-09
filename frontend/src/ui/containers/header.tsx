@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { baseline } from '../styles'
 import { flexWrap } from '../css/flex'

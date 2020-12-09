@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { ColorShade } from '../../types'
 import { Icon } from '../icons/icon'

@@ -1,7 +1,7 @@
 import { FixtureState } from '@vlight/types'
 import { ReactNode, useCallback, useRef, useState } from 'react'
 import { ChannelMapping } from '@vlight/controls'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'

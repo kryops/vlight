@@ -1,5 +1,5 @@
 import { IdType, LiveMemory } from '@vlight/types'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { setLiveMemoryState } from '../../api'
 import { MemorySceneEditor } from '../../pages/config/entities/editors/memory-scene-editor'

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import {
   MemorySceneState,
   MemoryScene,

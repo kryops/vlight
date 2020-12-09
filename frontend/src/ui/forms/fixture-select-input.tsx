@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { EntityName } from '@vlight/types'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { FixtureMappingPrefix } from '@vlight/controls'
 
 import { cx } from '../../util/styles'

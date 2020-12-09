@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { ensureBetween, getFraction } from '@vlight/utils'
 
 import { baseline, iconShade, primaryShade, textShade } from '../styles'

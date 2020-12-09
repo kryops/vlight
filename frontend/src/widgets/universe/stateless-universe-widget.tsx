@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { useMemo } from 'react'
 import { MasterData } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'

@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { rotateAnimation } from '../animations/rotate'
 import { iconLoading } from '../icons'

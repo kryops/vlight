@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 import { useHistory } from 'react-router'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { Icon } from '../icons/icon'
 import { primaryShade, baseline } from '../styles'

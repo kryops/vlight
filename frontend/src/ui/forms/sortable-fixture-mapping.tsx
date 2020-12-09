@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { FixtureMappingPrefix } from '@vlight/controls'
 
 import { iconDelete, iconDrag } from '../icons'

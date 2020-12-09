@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { useRef } from 'react'
 import { ensureBetween, roundToStep } from '@vlight/utils'
 

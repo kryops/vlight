@@ -1,4 +1,4 @@
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { Suspense, useCallback, useState, useEffect } from 'react'
 import { useLocation } from 'react-router'
 

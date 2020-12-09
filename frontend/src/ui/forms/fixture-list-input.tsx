@@ -1,6 +1,6 @@
 import { FixtureMappingPrefix, mapFixtureList } from '@vlight/controls'
 import { EntityName, Fixture, FixtureGroup, FixtureType } from '@vlight/types'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { useState } from 'react'
 
 import { useMasterDataAndMaps, useRawMasterData } from '../../hooks/api'

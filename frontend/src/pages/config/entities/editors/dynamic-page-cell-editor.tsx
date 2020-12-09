@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 import { DynamicPageCell } from '@vlight/types'
 
 import { editorTitle } from '../../../../ui/css/editor-styles'

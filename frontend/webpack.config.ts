@@ -64,7 +64,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
               },
             },
             {
-              loader: 'linaria/loader',
+              loader: '@linaria/webpack-loader',
               options: {
                 sourceMap: true,
               },
@@ -138,7 +138,8 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       }),
       new ExtractCssPlugin({
         ignoreOrder: true,
-      }) as WebpackPluginInstance,
+        filename: 'styles.css',
+      }),
       !profile &&
         new ForkCheckerPlugin({
           typescript: {

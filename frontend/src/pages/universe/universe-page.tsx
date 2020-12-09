@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { useDmxUniverse, useMasterDataAndMaps } from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'

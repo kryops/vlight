@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { css } from 'linaria'
+import { css } from '@linaria/core'
 
 import { cx } from '../../util/styles'
 import { backgroundColor, textShade, baseline } from '../styles'
