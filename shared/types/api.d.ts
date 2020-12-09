@@ -8,6 +8,7 @@ import {
   EntityArray,
   LiveMemory,
   LiveChase,
+  EntityType,
 } from './entities'
 
 // Both ingoing + outgoing

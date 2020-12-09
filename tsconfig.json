@@ -28,6 +28,7 @@
     },
     "resolveJsonModule": true,
     "strict": true,
+    "skipDefaultLibCheck": true,
     "skipLibCheck": true,
     "incremental": true
   },

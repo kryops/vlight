@@ -1,6 +1,6 @@
 # vLight
 
-**:construction: This project is a Work in Progress! :hammer_and_wrench:**
+**🚧 This project is a Work in Progress! 🛠️**
 
 ## Software Needed
 
@@ -22,19 +22,19 @@ You can also build and run this project through Docker (in a Linux container):
 
 Install and setup:
 
-```sh
+```shellscript
 > yarn
 ```
 
 Start in development mode with hot reloading:
 
-```sh
+```shellscript
 > yarn start
 ```
 
 Start in production mode:
 
-```sh
+```shellscript
 > yarn start:prod
 ```
 

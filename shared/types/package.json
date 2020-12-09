@@ -8,6 +8,10 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "clean": "rimraf dist"
+    "clean": "rimraf dist docs",
+    "doc": "typedoc index.ts"
+  },
+  "devDependencies": {
+    "typedoc": "0.20.0-beta.27"
   }
 }

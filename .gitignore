@@ -171,3 +171,4 @@ dist
 .linaria-cache
 config/*/state.js
 *.tsbuildinfo
+shared/types/docs
