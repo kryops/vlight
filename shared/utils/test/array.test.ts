@@ -3,6 +3,7 @@ import {
   removeFromMutableArray,
   arrayRange,
   createRangeArray,
+  preferredOrder,
 } from '../src/array'
 
 describe('util/array', () => {
@@ -37,6 +38,28 @@ describe('util/array', () => {
       expect(createRangeArray(1, 4)).toEqual([1, 2, 3, 4])
       expect(createRangeArray(1, 1)).toEqual([1])
       expect(createRangeArray(1, 0)).toEqual([])
+    })
+  })
+
+  describe('preferredOrder', () => {
+    it('complete order', () => {
+      expect(preferredOrder([2, 4, 1, 3], [1, 2, 3, 4])).toEqual([1, 2, 3, 4])
+    })
+    it('arr > order', () => {
+      expect(preferredOrder([2, 4, 1], [1, 2, 3, 4])).toEqual([1, 2, 4])
+    })
+    it('order > arr', () => {
+      expect(preferredOrder([2, 5, 4, 6, 1, 3], [1, 2, 3, 4])).toEqual([
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+      ])
+    })
+    it('partial', () => {
+      expect(preferredOrder([4, 1, 3, 5], [2, 1])).toEqual([1, 4, 3, 5])
     })
   })
 })

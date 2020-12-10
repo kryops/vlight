@@ -40,7 +40,7 @@ const modalContainer = css`
 `
 
 const modal = css`
-  min-width: ${baseline(64)};
+  min-width: ${baseline(76)};
   max-width: 96vw;
   box-sizing: border-box;
   padding: ${baseline(6)} ${baseline(8)};
@@ -142,7 +142,8 @@ export function Modal<T>({
 }
 
 export function showModal<T>(
-  props: Omit<ModalProps<T>, 'onClose'>
+  props: Omit<ModalProps<T>, 'onClose'>,
+  registerCloseHandler?: (fn: (value: T) => void) => void
 ): Promise<T> {
   return new Promise<T>(resolve => {
     const Overlay = () => (
@@ -155,5 +156,10 @@ export function showModal<T>(
       />
     )
     addOverlay(Overlay)
+
+    registerCloseHandler?.(value => {
+      removeOverlay(Overlay)
+      resolve(value)
+    })
   })
 }

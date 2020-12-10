@@ -87,10 +87,18 @@ export interface ColorPickerProps {
   b?: number
   onChange: (color: ColorPickerColor) => void
   setDefaultHeight?: boolean
+  className?: string
 }
 
 export const ColorPicker = memoInProduction(
-  ({ r = 0, g = 0, b = 0, onChange, setDefaultHeight }: ColorPickerProps) => {
+  ({
+    r = 0,
+    g = 0,
+    b = 0,
+    onChange,
+    setDefaultHeight,
+    className,
+  }: ColorPickerProps) => {
     const [
       localColor,
       setLocalColor,
@@ -111,7 +119,9 @@ export const ColorPicker = memoInProduction(
         : positionFromColor
 
     return (
-      <div className={cx(container, setDefaultHeight && defaultHeight)}>
+      <div
+        className={cx(container, setDefaultHeight && defaultHeight, className)}
+      >
         <Touchable
           className={colorPicker}
           ref={touchRef}

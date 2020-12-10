@@ -149,10 +149,10 @@ export function initLiveChases(): void {
       type: 'live-chase',
       id: '1',
       state: {
-        on: true,
+        on: false,
         members: ['all:3x12', 'all:12x12'],
         speed: 1,
-        fade: 0.5,
+        // fade: 0.5,
         colors: [
           {
             channels: {

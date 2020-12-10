@@ -65,3 +65,20 @@ export function sortByKey<T extends object>(arr: T[], key: keyof T): T[] {
     return aVal < bVal ? -1 : 1
   })
 }
+
+export function preferredOrder<T>(arr: T[], preferred: T[]): T[] {
+  let currentTargetIndex = 0
+
+  preferred.forEach(value => {
+    const index = arr.indexOf(value)
+    if (index === -1) return
+    if (index !== currentTargetIndex) {
+      arr.splice(index, 1)
+      arr.splice(currentTargetIndex, 0, value)
+    }
+
+    currentTargetIndex++
+  })
+
+  return arr
+}

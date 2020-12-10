@@ -1,4 +1,4 @@
-import { IdType, LiveChase } from '@vlight/types'
+import { ChaseColor, IdType, LiveChase } from '@vlight/types'
 import { lowestRandomValue, highestRandomValue } from '@vlight/utils'
 import { css } from '@linaria/core'
 
@@ -12,7 +12,11 @@ import { iconAdd } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
-import { getFixtureStateColor } from '../../util/fixtures'
+import { showDialogWithReturnValue } from '../../ui/overlays/dialog'
+import { okCancel } from '../../ui/overlays/buttons'
+
+import { getChasePreviewColor } from './utils'
+import { ChaseColorEditor } from './chase-color-editor'
 
 const leftColumn = css`
   flex: 1 1 auto;
@@ -27,9 +31,11 @@ const colorContainer = css`
 `
 
 const colorStyle = css`
+  flex: 1 1 auto;
   height: ${baseline(8)};
   width: ${baseline(12)};
   margin-bottom: ${baseline()};
+  cursor: pointer;
 `
 
 export interface StatelessLiveChaseWidgetProps {
@@ -50,11 +56,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
         <div className={leftColumn}>
           <FixtureListInput
             value={state.members}
-            onChange={members => {
-              // Update UI in real-time to prevent flickering
-              state.members = members
-              setLiveChaseState(id, { members }, true)
-            }}
+            onChange={members => setLiveChaseState(id, { members }, true)}
             ordering
             compact
           />
@@ -66,42 +68,63 @@ export const StatelessLiveChaseWidget = memoInProduction(
                 key={index}
                 className={colorStyle}
                 style={{
-                  background:
-                    getFixtureStateColor({
-                      on: true,
-                      channels: {
-                        m: color.channels.m
-                          ? highestRandomValue(color.channels.m)
-                          : 255,
-                        r: color.channels.r
-                          ? highestRandomValue(color.channels.r)
-                          : 0,
-                        g: color.channels.g
-                          ? highestRandomValue(color.channels.g)
-                          : 0,
-                        b: color.channels.b
-                          ? highestRandomValue(color.channels.b)
-                          : 0,
+                  background: getChasePreviewColor(color),
+                }}
+                onClick={async () => {
+                  const result = await showDialogWithReturnValue<ChaseColor | null>(
+                    (onChange, onClose) => (
+                      <ChaseColorEditor
+                        members={state.members}
+                        color={color}
+                        onChange={onChange}
+                        onClose={onClose}
+                      />
+                    ),
+                    okCancel,
+                    { showCloseButton: true }
+                  )
+                  if (result === undefined) return
+
+                  if (result === null)
+                    setLiveChaseState(
+                      id,
+                      { colors: state.colors.filter(it => it !== color) },
+                      true
+                    )
+                  else
+                    setLiveChaseState(
+                      id,
+                      {
+                        colors: state.colors.map(it =>
+                          it === color ? result : it
+                        ),
                       },
-                    }) ?? 'black',
+                      true
+                    )
                 }}
               />
             ))}
             <Icon
               icon={iconAdd}
               hoverable
-              onClick={() =>
+              onClick={async () => {
+                const result = await showDialogWithReturnValue<ChaseColor | null>(
+                  onChange => (
+                    <ChaseColorEditor
+                      members={state.members}
+                      onChange={onChange}
+                    />
+                  ),
+                  okCancel,
+                  { showCloseButton: true }
+                )
+                if (!result) return
                 setLiveChaseState(
                   id,
-                  {
-                    colors: [
-                      ...state.colors,
-                      { channels: { m: 255, r: 255, g: 255, b: 255 } },
-                    ],
-                  },
+                  { colors: [...state.colors, result] },
                   true
                 )
-              }
+              }}
             />
           </div>
           <Fader
@@ -125,8 +148,9 @@ export const StatelessLiveChaseWidget = memoInProduction(
             value={state.fade ?? 0}
             onChange={fade => setLiveChaseState(id, { fade }, true)}
             label="Fade"
-            subLabel={`${(state.fade ?? 0).toFixed(2)}s`}
+            subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
           />
+          {/* TODO random / range inputs */}
           <Fader
             min={0}
             max={1}

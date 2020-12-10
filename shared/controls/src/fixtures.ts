@@ -5,7 +5,13 @@ import {
   MasterDataMaps,
   MasterDataWithMaps,
 } from '@vlight/types'
-import { logger, isUnique, average, isTruthy } from '@vlight/utils'
+import {
+  logger,
+  isUnique,
+  average,
+  isTruthy,
+  preferredOrder,
+} from '@vlight/utils'
 
 import { ChannelMapping, FixtureMappingPrefix } from './enums'
 
@@ -170,7 +176,17 @@ export function getCommonFixtureMapping(
     .map(({ type }) => masterDataMaps.fixtureTypes.get(type))
     .filter(isTruthy)
     .filter(isUnique)
-  return commonFixtureTypes.flatMap(({ mapping }) => mapping).filter(isUnique)
+  const mapping = commonFixtureTypes
+    .flatMap(({ mapping }) => mapping)
+    .filter(isUnique)
+
+  return preferredOrder(mapping, [
+    ChannelMapping.Master,
+    ChannelMapping.Red,
+    ChannelMapping.Green,
+    ChannelMapping.Blue,
+    ChannelMapping.White,
+  ])
 }
 
 export function applyAdditionalMaster(

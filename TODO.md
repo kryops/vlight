@@ -7,10 +7,11 @@
   - in a row: repeat n times
   - alternating: alternate after n fixtures
 - Chases
-  - UI: Colors, Random / range inputs
+  - UI: Random / range inputs
   - Pre-configured / presets
   - Color distribution: random, equal, relative
   - Sync speed / tap
+  - Start/Stop
 - Prepare changes before applying
   - Fade/transition
   - kick off multiple changes at once
@@ -26,7 +27,7 @@
 
 ## Tech
 
-- yarn 2 pnp / pnpm => blocked by linaria?
+- yarn 2 pnp / pnpm => still blocked by linaria?
 - Backend restructuring
   - easier masterData extension / new entity process?
 - Simplify / remove frontend API worker?

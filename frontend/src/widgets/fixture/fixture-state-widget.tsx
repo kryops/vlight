@@ -1,5 +1,5 @@
 import { FixtureState } from '@vlight/types'
-import { ReactNode, useCallback, useRef, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import { ChannelMapping } from '@vlight/controls'
 import { css } from '@linaria/core'
 
@@ -41,9 +41,6 @@ export const FixtureStateWidget = memoInProduction(
     disableOn,
     className,
   }: FixtureStateWidgetProps) => {
-    const stateRef = useRef(fixtureState)
-    stateRef.current = fixtureState
-
     const colorPickerCapable = colorPickerColors.every(c => mapping.includes(c))
     const [colorPicker, setColorPicker] = useState(true)
     const toggleColorPicker = useCallback(

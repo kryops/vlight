@@ -66,13 +66,15 @@ export function LiveChases() {
             state={liveChase}
           />
         ))}
+      </div>
+      {/* <div>
         <br />
         {Object.entries(liveChases).map(([id, liveChase]) => (
           <p key={id}>
             {id}: {JSON.stringify(liveChase)}
           </p>
         ))}
-      </div>
+      </div> */}
     </div>
   )
 }
