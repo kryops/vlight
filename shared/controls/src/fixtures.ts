@@ -180,6 +180,10 @@ export function getCommonFixtureMapping(
     .flatMap(({ mapping }) => mapping)
     .filter(isUnique)
 
+  // Fixtures without a master channel get a virtual one
+  if (!mapping.includes(ChannelMapping.Master))
+    mapping.unshift(ChannelMapping.Master)
+
   return preferredOrder(mapping, [
     ChannelMapping.Master,
     ChannelMapping.Red,
