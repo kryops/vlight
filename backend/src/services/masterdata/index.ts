@@ -21,7 +21,7 @@ import { broadcastApplicationStateToApiClients } from '../api'
 import { registerApiMessageHandler } from '../api/registry'
 import { howLong } from '../../util/time'
 import { DatabaseEntityOptions } from '../database/backends/database-backend'
-import { reloadUniverse } from '../universe'
+import { reloadUniverseService } from '../universe'
 
 import { initMasterDataEntities } from './entities'
 import {
@@ -57,7 +57,7 @@ async function updateMasterDataEntity<T extends EntityName>(
   for (const entityToReload of getAffectedEntities(entity)) {
     await loadMasterDataEntity(entityToReload)
   }
-  reloadUniverse()
+  reloadUniverseService()
   reloadControls()
   broadcastApplicationStateToApiClients()
 }

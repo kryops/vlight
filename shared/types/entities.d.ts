@@ -138,7 +138,7 @@ export interface LiveChase {
   /** in seconds */
   speed: number
   /** in seconds */
-  // fade?: number
+  fade?: number
   stopped?: boolean
   /** between 0 and 1 */
   light: ValueOrRandom<number>

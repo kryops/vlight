@@ -7,11 +7,10 @@
   - in a row: repeat n times
   - alternating: alternate after n fixtures
 - Chases
+  - UI: Colors, Random / range inputs
   - Pre-configured / presets
   - Color distribution: random, equal, relative
-  - LiveChase: Better handling of speed changes (do not just restart the interval)
-  - Fading
-  - Sync speed
+  - Sync speed / tap
 - Prepare changes before applying
   - Fade/transition
   - kick off multiple changes at once

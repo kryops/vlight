@@ -50,7 +50,11 @@ export const StatelessLiveChaseWidget = memoInProduction(
         <div className={leftColumn}>
           <FixtureListInput
             value={state.members}
-            onChange={members => setLiveChaseState(id, { members }, true)}
+            onChange={members => {
+              // Update UI in real-time to prevent flickering
+              state.members = members
+              setLiveChaseState(id, { members }, true)
+            }}
             ordering
             compact
           />
@@ -114,6 +118,14 @@ export const StatelessLiveChaseWidget = memoInProduction(
             onChange={speed => setLiveChaseState(id, { speed }, true)}
             label="Speed"
             subLabel={`${state.speed.toFixed(2)}s`}
+          />
+          <Fader
+            min={5}
+            max={0}
+            value={state.fade ?? 0}
+            onChange={fade => setLiveChaseState(id, { fade }, true)}
+            label="Fade"
+            subLabel={`${(state.fade ?? 0).toFixed(2)}s`}
           />
           <Fader
             min={0}

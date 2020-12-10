@@ -3,12 +3,15 @@ import { ApiLiveChaseMessage, IdType, LiveChase } from '@vlight/types'
 import { logger, mergeObjects } from '@vlight/utils'
 
 import { registerApiMessageHandler } from '../../services/api/registry'
+import { isDevelopment } from '../../services/env'
 import { masterData, masterDataMaps } from '../../services/masterdata'
 import {
   addUniverse,
   createUniverse,
+  fadeUniverse,
   overwriteUniverse,
   removeUniverse,
+  stopFading,
   Universe,
 } from '../../services/universe'
 import { controlRegistry } from '../registry'
@@ -23,6 +26,7 @@ export interface LiveChasePreparedState {
 const preparedStates: Map<IdType, LiveChasePreparedState> = new Map()
 const outgoingUniverses: Map<IdType, Universe> = new Map()
 const intervals: Map<IdType, any> = new Map()
+const timeouts: Map<IdType, any> = new Map()
 
 function prepareLiveChase(liveChase: LiveChase): LiveChasePreparedState {
   const fixtureStates = getLiveChaseFixtureStates(liveChase, {
@@ -44,29 +48,45 @@ function recomputeLiveChase(id: IdType) {
   const preparedState = prepareLiveChase(liveChase)!
   preparedStates.set(id, preparedState)
 
-  overwriteUniverse(universe, preparedState.fullUniverse)
+  if (liveChase.fade) {
+    fadeUniverse(universe, preparedState.fullUniverse, liveChase.fade * 1000)
+  } else {
+    stopFading(universe)
+    overwriteUniverse(universe, preparedState.fullUniverse)
+  }
 }
 
 function addInterval(id: IdType, liveChase: LiveChase) {
-  // TODO execute immediately / set timeout for first run
+  removeInterval(id)
 
-  const interval = setInterval(
-    () => recomputeLiveChase(id),
-    // max speed: 25 fps
-    Math.max(liveChase.speed * 1000, 40)
-  )
+  const execute = () => {
+    timeouts.delete(id)
+    recomputeLiveChase(id)
 
-  const existing = intervals.get(id)
-  if (existing) clearInterval(existing)
+    const interval = setInterval(
+      () => recomputeLiveChase(id),
+      // max speed: 25 fps
+      Math.max(liveChase.speed * 1000, 40)
+    )
 
-  intervals.set(id, interval)
+    intervals.set(id, interval)
+  }
+
+  const lastExecution = preparedStates.get(id)?.computedTime ?? Date.now()
+  const nextExecution = lastExecution + liveChase.speed * 1000
+  const timeToNextExecution = nextExecution - Date.now()
+  if (timeToNextExecution < 0) execute()
+  else timeouts.set(id, setTimeout(execute, timeToNextExecution))
 }
 
 function removeInterval(id: IdType) {
-  const existing = intervals.get(id)
-  if (!existing) return
-  clearInterval(existing)
+  const existingInterval = intervals.get(id)
+  if (existingInterval) clearInterval(existingInterval)
   intervals.delete(id)
+
+  const existingTimeout = timeouts.get(id)
+  if (existingTimeout) clearTimeout(existingTimeout)
+  timeouts.delete(id)
 }
 
 function handleApiMessage(message: ApiLiveChaseMessage): boolean {
@@ -86,6 +106,7 @@ function handleApiMessage(message: ApiLiveChaseMessage): boolean {
   if (!liveChase.on) {
     removeInterval(id)
     removeUniverse(universe)
+    stopFading(universe)
     return true
   }
 
@@ -94,8 +115,10 @@ function handleApiMessage(message: ApiLiveChaseMessage): boolean {
   if (!existing?.on) recomputeLiveChase(id)
   addUniverse(universe, { masterValue: liveChase.value })
 
-  if (liveChase.stopped) removeInterval(id)
-  else if (
+  if (liveChase.stopped) {
+    removeInterval(id)
+    stopFading(universe)
+  } else if (
     !existing?.on ||
     existing?.stopped ||
     existing?.speed !== liveChase.speed
@@ -119,4 +142,28 @@ function reload(reloadState?: boolean) {
 export function initLiveChases(): void {
   controlRegistry.register({ reload })
   registerApiMessageHandler('live-chase', handleApiMessage)
+
+  // TODO remove
+  if (isDevelopment) {
+    handleApiMessage({
+      type: 'live-chase',
+      id: '1',
+      state: {
+        on: true,
+        members: ['all:3x12', 'all:12x12'],
+        speed: 1,
+        fade: 0.5,
+        colors: [
+          {
+            channels: {
+              m: 255,
+              r: 255,
+            },
+          },
+        ],
+        light: [0.3, 0.7],
+        value: 255,
+      },
+    })
+  }
 }

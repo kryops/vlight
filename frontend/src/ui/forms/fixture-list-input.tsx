@@ -16,6 +16,7 @@ import {
 } from '../icons'
 import { Icon } from '../icons/icon'
 import { baseline } from '../styles'
+import { useDelayedState } from '../../hooks/delayed-state'
 
 import { SortableFixtureMapping } from './sortable-fixture-mapping'
 
@@ -133,6 +134,16 @@ export function FixtureListInput({
   ordering,
   compact,
 }: FixtureListInputProps) {
+  // We apply the changed value immediately, as otherwise the list might flicker
+  const [localValue, setLocalValue] = useDelayedState<string[] | null>(null)
+
+  const valueToDisplay = localValue ?? value ?? []
+  const onChangeWrapper = (newValue: string[]) => {
+    onChange(newValue)
+    setLocalValue(newValue)
+    setLocalValue(null, true)
+  }
+
   const rawMasterData = useRawMasterData()
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
   const [activeCategory, setActiveCategory] = useState(
@@ -165,7 +176,7 @@ export function FixtureListInput({
       ]),
   ])
 
-  const countByCategory = getCountByCategory(value ?? [])
+  const countByCategory = getCountByCategory(valueToDisplay)
 
   const entities = allEntities.filter(entity => {
     const fixtureCount = fixtureCountByEntity.get(entity) ?? 0
@@ -173,7 +184,7 @@ export function FixtureListInput({
   })
 
   const allMappedFixtures = new Set(
-    mapFixtureList(value ?? [], {
+    mapFixtureList(valueToDisplay, {
       masterData,
       masterDataMaps,
     })
@@ -214,8 +225,8 @@ export function FixtureListInput({
       </div>
       {activeCategory === null && (
         <SortableFixtureMapping
-          value={value ?? []}
-          onChange={onChange}
+          value={valueToDisplay}
+          onChange={onChangeWrapper}
           compact={compact}
         />
       )}
@@ -225,7 +236,7 @@ export function FixtureListInput({
         >
           {entities.map(entity => {
             const entry = activeCategory?.prefix + entity.id
-            const active = value?.includes(entry)
+            const active = valueToDisplay.includes(entry)
             return (
               <Button
                 key={entity.id}
@@ -233,10 +244,10 @@ export function FixtureListInput({
                 active={active}
                 block
                 onDown={() =>
-                  onChange(
+                  onChangeWrapper(
                     active
-                      ? (value ?? []).filter(it => it !== entry)
-                      : [...(value ?? []), entry]
+                      ? valueToDisplay.filter(it => it !== entry)
+                      : [...valueToDisplay, entry]
                   )
                 }
                 disabled={

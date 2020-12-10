@@ -13,7 +13,7 @@ import {
   LiveChase,
 } from '@vlight/types'
 
-import { getUniverseIndex } from '../universe'
+import { getUniverseIndex } from '../universe/utils'
 
 export function getApiStateMessage({
   masterData,
