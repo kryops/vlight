@@ -7,6 +7,7 @@ import { cx } from '../../util/styles'
 import { Icon } from '../icons/icon'
 import { iconDelete } from '../icons'
 import { apiState } from '../../api/api-state'
+import { ApiState } from '../../api/worker/processing'
 
 import { Label } from './label'
 import { Select, SelectEntry } from './select'
@@ -20,6 +21,7 @@ interface WidgetMapping<T extends WidgetType> {
   name: string
   defaultValueFactory: () => WidgetOfType<T>
   entityReference?: EntityName
+  stateReference?: keyof ApiState
 }
 
 export const widgetTypes: { [type in WidgetType]: WidgetMapping<type> } = {
@@ -62,6 +64,22 @@ export const widgetTypes: { [type in WidgetType]: WidgetMapping<type> } = {
       id: apiState.masterData?.memories[0]?.id ?? '',
     }),
     entityReference: 'memories',
+  },
+  'live-memory': {
+    name: 'Live Memory',
+    defaultValueFactory: () => ({
+      type: 'live-memory',
+      id: Object.keys(apiState.liveMemories)[0] ?? '',
+    }),
+    stateReference: 'liveMemories',
+  },
+  'live-chase': {
+    name: 'Live Chase',
+    defaultValueFactory: () => ({
+      type: 'live-chase',
+      id: Object.keys(apiState.liveChases)[0] ?? '',
+    }),
+    stateReference: 'liveChases',
   },
   map: {
     name: 'Map',
@@ -184,23 +202,41 @@ export function WidgetInput({
       {(value?.type === 'fixture' ||
         value?.type === 'fixture-group' ||
         value?.type === 'memory') && (
-        <>
-          <Label
-            label="Entity"
-            input={
-              <EntityReferenceSelect
-                entity={widgetTypes[value.type].entityReference!}
-                value={value.id}
-                onChange={newValue =>
-                  onChange({
-                    ...value,
-                    id: newValue ?? '',
-                  })
-                }
-              />
-            }
-          />
-        </>
+        <Label
+          label="Entity"
+          input={
+            <EntityReferenceSelect
+              entity={widgetTypes[value.type].entityReference!}
+              value={value.id}
+              onChange={newValue =>
+                onChange({
+                  ...value,
+                  id: newValue ?? '',
+                })
+              }
+            />
+          }
+        />
+      )}
+
+      {(value?.type === 'live-memory' || value?.type === 'live-chase') && (
+        <Label
+          label="Entity"
+          input={
+            <Select
+              entries={Object.keys(
+                apiState[widgetTypes[value.type].stateReference!] ?? {}
+              )}
+              value={value.id}
+              onChange={newValue =>
+                onChange({
+                  ...value,
+                  id: newValue ?? '',
+                })
+              }
+            />
+          }
+        />
       )}
     </div>
   )

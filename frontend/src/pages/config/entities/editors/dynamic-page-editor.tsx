@@ -54,6 +54,12 @@ function getWidgetDisplayString(
         memories.get(widget.id)?.name ?? widget.id
       }`
 
+    case 'live-memory':
+      return `${titlePrefix}Live Memory ${widget.id}`
+
+    case 'live-chase':
+      return `${titlePrefix}Live Chase ${widget.id}`
+
     case 'map':
       return `${titlePrefix}Map`
 

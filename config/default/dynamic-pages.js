@@ -60,15 +60,28 @@ const dynamicPages = [
               },
             ],
           },
+        ],
+      },
+      {
+        cells: [
           {
             widgets: [
               {
-                type: 'memory',
-                id: 'test',
+                type: 'live-memory',
+                id: '1',
+              },
+            ],
+          },
+          {
+            widgets: [
+              {
+                type: 'live-chase',
+                id: '1',
               },
             ],
           },
         ],
+        headline: 'Test',
       },
     ],
     name: 'Test Dynamic Page',

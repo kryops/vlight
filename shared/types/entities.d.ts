@@ -176,6 +176,16 @@ export interface MemoryWidgetConfig {
   id: string
 }
 
+export interface LiveMemoryWidgetConfig {
+  type: 'live-memory'
+  id: string
+}
+
+export interface LiveChaseWidgetConfig {
+  type: 'live-chase'
+  id: string
+}
+
 export interface MapWidgetConfig {
   type: 'map'
 }
@@ -186,7 +196,9 @@ export type WidgetConfig =
   | FixtureWidgetConfig
   | FixtureGroupWidgetConfig
   | MemoryWidgetConfig
+  | LiveMemoryWidgetConfig
   | MapWidgetConfig
+  | LiveChaseWidgetConfig
 
 export interface DynamicPageCell {
   factor?: number
