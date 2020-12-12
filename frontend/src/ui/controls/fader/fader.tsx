@@ -1,82 +1,10 @@
-import { css } from '@linaria/core'
-import { useRef } from 'react'
-import { ensureBetween, roundToStep } from '@vlight/utils'
+import { roundToStep } from '@vlight/utils'
 
-import { Touchable } from '../../components/touchable'
 import { useDelayedState } from '../../../hooks/delayed-state'
-import { getTouchEventOffset } from '../../../util/touch'
 import { memoInProduction } from '../../../util/development'
-import { cx } from '../../../util/styles'
-import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
 
-const faderWidth = baselinePx * 12
-const faderHeight = baselinePx * 60
-
-const buttonHeight = faderWidth * 1.25
-
-const trackWidth = faderWidth / 3
-const trackMargin = (faderWidth - trackWidth) / 2
-const trackHeight = faderHeight - buttonHeight
-
-const fader = css`
-  position: relative;
-  flex: 0 0 auto;
-  width: ${faderWidth}px;
-  height: ${faderHeight}px;
-  margin: ${baseline(1.5)};
-`
-
-const colorPickerFader = css`
-  margin-left: ${baseline(3.5)};
-  margin-right: ${baseline(3.5)};
-`
-
-const track = css`
-  position: absolute;
-  top: ${buttonHeight / 2}px;
-  left: ${trackMargin}px;
-  background: ${iconShade(3)};
-  width: ${trackWidth}px;
-  height: ${trackHeight}px;
-`
-
-const button = css`
-  position: relative;
-  width: ${faderWidth};
-  height: ${buttonHeight}px;
-  background: ${primaryShade(0)};
-  color: #fff;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-`
-
-const button_small = css`
-  font-size: 0.75rem;
-`
-
-const subLabelStyle = css`
-  position: absolute;
-  bottom: ${baseline()};
-  left: 0;
-  right: 0;
-  text-align: center;
-  font-size: 0.65rem;
-`
-
-const cornerLabelStyle = css`
-  position: absolute;
-  font-size: 0.65rem;
-  z-index: 3;
-  top: ${baseline(0.5)};
-  left: ${baseline(1)};
-`
-
-const cornerLabel_overflow = css`
-  min-width: ${baseline(32)};
-`
+import { FaderBase } from './fader-base'
+import { FaderButton } from './fader-button'
 
 export interface FaderProps {
   value: number
@@ -100,28 +28,16 @@ export const Fader = memoInProduction(
     step,
     label,
     subLabel,
-    cornerLabel,
-    cornerLabelOverflow,
     onChange,
-    colorPicker,
-    className,
+    ...passThrough
   }: FaderProps) => {
-    const trackRef = useRef<HTMLDivElement>(null)
     const [localValue, setLocalValue] = useDelayedState<number | null>(null)
-
     const valueToUse = localValue ?? value
-    const currentFraction = (valueToUse - min) / (max - min)
-    const y = Math.round(trackHeight - currentFraction * trackHeight)
 
     return (
-      <Touchable
-        className={cx(fader, colorPicker && colorPickerFader, className)}
-        onTouch={event => {
-          const offset = getTouchEventOffset(event, trackRef)
-          if (!offset) {
-            return
-          }
-          const fraction = ensureBetween(1 - offset.yFraction, 0, 1)
+      <FaderBase
+        {...passThrough}
+        onTouch={fraction => {
           const newRawValue = min + fraction * (max - min)
           if (newRawValue === valueToUse) {
             return
@@ -132,25 +48,12 @@ export const Fader = memoInProduction(
         }}
         onUp={() => setLocalValue(null, true)}
       >
-        <div className={track} ref={trackRef} />
-        <div
-          className={cx(button, label && label.length > 3 && button_small)}
-          style={{ transform: `translateY(${y}px)` }}
-        >
-          {label}
-          {subLabel && <div className={subLabelStyle}>{subLabel}</div>}
-        </div>
-        {cornerLabel && (
-          <div
-            className={cx(
-              cornerLabelStyle,
-              cornerLabelOverflow && cornerLabel_overflow
-            )}
-          >
-            {cornerLabel}
-          </div>
-        )}
-      </Touchable>
+        <FaderButton
+          fraction={(valueToUse - min) / (max - min)}
+          label={label}
+          subLabel={subLabel}
+        />
+      </FaderBase>
     )
   }
 )
