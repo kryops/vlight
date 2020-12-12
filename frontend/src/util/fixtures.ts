@@ -10,7 +10,7 @@ const rgbwMapping = [
   ChannelMapping.White,
 ]
 
-const minOpacity = 0.25
+const minOpacity = 0.15
 
 function applyMinOpacity(masterValue: number) {
   return minOpacity + (masterValue / 255) * (1 - minOpacity)

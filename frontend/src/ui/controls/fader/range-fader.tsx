@@ -1,5 +1,11 @@
 import { css } from '@linaria/core'
-import { roundToStep } from '@vlight/utils'
+import { ValueRange } from '@vlight/types'
+import {
+  valueRange,
+  roundToStep,
+  fractionToValue,
+  valueToFraction,
+} from '@vlight/utils'
 
 import { useDelayedState } from '../../../hooks/delayed-state'
 import { memoInProduction } from '../../../util/development'
@@ -24,13 +30,13 @@ const track = css`
 `
 
 export interface RangeFaderProps {
-  value: [number, number]
+  value: ValueRange<number>
   min?: number
   max?: number
   step?: number
   cornerLabel?: string
   cornerLabelOverflow?: boolean
-  onChange: (value: [number, number]) => void
+  onChange: (value: ValueRange<number>) => void
   colorPicker?: boolean
   className?: string
 }
@@ -44,34 +50,34 @@ export const RangeFader = memoInProduction(
     onChange,
     ...passThrough
   }: RangeFaderProps) => {
-    const [localValue, setLocalValue] = useDelayedState<
-      [number, number] | null
-    >(null)
+    const [
+      localValue,
+      setLocalValue,
+    ] = useDelayedState<ValueRange<number> | null>(null)
     const valueToUse = localValue ?? value
 
-    const getFraction = (coordinate: number) => (coordinate - min) / (max - min)
+    const getFraction = (coordinate: number) =>
+      valueToFraction(coordinate, min, max)
 
     return (
       <FaderBase
         {...passThrough}
         onTouch={fraction => {
-          const rawCoordinate = min + fraction * (max - min)
-          const closestCoordinate =
-            Math.abs(valueToUse[0] - rawCoordinate) <
-            Math.abs(valueToUse[1] - rawCoordinate)
-              ? 0
-              : 1
+          const rawCoordinate = fractionToValue(fraction, min, max)
 
-          const newRawValue: [number, number] =
-            closestCoordinate === 0
-              ? [rawCoordinate, valueToUse[1]]
-              : [valueToUse[0], rawCoordinate]
+          const newRawValue =
+            Math.abs(valueToUse.from - rawCoordinate) <
+              Math.abs(valueToUse.to - rawCoordinate) ||
+            Math.abs(valueToUse.from - rawCoordinate) >
+              Math.abs(min - rawCoordinate)
+              ? valueRange(rawCoordinate, valueToUse.to)
+              : valueRange(valueToUse.from, rawCoordinate)
 
           setLocalValue(newRawValue)
-          const roundedValue = newRawValue.map(it => roundToStep(it, step)) as [
-            number,
-            number
-          ]
+          const roundedValue = valueRange(
+            roundToStep(newRawValue.from, step),
+            roundToStep(newRawValue.to, step)
+          )
           onChange(roundedValue)
         }}
         onUp={() => setLocalValue(null, true)}
@@ -81,16 +87,16 @@ export const RangeFader = memoInProduction(
           style={{
             top:
               Math.round(
-                trackOffset + trackHeight * (1 - getFraction(valueToUse[1]))
+                trackOffset + trackHeight * (1 - getFraction(valueToUse.to))
               ) + 'px',
             height:
               Math.round(
                 trackHeight *
-                  (getFraction(valueToUse[1]) - getFraction(valueToUse[0]))
+                  (getFraction(valueToUse.to) - getFraction(valueToUse.from))
               ) + 'px',
           }}
         />
-        {valueToUse.map((coordinate, index) => (
+        {[valueToUse.from, valueToUse.to].map((coordinate, index) => (
           <FaderButton
             key={index}
             fraction={getFraction(coordinate)}

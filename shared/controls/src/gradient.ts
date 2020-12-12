@@ -1,4 +1,4 @@
-import { getFraction, getValueForFraction } from '@vlight/utils'
+import { valueToFraction, fractionToValue } from '@vlight/utils'
 
 export function interpolateGradientPositions(
   positions: Array<number | null | undefined>
@@ -30,12 +30,12 @@ export function interpolateGradientPositions(
 
     if (entryIndex > nextPositionIndex) refreshNextPosition(entryIndex)
 
-    const positionFraction = getFraction(
+    const positionFraction = valueToFraction(
       entryIndex,
       lastPositionIndex,
       nextPositionIndex
     )
 
-    return getValueForFraction(positionFraction, lastPosition, nextPosition)
+    return fractionToValue(positionFraction, lastPosition, nextPosition)
   })
 }

@@ -1,6 +1,7 @@
 import { css } from '@linaria/core'
 
 import { cx } from '../../../util/styles'
+import { smallText } from '../../css/basic-styles'
 import { baseline, primaryShade } from '../../styles'
 
 import { faderHeight, faderWidth, trackHeight } from './fader-base'
@@ -20,9 +21,7 @@ const button = css`
   text-align: center;
 `
 
-const button_small = css`
-  font-size: 0.75rem;
-`
+const button_small = smallText
 
 const subLabelStyle = css`
   position: absolute;

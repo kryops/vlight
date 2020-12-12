@@ -5,6 +5,10 @@ import {
   ValueRange,
 } from '@vlight/types'
 
+export function valueRange<T>(from: T, to: T): ValueRange<T> {
+  return { from, to }
+}
+
 export function isValueRange(x: unknown): x is ValueRange<any> {
   return typeof x === 'object' && x !== null && 'from' in x && 'to' in x
 }

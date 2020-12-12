@@ -5,7 +5,7 @@ import {
   FixtureStateGradient,
   Dictionary,
 } from '@vlight/types'
-import { ensureBetween, getFraction, getValueForFraction } from '@vlight/utils'
+import { ensureBetween, valueToFraction, fractionToValue } from '@vlight/utils'
 
 import { interpolateGradientPositions } from './gradient'
 
@@ -40,7 +40,10 @@ export function getStateIndexAndFractionFor(
       const membersPerState = Math.ceil(numMembers / numStates)
       // can be higher than numMembers
       const lastForState = (membersPerState - 1) * numStates + stateIndex
-      return [stateIndex, getFraction(memberIndex, firstForState, lastForState)]
+      return [
+        stateIndex,
+        valueToFraction(memberIndex, firstForState, lastForState),
+      ]
     }
     case ScenePattern.Row:
     default: {
@@ -52,7 +55,10 @@ export function getStateIndexAndFractionFor(
         0,
         numMembers - 1
       )
-      return [stateIndex, getFraction(memberIndex, firstForState, lastForState)]
+      return [
+        stateIndex,
+        valueToFraction(memberIndex, firstForState, lastForState),
+      ]
     }
   }
 }
@@ -74,7 +80,7 @@ function mergeChannels(
   return Array.from(keySet).reduce<Dictionary<number>>((obj, key) => {
     const value1 = channels1[key] ?? 0
     const value2 = channels2[key] ?? 0
-    obj[key] = Math.round(getValueForFraction(fraction, value1, value2))
+    obj[key] = Math.round(fractionToValue(fraction, value1, value2))
     return obj
   }, {})
 }
@@ -110,7 +116,7 @@ export function getFixtureStateForGradientFraction(
   const prevChannels = gradient[prevIndex].channels
   if (nextPosition === prevPosition) return stateFromChannels(prevChannels)
 
-  const positionFraction = getFraction(position, prevPosition, nextPosition)
+  const positionFraction = valueToFraction(position, prevPosition, nextPosition)
 
   return stateFromChannels(
     mergeChannels(prevChannels, nextChannels, positionFraction)

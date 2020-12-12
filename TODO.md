@@ -7,7 +7,6 @@
   - in a row: repeat n times
   - alternating: alternate after n fixtures
 - Chases
-  - UI: Random / range inputs
   - Pre-configured / presets
   - Color distribution: random, equal, relative
   - Sync speed / tap

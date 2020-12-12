@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { ensureBetween, getFraction } from '@vlight/utils'
+import { ensureBetween, valueToFraction } from '@vlight/utils'
 
 import { baseline, iconShade, primaryShade, textShade } from '../styles'
 import { memoInProduction } from '../../util/development'
@@ -73,7 +73,7 @@ export const Bar = memoInProduction(
     color,
     className,
   }: BarProps) => {
-    const fraction = ensureBetween(getFraction(value, min, max), 0, 1)
+    const fraction = ensureBetween(valueToFraction(value, min, max), 0, 1)
     return (
       <div
         className={cx(bar, className)}

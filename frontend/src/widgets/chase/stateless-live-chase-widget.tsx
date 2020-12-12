@@ -1,5 +1,4 @@
 import { ChaseColor, IdType, LiveChase } from '@vlight/types'
-import { lowestRandomValue, highestRandomValue } from '@vlight/utils'
 import { css } from '@linaria/core'
 
 import { setLiveChaseState } from '../../api'
@@ -14,6 +13,7 @@ import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { showDialogWithReturnValue } from '../../ui/overlays/dialog'
 import { okCancel } from '../../ui/overlays/buttons'
+import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 
 import { getChasePreviewColor } from './utils'
 import { ChaseColorEditor } from './chase-color-editor'
@@ -150,32 +150,12 @@ export const StatelessLiveChaseWidget = memoInProduction(
             label="Fade"
             subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
           />
-          {/* TODO random / range inputs */}
-          <Fader
+          <ValueOrRandomFader
             min={0}
             max={1}
-            value={lowestRandomValue(state.light)}
-            onChange={from =>
-              setLiveChaseState(
-                id,
-                { light: { from, to: highestRandomValue(state.light) } },
-                true
-              )
-            }
-            label="Light min"
-          />
-          <Fader
-            min={0}
-            max={1}
-            value={highestRandomValue(state.light)}
-            onChange={to =>
-              setLiveChaseState(
-                id,
-                { light: { to, from: lowestRandomValue(state.light) } },
-                true
-              )
-            }
-            label="Light max"
+            value={state.light}
+            onChange={light => setLiveChaseState(id, { light }, true)}
+            label="Light"
           />
         </div>
       </Widget>

@@ -161,7 +161,7 @@ export function initLiveChases(): void {
             },
           },
         ],
-        light: [0.3, 0.7],
+        light: { from: 0.3, to: 0.7 },
         value: 255,
       },
     })

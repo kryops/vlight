@@ -1,4 +1,4 @@
-import { roundToStep } from '@vlight/utils'
+import { roundToStep, fractionToValue, valueToFraction } from '@vlight/utils'
 
 import { useDelayedState } from '../../../hooks/delayed-state'
 import { memoInProduction } from '../../../util/development'
@@ -38,7 +38,7 @@ export const Fader = memoInProduction(
       <FaderBase
         {...passThrough}
         onTouch={fraction => {
-          const newRawValue = min + fraction * (max - min)
+          const newRawValue = fractionToValue(fraction, min, max)
           if (newRawValue === valueToUse) {
             return
           }
@@ -49,7 +49,7 @@ export const Fader = memoInProduction(
         onUp={() => setLocalValue(null, true)}
       >
         <FaderButton
-          fraction={(valueToUse - min) / (max - min)}
+          fraction={valueToFraction(valueToUse, min, max)}
           label={label}
           subLabel={subLabel}
         />

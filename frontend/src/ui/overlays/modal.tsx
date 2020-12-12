@@ -64,7 +64,7 @@ const titleStyle = css`
 
 const buttonContainer = css`
   display: flex;
-  margin-top: ${baseline(8)};
+  margin-top: ${baseline(4)};
   margin-bottom: ${baseline(-4)};
   border-top: 1px solid ${iconShade(2)};
 `

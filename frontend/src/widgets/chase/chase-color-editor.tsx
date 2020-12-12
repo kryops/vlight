@@ -8,7 +8,7 @@ import { useCommonFixtureMapping } from '../../hooks/fixtures'
 import { Button } from '../../ui/buttons/button'
 import { ColorPicker } from '../../ui/controls/colorpicker'
 import { colorPickerColors } from '../../ui/controls/colorpicker/util'
-import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
+import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { editorTitle } from '../../ui/css/editor-styles'
 import { faderContainer } from '../../ui/css/fader-container'
 import { iconDelete } from '../../ui/icons'
@@ -55,19 +55,19 @@ export function ChaseColorEditor({
     onChange(newColor)
   }
 
-  // TODO random / range inputs
   const renderFader = (channelType: string, index = 0) => (
-    <FixtureStateFader
+    <ValueOrRandomFader
+      max={255}
+      step={1}
       key={channelType + index}
-      channelType={channelType}
-      value={highestRandomValue(localState?.channels[channelType] ?? 0)}
+      label={channelType.toUpperCase()}
+      value={localState?.channels[channelType] ?? 0}
       onChange={newValue =>
         onChangeWrapper({
           ...localState,
-          channels: { ...localState?.channels, ...newValue.channels },
+          channels: { ...localState?.channels, [channelType]: newValue },
         })
       }
-      colorPicker={false}
     />
   )
 
