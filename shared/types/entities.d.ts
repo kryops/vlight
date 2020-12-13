@@ -30,6 +30,7 @@ export interface Fixture extends DbEntity {
   channel: number
   name?: string
   count?: number
+  fixturesSharingChannel?: number
   x?: number
   y?: number
   xOffset?: number

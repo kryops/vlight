@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- Fixtures: Draw multiple shapes on map
 - Memories extension
   - in a row: repeat n times
   - alternating: alternate after n fixtures

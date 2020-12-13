@@ -5,6 +5,7 @@ import {
   FixtureShape,
   IdType,
 } from '@vlight/types'
+import { arrayRange } from '@vlight/utils'
 
 import { memoInProduction } from '../../util/development'
 import { backgroundColor, baseline, iconShade } from '../../ui/styles'
@@ -102,7 +103,7 @@ export const StatelessMapWidget = memoInProduction(
     return (
       <div className={cx(widget, standalone && widget_standalone, className)}>
         <div className={container}>
-          {positionedFixtures.map(fixture => {
+          {positionedFixtures.flatMap(fixture => {
             const fixtureType = fixtureTypes.get(fixture.type)
             if (!fixtureType) return null
 
@@ -110,24 +111,41 @@ export const StatelessMapWidget = memoInProduction(
               highlightedFixtures?.indexOf(fixture.id) ?? -1
             const highlighted = highlightedIndex !== -1
 
-            return (
-              <FixtureTypeMapShape
-                key={fixture.id}
-                fixtureType={fixtureType}
-                x={fixture.x}
-                y={fixture.y}
-                color={
-                  universe &&
-                  getEffectiveFixtureColor(fixture, fixtureType, universe)
-                }
-                highlighted={highlighted}
-                title={fixture.name}
-                className={fixtureStyle}
-                percentages
-              >
-                {highlighted && highlightedIndex + 1}
-              </FixtureTypeMapShape>
-            )
+            return arrayRange(
+              1,
+              fixture.fixturesSharingChannel ?? 1,
+              it => it - 1
+            ).map(offset => {
+              return (
+                <FixtureTypeMapShape
+                  key={fixture.id + '_' + offset}
+                  fixtureType={fixtureType}
+                  x={
+                    fixture.x !== undefined
+                      ? fixture.x + offset * (fixture.xOffset ?? 8)
+                      : undefined
+                  }
+                  y={
+                    fixture.y !== undefined
+                      ? fixture.y + offset * (fixture.yOffset ?? 0)
+                      : undefined
+                  }
+                  color={
+                    universe &&
+                    getEffectiveFixtureColor(fixture, fixtureType, universe)
+                  }
+                  highlighted={highlighted}
+                  title={fixture.name}
+                  className={fixtureStyle}
+                  percentages
+                >
+                  {highlighted &&
+                    highlightedFixtures?.length !== undefined &&
+                    highlightedFixtures?.length > 1 &&
+                    highlightedIndex + 1}
+                </FixtureTypeMapShape>
+              )
+            })
           })}
           {additionalShapes?.map((shape, index) => (
             <MapShape

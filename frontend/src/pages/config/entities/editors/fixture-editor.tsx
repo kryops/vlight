@@ -1,5 +1,6 @@
 import { Fixture } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'
+import { useState } from 'react'
 
 import { useFormState } from '../../../../hooks/form'
 import {
@@ -17,6 +18,7 @@ import {
   editorPreviewColumn,
   editorTitle,
 } from '../../../../ui/css/editor-styles'
+import { Select } from '../../../../ui/forms/select'
 
 export function FixtureEditor({
   entry,
@@ -25,6 +27,7 @@ export function FixtureEditor({
   const id = entry.id
   const formState = useFormState(entry, { onChange })
   const masterData = useMasterData()
+  const [sharing, setSharing] = useState(!!entry.fixturesSharingChannel)
 
   const { x, y, xOffset, yOffset, count } = formState.values
 
@@ -95,10 +98,37 @@ export function FixtureEditor({
               }
             />
             <h4>Multiple Fixtures</h4>
+            <Select
+              entries={[
+                { value: false, label: 'Subsequent channels' },
+                { value: true, label: 'Sharing the same channel' },
+              ]}
+              value={sharing}
+              onChange={value => {
+                setSharing(value)
+                if (value) {
+                  formState.changeValue(
+                    'fixturesSharingChannel',
+                    formState.values.count ?? 1
+                  )
+                  formState.changeValue('count', undefined)
+                } else {
+                  formState.changeValue(
+                    'count',
+                    formState.values.fixturesSharingChannel ?? 1
+                  )
+                  formState.changeValue('fixturesSharingChannel', undefined)
+                }
+              }}
+            />
             <Label
               label="Count"
               input={
-                <FormNumberInput formState={formState} name="count" min={1} />
+                <FormNumberInput
+                  formState={formState}
+                  name={sharing ? 'fixturesSharingChannel' : 'count'}
+                  min={1}
+                />
               }
             />
             <Label
