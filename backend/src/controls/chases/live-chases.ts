@@ -112,7 +112,7 @@ function handleApiMessage(message: ApiLiveChaseMessage): boolean {
 
   // Only recompute chase here when it's new or turned on
   // otherwise we would flicker lots of colors when fading, changing speed or colors
-  if (!existing?.on) recomputeLiveChase(id)
+  if (!existing?.on || message.step) recomputeLiveChase(id)
   addUniverse(universe, { masterValue: liveChase.value })
 
   if (liveChase.stopped) {
@@ -121,7 +121,8 @@ function handleApiMessage(message: ApiLiveChaseMessage): boolean {
   } else if (
     !existing?.on ||
     existing?.stopped ||
-    existing?.speed !== liveChase.speed
+    existing?.speed !== liveChase.speed ||
+    message.step
   ) {
     addInterval(id, liveChase)
   }

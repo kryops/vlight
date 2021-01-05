@@ -11,6 +11,7 @@ import { cx } from '../../util/styles'
 const container = css`
   margin-top: ${baseline()};
   min-height: min(${baseline(84)}, 80vh);
+  flex-grow: 1;
 `
 
 const container_compact = css`

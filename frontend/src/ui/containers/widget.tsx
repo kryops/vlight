@@ -59,7 +59,7 @@ const widgetTurnedOn = css`
 `
 
 const widgetIndicator = css`
-  margin: 0 ${baseline(1)};
+  margin: ${baseline(-1.5)} ${baseline(1)};
 `
 
 const bottomLine = css`
@@ -107,6 +107,7 @@ export function Widget({
                 color={turnedOn ? successShade(0) : errorShade(0)}
                 className={widgetIndicator}
                 inline
+                padding
               />
             )}
           </Clickable>

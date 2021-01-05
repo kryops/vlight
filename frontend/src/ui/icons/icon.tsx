@@ -15,18 +15,22 @@ const iconSvg = css`
   flex: 0 0 auto;
 `
 
-const iconInline = css`
+const icon_inline = css`
   display: inline;
   vertical-align: middle;
   position: relative;
   top: ${baseline(-0.5)};
 `
 
-const iconClickable = css`
+const icon_clickable = css`
   cursor: pointer;
+
+  &:active {
+    filter: drop-shadow(0 0 ${baseline()} ${iconShade(1)});
+  }
 `
 
-const iconHoverable = css`
+const icon_hoverable = css`
   opacity: 0.5;
 
   &:hover {
@@ -34,7 +38,7 @@ const iconHoverable = css`
   }
 `
 
-const iconPadding = css`
+const icon_padding = css`
   padding: ${baseline(2)};
 `
 
@@ -69,10 +73,10 @@ export const Icon = memoInProduction(
         viewBox="0 0 24 24"
         className={cx(
           iconSvg,
-          inline && iconInline,
-          hoverable && iconHoverable,
-          onClick && iconClickable,
-          padding && iconPadding,
+          inline && icon_inline,
+          hoverable && icon_hoverable,
+          onClick && icon_clickable,
+          padding && icon_padding,
           className
         )}
         style={

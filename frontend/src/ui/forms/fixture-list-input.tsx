@@ -20,6 +20,11 @@ import { useDelayedState } from '../../hooks/delayed-state'
 
 import { SortableFixtureMapping } from './sortable-fixture-mapping'
 
+const container = css`
+  display: flex;
+  flex-direction: column;
+`
+
 const categoryContainer = css`
   display: flex;
 `
@@ -36,6 +41,7 @@ const categoryEntry = css`
 `
 
 const scrollContainer = css`
+  flex-grow: 1;
   margin-top: ${baseline()};
   height: ${baseline(84)};
   max-height: 80vh;
@@ -195,7 +201,7 @@ export function FixtureListInput({
     : categories
 
   return (
-    <div className={flexAuto}>
+    <div className={cx(flexAuto, container)}>
       <div className={categoryContainer}>
         {ordering && (
           <Button

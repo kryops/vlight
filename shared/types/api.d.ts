@@ -56,6 +56,7 @@ export interface ApiLiveChaseMessage {
   type: 'live-chase'
   id: IdType
   state: Partial<LiveChase>
+  step?: boolean
   merge?: boolean
 }
 

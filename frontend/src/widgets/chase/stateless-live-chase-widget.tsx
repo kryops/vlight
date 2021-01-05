@@ -1,27 +1,55 @@
 import { ChaseColor, IdType, LiveChase } from '@vlight/types'
 import { css } from '@linaria/core'
+import { useRef, useState } from 'react'
+import { ensureBetween } from '@vlight/utils'
 
-import { setLiveChaseState } from '../../api'
+import { setLiveChaseState, setLiveChaseStep } from '../../api'
 import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { flexWrap } from '../../ui/css/flex'
 import { FixtureListInput } from '../../ui/forms/fixture-list-input'
-import { iconAdd } from '../../ui/icons'
+import {
+  iconAdd,
+  iconDoubleSpeed,
+  iconFast,
+  iconHalfSpeed,
+  iconLocked,
+  iconSlow,
+  iconSpeedBurst,
+  iconStart,
+  iconStep,
+  iconStop,
+  iconSync,
+  iconUnlocked,
+} from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
-import { baseline } from '../../ui/styles'
+import { baseline, errorShade, successShade } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { showDialogWithReturnValue } from '../../ui/overlays/dialog'
 import { okCancel } from '../../ui/overlays/buttons'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
+import { Button } from '../../ui/buttons/button'
+import { useTapSync } from '../../hooks/speed'
+import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
 
 import { getChasePreviewColor } from './utils'
 import { ChaseColorEditor } from './chase-color-editor'
 
+const maxSpeed = 0.025
+const fastMinSpeed = 2
+const minSpeed = 5
+
 const leftColumn = css`
   flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
   padding-right: ${baseline(2)};
   margin-bottom: ${baseline(2)};
+`
+
+const rightColumn = css`
+  flex: 1 1 auto;
 `
 
 const colorContainer = css`
@@ -38,6 +66,10 @@ const colorStyle = css`
   cursor: pointer;
 `
 
+const controls = css`
+  margin: ${baseline(-1.5)};
+`
+
 export interface StatelessLiveChaseWidgetProps {
   id: IdType
   state: LiveChase
@@ -46,117 +78,208 @@ export interface StatelessLiveChaseWidgetProps {
 
 export const StatelessLiveChaseWidget = memoInProduction(
   ({ id, state, title }: StatelessLiveChaseWidgetProps) => {
+    const update = (newState: Partial<LiveChase>, step = false) =>
+      setLiveChaseState(id, newState, true)
+    const updateSpeed = (speed: number) => {
+      if (state.fadeLockedToSpeed && state.fade) {
+        update({
+          speed,
+          fade: ensureBetween(
+            (speed * state.fade) / state.speed,
+            maxSpeed,
+            minSpeed
+          ),
+        })
+      } else {
+        update({ speed })
+      }
+    }
+    const tapSync = useTapSync(updateSpeed)
+
+    const isCurrentlyFast =
+      state.speed <= fastMinSpeed && (!state.fade || state.fade <= fastMinSpeed)
+    const [fastMode, setFastMode] = useState(isCurrentlyFast)
+    const useFastMode = fastMode && isCurrentlyFast
+
+    const speedBurstBackup = useRef<Partial<LiveChase>>({})
+    const startSpeedBurst = () => {
+      speedBurstBackup.current = {
+        speed: state.speed,
+        fade: state.fade,
+        stopped: state.stopped,
+        on: state.on,
+      }
+      update({ speed: maxSpeed, fade: 0, stopped: false, on: true })
+    }
+    const stopSpeedBurst = () => {
+      update(speedBurstBackup.current)
+      // If the chase was fading before, this will trigger an additional step to start fading again immediately
+      setLiveChaseStep(id)
+    }
+
     return (
       <Widget
         title={title}
-        onTitleClick={() => setLiveChaseState(id, { on: !state.on }, true)}
+        onTitleClick={() => update({ on: !state.on })}
         turnedOn={state.on}
         contentClassName={flexWrap}
+        titleSide={
+          <div className={controls}>
+            <Button
+              icon={iconSpeedBurst}
+              title="Speed burst"
+              transparent
+              onDown={startSpeedBurst}
+              onUp={stopSpeedBurst}
+            />
+            <Button
+              icon={iconStep}
+              title="Step"
+              transparent
+              onDown={() => setLiveChaseStep(id)}
+            />
+            <Button
+              icon={iconDoubleSpeed}
+              title="Double speed"
+              transparent
+              onDown={() => updateSpeed(Math.max(state.speed / 2, maxSpeed))}
+            />
+            <Button
+              icon={iconHalfSpeed}
+              title="Half speed"
+              transparent
+              onDown={() => updateSpeed(Math.min(state.speed * 2, minSpeed))}
+            />
+            <Button
+              icon={iconSync}
+              title="Tap Sync"
+              transparent
+              onDown={tapSync}
+            />
+            <Button
+              icon={state.stopped ? iconStop : iconStart}
+              title={state.stopped ? 'Start' : 'Stop'}
+              iconColor={state.stopped ? errorShade(0) : successShade(0)}
+              transparent
+              onDown={() =>
+                update({
+                  stopped: !state.stopped,
+                  on: state.on || !!state.stopped,
+                })
+              }
+            />
+          </div>
+        }
       >
         <div className={leftColumn}>
           <FixtureListInput
             value={state.members}
-            onChange={members => setLiveChaseState(id, { members }, true)}
+            onChange={members => update({ members })}
             ordering
             compact
           />
         </div>
-        <div className={faderContainer}>
-          <div className={colorContainer}>
-            {state.colors.map((color, index) => (
-              <div
-                key={index}
-                className={colorStyle}
-                style={{
-                  background: getChasePreviewColor(color),
-                }}
+        <div className={rightColumn}>
+          <div className={faderContainer}>
+            <div className={colorContainer}>
+              {state.colors.map((color, index) => (
+                <div
+                  key={index}
+                  className={colorStyle}
+                  style={{
+                    background: getChasePreviewColor(color),
+                  }}
+                  onClick={async () => {
+                    const result = await showDialogWithReturnValue<ChaseColor | null>(
+                      (onChange, onClose) => (
+                        <ChaseColorEditor
+                          members={state.members}
+                          color={color}
+                          onChange={onChange}
+                          onClose={onClose}
+                        />
+                      ),
+                      okCancel,
+                      { showCloseButton: true }
+                    )
+                    if (result === undefined) return
+
+                    update({
+                      colors:
+                        result === null
+                          ? state.colors.filter(it => it !== color)
+                          : state.colors.map(it =>
+                              it === color ? result : it
+                            ),
+                    })
+                  }}
+                />
+              ))}
+              <Icon
+                icon={iconAdd}
+                hoverable
                 onClick={async () => {
                   const result = await showDialogWithReturnValue<ChaseColor | null>(
-                    (onChange, onClose) => (
+                    onChange => (
                       <ChaseColorEditor
                         members={state.members}
-                        color={color}
                         onChange={onChange}
-                        onClose={onClose}
                       />
                     ),
                     okCancel,
                     { showCloseButton: true }
                   )
-                  if (result === undefined) return
-
-                  if (result === null)
-                    setLiveChaseState(
-                      id,
-                      { colors: state.colors.filter(it => it !== color) },
-                      true
-                    )
-                  else
-                    setLiveChaseState(
-                      id,
-                      {
-                        colors: state.colors.map(it =>
-                          it === color ? result : it
-                        ),
-                      },
-                      true
-                    )
+                  if (!result) return
+                  update({ colors: [...state.colors, result] })
                 }}
               />
-            ))}
-            <Icon
-              icon={iconAdd}
-              hoverable
-              onClick={async () => {
-                const result = await showDialogWithReturnValue<ChaseColor | null>(
-                  onChange => (
-                    <ChaseColorEditor
-                      members={state.members}
-                      onChange={onChange}
-                    />
-                  ),
-                  okCancel,
-                  { showCloseButton: true }
-                )
-                if (!result) return
-                setLiveChaseState(
-                  id,
-                  { colors: [...state.colors, result] },
-                  true
-                )
+            </div>
+            <Fader
+              max={255}
+              step={1}
+              value={state.value ?? 0}
+              onChange={value => update({ value })}
+              label="Value"
+            />
+            <Fader
+              min={useFastMode ? fastMinSpeed : minSpeed}
+              max={maxSpeed}
+              value={state.speed}
+              onChange={updateSpeed}
+              label="Speed"
+              subLabel={`${state.speed.toFixed(2)}s`}
+            />
+            <FaderWithContainer
+              min={useFastMode ? fastMinSpeed : minSpeed}
+              max={0}
+              value={state.fade ?? 0}
+              onChange={fade => update({ fade })}
+              label="Fade"
+              subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
+              bottomIcon={state.fadeLockedToSpeed ? iconLocked : iconUnlocked}
+              onBottomIconClick={() =>
+                update({ fadeLockedToSpeed: !state.fadeLockedToSpeed })
+              }
+            />
+            <ValueOrRandomFader
+              min={0}
+              max={1}
+              value={state.light}
+              onChange={light => update({ light })}
+              label="Light"
+            />
+          </div>
+          <div>
+            <Button
+              icon={useFastMode ? iconFast : iconSlow}
+              title="Toggle fast mode"
+              transparent
+              onDown={() => {
+                if (!isCurrentlyFast) return
+                setFastMode(!fastMode)
               }}
             />
           </div>
-          <Fader
-            max={255}
-            step={1}
-            value={state.value ?? 0}
-            onChange={value => setLiveChaseState(id, { value }, true)}
-            label="Value"
-          />
-          <Fader
-            min={5}
-            max={0.025}
-            value={state.speed}
-            onChange={speed => setLiveChaseState(id, { speed }, true)}
-            label="Speed"
-            subLabel={`${state.speed.toFixed(2)}s`}
-          />
-          <Fader
-            min={5}
-            max={0}
-            value={state.fade ?? 0}
-            onChange={fade => setLiveChaseState(id, { fade }, true)}
-            label="Fade"
-            subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
-          />
-          <ValueOrRandomFader
-            min={0}
-            max={1}
-            value={state.light}
-            onChange={light => setLiveChaseState(id, { light }, true)}
-            label="Light"
-          />
         </div>
       </Widget>
     )

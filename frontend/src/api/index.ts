@@ -23,6 +23,7 @@ import {
   getResetStateMessage,
   getApiLiveMemoryMessage,
   getApiLiveChaseMessage,
+  getApiLiveChaseStepMessage,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
 
@@ -84,6 +85,10 @@ export function setLiveChaseState(
   merge = false
 ): void {
   sendApiMessage(getApiLiveChaseMessage(id, state, merge))
+}
+
+export function setLiveChaseStep(id: IdType): void {
+  sendApiMessage(getApiLiveChaseStepMessage(id))
 }
 
 export function removeEntity(entity: EntityName, id: IdType): void {

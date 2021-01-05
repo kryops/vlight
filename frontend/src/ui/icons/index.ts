@@ -30,6 +30,19 @@ import {
   mdiChevronDown,
   mdiChevronUp,
   mdiAnimationPlay,
+  mdiPlay,
+  mdiStop,
+  mdiPause,
+  mdiSync,
+  mdiChevronDoubleUp,
+  mdiChevronDoubleDown,
+  mdiBlurLinear,
+  mdiSpeedometerSlow,
+  mdiSpeedometer,
+  mdiLockOutline,
+  mdiLockOpenVariantOutline,
+  mdiBomb,
+  mdiStepForward,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -45,6 +58,20 @@ export const iconUp = mdiArrowUp
 export const iconDown = mdiArrowDown
 export const iconExpand = mdiChevronDown
 export const iconCollapse = mdiChevronUp
+
+export const iconStart = mdiPlay
+export const iconStop = mdiStop
+export const iconPause = mdiPause
+export const iconSync = mdiSync
+export const iconDoubleSpeed = mdiChevronDoubleUp
+export const iconHalfSpeed = mdiChevronDoubleDown
+export const iconFade = mdiBlurLinear
+export const iconSlow = mdiSpeedometerSlow
+export const iconFast = mdiSpeedometer
+export const iconSpeedBurst = mdiBomb
+export const iconLocked = mdiLockOutline
+export const iconUnlocked = mdiLockOpenVariantOutline
+export const iconStep = mdiStepForward
 
 export const iconCheckbox = mdiCheckboxBlankOutline
 export const iconCheckbox_checked = mdiCheckBoxOutline

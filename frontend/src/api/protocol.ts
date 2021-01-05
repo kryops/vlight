@@ -132,3 +132,16 @@ export function getApiLiveChaseMessage(
     merge,
   }
 }
+
+export function getApiLiveChaseStepMessage(
+  id: IdType,
+  liveChase: Partial<LiveChase> = {}
+): ApiLiveChaseMessage {
+  return {
+    type: 'live-chase',
+    id,
+    state: liveChase,
+    merge: true,
+    step: true,
+  }
+}
