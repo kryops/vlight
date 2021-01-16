@@ -78,7 +78,7 @@ export interface StatelessLiveChaseWidgetProps {
 
 export const StatelessLiveChaseWidget = memoInProduction(
   ({ id, state, title }: StatelessLiveChaseWidgetProps) => {
-    const update = (newState: Partial<LiveChase>, step = false) =>
+    const update = (newState: Partial<LiveChase>) =>
       setLiveChaseState(id, newState, true)
     const updateSpeed = (speed: number) => {
       if (state.fadeLockedToSpeed && state.fade) {
