@@ -46,7 +46,7 @@ export function computeRandomValue<T>(value: ValueOrRandom<T>): T {
   } else if (isValueRange(value)) {
     const min = Number(value.from)
     const max = Number(value.to)
-    return (randomNumber(min, max) as unknown) as T
+    return randomNumber(min, max) as unknown as T
   } else {
     return value
   }

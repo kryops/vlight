@@ -170,13 +170,17 @@ export function DynamicPageEditor({
             renderEntryContent={cell => (
               <div
                 onClick={async () => {
-                  const result = await showDialogWithReturnValue<DynamicPageCell>(
-                    onChange => (
-                      <DynamicPageCellEditor cell={cell} onChange={onChange} />
-                    ),
-                    okCancel,
-                    { showCloseButton: true }
-                  )
+                  const result =
+                    await showDialogWithReturnValue<DynamicPageCell>(
+                      onChange => (
+                        <DynamicPageCellEditor
+                          cell={cell}
+                          onChange={onChange}
+                        />
+                      ),
+                      okCancel,
+                      { showCloseButton: true }
+                    )
                   if (result)
                     changeRowProperty(
                       row,

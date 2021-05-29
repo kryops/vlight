@@ -23,9 +23,8 @@ export async function openEntityEditor<T extends EntityName>(
   type: T,
   entry?: EntityType<T>
 ) {
-  const Editor:
-    | ComponentType<EntityEditorProps<T>>
-    | undefined = entityUiMapping[type].editor as any
+  const Editor: ComponentType<EntityEditorProps<T>> | undefined =
+    entityUiMapping[type].editor as any
 
   if (!Editor) return
 

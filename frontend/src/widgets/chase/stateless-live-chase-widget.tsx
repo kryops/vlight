@@ -190,18 +190,19 @@ export const StatelessLiveChaseWidget = memoInProduction(
                     background: getChasePreviewColor(color),
                   }}
                   onClick={async () => {
-                    const result = await showDialogWithReturnValue<ChaseColor | null>(
-                      (onChange, onClose) => (
-                        <ChaseColorEditor
-                          members={state.members}
-                          color={color}
-                          onChange={onChange}
-                          onClose={onClose}
-                        />
-                      ),
-                      okCancel,
-                      { showCloseButton: true }
-                    )
+                    const result =
+                      await showDialogWithReturnValue<ChaseColor | null>(
+                        (onChange, onClose) => (
+                          <ChaseColorEditor
+                            members={state.members}
+                            color={color}
+                            onChange={onChange}
+                            onClose={onClose}
+                          />
+                        ),
+                        okCancel,
+                        { showCloseButton: true }
+                      )
                     if (result === undefined) return
 
                     update({
@@ -219,16 +220,17 @@ export const StatelessLiveChaseWidget = memoInProduction(
                 icon={iconAdd}
                 hoverable
                 onClick={async () => {
-                  const result = await showDialogWithReturnValue<ChaseColor | null>(
-                    onChange => (
-                      <ChaseColorEditor
-                        members={state.members}
-                        onChange={onChange}
-                      />
-                    ),
-                    okCancel,
-                    { showCloseButton: true }
-                  )
+                  const result =
+                    await showDialogWithReturnValue<ChaseColor | null>(
+                      onChange => (
+                        <ChaseColorEditor
+                          members={state.members}
+                          onChange={onChange}
+                        />
+                      ),
+                      okCancel,
+                      { showCloseButton: true }
+                    )
                   if (!result) return
                   update({ colors: [...state.colors, result] })
                 }}

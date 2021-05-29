@@ -25,10 +25,10 @@ export const ChannelFader = memoInProduction(
     )
 
     const { masterData, masterDataMaps } = useMasterDataAndMaps()
-    const fixture = useMemo(() => getFixtureAtChannel(masterData, channel), [
-      masterData,
-      channel,
-    ])
+    const fixture = useMemo(
+      () => getFixtureAtChannel(masterData, channel),
+      [masterData, channel]
+    )
     const { fixtureTypes } = masterDataMaps
     const fixtureType = fixture ? fixtureTypes.get(fixture.type) : undefined
     const channelOffset = fixture ? channel - fixture.channel : -1

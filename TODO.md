@@ -4,6 +4,8 @@
 
 - Universe features
   - global blackout
+  - global master
+  - all on
   - swop (single chase active, rest blackout)
   - complete fixture override/reservation (e.g. when controlled by a chase)
 - Speed/Fade control

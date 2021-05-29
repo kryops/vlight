@@ -50,12 +50,7 @@ describe('util/array', () => {
     })
     it('order > arr', () => {
       expect(preferredOrder([2, 5, 4, 6, 1, 3], [1, 2, 3, 4])).toEqual([
-        1,
-        2,
-        3,
-        4,
-        5,
-        6,
+        1, 2, 3, 4, 5, 6,
       ])
     })
     it('partial', () => {

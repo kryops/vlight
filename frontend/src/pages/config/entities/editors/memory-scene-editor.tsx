@@ -98,17 +98,18 @@ export function MemorySceneEditor({
                 background: getMemorySceneStatePreviewBackground(state),
               }}
               onClick={async () => {
-                const result = await showDialogWithReturnValue<MemorySceneState>(
-                  onChange => (
-                    <MemorySceneStateEditor
-                      scene={scene}
-                      state={state}
-                      onChange={onChange}
-                    />
-                  ),
-                  okCancel,
-                  { showCloseButton: true }
-                )
+                const result =
+                  await showDialogWithReturnValue<MemorySceneState>(
+                    onChange => (
+                      <MemorySceneStateEditor
+                        scene={scene}
+                        state={state}
+                        onChange={onChange}
+                      />
+                    ),
+                    okCancel,
+                    { showCloseButton: true }
+                  )
                 if (result)
                   onChange({
                     ...scene,

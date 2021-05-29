@@ -182,12 +182,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
               : {}),
           },
         }),
-        new CssMinimizerPlugin({
-          sourceMap: {
-            inline: false,
-            annotation: true,
-          },
-        }),
+        new CssMinimizerPlugin(),
       ],
       splitChunks: {
         chunks: 'all',

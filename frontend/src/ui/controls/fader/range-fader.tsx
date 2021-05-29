@@ -50,10 +50,8 @@ export const RangeFader = memoInProduction(
     onChange,
     ...passThrough
   }: RangeFaderProps) => {
-    const [
-      localValue,
-      setLocalValue,
-    ] = useDelayedState<ValueRange<number> | null>(null)
+    const [localValue, setLocalValue] =
+      useDelayedState<ValueRange<number> | null>(null)
     const valueToUse = localValue ?? value
 
     const getFraction = (coordinate: number) =>
