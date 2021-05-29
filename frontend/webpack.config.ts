@@ -132,6 +132,8 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
         'process.env.NODE_ENV': JSON.stringify(
           isProduction ? 'production' : 'development'
         ),
+        // needed for emittery dependency
+        'process.env.DEBUG': JSON.stringify(false),
       }),
       new HtmlWebpackPlugin({
         template: join(__dirname, 'index.html'),
