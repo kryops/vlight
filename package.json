@@ -35,7 +35,6 @@
     "prod": "run-s build start:prod",
     "start": "run-p 'backend start' 'frontend start' 'backend build --watch --preserveWatchOutput' 'frontend tsc:watch'",
     "start:prod": "cross-env NODE_ENV=production && node .",
-    "start:electron": "electron ./electron.js",
     "test": "jest"
   },
   "dependencies": {
