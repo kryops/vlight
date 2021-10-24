@@ -12,6 +12,6 @@
     "doc": "typedoc index.ts"
   },
   "devDependencies": {
-    "typedoc": "0.20.36"
+    "typedoc": "0.22.6"
   }
 }

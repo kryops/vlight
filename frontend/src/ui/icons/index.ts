@@ -18,7 +18,7 @@ import {
   mdiDelete,
   mdiPlusCircle,
   mdiCheckboxBlankOutline,
-  mdiCheckBoxOutline,
+  mdiCheckboxOutline,
   mdiLightbulbOffOutline,
   mdiStarFourPoints,
   mdiMap,
@@ -74,7 +74,7 @@ export const iconUnlocked = mdiLockOpenVariantOutline
 export const iconStep = mdiStepForward
 
 export const iconCheckbox = mdiCheckboxBlankOutline
-export const iconCheckbox_checked = mdiCheckBoxOutline
+export const iconCheckbox_checked = mdiCheckboxOutline
 
 export const iconMap = mdiMap
 export const iconUniverse = mdiStarFourPoints

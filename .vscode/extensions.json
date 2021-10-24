@@ -3,7 +3,6 @@
     "EditorConfig.EditorConfig",
     "esbenp.prettier-vscode",
     "dbaeumer.vscode-eslint",
-    "msjsdiag.debugger-for-chrome",
     "christian-kohler.npm-intellisense",
     "jpoissonnier.vscode-styled-components",
     "stylelint.vscode-stylelint"

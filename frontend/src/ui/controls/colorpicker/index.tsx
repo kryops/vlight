@@ -106,8 +106,9 @@ export const ColorPicker = memoInProduction(
     const currentColor: ColorPickerColor = localColor ?? { r, g, b }
     const positionFromColor = colorToPosition(currentColor)
 
-    const lastPositionRef =
-      useRef<ColorPickerPosition | null>(positionFromColor)
+    const lastPositionRef = useRef<ColorPickerPosition | null>(
+      positionFromColor
+    )
 
     const position =
       lastPositionRef.current &&

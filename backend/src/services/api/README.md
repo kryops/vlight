@@ -4,7 +4,7 @@
 
 ### WebSocket
 
-Connect to `/ws`
+Connect to `/websocket`
 
 Upon connection, the client will be sent the universe
 

@@ -34,7 +34,6 @@ export function useFormState<TValues extends object>(
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function useFormStateArray<
   TValues extends { [key in TName]: any[] },
   TName extends keyof TValues,

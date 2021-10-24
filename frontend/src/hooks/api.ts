@@ -61,10 +61,10 @@ export function useApiStateEntry<
   TKey extends keyof ApiState,
   TSubKey extends keyof ApiState[TKey]
 >(key: TKey, subKey: TSubKey): ApiState[TKey][TSubKey] {
-  const [state, setState] = useState(apiState[key][subKey])
+  const [state, setState] = useState((apiState as any)[key][subKey])
   useEffect(() => {
     function eventHandler() {
-      setState(apiState[key][subKey])
+      setState((apiState as any)[key][subKey])
     }
 
     apiStateEmitter.on(key, eventHandler)
