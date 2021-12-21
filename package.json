@@ -15,22 +15,21 @@
   },
   "scripts": {
     "all": "yarn lint && yarn test && yarn build",
-    "clean": "yarn workspaces run clean && rimraf node_modules/.cache .linaria-cache .eslintcache tsconfig.tsbuildinfo",
-    "backend": "yarn --cwd backend",
+    "clean": "yarn workspaces foreach run clean && rimraf node_modules/.cache .linaria-cache .eslintcache tsconfig.tsbuildinfo",
+    "backend": "yarn workspace @vlight/backend",
     "build": "yarn run clean && run-p 'backend build' 'frontend build'",
     "client:tcp": "ts-node backend/clients/vlight-tcp.ts",
     "client:udp": "ts-node backend/clients/vlight-udp.ts",
-    "doc": "yarn --cwd shared/types doc",
+    "doc": "yarn workspace @vlight/types doc",
     "docker:build": "docker build -t kryops/vlight .",
     "docker:run": "docker run --rm --privileged -p 8000:8000 -v $(pwd)/config:/usr/src/app/config -it --init kryops/vlight",
     "docker": "run-s docker:build docker:run",
-    "frontend": "yarn --cwd frontend",
+    "frontend": "yarn workspace @vlight/frontend",
     "lint": "run-p --continue-on-error lint:eslint lint:ts 'frontend lint:css'",
     "lint:eslint": "eslint --cache 'frontend/**/*.@(ts|tsx)' 'backend/**/*.ts' 'shared/**/*.ts'",
     "lint:ts": "tsc -b frontend backend",
     "lint:ts:watch": "tsc -b frontend backend --watch",
-    "postinstall": "rimraf node_modules/.cache .linaria-cache",
-    "prepare": "yarn build",
+    "postinstall": "rimraf node_modules/.cache .linaria-cache && yarn build",
     "prettier": "prettier --write '{backend,frontend,shared}/**/*.{ts,tsx}'",
     "prod": "run-s build start:prod",
     "start": "run-p 'backend start' 'frontend start' 'backend build --watch --preserveWatchOutput' 'frontend tsc:watch'",
@@ -62,5 +61,6 @@
     "type-fest": "^2.8.0",
     "typedoc": "0.22.10",
     "typescript": "^4.5.4"
-  }
+  },
+  "packageManager": "yarn@3.1.1"
 }
