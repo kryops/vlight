@@ -50,8 +50,13 @@ export const NavItem = memoInProduction(
       <NavLink
         to={to}
         title={label}
-        className={cx(navItem, highlighted && navItem_highlighted)}
-        activeClassName={navItem_active}
+        className={({ isActive }) =>
+          cx(
+            navItem,
+            highlighted && navItem_highlighted,
+            isActive && navItem_active
+          )
+        }
       >
         <Icon icon={icon} shade={highlighted ? 0 : 1} />
         {showLabel && <span className={navLabel}>{label}</span>}

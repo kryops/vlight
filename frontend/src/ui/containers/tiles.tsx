@@ -1,5 +1,5 @@
 import { PropsWithChildren } from 'react'
-import { useHistory } from 'react-router'
+import { useNavigate } from 'react-router'
 import { css } from '@linaria/core'
 
 import { Icon } from '../icons/icon'
@@ -46,10 +46,10 @@ export interface TileProps {
 }
 
 export function Tile({ icon, title, target, onClick }: TileProps) {
-  const history = useHistory()
+  const navigate = useNavigate()
 
   const clickHandler = () => {
-    if (target) history.push(target)
+    if (target) navigate(target)
     onClick?.()
   }
 

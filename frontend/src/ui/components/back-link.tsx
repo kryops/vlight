@@ -1,7 +1,7 @@
-import { useHistory } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ReactNode } from 'react'
 
 export function BackLink({ children }: { children: ReactNode }) {
-  const history = useHistory()
-  return <a onClick={() => history.goBack()}>{children}</a>
+  const navigate = useNavigate()
+  return <a onClick={() => navigate(-1)}>{children}</a>
 }

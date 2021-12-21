@@ -17,7 +17,7 @@ const EntitiesPage = memoInProduction(() => {
   const { type } = useParams<{ type: EntityName }>()
   const rawMasterData = useRawMasterData()
 
-  if (!entityUiMapping[type]) return null
+  if (!type || !entityUiMapping[type]) return null
   const entries = rawMasterData[type]
 
   return (

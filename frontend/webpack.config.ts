@@ -94,16 +94,12 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
         // transpile from sources in frontend build
         '@vlight/controls': join(__dirname, '../shared/controls/src'),
         '@vlight/utils': join(__dirname, '../shared/utils/src'),
-        ...(isProduction
-          ? profileReact
-            ? {
-                'react-dom$': 'react-dom/profiling',
-                'scheduler/tracing': 'scheduler/tracing-profiling',
-              }
-            : {}
-          : {
-              'react-dom': '@hot-loader/react-dom',
-            }),
+        ...(profileReact
+          ? {
+              'react-dom$': 'react-dom/profiling',
+              'scheduler/tracing': 'scheduler/tracing-profiling',
+            }
+          : {}),
       },
     },
     stats: profile ? 'normal' : 'minimal',

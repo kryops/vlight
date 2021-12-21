@@ -1,4 +1,4 @@
-import { Redirect, Route, Switch } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 
 import { memoInProduction } from '../util/development'
 
@@ -8,11 +8,13 @@ import { dynamicPageRoute, _entryRoute } from './routes'
 import { mainNavigationItems, standaloneRoutes } from '.'
 
 export const RoutesOutlet = memoInProduction(() => (
-  <Switch>
-    {[...mainNavigationItems, ...standaloneRoutes].map(({ route, page }) => (
-      <Route key={route} path={route} exact component={page} />
-    ))}
-    <Route path={dynamicPageRoute()} exact component={DynamicPage} />
-    <Redirect to={_entryRoute} />
-  </Switch>
+  <Routes>
+    {[...mainNavigationItems, ...standaloneRoutes].map(
+      ({ route, page: Page }) => (
+        <Route key={route} path={route} element={<Page />} />
+      )
+    )}
+    <Route path={dynamicPageRoute()} element={<DynamicPage />} />
+    <Route path="/" element={<Navigate to={_entryRoute} replace />} />
+  </Routes>
 ))
