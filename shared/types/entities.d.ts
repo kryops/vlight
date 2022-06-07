@@ -145,6 +145,10 @@ export interface LiveChase {
   /** between 0 and 1 */
   light: ValueOrRandom<number>
   colors: ChaseColor[]
+  /** When turned on/started, stops and turns off all other live chases */
+  single?: boolean
+  /** Currently in burst mode. Will ignore single mode when set */
+  burst?: boolean
 }
 
 // Widgets

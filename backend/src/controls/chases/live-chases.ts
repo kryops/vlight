@@ -2,8 +2,8 @@ import { getLiveChaseFixtureStates } from '@vlight/controls'
 import { ApiLiveChaseMessage, IdType, LiveChase } from '@vlight/types'
 import { logger, mergeObjects } from '@vlight/utils'
 
+import { handleApiMessage } from '../../services/api'
 import { registerApiMessageHandler } from '../../services/api/registry'
-import { isDevelopment } from '../../services/env'
 import { masterData, masterDataMaps } from '../../services/masterdata'
 import {
   addUniverse,
@@ -89,7 +89,19 @@ function removeInterval(id: IdType) {
   timeouts.delete(id)
 }
 
-function handleApiMessage(message: ApiLiveChaseMessage): boolean {
+function turnOffLiveChase(id: string) {
+  handleApiMessage({
+    type: 'live-chase',
+    id,
+    state: {
+      on: false,
+      stopped: true,
+    },
+    merge: true,
+  })
+}
+
+function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
   const id = message.id
 
   const existing = liveChases.get(id)
@@ -127,6 +139,24 @@ function handleApiMessage(message: ApiLiveChaseMessage): boolean {
     addInterval(id, liveChase)
   }
 
+  // single mode: stop+turn off all other single mode chases when starting this one
+  if (
+    liveChase.single &&
+    !liveChase.burst &&
+    ((!existing?.on && liveChase.on) ||
+      (existing?.stopped && !liveChase.stopped))
+  ) {
+    for (const [otherId, otherChase] of liveChases.entries()) {
+      if (
+        otherId !== id &&
+        otherChase.single &&
+        (otherChase.on || !otherChase.stopped)
+      ) {
+        turnOffLiveChase(otherId)
+      }
+    }
+  }
+
   return true
 }
 
@@ -142,29 +172,5 @@ function reload(reloadState?: boolean) {
 
 export function initLiveChases(): void {
   controlRegistry.register({ reload })
-  registerApiMessageHandler('live-chase', handleApiMessage)
-
-  // TODO remove
-  if (isDevelopment) {
-    handleApiMessage({
-      type: 'live-chase',
-      id: '1',
-      state: {
-        on: false,
-        members: ['all:3x12', 'all:12x12'],
-        speed: 1,
-        // fade: 0.5,
-        colors: [
-          {
-            channels: {
-              m: 255,
-              r: 255,
-            },
-          },
-        ],
-        light: { from: 0.3, to: 0.7 },
-        value: 255,
-      },
-    })
-  }
+  registerApiMessageHandler('live-chase', handleLiveChaseApiMessage)
 }

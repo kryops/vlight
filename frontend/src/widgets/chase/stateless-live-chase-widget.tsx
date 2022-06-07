@@ -15,6 +15,8 @@ import {
   iconFast,
   iconHalfSpeed,
   iconLocked,
+  iconMultiple,
+  iconSingle,
   iconSlow,
   iconSpeedBurst,
   iconStart,
@@ -108,8 +110,15 @@ export const StatelessLiveChaseWidget = memoInProduction(
         fade: state.fade,
         stopped: state.stopped,
         on: state.on,
+        burst: false,
       }
-      update({ speed: maxSpeed, fade: 0, stopped: false, on: true })
+      update({
+        speed: maxSpeed,
+        fade: 0,
+        stopped: false,
+        on: true,
+        burst: true,
+      })
     }
     const stopSpeedBurst = () => {
       update(speedBurstBackup.current)
@@ -280,6 +289,16 @@ export const StatelessLiveChaseWidget = memoInProduction(
                 if (!isCurrentlyFast) return
                 setFastMode(!fastMode)
               }}
+            />
+            <Button
+              icon={state.single ? iconSingle : iconMultiple}
+              title={
+                state.single
+                  ? 'Single Mode: Will turn off other single-mode chases when activated'
+                  : 'Multiple Mode: Will run in addition to other chases'
+              }
+              transparent
+              onDown={() => update({ single: !state.single })}
             />
           </div>
         </div>

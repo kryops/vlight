@@ -22,11 +22,14 @@ const widgetContainer = css`
 function getNewLiveChase(): LiveChase {
   return {
     on: false,
+    stopped: true,
     value: 255,
     members: [],
     light: { from: 0.2, to: 1 },
     speed: 1,
     colors: [{ channels: { m: 255, r: 255 } }],
+    single: true,
+    burst: false,
   }
 }
 
@@ -67,14 +70,6 @@ export function LiveChases() {
           />
         ))}
       </div>
-      {/* <div>
-        <br />
-        {Object.entries(liveChases).map(([id, liveChase]) => (
-          <p key={id}>
-            {id}: {JSON.stringify(liveChase)}
-          </p>
-        ))}
-      </div> */}
     </div>
   )
 }
