@@ -179,13 +179,13 @@ export function computeAndBroadcastDmxChannelChange(
 
   if (changedDmx) {
     broadcastUniverseChannel(channel)
-
-    affectedChannelsByMasterChannel
-      .get(channel)
-      ?.forEach(affectedChannel =>
-        recomputeAndBroadcastDmxChannel(affectedChannel)
-      )
   }
+
+  affectedChannelsByMasterChannel
+    .get(channel)
+    ?.forEach(affectedChannel =>
+      recomputeAndBroadcastDmxChannel(affectedChannel)
+    )
 
   return changedDmx
 }
