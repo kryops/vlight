@@ -7,22 +7,22 @@ export function getChasePreviewColor(color: ChaseColor): string {
   const high =
     getFixtureStateColor({
       on: true,
-      channels: {
-        m: color.channels.m ? highestRandomValue(color.channels.m) : 255,
-        r: color.channels.r ? highestRandomValue(color.channels.r) : 0,
-        g: color.channels.g ? highestRandomValue(color.channels.g) : 0,
-        b: color.channels.b ? highestRandomValue(color.channels.b) : 0,
-      },
+      channels: Object.fromEntries(
+        Object.entries(color.channels).map(([mapping, value]) => [
+          mapping,
+          value ? highestRandomValue(value) : mapping === 'm' ? 255 : 0,
+        ])
+      ),
     }) ?? 'black'
   const low =
     getFixtureStateColor({
       on: true,
-      channels: {
-        m: color.channels.m ? lowestRandomValue(color.channels.m) : 255,
-        r: color.channels.r ? lowestRandomValue(color.channels.r) : 0,
-        g: color.channels.g ? lowestRandomValue(color.channels.g) : 0,
-        b: color.channels.b ? lowestRandomValue(color.channels.b) : 0,
-      },
+      channels: Object.fromEntries(
+        Object.entries(color.channels).map(([mapping, value]) => [
+          mapping,
+          value ? lowestRandomValue(value) : mapping === 'm' ? 255 : 0,
+        ])
+      ),
     }) ?? 'black'
 
   if (high === low) return high
