@@ -8,6 +8,7 @@ import {
 } from '@vlight/types'
 import { dictionaryToMap, logger, forEach } from '@vlight/utils'
 import {
+  ChannelMapping,
   getFixtureStateForMemoryScene,
   mergeMemoryStates,
 } from '@vlight/controls'
@@ -31,11 +32,22 @@ export { liveMemories }
 const outgoingUniverses: Map<IdType, Universe> = new Map()
 export const memoryStates: Map<IdType, MemoryState> = new Map()
 
-export function getInitialMemoryState(): MemoryState {
+function usesMasterChannel(memory: Memory) {
+  return memory.scenes.some(scene =>
+    scene.states.some(state => {
+      if (Array.isArray(state))
+        return state.some(gradient => gradient.channels[ChannelMapping.Master])
+      return state.channels[ChannelMapping.Master]
+    })
+  )
+}
+
+export function getInitialMemoryState(memory: Memory): MemoryState {
   return {
     on: false,
     value: 255,
     initial: true,
+    forceMaster: !usesMasterChannel(memory),
   }
 }
 
@@ -54,12 +66,9 @@ function initMemory(memory: Memory, oldMemoryStates: Map<IdType, MemoryState>) {
   const { id } = memory
 
   const universe = createMemoryUniverse(memory)
-  const initialState = oldMemoryStates.get(id) ?? getInitialMemoryState()
+  const initialState = oldMemoryStates.get(id) ?? getInitialMemoryState(memory)
   outgoingUniverses.set(id, universe)
-
-  if (initialState.on) {
-    addUniverse(universe, { masterValue: initialState.value })
-  }
+  setMemoryState(id, initialState, false)
 
   memoryStates.set(id, initialState)
 }
@@ -80,12 +89,16 @@ function setMemoryState(
 
   const universe = outgoingUniverses.get(id)!
 
-  if (newState.on) addUniverse(universe, { masterValue: newState.value })
+  if (newState.on)
+    addUniverse(universe, {
+      masterValue: newState.value,
+      forceMaster: newState.forceMaster,
+    })
   else removeUniverse(universe)
 }
 
 function handleApiMessage(message: ApiMemoryStateMessage) {
-  forEach(message.id, id => setMemoryState(id, message.state))
+  forEach(message.id, id => setMemoryState(id, message.state, true))
   return true
 }
 

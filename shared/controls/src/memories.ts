@@ -21,6 +21,7 @@ export function mergeMemoryStates(
   return {
     on: false,
     value: 255,
+    forceMaster: false,
     ...state1,
     ...state2,
   }

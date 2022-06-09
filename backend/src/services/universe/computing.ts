@@ -62,10 +62,11 @@ export function getFinalChannelValue(
 
   // we apply the masterValue first, which is necessary for the affecting master channel later
   const universeMasterChannelValue = universeStates.get(universe)?.masterValue
+  const universeforceMaster = universeStates.get(universe)?.forceMaster
   if (
     universeMasterChannelValue !== undefined &&
     universeMasterChannelValue !== 255 &&
-    fadedChannels.has(channel)
+    (fadedChannels.has(channel) || universeforceMaster)
   ) {
     factor *= universeMasterChannelValue / 255
   }

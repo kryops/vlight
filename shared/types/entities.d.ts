@@ -117,6 +117,7 @@ export interface MemoryState {
   on: boolean
   value: number
   initial?: boolean
+  forceMaster?: boolean
 }
 
 export interface LiveMemory extends MemoryScene {
