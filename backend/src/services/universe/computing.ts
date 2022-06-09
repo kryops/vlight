@@ -93,7 +93,7 @@ export function getFinalChannelValue(
   }
 
   const affectingMasterChannel = masterChannelByChannel.get(channel)
-  if (affectingMasterChannel) {
+  if (affectingMasterChannel && !universeforceMaster) {
     const highestMaster = dmxUniverse[getUniverseIndex(affectingMasterChannel)]
     const sameUniverseMaster = getFinalChannelValue(
       universe,
