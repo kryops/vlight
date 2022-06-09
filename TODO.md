@@ -13,6 +13,7 @@
   - Channels with discrete states
   - Fixtures with multiple light sources
   - Moving heads
+  - special colors preview (amber, UV)
 - New Controls
   - All off (permanently, <> blackout)
   - Programmable buttons
