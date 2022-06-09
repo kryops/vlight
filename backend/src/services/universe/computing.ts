@@ -13,6 +13,19 @@ const affectedChannelsByMasterChannel = new Map<number, number[]>()
 const masterChannelByChannel = new Map<number, number>()
 const fadedChannels = new Set<number>()
 
+/**
+ * Channel mappings that are usually affected by the fixture's master channel.
+ *
+ * TODO make this configurable in the fixture type
+ */
+const mappingsAffectedByMaster = new Set<string>([
+  ChannelMapping.Red,
+  ChannelMapping.Green,
+  ChannelMapping.Blue,
+  ChannelMapping.White,
+  'uv',
+])
+
 export function initUniverseComputingData(): void {
   affectedChannelsByMasterChannel.clear()
   masterChannelByChannel.clear()
@@ -31,11 +44,19 @@ export function initUniverseComputingData(): void {
     }
 
     const masterChannel = fixture.channel + masterIndex
-    fadedChannels.add(masterChannel)
     const affectedChannels = createRangeArray(
       fixture.channel,
       fixture.channel + fixtureType.mapping.length - 1
-    ).filter(channel => channel !== masterChannel)
+    ).filter(channel => {
+      const index = channel - fixture.channel
+      const mapping = fixtureType.mapping[index]
+      if (mappingsAffectedByMaster.has(mapping)) {
+        return true
+      } else {
+        fadedChannels.add(channel)
+        return false
+      }
+    })
 
     affectedChannelsByMasterChannel.set(masterChannel, affectedChannels)
     affectedChannels.forEach(channel =>
