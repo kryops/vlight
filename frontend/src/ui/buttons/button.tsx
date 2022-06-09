@@ -95,6 +95,7 @@ export function Button({
   title,
 }: ButtonProps) {
   const transparentIcon = !children && transparent
+  const inactive = active === false || disabled
 
   return (
     <Touchable
@@ -102,7 +103,7 @@ export function Button({
         button,
         block && buttonBlock,
         active === true && button_active,
-        (active === false || disabled) && button_inactive,
+        inactive && button_inactive,
         disabled && button_disabled,
         transparent && button_transparent,
         className
@@ -117,8 +118,8 @@ export function Button({
           color={iconColor}
           inline
           className={children ? iconStyle : undefined}
-          hoverable={transparentIcon}
-          shade={transparentIcon ? 0 : 1}
+          hoverable={transparentIcon && !inactive}
+          shade={transparentIcon && !inactive ? 0 : 1}
         />
       )}
       {children}

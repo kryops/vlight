@@ -1,6 +1,6 @@
 import { ChaseColor, IdType, LiveChase } from '@vlight/types'
 import { css } from '@linaria/core'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { ensureBetween } from '@vlight/utils'
 
 import { setLiveChaseState, setLiveChaseStep } from '../../api'
@@ -102,6 +102,10 @@ export const StatelessLiveChaseWidget = memoInProduction(
       state.speed <= fastMinSpeed && (!state.fade || state.fade <= fastMinSpeed)
     const [fastMode, setFastMode] = useState(isCurrentlyFast)
     const useFastMode = fastMode && isCurrentlyFast
+
+    useEffect(() => {
+      if (!isCurrentlyFast) setFastMode(false)
+    }, [isCurrentlyFast])
 
     const speedBurstBackup = useRef<Partial<LiveChase>>({})
     const startSpeedBurst = () => {
@@ -289,6 +293,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
                 if (!isCurrentlyFast) return
                 setFastMode(!fastMode)
               }}
+              disabled={!isCurrentlyFast}
             />
             <Button
               icon={state.single ? iconSingle : iconMultiple}
