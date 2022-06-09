@@ -24,6 +24,7 @@ export function mergeMemoryStates(
     forceMaster: false,
     ...state1,
     ...state2,
+    initial: undefined, // reset initial state
   }
 }
 
