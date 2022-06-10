@@ -47,10 +47,12 @@ function messageListener(event: MessageEvent) {
         typeof message.state![k] === 'object' &&
         !Array.isArray(message.state![k])
       ) {
-        ;(apiState[k] as any) = {
-          ...(apiState as any)[k],
-          ...(message.state as any)[k],
-        }
+        ;(apiState[k] as any) = Object.fromEntries(
+          Object.entries({
+            ...(apiState as any)[k],
+            ...(message.state as any)[k],
+          }).filter(([, value]) => value !== null)
+        )
       } else {
         ;(apiState[k] as any) = value!
       }

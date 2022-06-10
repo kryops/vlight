@@ -3,7 +3,7 @@ import { css } from '@linaria/core'
 import { useEffect, useRef, useState } from 'react'
 import { ensureBetween } from '@vlight/utils'
 
-import { setLiveChaseState, setLiveChaseStep } from '../../api'
+import { deleteLiveChase, setLiveChaseState, setLiveChaseStep } from '../../api'
 import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
@@ -11,6 +11,7 @@ import { flexWrap } from '../../ui/css/flex'
 import { FixtureListInput } from '../../ui/forms/fixture-list-input'
 import {
   iconAdd,
+  iconDelete,
   iconDoubleSpeed,
   iconFast,
   iconHalfSpeed,
@@ -28,8 +29,8 @@ import {
 import { Icon } from '../../ui/icons/icon'
 import { baseline, errorShade, successShade } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
-import { showDialogWithReturnValue } from '../../ui/overlays/dialog'
-import { okCancel } from '../../ui/overlays/buttons'
+import { showDialog, showDialogWithReturnValue } from '../../ui/overlays/dialog'
+import { okCancel, yesNo } from '../../ui/overlays/buttons'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { Button } from '../../ui/buttons/button'
 import { useTapSync } from '../../hooks/speed'
@@ -304,6 +305,16 @@ export const StatelessLiveChaseWidget = memoInProduction(
               }
               transparent
               onDown={() => update({ single: !state.single })}
+            />
+            <Button
+              icon={iconDelete}
+              title="Delete"
+              transparent
+              onDown={async () => {
+                if (await showDialog('Delete Live Chase?', yesNo)) {
+                  deleteLiveChase(id)
+                }
+              }}
             />
           </div>
         </div>

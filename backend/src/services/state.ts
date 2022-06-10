@@ -1,15 +1,22 @@
 import { promises } from 'fs'
 import { join } from 'path'
 
-import { Dictionary, FixtureState, MemoryState } from '@vlight/types'
+import {
+  Dictionary,
+  FixtureState,
+  LiveChase,
+  LiveMemory,
+  MemoryState,
+} from '@vlight/types'
 import { mapToDictionary, logger } from '@vlight/utils'
 
 import { channelUniverse } from '../controls/channels'
 import { fixtureStates } from '../controls/fixtures'
 import { fixtureGroupStates } from '../controls/fixture-groups'
-import { memoryStates } from '../controls/memories'
+import { liveMemories, memoryStates } from '../controls/memories'
 import { howLong } from '../util/time'
 import { reloadControls } from '../controls'
+import { liveChases } from '../controls/chases/live-chases'
 
 import {
   statePersistenceFlushInterval,
@@ -26,6 +33,8 @@ export interface PersistedState {
   fixtures: Dictionary<FixtureState>
   fixtureGroups: Dictionary<FixtureState>
   memories: Dictionary<MemoryState>
+  liveMemories: Dictionary<LiveMemory>
+  liveChases: Dictionary<LiveChase>
 }
 
 const stateConfigFileName = 'state'
@@ -36,6 +45,8 @@ function getEmptyPersistedState(): PersistedState {
     fixtures: {},
     fixtureGroups: {},
     memories: {},
+    liveMemories: {},
+    liveChases: {},
   }
 }
 
@@ -56,6 +67,8 @@ function getCurrentState(): PersistedState {
     fixtures: mapToDictionary(fixtureStates, isNotInitialState),
     fixtureGroups: mapToDictionary(fixtureGroupStates, isNotInitialState),
     memories: mapToDictionary(memoryStates, isNotInitialState),
+    liveMemories: mapToDictionary(liveMemories),
+    liveChases: mapToDictionary(liveChases),
   }
 }
 
@@ -92,7 +105,10 @@ export function initPersistedState(): void {
   const start = Date.now()
   try {
     const statePath = join(configDirectoryPath, project, stateConfigFileName)
-    persistedState = require(statePath)
+    persistedState = {
+      ...getEmptyPersistedState(),
+      ...require(statePath),
+    }
   } catch {
     // do nothing
   }

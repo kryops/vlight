@@ -109,7 +109,7 @@ export function getResetStateMessage(): ApiResetStateMessage {
 
 export function getApiLiveMemoryMessage(
   id: IdType,
-  liveMemory: Partial<LiveMemory>,
+  liveMemory: Partial<LiveMemory> | null,
   merge: boolean
 ): ApiLiveMemoryMessage {
   return {
@@ -122,7 +122,7 @@ export function getApiLiveMemoryMessage(
 
 export function getApiLiveChaseMessage(
   id: IdType,
-  liveChase: Partial<LiveChase>,
+  liveChase: Partial<LiveChase> | null,
   merge: boolean
 ): ApiLiveChaseMessage {
   return {

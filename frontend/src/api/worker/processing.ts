@@ -109,18 +109,20 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
     case 'live-memory':
       state.liveMemories = {
         ...state.liveMemories,
-        [message.id]: message.merge
-          ? mergeObjects(state.liveMemories?.[message.id], message.state)
-          : (message.state as LiveMemory),
+        [message.id]:
+          message.merge && message.state !== null
+            ? mergeObjects(state.liveMemories?.[message.id], message.state)
+            : (message.state as LiveMemory),
       }
       break
 
     case 'live-chase':
       state.liveChases = {
         ...state.liveChases,
-        [message.id]: message.merge
-          ? mergeObjects(state.liveChases?.[message.id], message.state)
-          : (message.state as LiveChase),
+        [message.id]:
+          message.merge && message.state !== null
+            ? mergeObjects(state.liveChases?.[message.id], message.state)
+            : (message.state as LiveChase),
       }
       break
 

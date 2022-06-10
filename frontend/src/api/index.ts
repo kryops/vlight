@@ -79,12 +79,20 @@ export function setLiveMemoryState(
   sendApiMessage(getApiLiveMemoryMessage(id, state, merge))
 }
 
+export function deleteLiveMemory(id: IdType): void {
+  sendApiMessage(getApiLiveMemoryMessage(id, null, false))
+}
+
 export function setLiveChaseState(
   id: IdType,
   state: Partial<LiveChase>,
   merge = false
 ): void {
   sendApiMessage(getApiLiveChaseMessage(id, state, merge))
+}
+
+export function deleteLiveChase(id: IdType): void {
+  sendApiMessage(getApiLiveChaseMessage(id, null, false))
 }
 
 export function setLiveChaseStep(id: IdType): void {

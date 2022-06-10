@@ -23,7 +23,7 @@ const SettingsPage = memoInProduction(() => {
         Do you really want to reset the state for all controls?
         <br />
         <br />
-        THIS WILL TURN OFF EVERYTHING!
+        THIS WILL TURN OFF EVERYTHING AND DELETE LIVE MEMORIES AND LIVE CHASES!
       </>,
       yesNo
     )

@@ -6,10 +6,11 @@ import {
   IdType,
   LiveMemory,
 } from '@vlight/types'
-import { mergeObjects } from '@vlight/utils'
+import { dictionaryToMap, mergeObjects } from '@vlight/utils'
 
 import { registerApiMessageHandler } from '../../services/api/registry'
 import { masterData, masterDataMaps } from '../../services/masterdata'
+import { getPersistedState } from '../../services/state'
 import {
   addUniverse,
   createUniverse,
@@ -39,10 +40,22 @@ function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe {
   return createUniverse(fixtureStates)
 }
 
+function deleteLiveMemory(id: IdType) {
+  liveMemories.delete(id)
+  const universe = outgoingUniverses.get(id)!
+  if (universe) removeUniverse(universe)
+  outgoingUniverses.delete(id)
+}
+
 function handleApiMessage(message: ApiLiveMemoryMessage): boolean {
   const id = message.id
 
   const existing = liveMemories.get(id)
+
+  if (message.state === null) {
+    deleteLiveMemory(id)
+    return true
+  }
 
   const liveMemory = message.merge
     ? mergeObjects(existing, message.state)
@@ -84,4 +97,10 @@ function reload(reloadState?: boolean) {
 export function initLiveMemories(): void {
   controlRegistry.register({ reload })
   registerApiMessageHandler('live-memory', handleApiMessage)
+
+  for (const [id, liveMemory] of dictionaryToMap(
+    getPersistedState().liveMemories
+  )) {
+    handleApiMessage({ type: 'live-memory', id, state: liveMemory })
+  }
 }

@@ -47,7 +47,8 @@ export interface ApiMemoryStateMessage {
 export interface ApiLiveMemoryMessage {
   type: 'live-memory'
   id: IdType
-  state: Partial<LiveMemory>
+  /** null = Delete live memory */
+  state: Partial<LiveMemory> | null
   merge?: boolean
 }
 
@@ -55,7 +56,8 @@ export interface ApiLiveMemoryMessage {
 export interface ApiLiveChaseMessage {
   type: 'live-chase'
   id: IdType
-  state: Partial<LiveChase>
+  /** null = Delete live chase */
+  state: Partial<LiveChase> | null
   step?: boolean
   merge?: boolean
 }

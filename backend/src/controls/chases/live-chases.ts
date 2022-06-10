@@ -1,10 +1,11 @@
 import { getLiveChaseFixtureStates } from '@vlight/controls'
 import { ApiLiveChaseMessage, IdType, LiveChase } from '@vlight/types'
-import { logger, mergeObjects } from '@vlight/utils'
+import { dictionaryToMap, logger, mergeObjects } from '@vlight/utils'
 
 import { handleApiMessage } from '../../services/api'
 import { registerApiMessageHandler } from '../../services/api/registry'
 import { masterData, masterDataMaps } from '../../services/masterdata'
+import { getPersistedState } from '../../services/state'
 import {
   addUniverse,
   createUniverse,
@@ -101,10 +102,27 @@ function turnOffLiveChase(id: string) {
   })
 }
 
+function deleteLiveChase(id: IdType) {
+  liveChases.delete(id)
+  removeInterval(id)
+  const universe = outgoingUniverses.get(id)
+  if (universe) {
+    removeUniverse(universe)
+    stopFading(universe)
+  }
+  outgoingUniverses.delete(id)
+  preparedStates.delete(id)
+}
+
 function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
   const id = message.id
 
   const existing = liveChases.get(id)
+
+  if (message.state === null) {
+    deleteLiveChase(id)
+    return true
+  }
 
   const liveChase = message.merge
     ? mergeObjects(existing, message.state)
@@ -165,7 +183,10 @@ function reload(reloadState?: boolean) {
 
   liveChases.clear()
   preparedStates.clear()
-  ;[...outgoingUniverses.values()].forEach(removeUniverse)
+  ;[...outgoingUniverses.values()].forEach(universe => {
+    stopFading(universe)
+    removeUniverse(universe)
+  })
   outgoingUniverses.clear()
   ;[...intervals.keys()].forEach(removeInterval)
 }
@@ -173,4 +194,10 @@ function reload(reloadState?: boolean) {
 export function initLiveChases(): void {
   controlRegistry.register({ reload })
   registerApiMessageHandler('live-chase', handleLiveChaseApiMessage)
+
+  for (const [id, liveChase] of dictionaryToMap(
+    getPersistedState().liveChases
+  )) {
+    handleApiMessage({ type: 'live-chase', id, state: liveChase })
+  }
 }
