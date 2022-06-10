@@ -22,7 +22,7 @@ export function FixturesActions() {
   return (
     <>
       <Link to={entitiesPageRoute('fixtures')}>
-        <Button icon={iconConfig} />
+        <Button icon={iconConfig} transparent />
       </Link>
       <Button
         icon={iconLight}

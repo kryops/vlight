@@ -6,7 +6,7 @@ import { RoutesOutlet } from '../../pages/routes-outlet'
 import { iconClose, iconMenu } from '../icons'
 import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
-import { baseline, zNavigation, iconShade, backgroundColor } from '../styles'
+import { baseline, zNavigation, backgroundColor } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 
@@ -25,17 +25,6 @@ const content = css`
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;
-
-  @media (min-width: 800px) {
-    ::-webkit-scrollbar {
-      width: ${baseline()};
-      background: ${iconShade(3)};
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: ${iconShade(1)};
-    }
-  }
 `
 
 const content_blurred = css`

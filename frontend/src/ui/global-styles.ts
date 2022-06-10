@@ -4,8 +4,10 @@ import { css } from '@linaria/core'
 
 import {
   backgroundColor,
+  baseline,
   fontSizePx,
   getCssVariableDefinitions,
+  iconShade,
   textShade,
 } from './styles'
 
@@ -76,6 +78,16 @@ export const globalStyles = css`
 
     #root {
       height: 100%;
+    }
+
+    ::-webkit-scrollbar {
+      width: ${baseline()};
+      height: ${baseline(2)};
+      background: ${iconShade(3)};
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: ${iconShade(2)};
     }
   }
 `

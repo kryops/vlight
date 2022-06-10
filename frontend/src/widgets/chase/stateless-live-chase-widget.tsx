@@ -228,7 +228,20 @@ export const StatelessLiveChaseWidget = memoInProduction(
                             ),
                     })
                   }}
-                />
+                >
+                  {state.colors.length < 4 && (
+                    <Button
+                      icon={iconDelete}
+                      title="Remove Color"
+                      transparent
+                      onDown={() =>
+                        update({
+                          colors: state.colors.filter(it => it !== color),
+                        })
+                      }
+                    />
+                  )}
+                </div>
               ))}
               <Icon
                 icon={iconAdd}

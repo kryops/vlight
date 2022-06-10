@@ -11,6 +11,8 @@ import { cx } from '../../util/styles'
 import { StatelessLiveMemoryWidget } from '../../widgets/memory/stateless-live-memory-widget'
 import { entityUiMapping } from '../config/entities/entity-ui-mapping'
 
+import { LiveMemoriesMultiControl } from './live-memories-multi-control'
+
 const container = css`
   margin-top: ${baseline(4)};
 `
@@ -51,6 +53,9 @@ export function LiveMemories() {
       >
         Live Memories
       </Header>
+
+      <LiveMemoriesMultiControl />
+
       <div className={cx(pageWithWidgets, widgetContainer)}>
         {Object.entries(liveMemories).map(([id, memory]) => (
           <StatelessLiveMemoryWidget
