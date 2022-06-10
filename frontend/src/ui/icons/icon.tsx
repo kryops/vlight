@@ -50,7 +50,7 @@ export interface IconProps {
   className?: string
   pathClassName?: string
   inline?: boolean
-  padding?: boolean
+  padding?: boolean | number
   hoverable?: boolean
   onClick?: (event: ReactMouseEvent<SVGSVGElement, MouseEvent>) => void
 }
@@ -76,11 +76,18 @@ export const Icon = memoInProduction(
           inline && icon_inline,
           hoverable && icon_hoverable,
           onClick && icon_clickable,
-          padding && icon_padding,
+          padding === true && icon_padding,
           className
         )}
         style={
-          size ? { width: baseline(size), height: baseline(size) } : undefined
+          size || typeof padding === 'number'
+            ? {
+                width: size ? baseline(size) : undefined,
+                height: size ? baseline(size) : undefined,
+                padding:
+                  typeof padding === 'number' ? baseline(padding) : undefined,
+              }
+            : undefined
         }
         onClick={onClick}
       >

@@ -45,6 +45,7 @@ import {
   mdiStepForward,
   mdiCircle,
   mdiCircleMultiple,
+  mdiArrowExpandHorizontal,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -72,6 +73,7 @@ export const iconSlow = mdiSpeedometerSlow
 export const iconFast = mdiSpeedometer
 export const iconSingle = mdiCircle
 export const iconMultiple = mdiCircleMultiple
+export const iconRange = mdiArrowExpandHorizontal
 export const iconSpeedBurst = mdiBomb
 export const iconLocked = mdiLockOutline
 export const iconUnlocked = mdiLockOpenVariantOutline

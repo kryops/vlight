@@ -19,7 +19,7 @@ const container = css`
   align-items: center;
 `
 
-enum ValueOrRandomType {
+export enum ValueOrRandomType {
   Value,
   Values,
   Range,
@@ -31,7 +31,7 @@ function getValueOrRandomType(valueOrRandom: ValueOrRandom<any>) {
   return ValueOrRandomType.Value
 }
 
-function convertValueOrRandom(
+export function convertValueOrRandom(
   value: ValueOrRandom<number>,
   type: ValueOrRandomType,
   min?: number
@@ -44,7 +44,7 @@ function convertValueOrRandom(
       return highestRandomValue(value) as number
     case ValueOrRandomType.Values:
       if (isValueRange(value)) return [value.from, value.to]
-      return [value as number, min ?? (value as number)]
+      return [min ?? (value as number), value as number]
     case ValueOrRandomType.Range:
       return {
         from: Array.isArray(value) ? value[0] : min ?? (value as number),

@@ -2,9 +2,9 @@ import { ValueOrRandom } from '@vlight/types'
 import { isValueRange, valueToFraction } from '@vlight/utils'
 
 import { memoInProduction } from '../../../util/development'
+import { Button } from '../../buttons/button'
 import { centeredText, smallText } from '../../css/basic-styles'
-import { iconConfig } from '../../icons'
-import { Icon } from '../../icons/icon'
+import { iconMultiple, iconRange, iconSingle } from '../../icons'
 import { okCancel } from '../../overlays/buttons'
 import { showDialogWithReturnValue } from '../../overlays/dialog'
 
@@ -12,7 +12,11 @@ import { Fader } from './fader'
 import { FaderBase } from './fader-base'
 import { FaderButton } from './fader-button'
 import { RangeFader } from './range-fader'
-import { ValueOrRandomFaderEditor } from './value-or-random-fader-editor'
+import {
+  convertValueOrRandom,
+  ValueOrRandomFaderEditor,
+  ValueOrRandomType,
+} from './value-or-random-fader-editor'
 
 export interface ValueOrRandomFaderProps {
   value: ValueOrRandom<number>
@@ -90,7 +94,36 @@ export const ValueOrRandomFader = memoInProduction(
       <div className={centeredText}>
         {fader}
         {label && <div className={smallText}>{label}</div>}
-        <Icon icon={iconConfig} hoverable inline padding onClick={openEditor} />
+        <Button
+          icon={
+            typeof value === 'number'
+              ? iconSingle
+              : Array.isArray(value)
+              ? iconMultiple
+              : iconRange
+          }
+          title={
+            typeof value === 'number'
+              ? 'Single value'
+              : Array.isArray(value)
+              ? 'Multiple discrete values. Click on the fader to configure'
+              : 'Value range'
+          }
+          transparent
+          onDown={() =>
+            onChange(
+              convertValueOrRandom(
+                value,
+                typeof value === 'number'
+                  ? ValueOrRandomType.Values
+                  : isValueRange(value)
+                  ? ValueOrRandomType.Value
+                  : ValueOrRandomType.Range,
+                0
+              )
+            )
+          }
+        />
       </div>
     )
   }
