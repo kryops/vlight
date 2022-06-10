@@ -135,7 +135,10 @@ export function getFixtureStateForMemoryScene(
     memberIndex,
     members
   )
-  const stateOrGradient = scene.states[stateIndex]
+  const stateOrGradient = scene.states[stateIndex] ?? {
+    channels: {},
+    on: false,
+  }
 
   if (Array.isArray(stateOrGradient)) {
     return getFixtureStateForGradientFraction(stateOrGradient, fraction)
