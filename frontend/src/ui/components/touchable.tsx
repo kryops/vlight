@@ -6,7 +6,7 @@ import { cx } from '../../util/styles'
 
 const pointerEventSupport = 'PointerEvent' in window
 
-const touchable = css`
+const preventScrollStyle = css`
   touch-action: none;
 `
 
@@ -22,6 +22,7 @@ export interface TouchableProps {
   onDown?: TouchEventListener
   onUp?: TouchEventListener
   onMove?: TouchEventListener
+  preventScroll?: boolean
   className?: string
   title?: string
 }
@@ -29,81 +30,96 @@ export interface TouchableProps {
 export const Touchable = forwardRef<
   HTMLDivElement,
   TouchableProps & { children: any }
->(({ onTouch, onDown, onUp, onMove, className, children, title }, ref) => {
-  const pointerActive = useRef(false)
+>(
+  (
+    {
+      onTouch,
+      onDown,
+      onUp,
+      onMove,
+      className,
+      children,
+      title,
+      preventScroll,
+    },
+    ref
+  ) => {
+    const pointerActive = useRef(false)
 
-  const downListener: RawTouchEventListener | undefined =
-    (onTouch || onDown) &&
-    (e => {
-      const normalized = normalizeTouchEvent(e)
-      if (onTouch) {
-        onTouch(normalized)
-      }
-      if (onDown) {
-        onDown(normalized)
-      }
-    })
-  const upListener: RawTouchEventListener | undefined =
-    (onTouch || onUp) &&
-    (e => {
-      if (pointerEventSupport && !pointerActive.current) {
-        return
-      }
-      const normalized = normalizeTouchEvent(e)
-      if (onTouch) {
-        onTouch(normalized)
-      }
-      if (onUp) {
-        onUp(normalized)
-      }
-    })
-  const moveListener: RawTouchEventListener | undefined =
-    (onTouch || onMove) &&
-    (e => {
-      const normalized = normalizeTouchEvent(e)
-      if (pointerEventSupport && !pointerActive.current) {
-        return
-      }
-      if (onTouch) {
-        onTouch(normalized)
-      }
-      if (onMove) {
-        onMove(normalized)
-      }
-    })
+    const downListener: RawTouchEventListener | undefined =
+      (onTouch || onDown) &&
+      (e => {
+        const normalized = normalizeTouchEvent(e)
+        if (onTouch) {
+          onTouch(normalized)
+        }
+        if (onDown) {
+          onDown(normalized)
+        }
+      })
+    const upListener: RawTouchEventListener | undefined =
+      (onTouch || onUp) &&
+      (e => {
+        if (pointerEventSupport && !pointerActive.current) {
+          return
+        }
+        const normalized = normalizeTouchEvent(e)
+        if (onTouch) {
+          onTouch(normalized)
+        }
+        if (onUp) {
+          onUp(normalized)
+        }
+      })
+    const moveListener: RawTouchEventListener | undefined =
+      (onTouch || onMove) &&
+      (e => {
+        const normalized = normalizeTouchEvent(e)
+        if (pointerEventSupport && !pointerActive.current) {
+          return
+        }
+        if (onTouch) {
+          onTouch(normalized)
+        }
+        if (onMove) {
+          onMove(normalized)
+        }
+      })
 
-  return (
-    <div
-      className={cx(touchable, className)}
-      title={title}
-      ref={ref}
-      onPointerDown={
-        pointerEventSupport
-          ? e => {
-              ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
-              pointerActive.current = true
-              if (downListener) {
-                downListener(e)
+    return (
+      <div
+        className={cx(preventScroll && preventScrollStyle, className)}
+        title={title}
+        ref={ref}
+        onPointerDown={
+          pointerEventSupport
+            ? e => {
+                ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+                pointerActive.current = true
+                if (downListener) {
+                  downListener(e)
+                }
               }
-            }
-          : undefined
-      }
-      onPointerUp={
-        pointerEventSupport
-          ? e => {
-              if (upListener) {
-                upListener(e)
+            : undefined
+        }
+        onPointerUp={
+          pointerEventSupport
+            ? e => {
+                if (upListener) {
+                  upListener(e)
+                }
+                pointerActive.current = false
               }
-              pointerActive.current = false
-            }
-          : undefined
-      }
-      onPointerMove={pointerEventSupport ? moveListener : undefined}
-      onTouchStart={!pointerEventSupport ? downListener : undefined}
-      onTouchEnd={!pointerEventSupport ? upListener : undefined}
-      onTouchMove={!pointerEventSupport ? moveListener : undefined}
-    >
-      {children}
-    </div>
-  )
-})
+            : undefined
+        }
+        onPointerMove={pointerEventSupport ? moveListener : undefined}
+        onTouchStart={!pointerEventSupport ? downListener : undefined}
+        onTouchEnd={!pointerEventSupport ? upListener : undefined}
+        onTouchMove={!pointerEventSupport ? moveListener : undefined}
+        onContextMenu={event => event.preventDefault()}
+      >
+        {children}
+      </div>
+    )
+  }
+)

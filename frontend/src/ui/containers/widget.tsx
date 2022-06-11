@@ -47,7 +47,7 @@ const widgetTurnedOff = css`
     right: 0;
     bottom: 0;
     background: linear-gradient(to top, ${backgroundColor}, transparent);
-    opacity: 0.9;
+    opacity: 0.6;
     pointer-events: none;
     z-index: 3;
   }

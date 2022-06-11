@@ -81,6 +81,7 @@ export function FaderBase({
         onTouch?.(fraction)
       }}
       onUp={onUp}
+      preventScroll
     >
       <div className={track} ref={trackRef} />
       {children}

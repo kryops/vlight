@@ -11,7 +11,7 @@ const grid = css`
   justify-content: stretch;
 
   /* to allow scrolling */
-  margin-right: ${baseline(8)};
+  margin-right: ${baseline(4)};
 
   @media (max-width: 768px) {
     display: block;

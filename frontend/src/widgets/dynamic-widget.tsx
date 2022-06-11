@@ -21,10 +21,13 @@ export const DynamicWidget = memoInProduction(
   ({ config }: DynamicWidgetProps) => {
     const { fixtures, fixtureGroups, memories } = useMasterDataMaps()
 
+    // TODO investigate why the keys are needed
+
     switch (config.type) {
       case 'universe':
         return (
           <UniverseWidget
+            key={`universe${config.from}-${config.to}-${config.title}`}
             from={config.from}
             to={config.to}
             title={config.title}
@@ -34,6 +37,7 @@ export const DynamicWidget = memoInProduction(
       case 'channels':
         return (
           <ChannelsWidget
+            key={`channels${config.from}-${config.to}-${config.title}`}
             from={config.from}
             to={config.to}
             title={config.title}
@@ -42,24 +46,41 @@ export const DynamicWidget = memoInProduction(
 
       case 'fixture':
         const fixture = fixtures.get(config.id)
-        return fixture ? <FixtureWidget fixture={fixture} /> : null
+        return fixture ? (
+          <FixtureWidget key={`fixture${config.id}`} fixture={fixture} />
+        ) : null
 
       case 'fixture-group':
         const fixtureGroup = fixtureGroups.get(config.id)
-        return fixtureGroup ? <FixtureGroupWidget group={fixtureGroup} /> : null
+        return fixtureGroup ? (
+          <FixtureGroupWidget
+            key={`fixture-group${config.id}`}
+            group={fixtureGroup}
+          />
+        ) : null
 
       case 'memory':
         const memory = memories.get(config.id)
-        return memory ? <MemoryWidget memory={memory} /> : null
+        return memory ? (
+          <MemoryWidget key={`memory${config.id}`} memory={memory} />
+        ) : null
 
       case 'live-memory':
         return (
-          <LiveMemoryWidget id={config.id} title={`Live Memory ${config.id}`} />
+          <LiveMemoryWidget
+            key={`live-memory${config.id}`}
+            id={config.id}
+            title={`Live Memory ${config.id}`}
+          />
         )
 
       case 'live-chase':
         return (
-          <LiveChaseWidget id={config.id} title={`Live Chase ${config.id}`} />
+          <LiveChaseWidget
+            key={`live-chase${config.id}`}
+            id={config.id}
+            title={`Live Chase ${config.id}`}
+          />
         )
 
       case 'map':
