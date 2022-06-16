@@ -13,6 +13,7 @@ module.exports = {
     hooks: {
       // https://yarnpkg.com/advanced/plugin-tutorial#hook-afterAllInstalled
       afterAllInstalled: async project => {
+        if (process.env.PRODUCTION) return
         const yarnCore = require('@yarnpkg/core')
         console.warn('Executing prepare script...')
         // https://github.com/yarnpkg/berry/blob/%40yarnpkg/cli/3.1.0/packages/yarnpkg-core/sources/scriptUtils.ts#L522

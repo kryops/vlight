@@ -4,6 +4,7 @@
 .eslintcache
 .linaria-cache
 .vscode
+.cache
 assets
 coverage
 dist
@@ -14,3 +15,5 @@ jest.config.js
 LICENSE.md
 node_modules
 README.md
+.yarn/cache
+.yarn/install-state.gz
