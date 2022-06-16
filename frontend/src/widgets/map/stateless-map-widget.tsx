@@ -59,6 +59,7 @@ const fixtureStyle = css`
       top: 125%;
       left: -100%;
       width: 300%;
+      min-width: ${baseline(12)};
       display: flex;
       align-items: center;
       justify-content: center;
