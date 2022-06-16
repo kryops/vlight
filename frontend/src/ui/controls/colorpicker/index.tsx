@@ -142,6 +142,7 @@ export const ColorPicker = memoInProduction(
             onChange(newColor)
           }}
           onUp={() => setLocalColor(null, true)}
+          preventScroll
         >
           <ColorPickerBackground />
           {position && (
