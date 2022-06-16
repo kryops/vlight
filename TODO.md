@@ -14,6 +14,9 @@
   - Fixtures with multiple light sources
   - Moving heads
   - special colors preview (amber, UV)
+- Map
+  - Fixture test mode
+  - Change size
 - New Controls
   - All off (permanently, <> blackout)
   - Programmable buttons
@@ -27,13 +30,17 @@
   - Chases, Memories, Fixture states...
   - Fade/transition
   - kick off multiple changes at once
-- Memories extension
+- Memories
+  - display order of fixtures in preview
   - button instead of fader
   - in a row: repeat n times
   - alternating: alternate after n fixtures
+  - Rename live memories
 - Chases
+  - Rename
   - Pre-configured / presets (including multi-color presets)
   - Color distribution: random, equal, relative
+  - Turn off other chases while in burst mode
 - Inputs
   - Keyboard shortcuts/keybindings
   - LaunchPad input
