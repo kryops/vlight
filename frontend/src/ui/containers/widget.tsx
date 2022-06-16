@@ -8,7 +8,6 @@ import {
   errorShade,
   successShade,
   baselinePx,
-  backgroundColor,
 } from '../styles'
 import { cx } from '../../util/styles'
 import { Clickable } from '../components/clickable'
@@ -21,6 +20,7 @@ const widget = css`
   margin: ${baselinePx}px;
 `
 const section = css`
+  display: flex;
   padding: ${baseline(2)};
 `
 
@@ -39,18 +39,7 @@ const titleSideContainer = css`
 const widgetTurnedOff = css`
   position: relative;
   border-style: dotted;
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(to top, ${backgroundColor}, transparent);
-    opacity: 0.6;
-    pointer-events: none;
-    z-index: 3;
-  }
+  opacity: 0.85;
 `
 
 const widgetTurnedOn = css`
@@ -99,18 +88,20 @@ export function Widget({
     >
       {(title || titleSide || turnedOn !== undefined) && (
         <div className={cx(section, widgetTitle)}>
-          <Clickable onClick={onTitleClick}>
-            {title}
-            {turnedOn !== undefined && (
-              <Icon
-                icon={iconOn}
-                color={turnedOn ? successShade(0) : errorShade(0)}
-                className={widgetIndicator}
-                inline
-                padding
-              />
-            )}
-          </Clickable>
+          <div>
+            <Clickable onClick={onTitleClick}>
+              {title}
+              {turnedOn !== undefined && (
+                <Icon
+                  icon={iconOn}
+                  color={turnedOn ? successShade(0) : errorShade(0)}
+                  className={widgetIndicator}
+                  inline
+                  padding
+                />
+              )}
+            </Clickable>
+          </div>
           {titleSide && <div className={titleSideContainer}>{titleSide}</div>}
         </div>
       )}
