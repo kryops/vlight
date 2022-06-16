@@ -3,57 +3,61 @@
 ## Roadmap
 
 - Universe features
-  - global blackout
-  - global master
-  - all on
-  - swop (single chase active, rest blackout)
-  - complete fixture override/reservation (e.g. when controlled by a chase)
+  - Global blackout
+  - Global master
+  - All on
+  - Swop (single chase active, rest blackout)
+  - Complete fixture override/reservation (e.g. when controlled by a chase)
 - Fixture types
   - Control which channels should be tied to the fixture's master
   - Channels with discrete states
   - Fixtures with multiple light sources
   - Moving heads
-  - special colors preview (amber, UV)
+  - Special colors preview (amber, UV)
 - Map
   - Fixture test mode
   - Change size
-- New Controls
-  - All off (permanently, <> blackout)
-  - Programmable buttons
-  - non-live chases
-  - Sequences/shows
 - Speed/Fade control
-  - global vs local speed
-  - global pause/halt
-  - global fading (outgoing universe)
+  - Global vs local speed
+  - Global pause/halt
+  - Global fading (outgoing universe)
 - Prepare changes before applying
   - Chases, Memories, Fixture states...
   - Fade/transition
-  - kick off multiple changes at once
+  - Kick off multiple changes at once
 - Memories
-  - display order of fixtures in preview
-  - button instead of fader
-  - in a row: repeat n times
-  - alternating: alternate after n fixtures
+  - Display order of fixtures in preview
+  - Button instead of fader
+  - In a row: repeat n times
+  - Alternating: alternate after n fixtures
   - Rename live memories
 - Chases
   - Rename
   - Pre-configured / presets (including multi-color presets)
   - Color distribution: random, equal, relative
   - Turn off other chases while in burst mode
+- Dymamic pages
+  - Improve layout + editing
+  - Multiple widgets of the same type (e.g. memories)
+- Configuration
+  - Fixtures: Show amount of channels for fixture type
+  - Fixtures: Default to first free channel, warn about overlapping fixtures
+- New Controls
+  - All off (permanently, <> blackout)
+  - Programmable buttons
+  - Non-live chases
+  - Sequences/shows
 - Inputs
   - Keyboard shortcuts/keybindings
   - LaunchPad input
   - XTouch input
   - External input mapping
-- Improved dynamic pages layout + editing
-- Configuration
-  - Fixtures: Show amount of channels for fixture type
-  - Fixtures: Warn about overlapping fixtures
 
 ## Tech
 
+- Properly document code
 - Performance: manual DOM operations for universe changes (especially with fading)
+- React Error Boundaries
 - Backend restructuring
   - easier masterData extension / new entity process?
 - Simplify / remove frontend API worker?
