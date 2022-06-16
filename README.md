@@ -26,16 +26,10 @@ Install and setup:
 > yarn
 ```
 
-Start in development mode with hot reloading:
-
-```shellscript
-> yarn start
-```
-
 Start in production mode:
 
 ```shellscript
-> yarn start:prod
+> yarn start
 ```
 
 ### Windows Notes
@@ -49,6 +43,14 @@ The automatic installation of the Visual Studio Build tools does not include all
 - ArtNet
 - USB for [FX5](https://fx5.de/) and [Digital Enlightenment](http://www.digital-enlightenment.de/)
 - Custom Binary protocol
+
+## Development
+
+Start in development mode with hot reloading:
+
+```shellscript
+> yarn dev
+```
 
 ## Documentation
 

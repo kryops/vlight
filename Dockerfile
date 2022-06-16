@@ -19,4 +19,4 @@ RUN apk --no-cache --virtual .gyp add python make g++ git \
 
 EXPOSE 8000
 
-CMD ["yarn", "start:prod"]
+CMD ["yarn", "start"]
