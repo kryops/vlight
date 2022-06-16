@@ -22,6 +22,19 @@ const container_full = css`
   max-width: 100vw;
 `
 
+const container_preferSingleRow = css`
+  @media (min-width: ${breakpoint}) {
+    flex-wrap: nowrap;
+    & > :first-child {
+      flex-grow: 0;
+    }
+    & > :nth-child(2) {
+      flex-basis: 0;
+      width: 50vw;
+    }
+  }
+`
+
 const column = css`
   flex: 1 1 auto;
 
@@ -48,6 +61,7 @@ export interface TwoColumDialogContainerProps {
   rightClassName?: string
   fixed?: boolean
   fullWidth?: boolean
+  preferSingleRow?: boolean
 }
 
 export function TwoColumDialogContainer({
@@ -58,9 +72,17 @@ export function TwoColumDialogContainer({
   rightClassName,
   fixed,
   fullWidth,
+  preferSingleRow,
 }: TwoColumDialogContainerProps) {
   return (
-    <div className={cx(container, fullWidth && container_full, className)}>
+    <div
+      className={cx(
+        container,
+        fullWidth && container_full,
+        preferSingleRow && container_preferSingleRow,
+        className
+      )}
+    >
       <div className={cx(column, fixed && column_fixed, leftClassName)}>
         {left}
       </div>

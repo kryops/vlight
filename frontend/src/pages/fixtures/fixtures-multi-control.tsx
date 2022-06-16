@@ -77,6 +77,7 @@ export function FixturesMultiControl() {
           )
         }
         fullWidth
+        preferSingleRow
       />
     </Collapsible>
   )
