@@ -77,11 +77,22 @@ Start:
 > yarn start
 ```
 
-### Windows Notes
+#### Windows Notes
 
 The automatic installation of the Visual Studio Build tools does not include all features that are necessary to compile this project's addons. Find them under "Control Panel > Software / Apps & Features" and change the installation to contain the following features:
 
 - Visual C++ ATL for x86 and x64
+
+### Configuration
+
+The base configuration is contained in the `config/vlight-config.js` file. It should offer documentation and auto-completion through TypeScript - otherwise, check out the [source](./backend/src/services/config.ts).
+
+To switch projects, change the `project` setting. If you want to clone an existing project, just copy its folder inside the `config` directory.
+
+The rest of the configuration is available in the UI:
+
+- Fixture types are persisted globally
+- All other entities and settings are persisted on a per-project basis
 
 ## Development
 
