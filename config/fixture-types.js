@@ -26,6 +26,15 @@ const fixtureTypes = [
     ySize: 4,
   },
   {
+    id: 'blinder6',
+    name: 'Blinder 6ch',
+    mapping: ['r', 'g', 'b', 'w', 'm', 'str'],
+    shape: 'square',
+    border: 'solid',
+    xSize: 10,
+    ySize: 10,
+  },
+  {
     id: 'blinder19',
     name: 'Blinder 19ch',
     mapping: [
