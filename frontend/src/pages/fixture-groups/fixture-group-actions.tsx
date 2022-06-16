@@ -25,21 +25,21 @@ export function FixtureGroupsActions() {
       <Button
         icon={iconAdd}
         transparent
-        onDown={() => openEntityEditor('fixtureGroups')}
+        onClick={() => openEntityEditor('fixtureGroups')}
       />
       <Link to={entitiesPageRoute('fixtureGroups')}>
         <Button icon={iconConfig} transparent />
       </Link>
       <Button
         icon={iconLight}
-        onDown={() => setOnForAllFixtureGroups(true)}
+        onClick={() => setOnForAllFixtureGroups(true)}
         disabled={isAllOn(fixtureGroupsState)}
       >
         ON
       </Button>
       <Button
         icon={iconLightOff}
-        onDown={() => setOnForAllFixtureGroups(false)}
+        onClick={() => setOnForAllFixtureGroups(false)}
         disabled={!isAnyOn(fixtureGroupsState)}
       >
         OFF

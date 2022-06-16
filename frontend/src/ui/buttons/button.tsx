@@ -5,6 +5,7 @@ import { baseline, iconShade, primaryShade, textShade } from '../styles'
 import { cx } from '../../util/styles'
 import { Touchable } from '../components/touchable'
 import { Icon } from '../icons/icon'
+import { Clickable } from '../components/clickable'
 
 const button = css`
   display: inline-block;
@@ -69,7 +70,10 @@ const iconStyle = css`
 
 export interface ButtonProps {
   children?: ReactNode
+  onClick?: () => void
+  /** NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling. */
   onDown?: () => void
+  /** NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling. */
   onUp?: () => void
   icon?: string
   iconColor?: string
@@ -83,6 +87,7 @@ export interface ButtonProps {
 
 export function Button({
   children,
+  onClick,
   onDown,
   onUp,
   block,
@@ -97,21 +102,18 @@ export function Button({
   const transparentIcon = !children && transparent
   const inactive = active === false || disabled
 
-  return (
-    <Touchable
-      className={cx(
-        button,
-        block && buttonBlock,
-        active === true && button_active,
-        inactive && button_inactive,
-        disabled && button_disabled,
-        transparent && button_transparent,
-        className
-      )}
-      title={title}
-      onDown={onDown}
-      onUp={onUp}
-    >
+  const classNames = cx(
+    button,
+    block && buttonBlock,
+    active === true && button_active,
+    inactive && button_inactive,
+    disabled && button_disabled,
+    transparent && button_transparent,
+    className
+  )
+
+  const content = (
+    <>
       {icon && (
         <Icon
           icon={icon}
@@ -123,6 +125,21 @@ export function Button({
         />
       )}
       {children}
+    </>
+  )
+
+  return onDown || onUp ? (
+    <Touchable
+      className={classNames}
+      title={title}
+      onDown={onDown}
+      onUp={onUp ?? onClick}
+    >
+      {content}
     </Touchable>
+  ) : (
+    <Clickable className={classNames} title={title} onClick={onClick}>
+      {content}
+    </Clickable>
   )
 }

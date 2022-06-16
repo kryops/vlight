@@ -102,7 +102,7 @@ export function ChaseColorEditor({
       <div className={faderContainer}>{mapping.map(renderFader)}</div>
       {color && onClose && (
         <Button
-          onDown={() => {
+          onClick={() => {
             onChange(null)
             onClose(true)
           }}

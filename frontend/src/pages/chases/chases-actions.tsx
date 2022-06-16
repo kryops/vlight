@@ -19,14 +19,14 @@ export function ChasesActions() {
     <>
       <Button
         icon={iconLight}
-        onDown={() => setOnForAllChases(true)}
+        onClick={() => setOnForAllChases(true)}
         disabled={isAllOn(liveChasesState)}
       >
         ON
       </Button>
       <Button
         icon={iconLightOff}
-        onDown={() => setOnForAllChases(false)}
+        onClick={() => setOnForAllChases(false)}
         disabled={!isAnyOn(liveChasesState)}
       >
         OFF

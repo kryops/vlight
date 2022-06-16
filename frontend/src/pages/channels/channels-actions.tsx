@@ -16,14 +16,14 @@ export function ChannelsActions() {
     <>
       <Button
         icon={iconLight}
-        onDown={() => setChannels(allChannels, 255)}
+        onClick={() => setChannels(allChannels, 255)}
         disabled={isFullOn}
       >
         ON
       </Button>
       <Button
         icon={iconLightOff}
-        onDown={() => setChannels(allChannels, 0)}
+        onClick={() => setChannels(allChannels, 0)}
         disabled={!isActive}
       >
         OFF

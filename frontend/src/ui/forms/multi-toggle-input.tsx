@@ -43,7 +43,7 @@ export function MultiToggleInput<T>({
           className={cx(entryStyle, entryClassName)}
           active={value.includes(entry)}
           block
-          onDown={() =>
+          onClick={() =>
             onChange(
               value.includes(entry)
                 ? value.filter(it => it !== entry)

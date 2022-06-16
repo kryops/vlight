@@ -65,7 +65,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
               icon={iconDelete}
               title="Delete"
               transparent
-              onDown={async () => {
+              onClick={async () => {
                 if (await showDialog('Delete Live Memory?', yesNo)) {
                   deleteLiveMemory(id)
                 }

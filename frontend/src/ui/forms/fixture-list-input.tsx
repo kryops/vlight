@@ -207,7 +207,7 @@ export function FixtureListInput({
           <Button
             className={categoryEntry}
             active={activeCategory === null}
-            onDown={() => setActiveCategory(null)}
+            onClick={() => setActiveCategory(null)}
           >
             <Icon icon={iconList} />
           </Button>
@@ -220,7 +220,7 @@ export function FixtureListInput({
               key={index}
               className={categoryEntry}
               active={category === activeCategory}
-              onDown={() => setActiveCategory(category)}
+              onClick={() => setActiveCategory(category)}
               title={category.label}
             >
               <Icon icon={category.icon} />
@@ -249,7 +249,7 @@ export function FixtureListInput({
                 className={listEntry}
                 active={active}
                 block
-                onDown={() =>
+                onClick={() =>
                   onChangeWrapper(
                     active
                       ? valueToDisplay.filter(it => it !== entry)

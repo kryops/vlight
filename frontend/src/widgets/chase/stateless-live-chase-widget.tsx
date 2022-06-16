@@ -303,7 +303,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
               icon={useFastMode ? iconFast : iconSlow}
               title="Toggle fast mode"
               transparent
-              onDown={() => {
+              onClick={() => {
                 if (!isCurrentlyFast) return
                 setFastMode(!fastMode)
               }}
@@ -317,13 +317,13 @@ export const StatelessLiveChaseWidget = memoInProduction(
                   : 'Multiple Mode: Will run in addition to other chases'
               }
               transparent
-              onDown={() => update({ single: !state.single })}
+              onClick={() => update({ single: !state.single })}
             />
             <Button
               icon={iconDelete}
               title="Delete"
               transparent
-              onDown={async () => {
+              onClick={async () => {
                 if (await showDialog('Delete Live Chase?', yesNo)) {
                   deleteLiveChase(id)
                 }

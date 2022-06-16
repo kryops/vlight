@@ -110,7 +110,7 @@ export const ValueOrRandomFader = memoInProduction(
               : 'Value range'
           }
           transparent
-          onDown={() =>
+          onClick={() =>
             onChange(
               convertValueOrRandom(
                 value,

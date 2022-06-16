@@ -26,14 +26,14 @@ export function FixturesActions() {
       </Link>
       <Button
         icon={iconLight}
-        onDown={() => setOnForAllFixtures(true)}
+        onClick={() => setOnForAllFixtures(true)}
         disabled={isAllOn(fixturesState)}
       >
         ON
       </Button>
       <Button
         icon={iconLightOff}
-        onDown={() => setOnForAllFixtures(false)}
+        onClick={() => setOnForAllFixtures(false)}
         disabled={!isAnyOn(fixturesState)}
       >
         OFF

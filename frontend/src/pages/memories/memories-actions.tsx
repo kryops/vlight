@@ -31,21 +31,21 @@ export function MemoriesActions() {
       <Button
         icon={iconAdd}
         transparent
-        onDown={() => openEntityEditor('memories')}
+        onClick={() => openEntityEditor('memories')}
       />
       <Link to={entitiesPageRoute('memories')}>
         <Button icon={iconConfig} transparent />
       </Link>
       <Button
         icon={iconLight}
-        onDown={() => setOnForAllMemories(true)}
+        onClick={() => setOnForAllMemories(true)}
         disabled={isAllOn(memoriesState) && isAllOn(liveMemoriesState)}
       >
         ON
       </Button>
       <Button
         icon={iconLightOff}
-        onDown={() => setOnForAllMemories(false)}
+        onClick={() => setOnForAllMemories(false)}
         disabled={!isAnyOn(memoriesState) && !isAnyOn(liveMemoriesState)}
       >
         OFF
