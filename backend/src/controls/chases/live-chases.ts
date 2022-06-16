@@ -49,7 +49,7 @@ function recomputeLiveChase(id: IdType) {
   const preparedState = prepareLiveChase(liveChase)!
   preparedStates.set(id, preparedState)
 
-  if (liveChase.fade) {
+  if (liveChase.fade && liveChase.on) {
     fadeUniverse(universe, preparedState.fullUniverse, liveChase.fade * 1000)
   } else {
     stopFading(universe)
@@ -137,17 +137,19 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
     removeInterval(id)
     removeUniverse(universe)
     stopFading(universe)
+    // we recompute the chase here so any changes will be reflected right when it is turned on again
+    recomputeLiveChase(id)
     return true
   }
 
-  // Only recompute chase here when it's new or turned on
+  // Only recompute chase here when it's new, turned on, or stepped manually
   // otherwise we would flicker lots of colors when fading, changing speed or colors
   if (!existing?.on || message.step) recomputeLiveChase(id)
   addUniverse(universe, { masterValue: liveChase.value })
 
   if (liveChase.stopped) {
     removeInterval(id)
-    stopFading(universe)
+    if (!message.step && !existing?.stopped) stopFading(universe)
   } else if (
     !existing?.on ||
     existing?.stopped ||

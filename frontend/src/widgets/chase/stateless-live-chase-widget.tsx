@@ -15,8 +15,8 @@ import {
   iconDoubleSpeed,
   iconFast,
   iconHalfSpeed,
-  iconLocked,
   iconMultiple,
+  iconPercentage,
   iconSingle,
   iconSlow,
   iconSpeedBurst,
@@ -24,7 +24,7 @@ import {
   iconStep,
   iconStop,
   iconSync,
-  iconUnlocked,
+  iconTime,
 } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { baseline, errorShade, successShade } from '../../ui/styles'
@@ -73,6 +73,34 @@ const controls = css`
   margin: ${baseline(-1.5)};
 `
 
+const activeButton = css`
+  position: relative;
+
+  &:after {
+    position: absolute;
+    top: ${baseline(0.5)};
+    left: ${baseline(1.5)};
+    content: '';
+    width: ${baseline(7.5)};
+    height: ${baseline(7.5)};
+    border-radius: 100%;
+    border: 2px dotted ${successShade(0)};
+    pointer-events: none;
+
+    animation: rotate 5s linear infinite;
+  }
+
+  @keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`
+
 export interface StatelessLiveChaseWidgetProps {
   id: IdType
   state: LiveChase
@@ -110,12 +138,15 @@ export const StatelessLiveChaseWidget = memoInProduction(
 
     const speedBurstBackup = useRef<Partial<LiveChase>>({})
     const startSpeedBurst = () => {
-      speedBurstBackup.current = {
-        speed: state.speed,
-        fade: state.fade,
-        stopped: state.stopped,
-        on: state.on,
-        burst: false,
+      // likely hit the button multiple times
+      if (!state.burst) {
+        speedBurstBackup.current = {
+          speed: state.speed,
+          fade: state.fade,
+          stopped: state.stopped,
+          on: state.on,
+          burst: false,
+        }
       }
       update({
         speed: maxSpeed,
@@ -164,17 +195,20 @@ export const StatelessLiveChaseWidget = memoInProduction(
               transparent
               onDown={() => updateSpeed(Math.min(state.speed * 2, minSpeed))}
             />
+            &nbsp;&nbsp;
             <Button
               icon={iconSync}
               title="Tap Sync"
               transparent
               onDown={tapSync}
             />
+            &nbsp;&nbsp;
             <Button
               icon={state.stopped ? iconStop : iconStart}
               title={state.stopped ? 'Start' : 'Stop'}
               iconColor={state.stopped ? errorShade(0) : successShade(0)}
               transparent
+              className={state.stopped || !state.on ? undefined : activeButton}
               onDown={() =>
                 update({
                   stopped: !state.stopped,
@@ -234,11 +268,12 @@ export const StatelessLiveChaseWidget = memoInProduction(
                       icon={iconDelete}
                       title="Remove Color"
                       transparent
-                      onDown={() =>
-                        update({
+                      onClick={event => {
+                        event?.stopPropagation()
+                        return update({
                           colors: state.colors.filter(it => it !== color),
                         })
-                      }
+                      }}
                     />
                   )}
                 </div>
@@ -279,13 +314,29 @@ export const StatelessLiveChaseWidget = memoInProduction(
               subLabel={`${state.speed.toFixed(2)}s`}
             />
             <FaderWithContainer
-              min={useFastMode ? fastMinSpeed : minSpeed}
+              min={
+                state.fadeLockedToSpeed
+                  ? 100
+                  : useFastMode
+                  ? fastMinSpeed
+                  : minSpeed
+              }
               max={0}
-              value={state.fade ?? 0}
-              onChange={fade => update({ fade })}
+              value={
+                state.fadeLockedToSpeed
+                  ? ((state.fade ?? 0) / state.speed) * 100
+                  : state.fade ?? 0
+              }
+              onChange={value =>
+                update({
+                  fade: state.fadeLockedToSpeed
+                    ? (value / 100) * state.speed
+                    : value,
+                })
+              }
               label="Fade"
               subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
-              bottomIcon={state.fadeLockedToSpeed ? iconLocked : iconUnlocked}
+              bottomIcon={state.fadeLockedToSpeed ? iconPercentage : iconTime}
               onBottomIconClick={() =>
                 update({ fadeLockedToSpeed: !state.fadeLockedToSpeed })
               }

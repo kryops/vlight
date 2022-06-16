@@ -6,6 +6,8 @@ export interface NormalizedTouchEvent<T extends HTMLElement = HTMLElement> {
   clientX: number
   clientY: number
   originalEvent: PointerEvent<T> | TouchEvent<T>
+  preventDefault: () => void
+  stopPropagation: () => void
 }
 
 export function normalizeTouchEvent<T extends HTMLElement = HTMLElement>(
@@ -18,6 +20,8 @@ export function normalizeTouchEvent<T extends HTMLElement = HTMLElement>(
       clientX: pointerEvent.clientX,
       clientY: pointerEvent.clientY,
       originalEvent: e,
+      preventDefault: () => e.preventDefault(),
+      stopPropagation: () => e.stopPropagation(),
     }
   }
 
@@ -28,6 +32,8 @@ export function normalizeTouchEvent<T extends HTMLElement = HTMLElement>(
     clientX: touch?.clientX,
     clientY: touch?.clientY,
     originalEvent: e,
+    preventDefault: () => e.preventDefault(),
+    stopPropagation: () => e.stopPropagation(),
   }
 }
 

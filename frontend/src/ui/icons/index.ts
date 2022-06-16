@@ -46,6 +46,8 @@ import {
   mdiCircle,
   mdiCircleMultiple,
   mdiArrowExpandHorizontal,
+  mdiPercent,
+  mdiClockOutline,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -78,6 +80,8 @@ export const iconSpeedBurst = mdiBomb
 export const iconLocked = mdiLockOutline
 export const iconUnlocked = mdiLockOpenVariantOutline
 export const iconStep = mdiStepForward
+export const iconPercentage = mdiPercent
+export const iconTime = mdiClockOutline
 
 export const iconCheckbox = mdiCheckboxBlankOutline
 export const iconCheckbox_checked = mdiCheckboxOutline

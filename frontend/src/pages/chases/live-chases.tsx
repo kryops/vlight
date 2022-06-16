@@ -30,6 +30,7 @@ function getNewLiveChase(): LiveChase {
     colors: [{ channels: { m: 255, r: 255 } }],
     single: true,
     burst: false,
+    fadeLockedToSpeed: true,
   }
 }
 

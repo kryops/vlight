@@ -1,11 +1,12 @@
 import { css } from '@linaria/core'
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 import { baseline, iconShade, primaryShade, textShade } from '../styles'
 import { cx } from '../../util/styles'
 import { Touchable } from '../components/touchable'
 import { Icon } from '../icons/icon'
 import { Clickable } from '../components/clickable'
+import { NormalizedTouchEvent } from '../../util/touch'
 
 const button = css`
   display: inline-block;
@@ -70,7 +71,9 @@ const iconStyle = css`
 
 export interface ButtonProps {
   children?: ReactNode
-  onClick?: () => void
+  onClick?: (
+    event?: React.MouseEvent<HTMLElement> | NormalizedTouchEvent<HTMLDivElement>
+  ) => void
   /** NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling. */
   onDown?: () => void
   /** NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling. */
