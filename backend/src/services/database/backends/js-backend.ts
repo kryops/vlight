@@ -1,5 +1,5 @@
 import { join } from 'path'
-import fs from 'fs'
+import { writeFile, stat, mkdir } from 'fs/promises'
 
 import prettier from 'prettier'
 import { EntityName, EntityArray, EntityType, IdType } from '@vlight/types'
@@ -8,8 +8,6 @@ import { logger } from '@vlight/utils'
 import { configDirectoryPath, project } from '../../config'
 
 import { DatabaseBackend, DatabaseEntityOptions } from './database-backend'
-
-const { writeFile } = fs.promises
 
 function entityNameToFileName(entityName: EntityName) {
   return entityName
@@ -49,7 +47,11 @@ export class JsDatabaseBackend implements DatabaseBackend {
     const configPath = getModulePath(entity, !!global)
 
     // enable reloading
-    delete require.cache[require.resolve(configPath)]
+    try {
+      delete require.cache[require.resolve(configPath)]
+    } catch {
+      // do nothing
+    }
     try {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       const rawEntries: EntityArray<T> = require(configPath)
@@ -79,6 +81,13 @@ export class JsDatabaseBackend implements DatabaseBackend {
 `,
       prettierConfig ?? undefined
     )
+
+    const parentDirectory = join(filePath, '..')
+    try {
+      await stat(parentDirectory)
+    } catch {
+      await mkdir(parentDirectory)
+    }
 
     await writeFile(filePath, fileContent)
   }
