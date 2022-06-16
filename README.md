@@ -12,38 +12,38 @@ Simple web-based DMX lights controller.
 >
 > Feel free to fork and experiment - PRs welcome.
 
-> 🎵 Also check out this project's companion app  [remote-mixer](https://github.com/kryops/remote-mixer) for remote-controlling sound mixers.
+> 🎵 Also check out this project's companion app [remote-mixer](https://github.com/kryops/remote-mixer) for remote-controlling sound mixers.
 
 ## Features
 
-* 📱 Responsive and mobile-friendly
-* 🚀 Lightweight and performant
-* 🕸️ Connect multiple clients
-* 🌓 Light and dark mode
-* 📄 Configurable Dynamic Pages
+- 📱 Responsive and mobile-friendly
+- 🚀 Lightweight and performant
+- 🕸️ Connect multiple clients
+- 🌓 Light and dark mode
+- 📄 Configurable Dynamic Pages
 
 Controls
 
-* 🎚 DMX Channels
-* 💡 Fixtures
-* ꙮ Fixture Groups
-* 🖼 Memories
-* 🎞 Live Chases
-* 🗺 Map Overview
-* ✨ Universe Overview
+- 🎚 DMX Channels
+- 💡 Fixtures
+- ꙮ Fixture Groups
+- 🖼 Memories
+- 🎞 Live Chases
+- 🗺 Map Overview
+- ✨ Universe Overview
 
 Inputs
 
-* 🖱 Mouse
-* 📱 Touch
-* (Planned: ⌨️ Keyboard)
-* (Planned: 🕹 Physical input devices)
+- 🖱 Mouse
+- 📱 Touch
+- (Planned: ⌨️ Keyboard)
+- (Planned: 🕹 Physical input devices)
 
 Supported DMX Interfaces
 
-* ArtNet
-* USB for [FX5](https://fx5.de/) and [Digital Enlightenment](http://www.digital-enlightenment.de/)
-* [Custom Binary protocol via TCP/UDP](./backend/src/devices/vlight/README.md)
+- ArtNet
+- USB for [FX5](https://fx5.de/) and [Digital Enlightenment](http://www.digital-enlightenment.de/)
+- [Custom Binary protocol via TCP/UDP](./backend/src/devices/vlight/README.md)
 
 ## Getting Started
 
