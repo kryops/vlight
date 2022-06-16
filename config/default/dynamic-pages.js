@@ -5,7 +5,7 @@ const dynamicPages = [
     headline: 'Foobar',
     rows: [
       {
-        headline: 'universe',
+        headline: 'Universe, Channels, Map',
         cells: [
           {
             widgets: [
@@ -13,34 +13,13 @@ const dynamicPages = [
                 type: 'universe',
                 from: 1,
                 to: 8,
-                title: 'UNI',
+                title: 'Universe',
               },
-              {
-                type: 'universe',
-                from: 9,
-                to: 20,
-              },
-            ],
-          },
-          {
-            widgets: [
               {
                 type: 'channels',
                 from: 1,
                 to: 8,
-              },
-            ],
-          },
-        ],
-      },
-      {
-        headline: 'bla',
-        cells: [
-          {
-            widgets: [
-              {
-                type: 'fixture',
-                id: 'bar1',
+                title: 'Channels',
               },
             ],
           },
@@ -51,12 +30,32 @@ const dynamicPages = [
               },
             ],
           },
+        ],
+      },
+      {
+        headline: 'Fixtures, Groups, Memories',
+        cells: [
           {
-            factor: 2,
             widgets: [
               {
+                type: 'fixture',
+                id: 'bar_1',
+              },
+              {
                 type: 'fixture-group',
-                id: 'stufen',
+                id: '1',
+              },
+            ],
+          },
+          {
+            widgets: [
+              {
+                type: 'memory',
+                id: 'test',
+              },
+              {
+                type: 'live-memory',
+                id: '1',
               },
             ],
           },
@@ -67,21 +66,13 @@ const dynamicPages = [
           {
             widgets: [
               {
-                type: 'live-memory',
-                id: '1',
-              },
-            ],
-          },
-          {
-            widgets: [
-              {
                 type: 'live-chase',
                 id: '1',
               },
             ],
           },
         ],
-        headline: 'Test',
+        headline: 'Chases',
       },
     ],
     name: 'Test Dynamic Page',
