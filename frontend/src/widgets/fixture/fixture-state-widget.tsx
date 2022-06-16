@@ -6,6 +6,7 @@ import { css } from '@linaria/core'
 import { Widget } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
 import {
+  ColorPickerColor,
   colorPickerColors,
   fixtureStateToColor,
 } from '../../ui/controls/colorpicker/util'
@@ -73,7 +74,7 @@ export const FixtureStateWidget = memoInProduction(
     )
 
     const onColorPickerChange = useCallback(
-      color =>
+      (color: ColorPickerColor) =>
         onChange({
           channels: { ...color },
         }),

@@ -15,7 +15,7 @@ export interface FixtureStateFaderProps {
 export const FixtureStateFader = memoInProduction(
   ({ channelType, value, colorPicker, onChange }: FixtureStateFaderProps) => {
     const changeFn = useCallback(
-      newValue =>
+      (newValue: number) =>
         onChange({
           channels: {
             [channelType]: newValue,
