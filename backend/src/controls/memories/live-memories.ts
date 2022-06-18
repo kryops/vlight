@@ -20,8 +20,10 @@ import {
 } from '../../services/universe'
 import { controlRegistry } from '../registry'
 
+/** A map containing all live memories. */
 export const liveMemories: Map<IdType, LiveMemory> = new Map()
 
+/** The outgoing DMX universes for all live memories. */
 const outgoingUniverses: Map<IdType, Universe> = new Map()
 
 function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe {
@@ -42,7 +44,7 @@ function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe {
 
 function deleteLiveMemory(id: IdType) {
   liveMemories.delete(id)
-  const universe = outgoingUniverses.get(id)!
+  const universe = outgoingUniverses.get(id)
   if (universe) removeUniverse(universe)
   outgoingUniverses.delete(id)
 }

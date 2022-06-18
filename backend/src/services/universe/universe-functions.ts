@@ -14,6 +14,9 @@ import { universes, universeStates } from './state'
 import { Universe, UniverseState } from './types'
 import { getUniverseIndex, getChannelFromUniverseIndex } from './utils'
 
+/**
+ * Creates a DMX universe, optionally filling it with the values of the given fixture states.
+ */
 export function createUniverse(
   fixtureStates?: Dictionary<FixtureState>
 ): Universe {
@@ -38,6 +41,11 @@ export function createUniverse(
   return universe
 }
 
+/**
+ * Adds the given universe to the list of active universes.
+ *
+ * Recomputes the outgoing DMX universe accordingly.
+ */
 export function addUniverse(universe: Universe, state?: UniverseState): void {
   if (universes.has(universe)) {
     if (state) setUniverseState(universe, state)
@@ -58,6 +66,11 @@ export function addUniverse(universe: Universe, state?: UniverseState): void {
   })
 }
 
+/**
+ * Removes the given universe from the list of active universes.
+ *
+ * Recomputes the outgoing DMX universe accordingly.
+ */
 export function removeUniverse(universe: Universe): void {
   if (!universes.has(universe)) return
 
@@ -75,6 +88,11 @@ export function removeUniverse(universe: Universe): void {
   })
 }
 
+/**
+ * Overwrites the given universe with the values from the second universe.
+ *
+ * Recomputes the outgoing DMX universe accordingly.
+ */
 export function overwriteUniverse(
   universe1: Universe,
   universe2: Universe
@@ -94,6 +112,11 @@ export function overwriteUniverse(
   return changed
 }
 
+/**
+ * Changes the state of the given universe.
+ *
+ * Recomputes the outgoing DMX universe accordingly.
+ */
 export function setUniverseState(
   universe: Universe,
   state: UniverseState
@@ -134,10 +157,16 @@ export function setUniverseState(
   }
 }
 
+/**
+ * Creates a copy of the given universe.
+ */
 export function cloneUniverse(universe: Universe): Universe {
   return Buffer.from(universe)
 }
 
+/**
+ * Returns a set of channels whose values differ in the two given universes.
+ */
 export function getDifferentChannels(
   universe1: Buffer,
   universe2: Buffer
@@ -153,6 +182,9 @@ export function getDifferentChannels(
   return differentChannels
 }
 
+/**
+ * Returns whether the given universe is empty, i.e. has all channels set to 0.
+ */
 export function isUniverseEmpty(universe: Universe): boolean {
   return universe.every(value => value === 0)
 }

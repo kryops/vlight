@@ -14,8 +14,12 @@ import {
 import { initTcpServer, sendTcpBroadcastMessage } from './tcp'
 import { initUdpMulticast, sendUdpMulticastMessage } from './udp'
 
+/** Set of changed channels awaiting to be flushed to the devices. */
 const changedChannels: Set<number> = new Set<number>()
 
+/**
+ * Flushes the changed DMX channels to the connected devices.
+ */
 function flushVlightDevices() {
   if (changedChannels.size === 0) {
     return
@@ -36,10 +40,6 @@ function flushVlightDevices() {
 }
 
 function broadcastUniverseChannel(channel: number) {
-  if (!enableVLightDevices) {
-    return
-  }
-
   changedChannels.add(channel)
 }
 

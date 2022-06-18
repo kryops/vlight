@@ -8,7 +8,7 @@ import {
 import { dmxUniverse } from './state'
 
 /**
- * Export as function instead of the variable directly
+ * Exported as function instead of the variable directly
  * so we can add blackout/swop features later
  */
 export function getDmxUniverse(): Buffer {

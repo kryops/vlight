@@ -1,5 +1,8 @@
 import { valueToFraction, fractionToValue } from '@vlight/utils'
 
+/**
+ * Interpolates the missing gradient stop positions in the given list.
+ */
 export function interpolateGradientPositions(
   positions: Array<number | null | undefined>
 ): number[] {

@@ -1,8 +1,9 @@
-import { promises } from 'fs'
+import { writeFile } from 'fs/promises'
 import { join } from 'path'
 
 import {
   Dictionary,
+  FixtureChannels,
   FixtureState,
   LiveChase,
   LiveMemory,
@@ -26,10 +27,9 @@ import {
 import { broadcastApplicationStateToApiClients } from './api'
 import { registerApiMessageHandler } from './api/registry'
 
-const { writeFile } = promises
-
+/** The state that is persisted to disk. */
 export interface PersistedState {
-  channels: Dictionary<number>
+  channels: FixtureChannels
   fixtures: Dictionary<FixtureState>
   fixtureGroups: Dictionary<FixtureState>
   memories: Dictionary<MemoryState>
@@ -50,18 +50,26 @@ function getEmptyPersistedState(): PersistedState {
   }
 }
 
+/** The currently persisted state. */
 let persistedState: PersistedState = getEmptyPersistedState()
+
+/**
+ * The state is serialized into a string and compared with this string to see if it has changed.
+ */
 let persistedStateString: string
 
 function isNotInitialState({ initial }: FixtureState | MemoryState) {
   return !initial
 }
 
+/**
+ * Returns the current state of all controls.
+ */
 function getCurrentState(): PersistedState {
   const channels = Array.from(channelUniverse).reduce((acc, cur, index) => {
     if (cur > 0) acc[index.toString()] = cur
     return acc
-  }, {} as Dictionary<number>)
+  }, {} as FixtureChannels)
   return {
     channels,
     fixtures: mapToDictionary(fixtureStates, isNotInitialState),
@@ -72,10 +80,18 @@ function getCurrentState(): PersistedState {
   }
 }
 
+/**
+ * Serializes the state into a string.
+ *
+ * Creates JavaScript code that can just be required when loading the persisted state.
+ */
 function serializeState(value: any) {
   return `module.exports = ${JSON.stringify(value, null, 2)};\n`
 }
 
+/**
+ * Persists the current state if it has changed.
+ */
 async function checkAndPersistCurrentState() {
   const currentState = getCurrentState()
   const currentStateString = serializeState(currentState)
@@ -91,10 +107,19 @@ async function checkAndPersistCurrentState() {
   persistedStateString = currentStateString
 }
 
+/**
+ * Returns the current persisted state.
+ */
 export function getPersistedState(): PersistedState {
   return persistedState
 }
 
+/**
+ * Resets the persisted state and reloads all controls.
+ *
+ * NOTE: Some controls are not contained in the master data, but only saved as state
+ * (e.g. live memories, live chases). These controls are deleted when resetting the state.
+ */
 export function resetState(): void {
   persistedState = getEmptyPersistedState()
   reloadControls(true)
@@ -117,6 +142,7 @@ export function initPersistedState(): void {
 
   registerApiMessageHandler('reset-state', () => {
     resetState()
+    // do not broadcast this message; the complete state is broadcast anyway
     return false
   })
 

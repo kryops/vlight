@@ -25,14 +25,21 @@ export interface HIDWithInfo extends HID {
   info: Device
 }
 
+/** Set of block numbers that contain changed channels awaiting to be flushed to the devices. */
 const changedBlocks: Set<number> = new Set<number>()
+
+/** Array of all currently connected USB DMX devices */
 export const usbDmxDevices: HIDWithInfo[] = []
+
 /**
  * Devices that aren't plugged into power try to connect, but then fail receiving
  * messages. We ban them, and clear the list periodically to retry
  */
 export const bannedDevices = new Set<string>()
 
+/**
+ * Flushes all DMX universe changes to all connected devices.
+ */
 function flushUsbDmxDevices() {
   if (!usbDmxDevices.length || changedBlocks.size === 0) {
     return
@@ -49,6 +56,9 @@ function flushUsbDmxDevices() {
   changedBlocks.clear()
 }
 
+/**
+ * Flushes the complete DMX universe to the given device.
+ */
 function flushUniverse(device: HIDWithInfo): boolean {
   const numberOfBlocks = Math.ceil(universeSize / blockSize)
   for (let block = 0; block < numberOfBlocks; block++) {

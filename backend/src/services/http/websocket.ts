@@ -7,6 +7,7 @@ import { handleApiMessage } from '../api'
 
 import { httpServer } from './express'
 
+/** The web sockets of all connected clients. */
 export const sockets: ws[] = []
 
 function removeSocket(socket: ws) {
@@ -17,6 +18,27 @@ function removeSocket(socket: ws) {
 function sendSocketMessage(socket: ws, message: ApiOutMessage) {
   const messageString = JSON.stringify(message)
   socket.send(messageString)
+}
+
+/** Set of API message types whose contents are not logged when broadcasting. */
+const skipLoggingForMessageTypes = new Set<ApiOutMessage['type']>([
+  'state',
+  'masterdata',
+])
+
+/**
+ * Broadcasts the given message to all connected clients.
+ */
+export function broadcastToSockets(message: ApiOutMessage): void {
+  if (!sockets.length) {
+    return
+  }
+  const info = skipLoggingForMessageTypes.has(message.type)
+    ? message.type
+    : message
+  logger.debug('broadcast WebSocket message', info)
+  const messageString = JSON.stringify(message)
+  sockets.forEach(socket => socket.send(messageString))
 }
 
 export async function initWebSocketServer(): Promise<void> {
@@ -33,21 +55,4 @@ export async function initWebSocketServer(): Promise<void> {
 
     sendSocketMessage(socket, getFullState())
   })
-}
-
-const skipLoggingForMessageTypes = new Set<ApiOutMessage['type']>([
-  'state',
-  'masterdata',
-])
-
-export function broadcastToSockets(message: ApiOutMessage): void {
-  if (!sockets.length) {
-    return
-  }
-  const info = skipLoggingForMessageTypes.has(message.type)
-    ? message.type
-    : message
-  logger.debug('broadcast WebSocket message', info)
-  const messageString = JSON.stringify(message)
-  sockets.forEach(socket => socket.send(messageString))
 }

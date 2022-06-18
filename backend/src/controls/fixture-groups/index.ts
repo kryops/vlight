@@ -28,8 +28,11 @@ import { getInitialFixtureState } from '../fixtures/mapping'
 import { controlRegistry } from '../registry'
 import { registerApiMessageHandler } from '../../services/api/registry'
 
-const universes: Map<IdType, Universe> = new Map()
+/** A map containing the states of all fixture group controls. */
 export const fixtureGroupStates: Map<IdType, FixtureState> = new Map()
+
+/** The outgoing DMX universes for all fixture groups. */
+const universes: Map<IdType, Universe> = new Map()
 
 function getAllFixturesOfGroup(fixtureGroup: FixtureGroup): Fixture[] {
   return fixtureGroup.fixtures
@@ -37,6 +40,7 @@ function getAllFixturesOfGroup(fixtureGroup: FixtureGroup): Fixture[] {
     .filter(isTruthy)
 }
 
+/** Returns the combined channel mapping of all members of the given group. */
 function getFixtureGroupMapping(fixtureGroup: FixtureGroup) {
   return getAllFixturesOfGroup(fixtureGroup)
     .flatMap(fixture => {
@@ -46,6 +50,11 @@ function getFixtureGroupMapping(fixtureGroup: FixtureGroup) {
     .filter(isUnique)
 }
 
+/**
+ * Sets the given state to the group's outgoing DMX universe.
+ *
+ * Returns whether anything was changed.
+ */
 function setFixtureGroupStateToUniverse(
   fixtureGroup: FixtureGroup,
   state: FixtureState
@@ -71,8 +80,10 @@ function initFixtureGroup(
   oldFixtureGroupStates: Map<IdType, FixtureState>
 ) {
   const { id } = fixtureGroup
+
   const universe = createUniverse()
   universes.set(id, universe)
+
   const initialState =
     oldFixtureGroupStates.get(id) ??
     getInitialFixtureState(getFixtureGroupMapping(fixtureGroup))
@@ -93,9 +104,9 @@ function setFixtureGroupState(
     logger.warn('no fixture group found for ID', id)
     return false
   }
-  const oldState = fixtureGroupStates.get(id)!
+  const oldState = fixtureGroupStates.get(id)
   const newState = mergeFixtureStates(
-    merge ? fixtureGroupStates.get(id) : undefined,
+    merge ? oldState : undefined,
     state,
     getFixtureGroupMapping(fixtureGroup)
   )
@@ -104,8 +115,8 @@ function setFixtureGroupState(
 
   const universe = universes.get(id)!
 
-  if (!oldState.on && newState.on) addUniverse(universe)
-  else if (oldState.on && !newState.on) removeUniverse(universe)
+  if (!oldState?.on && newState.on) addUniverse(universe)
+  else if (oldState?.on && !newState.on) removeUniverse(universe)
 
   return setFixtureGroupStateToUniverse(fixtureGroup, newState)
 }

@@ -1,4 +1,4 @@
-import { Dictionary, FixtureState } from '@vlight/types'
+import { FixtureChannels, FixtureState } from '@vlight/types'
 import { ensureBetween } from '@vlight/utils'
 import { ChannelType } from '@vlight/controls'
 
@@ -65,7 +65,7 @@ function normalizeColor(color: ColorPickerColor): ColorPickerColor {
   return mapColor(color, c => Math.round(c * factor))
 }
 
-function colorToArray(obj: ColorPickerColor | Dictionary<number>) {
+function colorToArray(obj: ColorPickerColor | FixtureChannels) {
   return (colorPickerColors as (keyof ColorPickerColor)[]).map(c => obj[c] ?? 0)
 }
 

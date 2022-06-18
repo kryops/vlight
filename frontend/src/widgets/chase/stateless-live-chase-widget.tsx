@@ -39,7 +39,8 @@ import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container
 import { getChasePreviewColor } from './utils'
 import { ChaseColorEditor } from './chase-color-editor'
 
-const maxSpeed = 0.025
+/** 25 fps */
+const maxSpeed = 0.04
 const fastMinSpeed = 2
 const minSpeed = 5
 

@@ -1,5 +1,8 @@
 import { IdType } from '@vlight/types'
 
+/**
+ * Removes the given element from the given array, mutating it.
+ */
 export function removeFromMutableArray<T>(arr: T[], el: T): void {
   const index = arr.indexOf(el)
   if (index === -1) {
@@ -13,6 +16,11 @@ export function removeFromMutableArray<T>(arr: T[], el: T): void {
   }
 }
 
+/**
+ * Adds the given element from the given array, mutating it.
+ *
+ * Does nothing if the element is already contained.
+ */
 export function addToMutableArray<T>(arr: T[], el: T): void {
   if (arr.includes(el)) {
     return
@@ -20,6 +28,9 @@ export function addToMutableArray<T>(arr: T[], el: T): void {
   arr.push(el)
 }
 
+/**
+ * Creates an array from the return values of the given callback for a range of numbers.
+ */
 export function arrayRange<T>(
   min: number,
   max: number,
@@ -33,6 +44,9 @@ export function arrayRange<T>(
   return entries
 }
 
+/**
+ * Creates an array containing a range of numbers.
+ */
 export function createRangeArray(min: number, max: number): number[] {
   const arr: number[] = []
   for (let i = min; i <= max; i++) {
@@ -41,12 +55,18 @@ export function createRangeArray(min: number, max: number): number[] {
   return arr
 }
 
+/**
+ * Converts an entity array into a map by the entities' ID.
+ */
 export function entityArrayToMap<T extends { id: IdType }>(
   arr: T[]
 ): Map<IdType, T> {
   return new Map<IdType, T>(arr.map(it => [it.id, it]))
 }
 
+/**
+ * Executes a callback for a single value or an array of values.
+ */
 export function forEach<T>(entry: T | T[], cb: (it: T) => void): void {
   if (Array.isArray(entry)) {
     entry.forEach(cb)
@@ -55,6 +75,9 @@ export function forEach<T>(entry: T | T[], cb: (it: T) => void): void {
   }
 }
 
+/**
+ * Sorts an array of objects by the value of a key.
+ */
 export function sortByKey<T extends object>(arr: T[], key: keyof T): T[] {
   return [...arr].sort((a, b) => {
     const aVal = a[key]
@@ -66,6 +89,12 @@ export function sortByKey<T extends object>(arr: T[], key: keyof T): T[] {
   })
 }
 
+/**
+ * Moves the given preferred values to the beginning of the array
+ * in the order they are defined in.
+ *
+ * Mutates the given array.
+ */
 export function preferredOrder<T>(arr: T[], preferred: T[]): T[] {
   let currentTargetIndex = 0
 

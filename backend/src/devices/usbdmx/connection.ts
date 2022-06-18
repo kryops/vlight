@@ -22,9 +22,14 @@ function connectWithFallback(deviceInfo: Device) {
   return new HID(usbDmxVid, usbDmxPid)
 }
 
+/**
+ * Discovers and connects newly connected USB DMX devices,
+ * calling the given callback for each of them.
+ */
 export async function connectUsbDmxDevices(
   callback: (device: HIDWithInfo) => void
 ): Promise<void> {
+  // using require() so we only actually load the module if USB DMX is turned on
   const hid: typeof import('node-hid') = require('node-hid') // eslint-disable-line
 
   hid
@@ -56,7 +61,14 @@ export async function connectUsbDmxDevices(
     })
 }
 
+/**
+ * Disconnects USB DMX devices that are not there any more.
+ *
+ * This is usually triggered by a different kind of device removal detection,
+ * and tries to prevent errors when sending messages to disconnected devices.
+ */
 export async function disconnectUsbDmxDevices(): Promise<void> {
+  // using require() so we only actually load the module if USB DMX is turned on
   const hid: typeof import('node-hid') = require('node-hid') // eslint-disable-line
   const paths = hid
     .devices()
@@ -77,6 +89,11 @@ export async function disconnectUsbDmxDevices(): Promise<void> {
     })
 }
 
+/**
+ * Writes the given message to the given device.
+ *
+ * Returns whether the writing was successful.
+ */
 export function writeToUsbDmxDevice(
   device: HIDWithInfo,
   message: number[]

@@ -12,22 +12,19 @@ import { howLong } from '../../util/time'
 import { controlRegistry } from '../registry'
 import { registerApiMessageHandler } from '../../services/api/registry'
 
+/** The universe for the channel controls. */
 export let channelUniverse: Universe
 
-function loadChannels() {
+function loadChannelsFromState() {
   for (const [index, value] of Object.entries(getPersistedState().channels)) {
     channelUniverse[+index] = value
   }
 }
 
-function setChannel(channel: number, value: number) {
-  return setUniverseChannel(channelUniverse, channel, value)
-}
-
-function handleApiMessage(message: ApiChannelMessage) {
+function handleApiMessage(message: ApiChannelMessage): boolean {
   let changed = false
   for (const [channel, value] of Object.entries(message.channels)) {
-    if (setChannel(+channel, value)) {
+    if (setUniverseChannel(channelUniverse, +channel, value)) {
       changed = true
     }
   }
@@ -39,14 +36,14 @@ function reload(reloadState?: boolean) {
 
   removeUniverse(channelUniverse)
   channelUniverse.fill(0)
-  loadChannels()
+  loadChannelsFromState()
   addUniverse(channelUniverse)
 }
 
 export function init(): void {
   const start = Date.now()
   channelUniverse = createUniverse()
-  loadChannels()
+  loadChannelsFromState()
   addUniverse(channelUniverse)
 
   controlRegistry.register({ reload })

@@ -7,7 +7,10 @@ import express from 'express'
 
 import { handleApiMessage } from '../api'
 
-export const expressApp = express()
+/** The Express application serving the frontend and the REST API. */
+const expressApp = express()
+
+/** The application's HTTP server for connecting clients. */
 export const httpServer = createServer(expressApp)
 
 export async function initExpressApp(): Promise<void> {

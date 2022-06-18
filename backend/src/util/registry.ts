@@ -1,5 +1,9 @@
 import { logger } from '@vlight/utils'
 
+/**
+ * Generic registry class that allows executing an operation to all registered
+ * entries in parallel.
+ */
 export class ListRegistry<T> {
   entries: T[] = []
 
@@ -12,6 +16,11 @@ export class ListRegistry<T> {
   }
 }
 
+/**
+ * Generic registry class that allows registering a single entry per key.
+ *
+ * Logs an error if it overwrites an already registered entry for a given key.
+ */
 export class MapRegistry<TKey, TEntry> {
   entries = new Map<TKey, TEntry>()
 

@@ -22,6 +22,8 @@ export async function init(): Promise<void> {
   }
 
   const start = Date.now()
+
+  // using require() so we only actually load the module if ArtNet is turned on
   const artnet = require('artnet') // eslint-disable-line
 
   server = artnet({ host: artnetHost })

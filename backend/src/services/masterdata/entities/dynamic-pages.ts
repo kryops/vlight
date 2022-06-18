@@ -5,6 +5,9 @@ import { registerMasterDataEntity } from '../registry'
 
 type IconName = keyof typeof icons
 
+/**
+ * Resolves the icon name to the actual icon SVG path.
+ */
 function processDynamicPage({ icon, ...rest }: DynamicPage): DynamicPage {
   return {
     ...rest,

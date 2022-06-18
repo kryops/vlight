@@ -22,10 +22,17 @@ import { registerApiMessageHandler } from '../../services/api/registry'
 
 import { getInitialFixtureState } from './mapping'
 
+/** The outgoing DMX universes for all fixture groups. */
 let fixtureUniverse: Universe
 
+/** A map containing the states of all fixture controls. */
 export const fixtureStates: Map<IdType, FixtureState> = new Map()
 
+/**
+ * Sets the given state to the outgoing fixture DMX universe.
+ *
+ * Returns whether anything was changed.
+ */
 function setFixtureStateToUniverse(
   fixture: Fixture,
   state: FixtureState

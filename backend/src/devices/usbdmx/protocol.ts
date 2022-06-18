@@ -1,5 +1,13 @@
+import { Universe } from '../../services/universe'
+
+/**
+ * As messages have a fixed width, the DMX universe is represented as blocks.
+ */
 export const blockSize = 32
 
+/**
+ * Message that sets the correct mode "PC Out -> DMX Out"
+ */
 export function getModeMessage(): number[] {
   const message = new Array(34).fill(0)
   message[0] = 16
@@ -16,8 +24,11 @@ export function getModeMessage(): number[] {
   return message
 }
 
+/**
+ * Message that contains the slice of the DMX universe for the given block.
+ */
 export function getChannelBlockMessage(
-  universe: Buffer,
+  universe: Universe,
   block: number
 ): number[] {
   const universeBlock = universe.slice(

@@ -4,6 +4,9 @@ import { mapFixtureList } from '@vlight/controls'
 import { masterData, masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'
 
+/**
+ * Resolves the memory's members of each scene to an actual fixture list.
+ */
 function processMemory({ scenes, ...memoryRest }: Memory): Memory {
   return {
     ...memoryRest,

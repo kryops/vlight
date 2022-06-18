@@ -1,10 +1,16 @@
-import { Fixture } from '@vlight/types'
+import { Fixture, IdType } from '@vlight/types'
 import { arrayRange, logger } from '@vlight/utils'
 
 import { masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'
 
-function replaceIndex<T extends string | undefined>(
+/**
+ * Replaces the `#` character with the fixture index.
+ * If no placeholder is container, the index is appended at the end.
+ *
+ * Supports both names and IDs.
+ */
+function replaceIndexPlaceholder<T extends string | undefined>(
   value: T,
   index: number,
   isName = false
@@ -16,12 +22,18 @@ function replaceIndex<T extends string | undefined>(
   return value.replace(/#/g, String(index)) as T
 }
 
-function computeChannel(type: string, baseChannel: number, index: number) {
+/** Computes the DMX channel the fixture with the given index. */
+function computeChannel(type: IdType, baseChannel: number, index: number) {
   const fixtureType = masterDataMaps.fixtureTypes.get(type)
   const numChannels = fixtureType ? fixtureType.mapping.length : 1
   return baseChannel + (index - 1) * numChannels
 }
 
+/**
+ * Processes a fixture definition:
+ * - Generates multiple fixtures if {@link Fixture.count} is set
+ * - Replaces the `#` character with the fixture index
+ */
 function processFixture(fixture: Fixture): Fixture | Fixture[] {
   const { id, type, channel, name } = fixture
   const { count, xOffset, yOffset, ...resetToKeep } = fixture
@@ -40,9 +52,9 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
 
   return arrayRange(1, count, index => ({
     ...resetToKeep,
-    id: replaceIndex(id, index),
+    id: replaceIndexPlaceholder(id, index),
     originalId: id,
-    name: replaceIndex(name, index, true),
+    name: replaceIndexPlaceholder(name, index, true),
     type,
     channel: computeChannel(type, channel, index),
     x:

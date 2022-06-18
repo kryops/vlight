@@ -62,6 +62,10 @@ async function updateMasterDataEntity<T extends EntityName>(
   broadcastApplicationStateToApiClients()
 }
 
+/**
+ * Fills the given master data entries into the corresponding array and map
+ * for the given entity type.
+ */
 export function fillMasterDataEntity<T extends EntityName>(
   type: T,
   entries: EntityArray<T>,
@@ -79,6 +83,9 @@ export function fillMasterDataEntity<T extends EntityName>(
 }
 
 function registerApiMessageHandlers() {
+  // The master data message handlers all return false as the updateMasterDataEntity function
+  // will flush the complete application state including the master data to all connected clients
+
   registerApiMessageHandler('entity', (message: ApiEntityMessage<any>) => {
     updateMasterDataEntity(message.entity, options =>
       writeDatabaseEntity(message.entity, message.entries, options)

@@ -4,6 +4,9 @@ import { mapFixtureList } from '@vlight/controls'
 import { masterData, masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'
 
+/**
+ * Resolves the group's members to an actual fixture list.
+ */
 function processFixtureGroup({
   fixtures,
   ...rest

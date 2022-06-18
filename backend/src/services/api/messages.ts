@@ -11,6 +11,9 @@ import { masterData, rawMasterData } from '../masterdata'
 
 import { getApiStateMessage } from './protocol'
 
+/**
+ * Returns an API message containing the complete application state including the master data.
+ */
 export function getFullState(): ApiStateMessage {
   return getApiStateMessage({
     masterData,

@@ -22,6 +22,12 @@ function getModulePath(entity: EntityName, isGlobal: boolean) {
     : join(configDirectoryPath, project, fileName)
 }
 
+/**
+ * Generates an ID for a new entry.
+ *
+ * Currently, the IDs are created as integer numbers in ascending order.
+ * This may change in the future.
+ */
 // TODO generate ID based on name?
 function generateId(entries: EntityArray): string {
   let highestNumber = 0
@@ -36,6 +42,12 @@ function generateId(entries: EntityArray): string {
 
 const cache = new Map<EntityName, EntityArray<any>>()
 
+/**
+ * Simple database backend that stores its data as JavaScript files
+ * under `/config/<project>/<entityType>.js`.
+ *
+ * The data can be checked into version control easily, and edited manually if desired.
+ */
 export class JsDatabaseBackend implements DatabaseBackend {
   async loadEntities<T extends EntityName>(
     entity: T,
@@ -82,11 +94,12 @@ export class JsDatabaseBackend implements DatabaseBackend {
       prettierConfig ?? undefined
     )
 
-    const parentDirectory = join(filePath, '..')
+    // Create project directory if it does not exist
+    const projectDirectory = join(filePath, '..')
     try {
-      await stat(parentDirectory)
+      await stat(projectDirectory)
     } catch {
-      await mkdir(parentDirectory)
+      await mkdir(projectDirectory)
     }
 
     await writeFile(filePath, fileContent)

@@ -7,6 +7,7 @@ import { DatabaseEntityOptions } from './backends/database-backend'
 
 const backend = new JsDatabaseBackend()
 
+/** Loads all database entries of the given entity type. */
 export async function loadDatabaseEntity<T extends EntityName>(
   entity: T,
   options?: DatabaseEntityOptions
@@ -14,6 +15,7 @@ export async function loadDatabaseEntity<T extends EntityName>(
   return backend.loadEntities(entity, options)
 }
 
+/** Writes all database entries of the given entity type. */
 export async function writeDatabaseEntity<T extends EntityName>(
   entity: T,
   entries: EntityArray<T>,
@@ -22,6 +24,7 @@ export async function writeDatabaseEntity<T extends EntityName>(
   await backend.writeEntities(entity, entries, options)
 }
 
+/** Adds a single database entry of the given entity type. */
 export async function addDatabaseEntry<T extends EntityName>(
   entity: T,
   entry: EntityType<T>,
@@ -30,6 +33,7 @@ export async function addDatabaseEntry<T extends EntityName>(
   await backend.addEntry(entity, entry, options)
 }
 
+/** Updates a single database entry of the given entity type. */
 export async function updateDatabaseEntry<T extends EntityName>(
   entity: T,
   entry: EntityType<T>,
@@ -38,6 +42,7 @@ export async function updateDatabaseEntry<T extends EntityName>(
   await backend.updateEntry(entity, entry, options)
 }
 
+/** Removes a single database entry of the given entity type. */
 export async function removeDatabaseEntry<T extends EntityName>(
   entity: T,
   id: IdType,
@@ -48,6 +53,6 @@ export async function removeDatabaseEntry<T extends EntityName>(
 
 export async function initDatabase(): Promise<void> {
   const start = Date.now()
-  // do nothing
+  // do nothing (might change if we add other backends)
   howLong(start, 'initDatabase')
 }

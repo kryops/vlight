@@ -13,6 +13,10 @@ import {
 
 import { mapFixtureList } from './fixtures'
 
+/**
+ * Creates the fixture states for a live chase,
+ * applying random values where applicable.
+ */
 export function getLiveChaseFixtureStates(
   liveChase: LiveChase,
   { masterData, masterDataMaps }: MasterDataWithMaps

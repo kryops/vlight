@@ -1,3 +1,8 @@
+/**
+ * Recursively merges objects together.
+ *
+ * Primitive values and arrays are overwritten.
+ */
 export function mergeObjects<T extends Record<string, any>>(
   a: T | undefined,
   b: Partial<T> | Record<string, any> | undefined

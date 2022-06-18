@@ -29,10 +29,14 @@ import { initLiveMemories, liveMemories } from './live-memories'
 
 export { liveMemories }
 
-const outgoingUniverses: Map<IdType, Universe> = new Map()
+/** A map containing the states of all memory controls. */
 export const memoryStates: Map<IdType, MemoryState> = new Map()
 
-function usesMasterChannel(memory: Memory) {
+/** The outgoing DMX universes for all memories. */
+const outgoingUniverses: Map<IdType, Universe> = new Map()
+
+/** Returns whether a master channel is set in any of the memory's scene states. */
+function usesMasterChannel(memory: Memory): boolean {
   return memory.scenes.some(scene =>
     scene.states.some(state => {
       if (Array.isArray(state))
@@ -42,7 +46,7 @@ function usesMasterChannel(memory: Memory) {
   )
 }
 
-export function getInitialMemoryState(memory: Memory): MemoryState {
+function getInitialMemoryState(memory: Memory): MemoryState {
   return {
     on: false,
     value: 255,
@@ -51,7 +55,7 @@ export function getInitialMemoryState(memory: Memory): MemoryState {
   }
 }
 
-export function createMemoryUniverse(memory: Memory): Universe {
+function createMemoryUniverse(memory: Memory): Universe {
   const fixtureStates: Dictionary<FixtureState> = {}
   for (const scene of memory.scenes) {
     scene.members.forEach((member, memberIndex) => {

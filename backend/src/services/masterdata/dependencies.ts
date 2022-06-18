@@ -4,6 +4,13 @@ import { logger } from '@vlight/utils'
 import { getMasterDataEntityDefinition } from './registry'
 import { allEntityNames } from './data'
 
+/**
+ * Entites can define dependencies they need for processing their values
+ * (e.g. memories -> fixture groups -> fixtures -> fixture types).
+ *
+ * This function determines the correct order to load the entities in
+ * while satisfying all dependencies.
+ */
 export function getEntitiesInDependencyOrder(): EntityName[] {
   const entityCount = allEntityNames.length
   const order: EntityName[] = []
@@ -29,6 +36,12 @@ export function getEntitiesInDependencyOrder(): EntityName[] {
   return order
 }
 
+/**
+ * Returns the names of all entity types that are affected (directly or transitively)
+ * by a change of the given entity type.
+ *
+ * The names are returned in the correct order respecting their dependencies.
+ */
 export function getAffectedEntities(changedEntity: EntityName): EntityName[] {
   const entityNamesInOrder = getEntitiesInDependencyOrder()
 

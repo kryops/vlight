@@ -3,7 +3,7 @@ import {
   MemoryScene,
   FixtureState,
   FixtureStateGradient,
-  Dictionary,
+  FixtureChannels,
 } from '@vlight/types'
 import { ensureBetween, valueToFraction, fractionToValue } from '@vlight/utils'
 
@@ -28,6 +28,13 @@ export function mergeMemoryStates(
   }
 }
 
+/**
+ * Returns a tuple containing
+ * - the index of the scene state to apply for the member with the given index
+ * - the gradient fraction to apply
+ *
+ * Applies the scene's pattern.
+ */
 export function getStateIndexAndFractionFor(
   scene: MemoryScene,
   memberIndex: number,
@@ -65,21 +72,21 @@ export function getStateIndexAndFractionFor(
   }
 }
 
-function stateFromChannels(channels: Dictionary<number>): FixtureState {
+function stateFromChannels(channels: FixtureChannels): FixtureState {
   return { on: true, channels }
 }
 
 function mergeChannels(
-  channels1: Dictionary<number>,
-  channels2: Dictionary<number>,
+  channels1: FixtureChannels,
+  channels2: FixtureChannels,
   fraction: number
-): Dictionary<number> {
+): FixtureChannels {
   if (fraction <= 0) return channels1
   if (fraction >= 1) return channels2
 
   const keySet = new Set([...Object.keys(channels1), ...Object.keys(channels2)])
 
-  return Array.from(keySet).reduce<Dictionary<number>>((obj, key) => {
+  return Array.from(keySet).reduce<FixtureChannels>((obj, key) => {
     const value1 = channels1[key] ?? 0
     const value2 = channels2[key] ?? 0
     obj[key] = Math.round(fractionToValue(fraction, value1, value2))
@@ -87,6 +94,9 @@ function mergeChannels(
   }, {})
 }
 
+/**
+ * Computes the fixture state at a certain position (= fraction) of the given gradient.
+ */
 export function getFixtureStateForGradientFraction(
   gradient: FixtureStateGradient[],
   fraction: number
@@ -125,6 +135,9 @@ export function getFixtureStateForGradientFraction(
   )
 }
 
+/**
+ * Returns the fixture state for the memory scene member with the given index.
+ */
 export function getFixtureStateForMemoryScene(
   scene: MemoryScene,
   memberIndex: number,

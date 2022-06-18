@@ -45,6 +45,7 @@ describe('api/protocol', () => {
     const liveChases: Dictionary<LiveChase> = {
       '2': {
         on: true,
+        stopped: false,
         value: 100,
         members: [],
         colors: [],

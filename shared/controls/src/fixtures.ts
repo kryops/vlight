@@ -89,7 +89,9 @@ export function mapFixtureList(
 }
 
 /**
- * Mutates the original object
+ * Removes all values from the given fixture state that are not contained in the given mapping.
+ *
+ * Mutates the original object.
  */
 export function cleanFixtureState(
   state: FixtureState,
@@ -104,6 +106,10 @@ export function cleanFixtureState(
   return state
 }
 
+/**
+ * Merges the given fixture states together, removing all values that are not contained
+ * in the given mapping.
+ */
 export function mergeFixtureStates(
   state1: FixtureState | undefined,
   state2: Partial<FixtureState>,
@@ -120,6 +126,9 @@ export function mergeFixtureStates(
   return cleanFixtureState(mergedState, mapping)
 }
 
+/**
+ * Maps the given fixture state into an array of channel values for the given fixture type.
+ */
 export function mapFixtureStateToChannels(
   type: FixtureType,
   state: FixtureState
@@ -151,6 +160,12 @@ export interface CommonFixtureStateEntry {
   mapping: string[]
 }
 
+/**
+ * Creates a common fixture state of the given fixture states and their channel mappings.
+ * - the result contains values for all channels contained in any of the fixture state
+ * - averages the values of all fixture states
+ * - the result is on if any of the given fixture states is
+ */
 export function getCommonFixtureState(
   entries: CommonFixtureStateEntry[]
 ): FixtureState {
@@ -176,6 +191,13 @@ export function getCommonFixtureState(
   return commonFixtureState
 }
 
+/**
+ * Get the common mapping for the given fixture strings.
+ * - Prefixed fixture groupings are resolved
+ * - The common mapping contains the channels types of all contained fixture types
+ * - If no physical master channel is contained, a virtual one is added
+ * - The result is put into the preferred order to put the master and the channels first
+ */
 export function getCommonFixtureMapping(
   fixtureStrings: string[],
   masterDataAndMaps: { masterData: MasterData; masterDataMaps: MasterDataMaps }
@@ -205,22 +227,4 @@ export function getCommonFixtureMapping(
     ChannelType.Blue,
     ChannelType.White,
   ])
-}
-
-export function applyAdditionalMaster(
-  state: FixtureState,
-  master: number
-): FixtureState {
-  if (master === 255) return state
-
-  const originalMaster = state.channels[ChannelType.Master] ?? 255
-  const finalMaster = (originalMaster * master) / 255
-
-  return {
-    on: state.on,
-    channels: {
-      ...state.channels,
-      [ChannelType.Master]: finalMaster,
-    },
-  }
 }

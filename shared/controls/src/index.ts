@@ -7,7 +7,6 @@ export {
   getCommonFixtureState,
   getCommonFixtureMapping,
   cleanFixtureState,
-  applyAdditionalMaster,
 } from './fixtures'
 export { interpolateGradientPositions } from './gradient'
 export {
