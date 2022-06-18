@@ -152,3 +152,7 @@ export function getDifferentChannels(
 
   return differentChannels
 }
+
+export function isUniverseEmpty(universe: Universe): boolean {
+  return universe.every(value => value === 0)
+}

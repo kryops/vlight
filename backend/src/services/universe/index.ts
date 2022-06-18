@@ -36,6 +36,7 @@ export {
   removeUniverse,
   overwriteUniverse,
   setUniverseState,
+  isUniverseEmpty,
 } from './universe-functions'
 export { setUniverseChannel } from './computing'
 export { fadeUniverse, stopFading } from './fading'
