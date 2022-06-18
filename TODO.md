@@ -14,8 +14,10 @@
   - Fixtures with multiple light sources
   - Moving heads
   - Special colors preview (amber, UV)
+- Fixtures
+  - Channel offset
 - Map
-  - Fixture test mode
+  - Fixture test mode + show channel for each fixture
   - Change size
 - Speed/Fade control
   - Global vs local speed
@@ -31,6 +33,7 @@
   - In a row: repeat n times
   - Alternating: alternate after n fixtures
   - Rename live memories
+  - Apply by map coordinates instead of member order
 - Chases
   - Rename
   - Pre-configured / presets (including multi-color presets)
@@ -40,7 +43,7 @@
   - Improve layout + editing
   - Multiple widgets of the same type (e.g. memories)
 - Configuration
-  - Fixtures: Show amount of channels for fixture type
+  - Fixtures: Show amount of channels for fixture type / whole definition
   - Fixtures: Default to first free channel, warn about overlapping fixtures
 - New Controls
   - All off (permanently, <> blackout)
@@ -55,7 +58,7 @@
 
 ## Tech
 
-- Properly document code
+- Properly document frontend code
 - Performance: manual DOM operations for universe changes (especially with fading)
 - React Error Boundaries
 - Backend restructuring
