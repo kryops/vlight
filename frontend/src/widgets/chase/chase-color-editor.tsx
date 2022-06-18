@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { ChannelMapping } from '@vlight/controls'
+import { ChannelType } from '@vlight/controls'
 import { ChaseColor } from '@vlight/types'
 import { highestRandomValue } from '@vlight/utils'
 import { useEffect, useState } from 'react'
@@ -37,7 +37,7 @@ export function ChaseColorEditor({
   onClose,
 }: ChaseColorEditorProps) {
   const [localState, setLocalState] = useState(
-    color ?? { channels: { m: 255, r: 255 } }
+    color ?? { channels: { [ChannelType.Master]: 255, [ChannelType.Red]: 255 } }
   )
 
   useEffect(
@@ -73,9 +73,9 @@ export function ChaseColorEditor({
 
   const colorPickerCapable = colorPickerColors.every(c => mapping.includes(c))
 
-  const r = highestRandomValue(localState?.channels[ChannelMapping.Red] ?? 0)
-  const g = highestRandomValue(localState?.channels[ChannelMapping.Green] ?? 0)
-  const b = highestRandomValue(localState?.channels[ChannelMapping.Blue] ?? 0)
+  const r = highestRandomValue(localState?.channels[ChannelType.Red] ?? 0)
+  const g = highestRandomValue(localState?.channels[ChannelType.Green] ?? 0)
+  const b = highestRandomValue(localState?.channels[ChannelType.Blue] ?? 0)
 
   return (
     <>

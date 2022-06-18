@@ -1,7 +1,7 @@
 import { ComponentType, ReactNode } from 'react'
 import { EntityName, EntityType, MasterDataMaps } from '@vlight/types'
 import { css } from '@linaria/core'
-import { mapFixtureList } from '@vlight/controls'
+import { ChannelType, mapFixtureList } from '@vlight/controls'
 
 import {
   iconFixtureType,
@@ -53,7 +53,10 @@ export const entityUiMapping: { [key in EntityName]: EntityEntry<key> } = {
     name: 'Fixture Types',
     icon: iconFixtureType,
     editor: FixtureTypeEditor,
-    newEntityFactory: () => ({ name: 'New Fixture Type', mapping: ['m'] }),
+    newEntityFactory: () => ({
+      name: 'New Fixture Type',
+      mapping: [ChannelType.Master],
+    }),
     listPreview: entry => (
       <>
         <FixtureTypeMapShape fixtureType={entry} className={fixtureTypeStyle} />

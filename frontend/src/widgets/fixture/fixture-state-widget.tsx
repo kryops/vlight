@@ -1,6 +1,6 @@
 import { FixtureState } from '@vlight/types'
 import { ReactNode, useCallback, useState } from 'react'
-import { ChannelMapping } from '@vlight/controls'
+import { ChannelType } from '@vlight/controls'
 import { css } from '@linaria/core'
 
 import { Widget } from '../../ui/containers/widget'
@@ -55,11 +55,11 @@ export const FixtureStateWidget = memoInProduction(
 
     const fadersToRender = mapping.filter(
       c =>
-        c !== ChannelMapping.Master &&
+        c !== ChannelType.Master &&
         (!hasColorPicker || !colorPickerColors.includes(c))
     )
 
-    const renderFader = (channelType: string, index = 0) => (
+    const renderFader = (channelType: ChannelType | string, index = 0) => (
       <FixtureStateFader
         key={channelType + index}
         channelType={channelType}
@@ -113,7 +113,7 @@ export const FixtureStateWidget = memoInProduction(
         bottomLineColor={getFixtureStateColor(fixtureState)}
       >
         <div className={faderContainer}>
-          {renderFader('m')}
+          {renderFader(ChannelType.Master)}
           {hasColorPicker && (
             <ColorPicker r={r} g={g} b={b} onChange={onColorPickerChange} />
           )}

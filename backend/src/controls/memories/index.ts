@@ -8,7 +8,7 @@ import {
 } from '@vlight/types'
 import { dictionaryToMap, logger, forEach } from '@vlight/utils'
 import {
-  ChannelMapping,
+  ChannelType,
   getFixtureStateForMemoryScene,
   mergeMemoryStates,
 } from '@vlight/controls'
@@ -36,8 +36,8 @@ function usesMasterChannel(memory: Memory) {
   return memory.scenes.some(scene =>
     scene.states.some(state => {
       if (Array.isArray(state))
-        return state.some(gradient => gradient.channels[ChannelMapping.Master])
-      return state.channels[ChannelMapping.Master]
+        return state.some(gradient => gradient.channels[ChannelType.Master])
+      return state.channels[ChannelType.Master]
     })
   )
 }

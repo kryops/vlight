@@ -1,5 +1,6 @@
 import { LiveChase } from '@vlight/types'
 import { css } from '@linaria/core'
+import { ChannelType } from '@vlight/controls'
 
 import { setLiveChaseState } from '../../api'
 import { useApiState } from '../../hooks/api'
@@ -27,7 +28,9 @@ function getNewLiveChase(): LiveChase {
     members: [],
     light: { from: 0.2, to: 1 },
     speed: 1,
-    colors: [{ channels: { m: 255, r: 255 } }],
+    colors: [
+      { channels: { [ChannelType.Master]: 255, [ChannelType.Red]: 255 } },
+    ],
     single: true,
     burst: false,
     fadeLockedToSpeed: true,

@@ -1,11 +1,11 @@
 import { Dictionary, FixtureState } from '@vlight/types'
 import { ensureBetween } from '@vlight/utils'
-import { ChannelMapping } from '@vlight/controls'
+import { ChannelType } from '@vlight/controls'
 
 export interface ColorPickerColor {
-  r: number
-  g: number
-  b: number
+  [ChannelType.Red]: number
+  [ChannelType.Green]: number
+  [ChannelType.Blue]: number
 }
 
 export interface ColorPickerPosition {
@@ -16,9 +16,9 @@ export interface ColorPickerPosition {
 const black = { r: 0, g: 0, b: 0 }
 
 export const colorPickerColors: string[] = [
-  ChannelMapping.Red,
-  ChannelMapping.Green,
-  ChannelMapping.Blue,
+  ChannelType.Red,
+  ChannelType.Green,
+  ChannelType.Blue,
 ]
 
 export const colorPresets: ColorPickerColor[] = [

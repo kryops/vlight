@@ -1,4 +1,4 @@
-import { ChannelMapping } from '@vlight/controls'
+import { ChannelType, channelMappingsAffectedByMaster } from '@vlight/controls'
 import { createRangeArray } from '@vlight/utils'
 
 import { broadcastUniverseChannelToDevices } from '../../devices'
@@ -13,19 +13,6 @@ const affectedChannelsByMasterChannel = new Map<number, number[]>()
 const masterChannelByChannel = new Map<number, number>()
 const fadedChannels = new Set<number>()
 
-/**
- * Channel mappings that are usually affected by the fixture's master channel.
- *
- * TODO make this configurable in the fixture type
- */
-const mappingsAffectedByMaster = new Set<string>([
-  ChannelMapping.Red,
-  ChannelMapping.Green,
-  ChannelMapping.Blue,
-  ChannelMapping.White,
-  'uv',
-])
-
 export function initUniverseComputingData(): void {
   affectedChannelsByMasterChannel.clear()
   masterChannelByChannel.clear()
@@ -35,7 +22,7 @@ export function initUniverseComputingData(): void {
     const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
     if (!fixtureType) continue
 
-    const masterIndex = fixtureType.mapping.indexOf(ChannelMapping.Master)
+    const masterIndex = fixtureType.mapping.indexOf(ChannelType.Master)
     if (masterIndex === -1) {
       for (let offset = 0; offset < fixtureType.mapping.length; offset++) {
         fadedChannels.add(fixture.channel + offset)
@@ -50,7 +37,7 @@ export function initUniverseComputingData(): void {
     ).filter(channel => {
       const index = channel - fixture.channel
       const mapping = fixtureType.mapping[index]
-      if (mappingsAffectedByMaster.has(mapping)) {
+      if (channelMappingsAffectedByMaster.has(mapping)) {
         return true
       } else {
         fadedChannels.add(channel)

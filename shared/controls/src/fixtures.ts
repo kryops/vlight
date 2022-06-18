@@ -13,7 +13,20 @@ import {
   preferredOrder,
 } from '@vlight/utils'
 
-import { ChannelMapping, FixtureMappingPrefix } from './enums'
+import { ChannelType, FixtureMappingPrefix } from './enums'
+
+/**
+ * Channel mappings that are usually affected by the fixture's master channel.
+ *
+ * TODO make this configurable in the fixture type
+ */
+export const channelMappingsAffectedByMaster = new Set<ChannelType | string>([
+  ChannelType.Red,
+  ChannelType.Green,
+  ChannelType.Blue,
+  ChannelType.White,
+  ChannelType.UV,
+])
 
 /**
  * Maps the following to a list of plain unique fixture IDs:
@@ -113,21 +126,23 @@ export function mapFixtureStateToChannels(
 ): number[] {
   const mapping = type.mapping
 
-  const hasMasterChannel = mapping.includes(ChannelMapping.Master)
-  const masterChannelValue = state.channels[ChannelMapping.Master] ?? 255
+  const hasMasterChannel = mapping.includes(ChannelType.Master)
+  const masterChannelValue = state.channels[ChannelType.Master] ?? 255
 
   return mapping.map(channelType => {
     if (!state.on) {
       return 0
     }
 
-    if (channelType === ChannelMapping.Master) masterChannelValue
+    if (channelType === ChannelType.Master) masterChannelValue
 
     const rawValue = state.channels[channelType] ?? 0
 
     if (hasMasterChannel) return rawValue
 
-    return Math.round((rawValue * masterChannelValue) / 255)
+    return channelMappingsAffectedByMaster.has(channelType)
+      ? Math.round((rawValue * masterChannelValue) / 255)
+      : rawValue
   })
 }
 
@@ -181,15 +196,14 @@ export function getCommonFixtureMapping(
     .filter(isUnique)
 
   // Fixtures without a master channel get a virtual one
-  if (!mapping.includes(ChannelMapping.Master))
-    mapping.unshift(ChannelMapping.Master)
+  if (!mapping.includes(ChannelType.Master)) mapping.unshift(ChannelType.Master)
 
   return preferredOrder(mapping, [
-    ChannelMapping.Master,
-    ChannelMapping.Red,
-    ChannelMapping.Green,
-    ChannelMapping.Blue,
-    ChannelMapping.White,
+    ChannelType.Master,
+    ChannelType.Red,
+    ChannelType.Green,
+    ChannelType.Blue,
+    ChannelType.White,
   ])
 }
 
@@ -199,14 +213,14 @@ export function applyAdditionalMaster(
 ): FixtureState {
   if (master === 255) return state
 
-  const originalMaster = state.channels[ChannelMapping.Master] ?? 255
+  const originalMaster = state.channels[ChannelType.Master] ?? 255
   const finalMaster = (originalMaster * master) / 255
 
   return {
     on: state.on,
     channels: {
       ...state.channels,
-      [ChannelMapping.Master]: finalMaster,
+      [ChannelType.Master]: finalMaster,
     },
   }
 }
