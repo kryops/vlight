@@ -69,6 +69,9 @@ function getColor(
   return `rgba(${r ?? 0}, ${g ?? 0}, ${b ?? 0}, ${opacity})`
 }
 
+/**
+ * Maps a fixture state to a CSS color string.
+ */
 export function getFixtureStateColor(
   fixtureState: FixtureState
 ): string | undefined {
@@ -80,6 +83,9 @@ export function getFixtureStateColor(
   return getColor(masterValue, values)
 }
 
+/**
+ * Maps a DMX universe state to the effective color of a fixture.
+ */
 export function getEffectiveFixtureColor(
   fixture: Fixture,
   fixtureType: FixtureType | undefined,
@@ -100,6 +106,9 @@ export function getEffectiveFixtureColor(
   return getColor(masterValue, values)
 }
 
+/**
+ * Returns the fixture at the given DMX channel.
+ */
 export function getFixtureAtChannel(
   masterData: MasterData,
   channel: number

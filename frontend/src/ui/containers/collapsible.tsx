@@ -25,6 +25,11 @@ export interface CollapsibleProps {
   children: ReactNode
 }
 
+/**
+ * Container for collapsible / expandable content.
+ *
+ * Collapsed by default.
+ */
 export function Collapsible({ title, children }: CollapsibleProps) {
   const [expanded, setExpanded] = useState(false)
 

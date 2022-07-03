@@ -128,17 +128,38 @@ function getCountByCategory(value: string[]): Map<FixtureListCategory, number> {
 export interface FixtureListInputProps {
   value: string[] | undefined
   onChange: (value: string[]) => void
+
+  /**
+   * Controls whether to hide fixture groups from the selection.
+   *
+   * Defaults to `false`.
+   */
   hideGroupMode?: boolean
+
+  /**
+   * Controls whether to allow re-ordering the seleced entries.
+   *
+   * Defaults to `false`.
+   */
   ordering?: boolean
+
+  /**
+   * Reduces the height if set.
+   *
+   * Defaults to `false`.
+   */
   compact?: boolean
 }
 
+/**
+ * Input component to select a fixture string list.
+ */
 export function FixtureListInput({
   value,
   onChange,
-  hideGroupMode,
-  ordering,
-  compact,
+  hideGroupMode = false,
+  ordering = false,
+  compact = false,
 }: FixtureListInputProps) {
   // We apply the changed value immediately, as otherwise the list might flicker
   const [localValue, setLocalValue] = useDelayedState<string[] | null>(null)

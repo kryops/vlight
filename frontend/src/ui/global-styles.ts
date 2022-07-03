@@ -11,6 +11,11 @@ import {
   textShade,
 } from './styles'
 
+/**
+ * Global CSS styles.
+ *
+ * Automatically applied when this file is imported.
+ */
 export const globalStyles = css`
   :global() {
     :root {

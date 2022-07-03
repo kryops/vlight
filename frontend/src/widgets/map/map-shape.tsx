@@ -26,15 +26,34 @@ export interface MapShapeProps {
   y?: number
   xSize?: number
   ySize?: number
+
+  /**
+   * Controls whether to highlight the shape.
+   *
+   * Defaults to `false`.
+   */
   highlighted?: boolean
+
   color?: string
+
+  /** HTML title to be displayed as tooltip. */
   title?: string
+
   className?: string
   style?: CSSProperties
+
+  /**
+   * Controls whether to apply the size as percentage.
+   *
+   * Defaults to `false`.
+   */
   percentages?: boolean
   children?: ReactNode
 }
 
+/**
+ * Component to display a shape on the map.
+ */
 export function MapShape({
   shape,
   border,
@@ -42,7 +61,7 @@ export function MapShape({
   y,
   xSize,
   ySize,
-  highlighted,
+  highlighted = false,
   color,
   title,
   className,
@@ -90,6 +109,9 @@ export type FixtureTypeMapShapeProps = Omit<
   fixtureType: FixtureType
 }
 
+/**
+ * Component to display a shape of a given fixture type on the map.
+ */
 export function FixtureTypeMapShape({
   fixtureType,
   ...rest

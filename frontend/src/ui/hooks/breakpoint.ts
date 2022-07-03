@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
 
+/**
+ * React Hook that returns whether the viewport is wider than the given breakpoint.
+ */
 export function useBreakpoint(breakpoint: number): boolean {
   const [match, setMatch] = useState(window.innerWidth >= breakpoint)
 

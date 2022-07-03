@@ -108,6 +108,9 @@ export interface StatelessLiveChaseWidgetProps {
   title?: string
 }
 
+/**
+ * Stateless widget to display a live chase.
+ */
 export const StatelessLiveChaseWidget = memoInProduction(
   ({ id, state, title }: StatelessLiveChaseWidgetProps) => {
     const update = (newState: Partial<LiveChase>) =>

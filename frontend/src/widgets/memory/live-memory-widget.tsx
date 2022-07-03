@@ -9,6 +9,9 @@ export interface LiveMemoryWidgetProps {
   title?: string
 }
 
+/**
+ * Widget to display a live memory.
+ */
 export const LiveMemoryWidget = ({ id, title }: LiveMemoryWidgetProps) => {
   const liveMemoryState = useApiStateEntry('liveMemories', id)
 

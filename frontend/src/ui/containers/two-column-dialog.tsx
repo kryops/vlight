@@ -54,25 +54,55 @@ const column_fixed = css`
 `
 
 export interface TwoColumDialogContainerProps {
+  /** Primary content. */
   left: ReactNode
+
+  /**
+   * Secondary content.
+   *
+   * Displayed to the right on wide viewports if it fits, below the {@link left} content otherwise.
+   */
   right?: ReactNode
+
   className?: string
   leftClassName?: string
   rightClassName?: string
+
+  /**
+   * Renders the left and right columns with equal width.
+   *
+   * Defaults to `false`.
+   */
   fixed?: boolean
+
+  /**
+   * Always uses the full available width.
+   *
+   * Defaults to `false`.
+   */
   fullWidth?: boolean
+
+  /**
+   * Tries to keep the {@link left} and {@link right} contents in a single row on wide
+   * viewports, possibly making the content within scroll.
+   *
+   * Defaults to `false`.
+   */
   preferSingleRow?: boolean
 }
 
+/**
+ * Container to display 2 contents side by side if possible.
+ */
 export function TwoColumDialogContainer({
   left,
   right,
   className,
   leftClassName,
   rightClassName,
-  fixed,
-  fullWidth,
-  preferSingleRow,
+  fixed = false,
+  fullWidth = false,
+  preferSingleRow = false,
 }: TwoColumDialogContainerProps) {
   return (
     <div

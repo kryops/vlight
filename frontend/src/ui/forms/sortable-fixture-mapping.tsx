@@ -36,10 +36,20 @@ const entryName = css`
 
 export interface SortableFixtureMappingProps {
   value: string[]
+
   onChange: (newValue: string[]) => void
+
+  /**
+   * Reduces the minimum height if set.
+   *
+   * Default to `false`.
+   */
   compact?: boolean
 }
 
+/**
+ * Sortable list of fixture mapping strings.
+ */
 export function SortableFixtureMapping({
   value,
   onChange,

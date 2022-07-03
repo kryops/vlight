@@ -9,6 +9,9 @@ export interface LiveChaseWidgetProps {
   title?: string
 }
 
+/**
+ * Widget to display a live chase.
+ */
 export const LiveChaseWidget = ({ id, title }: LiveChaseWidgetProps) => {
   const liveChaseState = useApiStateEntry('liveChases', id)
 

@@ -9,16 +9,25 @@ const overlays: ComponentType<OverlayProps>[] = []
 
 let overlaysChanged: (() => void) | null = null
 
+/**
+ * Renders the given component as an overlay.
+ */
 export function addOverlay(component: ComponentType<OverlayProps>) {
   addToMutableArray(overlays, component)
   overlaysChanged?.()
 }
 
+/**
+ * Removes an overlay previously added via {@link addOverlay}.
+ */
 export function removeOverlay(component: ComponentType<OverlayProps>) {
   removeFromMutableArray(overlays, component)
   overlaysChanged?.()
 }
 
+/**
+ * Wrapper component that renders all overlays registered via {@link addOverlay}
+ */
 export const OverlayContainer = ({ children }: PropsWithChildren<{}>) => {
   const [, setCounter] = useState(0)
 

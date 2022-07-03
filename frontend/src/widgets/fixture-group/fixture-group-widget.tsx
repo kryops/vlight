@@ -13,6 +13,9 @@ export interface FixtureGroupWidgetProps {
   group: FixtureGroup
 }
 
+/**
+ * Widget to display a fixture group.
+ */
 export const FixtureGroupWidget = ({ group }: FixtureGroupWidgetProps) => {
   const groupState = useApiStateEntry('fixtureGroups', group.id)
   const groupMapping = useCommonFixtureMapping(group.fixtures)

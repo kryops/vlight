@@ -9,6 +9,9 @@ export interface FormStateOptions<TValues extends object> {
   onChange?: (values: TValues) => void
 }
 
+/**
+ * React Hook to keep the state of a form.
+ */
 export function useFormState<TValues extends object>(
   initialValues: TValues,
   { onChange }: FormStateOptions<TValues> = {}
@@ -34,6 +37,9 @@ export function useFormState<TValues extends object>(
   }
 }
 
+/**
+ * React Hook to manage array values in a form state.
+ */
 export function useFormStateArray<
   TValues extends { [key in TName]: any[] },
   TName extends keyof TValues,
@@ -42,21 +48,25 @@ export function useFormStateArray<
   const value = formState.values[name]
   return {
     value,
+    /** Adds the entry to the end of the array. */
     add(entry: TValue) {
       formState.changeValue(name, [...value, entry] as TValues[TName])
     },
+    /** Removes the entry from the array. */
     remove(entry: TValue) {
       formState.changeValue(
         name,
         value.filter(it => it !== entry) as TValues[TName]
       )
     },
+    /** Replaces the old entry with the new one. */
     update(oldEntry: TValue, newEntry: TValue) {
       formState.changeValue(
         name,
         value.map(it => (it === oldEntry ? newEntry : it)) as TValues[TName]
       )
     },
+    /** Overwrites the complete array, e.g. when changing the order of entries. */
     overwrite(newValue: TValue[]) {
       formState.changeValue(name, newValue as TValues[TName])
     },

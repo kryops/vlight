@@ -5,18 +5,38 @@ import { useApiState } from '../../hooks/api'
 import { Select, SelectEntry } from './select'
 
 export interface EntityReferenceSelectProps {
+  /** Name of the target entity type. */
   entity: EntityName
+
   value: IdType | undefined
+
   onChange: (value: IdType | undefined) => void
+
+  /**
+   * Controls whether to use the original ID of the raw (non pre-processed)
+   * master data entry instead of the pre-processed one.
+   *
+   * Defaults to `false`.
+   */
   useOriginalId?: boolean
+
+  /**
+   * Controls whether to add an undefined option for "no reference".
+   *
+   * Defaults to `false`.
+   */
   addUndefinedOption?: boolean
+
   className?: string
 }
 
+/**
+ * Select input wrapper to reference an entity of a certain type.
+ */
 export function EntityReferenceSelect({
   entity,
-  useOriginalId,
-  addUndefinedOption,
+  useOriginalId = false,
+  addUndefinedOption = false,
   ...rest
 }: EntityReferenceSelectProps) {
   const originalEntries = useApiState(

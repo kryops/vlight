@@ -1,9 +1,25 @@
 import { useRef } from 'react'
 
+/**
+ * Maximum time in ms between taps before a tap is considered the start of a new speed.
+ */
 const resetMsThreshold = 5000
+
+/**
+ * Factor of going faster/slower than before to reset the last taps:
+ * - when going faster, only the last tap is kept
+ * - when going slower, no taps are kept
+ */
 const resetDifferenceThreshold = 2
+
+/** Maximum number of subsequent taps to take into account for computation. */
 const useMaxTaps = 3
 
+/**
+ * React Hook that computes the speed in seconds between calls to the event handler it returns.
+ *
+ * Calls the given callback with the new speed whenever it changes.
+ */
 export function useTapSync(cb: (speed: number) => any): () => void {
   const tapsRef = useRef<number[]>([])
 

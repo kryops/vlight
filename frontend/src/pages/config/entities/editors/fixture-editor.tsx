@@ -20,6 +20,11 @@ import {
 } from '../../../../ui/css/editor-styles'
 import { Select } from '../../../../ui/forms/select'
 
+/**
+ * Dialog content to edit a fixture definition.
+ *
+ * Displays a form as well as a map preview.
+ */
 export function FixtureEditor({
   entry,
   onChange,

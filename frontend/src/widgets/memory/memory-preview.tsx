@@ -10,12 +10,14 @@ import { StatelessMapWidget } from '../map/stateless-map-widget'
 
 export interface MemoryPreviewProps {
   scenes: MemoryScene[]
+
   /**
    * Displays the order of fixtures if the memory has a single scene.
    *
    * Defaults to `false`.
    */
   displayFixtureOrder?: boolean
+
   className?: string
 }
 
@@ -55,6 +57,9 @@ function getMemoryUniverse(
   return universe
 }
 
+/**
+ * Component to preview the fixture states of a memory on the map.
+ */
 export function MemoryPreview({
   scenes,
   displayFixtureOrder = false,

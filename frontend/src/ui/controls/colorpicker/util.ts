@@ -127,6 +127,9 @@ function colorToXFraction(color: ColorPickerColor): number {
   return 0
 }
 
+/**
+ * Maps a position on the color picker to a color.
+ */
 export function positionToColor(
   position: ColorPickerPosition | null
 ): ColorPickerColor {
@@ -148,6 +151,12 @@ export function positionToColor(
   }
 }
 
+/**
+ * Maps a color to a position on the color picker.
+ *
+ * Some colors (e.g. white) map to multiple positions; in that case,
+ * the first applicable position is chosen.
+ */
 export function colorToPosition(
   color: ColorPickerColor
 ): ColorPickerPosition | null {

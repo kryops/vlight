@@ -33,20 +33,35 @@ export const apiWorker = new Worker(
   new URL('./worker/api.worker.ts', import.meta.url)
 )
 
+/**
+ * Sends a message to the backend through the web worker.
+ */
 export function sendApiMessage(message: ApiInMessage): void {
   logger.trace('Sending WebSocket message', message)
   const command: ApiWorkerCommand = { type: 'message', message }
   apiWorker.postMessage(command)
 }
 
+/**
+ * Changes the value of a single DMX channel.
+ */
 export function setChannel(channel: number, value: number): void {
   sendApiMessage(getApiChannelMessage([channel], value))
 }
 
+/**
+ * Changes the value of multiple DMX channels.
+ */
 export function setChannels(channels: number[], value: number): void {
   sendApiMessage(getApiChannelMessage(channels, value))
 }
 
+/**
+ * Changes the state of a fixture.
+ *
+ * @param merge Set to `true` to merge the new state with the existing one,
+ *   allowing for partial state updates. Defaults to `false`.
+ */
 export function setFixtureState(
   id: IdType | IdType[],
   state: Partial<FixtureState>,
@@ -55,6 +70,12 @@ export function setFixtureState(
   sendApiMessage(getApiFixtureStateMessage(id, state, merge))
 }
 
+/**
+ * Changes the state of a fixture group.
+ *
+ * @param merge Set to `true` to merge the new state with the existing one,
+ *   allowing for partial state updates. Defaults to `false`.
+ */
 export function setFixtureGroupState(
   id: IdType | IdType[],
   state: Partial<FixtureState>,
@@ -63,6 +84,12 @@ export function setFixtureGroupState(
   sendApiMessage(getApiFixtureGroupStateMessage(id, state, merge))
 }
 
+/**
+ * Changes the state of a memory.
+ *
+ * @param merge Set to `true` to merge the new state with the existing one,
+ *   allowing for partial state updates. Defaults to `false`.
+ */
 export function setMemoryState(
   id: IdType | IdType[],
   state: Partial<MemoryState>,
@@ -71,6 +98,12 @@ export function setMemoryState(
   sendApiMessage(getApiMemoryStateMessage(id, state, merge))
 }
 
+/**
+ * Changes the state of a live memory.
+ *
+ * @param merge Set to `true` to merge the new state with the existing one,
+ *   allowing for partial state updates. Defaults to `false`.
+ */
 export function setLiveMemoryState(
   id: IdType,
   state: Partial<LiveMemory>,
@@ -83,6 +116,12 @@ export function deleteLiveMemory(id: IdType): void {
   sendApiMessage(getApiLiveMemoryMessage(id, null, false))
 }
 
+/**
+ * Changes the state of a live chase.
+ *
+ * @param merge Set to `true` to merge the new state with the existing one,
+ *   allowing for partial state updates. Defaults to `false`.
+ */
 export function setLiveChaseState(
   id: IdType,
   state: Partial<LiveChase>,
@@ -91,18 +130,30 @@ export function setLiveChaseState(
   sendApiMessage(getApiLiveChaseMessage(id, state, merge))
 }
 
+/**
+ * Deletes a live chase.
+ */
 export function deleteLiveChase(id: IdType): void {
   sendApiMessage(getApiLiveChaseMessage(id, null, false))
 }
 
+/**
+ * Moves a live chase forward by one step.
+ */
 export function setLiveChaseStep(id: IdType): void {
   sendApiMessage(getApiLiveChaseStepMessage(id))
 }
 
+/**
+ * Removes a master data entry.
+ */
 export function removeEntity(entity: EntityName, id: IdType): void {
   sendApiMessage(getApiRemoveEntityMessage(entity, id))
 }
 
+/**
+ * Edits a master data entry.
+ */
 export function editEntity<T extends EntityName>(
   entity: T,
   entry: EntityType<T>
@@ -110,6 +161,9 @@ export function editEntity<T extends EntityName>(
   sendApiMessage(getApiEditEntityMessage(entity, entry))
 }
 
+/**
+ * Updates all entries of a master data entity, e.g. after reordering them.
+ */
 export function setEntities<T extends EntityName>(
   entity: T,
   entries: EntityType<T>[]
@@ -117,10 +171,18 @@ export function setEntities<T extends EntityName>(
   sendApiMessage(getApiSetEntitiesMessage(entity, entries))
 }
 
+/**
+ * Resets the state at the backend.
+ */
 export function resetState(): void {
   sendApiMessage(getResetStateMessage())
 }
 
+/**
+ * Initializes the communication with the web worker:
+ * - Requests updates when the frontend is idle
+ * - Requests a minimum of 2, a maximum of 20 updates per second
+ */
 export function initApiWorker(): void {
   if (!useSocketUpdateThrottling) return
 

@@ -8,6 +8,11 @@ export interface UniverseWidgetProps {
   title?: string
 }
 
+/**
+ * Widget to display the DMX universe.
+ *
+ * NOTE: Re-renders up to 20 times a second.
+ */
 export const UniverseWidget = ({ from, to, title }: UniverseWidgetProps) => {
   const universe = useDmxUniverse()
   const masterData = useMasterData()

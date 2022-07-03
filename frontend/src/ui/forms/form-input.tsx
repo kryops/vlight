@@ -45,10 +45,24 @@ function wrapTypedInput<TValue, TAdditionalProps extends object>(
   }
 }
 
+/**
+ * Wrapper around {@link TextInput} for use with a form state.
+ */
 export const FormTextInput = wrapTypedInput(TextInput)
+
+/**
+ * Wrapper around {@link NumberInput} for use with a form state.
+ */
 export const FormNumberInput = wrapTypedInput(NumberInput)
+
+/**
+ * Wrapper around {@link Checkbox} for use with a form state.
+ */
 export const FormCheckbox = wrapTypedInput(Checkbox)
 
+/**
+ * Wrapper around {@link Select} for use with a form state.
+ */
 export function FormSelect<
   TValue,
   TValues extends { [key in TName]?: TValue | undefined },
@@ -70,6 +84,9 @@ export function FormSelect<
   )
 }
 
+/**
+ * Wrapper around {@link EntityReferenceSelect} for use with a form state.
+ */
 export function FormEntityReferenceSelect<
   TValues extends { [key in TName]: IdType },
   TName extends keyof TValues
@@ -90,6 +107,9 @@ export function FormEntityReferenceSelect<
   )
 }
 
+/**
+ * Wrapper around {@link ArrayInput} for use with a form state.
+ */
 export function FormArrayInput<
   TValue,
   TValues extends { [key in TName]: TValue[] },
@@ -109,6 +129,9 @@ export function FormArrayInput<
   )
 }
 
+/**
+ * Wrapper around {@link FixtureListInput} for use with a form state.
+ */
 export function FormFixtureListInput<
   TValue,
   TValues extends { [key in TName]: TValue[] },

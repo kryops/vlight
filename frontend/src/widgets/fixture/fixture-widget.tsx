@@ -20,6 +20,9 @@ export interface FixtureWidgetProps {
   fixture: Fixture
 }
 
+/**
+ * Widget to display a fixture.
+ */
 export const FixtureWidget = ({ fixture }: FixtureWidgetProps) => {
   const { fixtureTypes } = useMasterDataMaps()
   const fixtureType = fixtureTypes.get(fixture.type)

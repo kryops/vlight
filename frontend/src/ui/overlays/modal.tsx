@@ -1,4 +1,4 @@
-import { ReactElement, ComponentType } from 'react'
+import { ReactElement } from 'react'
 import { css } from '@linaria/core'
 
 import { Icon } from '../icons/icon'
@@ -10,11 +10,32 @@ import { ModalButton } from './buttons'
 
 export interface ModalProps<T> {
   onClose: (result: T) => void
+
+  /**
+   * Controls whether to display a close button at the top right.
+   *
+   * Defaults to `false`.
+   */
   showCloseButton?: boolean
+
+  /**
+   * Controls whether to close the modal when clicking on the backdrop.
+   *
+   * Defaults to `false`.
+   */
   closeOnBackDrop?: boolean
+
+  /** Title to display at the top. */
   title?: string | ReactElement
+
+  /** The main content to display. */
   content: string | ReactElement
-  Content?: ComponentType<{ onClose?: (value: T) => void }>
+
+  /**
+   * The buttons to display at the bottom of the modal.
+   *
+   * Defaults to displaying no buttons.
+   */
   buttons?: ModalButton<T>[]
 }
 
@@ -94,14 +115,20 @@ const buttonIcon = css`
   padding-right: ${baseline(2)};
 `
 
+/**
+ * Modal dialog component.
+ *
+ * Usually not used directly, but through a helper function like
+ * - {@link showModal}
+ * - `showDialog`
+ */
 export function Modal<T>({
   title,
   content,
-  Content,
   buttons,
   onClose,
-  closeOnBackDrop,
-  showCloseButton,
+  closeOnBackDrop = false,
+  showCloseButton = false,
 }: ModalProps<T>) {
   return (
     <div
@@ -120,7 +147,6 @@ export function Modal<T>({
           )}
           {title && <h2 className={titleStyle}>{title}</h2>}
           {content}
-          {Content && <Content onClose={onClose} />}
           {buttons && (
             <div className={buttonContainer}>
               {buttons.map(({ icon, label, value }, index) => (
@@ -141,6 +167,10 @@ export function Modal<T>({
   )
 }
 
+/**
+ * Displays a modal dialog as overlay,
+ * resolving to the value it was closed with.
+ */
 export function showModal<T>(
   props: Omit<ModalProps<T>, 'onClose'>,
   registerCloseHandler?: (fn: (value: T) => void) => void

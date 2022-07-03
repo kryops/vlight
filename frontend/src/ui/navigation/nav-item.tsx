@@ -37,15 +37,40 @@ const navLabel = css`
 `
 
 export interface NavItemProps {
+  /** Route target */
   to: string
+
   icon: string
   label: string
+
+  /**
+   *
+   * Controls whether to display the label.
+   *
+   * Defaults to `false`.
+   */
   showLabel?: boolean
+
+  /**
+   *
+   * Controls whether to display the item as highlighted.
+   *
+   * Defaults to `false`.
+   */
   highlighted?: boolean
 }
 
+/**
+ * Navigation item component.
+ */
 export const NavItem = memoInProduction(
-  ({ to, icon, label, showLabel, highlighted }: NavItemProps) => {
+  ({
+    to,
+    icon,
+    label,
+    showLabel = false,
+    highlighted = false,
+  }: NavItemProps) => {
     return (
       <NavLink
         to={to}

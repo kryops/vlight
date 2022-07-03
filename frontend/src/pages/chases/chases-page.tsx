@@ -4,6 +4,11 @@ import { Header } from '../../ui/containers/header'
 import { LiveChases } from './live-chases'
 import { ChasesActions } from './chases-actions'
 
+/**
+ * Channels page.
+ *
+ * Displays widgets for all live chases.
+ */
 const ChasesPage = memoInProduction(() => {
   return (
     <>

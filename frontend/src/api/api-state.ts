@@ -3,7 +3,7 @@ import { MasterData } from '@vlight/types'
 
 import { ApiWorkerState, ApiWorkerCommand } from './worker/api.worker'
 import { ApiState } from './worker/processing'
-import { updateMasterData } from './masterdata'
+import { updateMasterDataMapsFromBackend } from './masterdata'
 
 import { apiWorker } from '.'
 
@@ -21,13 +21,21 @@ function getEmptyState(): ApiState {
   }
 }
 
+/**
+ * Current API state on the frontend that has been synchronized from the web worker.
+ */
 export const apiState: ApiState = getEmptyState()
 
 export const workerState = {
   connecting: true,
 }
 
-export const apiStateEmitter = new Emittery()
+/**
+ * Event emitter that sends the keys of changed state properties.
+ */
+export const apiStateEmitter = new Emittery<{
+  [key in keyof ApiState | 'connecting']: undefined
+}>()
 
 function messageListener(event: MessageEvent) {
   const message: ApiWorkerState = event.data
@@ -58,7 +66,8 @@ function messageListener(event: MessageEvent) {
       }
 
       // update masterData maps here to sync with the masterData context update
-      if (k === 'masterData') updateMasterData(value as MasterData)
+      if (k === 'masterData')
+        updateMasterDataMapsFromBackend(value as MasterData)
 
       apiStateEmitter.emit(k)
     })

@@ -21,6 +21,9 @@ const input = css`
   border: 1px solid ${textShade(1)};
 `
 
+/**
+ * Wrapper around HTML input to provide custom styling.
+ */
 export function Input({
   type = 'text',
   value,

@@ -28,6 +28,9 @@ export interface StatelessMemoryWidgetProps {
   state: MemoryState
 }
 
+/**
+ * Stateless widget to display a memory.
+ */
 export const StatelessMemoryWidget = memoInProduction(
   ({ memory, state }: StatelessMemoryWidgetProps) => {
     return (

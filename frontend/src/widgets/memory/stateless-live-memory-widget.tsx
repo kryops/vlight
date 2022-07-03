@@ -51,6 +51,9 @@ export interface StatelessLiveMemoryWidgetProps {
   title?: string
 }
 
+/**
+ * Stateless widget to display a live memory.
+ */
 export const StatelessLiveMemoryWidget = memoInProduction(
   ({ id, state, title }: StatelessLiveMemoryWidgetProps) => {
     return (

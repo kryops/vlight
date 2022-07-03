@@ -11,6 +11,11 @@ import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-di
 import { editorPreviewColumn } from '../../../../ui/css/editor-styles'
 import { useFixtureList } from '../../../../hooks/fixtures'
 
+/**
+ * Dialog content to edit a fixture group.
+ *
+ * Displays a fixture selection as well as a map preview.
+ */
 export function FixtureGroupEditor({
   entry,
   onChange,

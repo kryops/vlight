@@ -6,12 +6,26 @@ import { memoInProduction } from '../../../util/development'
 import { Fader } from './fader'
 
 export interface FixtureStateFaderProps {
+  /** Channel type to control. */
   channelType: string
+
+  /** Value between 0-255. */
   value: number
+
+  /**
+   * Controls whether the fader is part of a color picker.
+   *
+   * Changes the margins so the content will not jump when switching between
+   * the color picker and the faders.
+   */
   colorPicker: boolean
+
   onChange: (partialState: Partial<FixtureState>) => void
 }
 
+/**
+ * Fader component to control the property of a fixture state.
+ */
 export const FixtureStateFader = memoInProduction(
   ({ channelType, value, colorPicker, onChange }: FixtureStateFaderProps) => {
     const changeFn = useCallback(

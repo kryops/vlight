@@ -29,6 +29,11 @@ const miniMapOverlay = css`
   opacity: 0.85;
 `
 
+/**
+ * Overlay in the bottom right corner to display
+ * - a minimap and its toggle
+ * - a light/dark mode toggle
+ */
 export function CornerOverlay() {
   const { lightMode, miniMap, updateSettings } = useSettings()
   const isLarge = useBreakpoint(600)

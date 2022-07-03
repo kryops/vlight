@@ -21,6 +21,9 @@ export interface DynamicPageCellEditorProps {
   onChange: (newValue: DynamicPageCell) => void
 }
 
+/**
+ * Dialog content to edit the cell of a dynamic page row.
+ */
 export function DynamicPageCellEditor({
   cell: initialCell,
   onChange,

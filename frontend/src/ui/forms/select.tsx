@@ -30,6 +30,11 @@ const select = css`
   max-width: 95vw;
 `
 
+/**
+ * Select input wrapper.
+ *
+ * Works with simple string values, or entries that have a separate label.
+ */
 export function Select<T>({
   entries,
   value,

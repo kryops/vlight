@@ -27,12 +27,26 @@ const navigation_floating = css`
 `
 
 export interface NavigationProps {
+  /**
+   * Controls whether to display the navigation floating above the content.
+   *
+   * Defaults to `false`.
+   */
   showLabels?: boolean
+
+  /**
+   * Controls whether to display the navigation floating above the content.
+   *
+   * Defaults to `false`.
+   */
   floating?: boolean
 }
 
+/**
+ * Main navigation component.
+ */
 export const Navigation = memoInProduction(
-  ({ showLabels, floating }: NavigationProps) => {
+  ({ showLabels = false, floating = false }: NavigationProps) => {
     const masterData = useMasterData()
     const apiState = useCompleteApiState(['universe'])
     const { dynamicPages } = masterData

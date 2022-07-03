@@ -39,6 +39,11 @@ export interface MemorySceneEditorProps {
   compact?: boolean
 }
 
+/**
+ * Editor for a memory scene.
+ *
+ * Displays a fixture list selection as well as a list of memory states.
+ */
 export function MemorySceneEditor({
   scene,
   onChange,

@@ -6,6 +6,9 @@ import { Icon } from '../icons/icon'
 import { primaryShade, baseline } from '../styles'
 import { flexWrap } from '../css/flex'
 
+/**
+ * Container element for rendering tiles in a grid.
+ */
 export const TileGrid = ({ children }: PropsWithChildren<{}>) => (
   <div className={flexWrap}>{children}</div>
 )
@@ -39,12 +42,20 @@ const titleTitle = css`
 `
 
 export interface TileProps {
+  /** SVG icon path. */
   icon: string
+
   title: string
+
+  /** Target route string. */
   target?: string
+
   onClick?: () => void
 }
 
+/**
+ * Generic tile component with an icon and a title.
+ */
 export function Tile({ icon, title, target, onClick }: TileProps) {
   const navigate = useNavigate()
 

@@ -45,6 +45,12 @@ const overlay = css`
 const navBreakpoint = 768
 const alwaysShowNav = window.innerWidth >= navBreakpoint
 
+/**
+ * Main container component that displays
+ * - the navigation, or a corner button on small viewports
+ * - the routing outlet for the main content
+ * - the corner overlay for the minimal and quick settings
+ */
 export const MainContainer = memoInProduction(() => {
   const [nav, setNav] = useState(alwaysShowNav)
   const location = useLocation()

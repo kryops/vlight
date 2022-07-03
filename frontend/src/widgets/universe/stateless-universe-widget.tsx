@@ -6,7 +6,7 @@ import { createRangeArray } from '@vlight/utils'
 import { Widget } from '../../ui/containers/widget'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-import { flexEndSpacer, flexWrap } from '../../ui/css/flex'
+import { flexEndSpacerString, flexWrap } from '../../ui/css/flex'
 import { baseline, baselinePx } from '../../ui/styles'
 import {
   getFixtureAtChannel,
@@ -21,7 +21,7 @@ const barRows = 3
 const container = css`
   justify-content: flex-start; /* so the universeBar_connected margins work */
 
-  ${flexEndSpacer}
+  ${flexEndSpacerString}
 `
 
 const barSizePx = baselinePx * 12
@@ -44,6 +44,9 @@ export interface StatelessUniverseWidgetProps {
   title?: string
 }
 
+/**
+ * Stateless widget to display a part of the DMX universe.
+ */
 export const StatelessUniverseWidget = memoInProduction(
   ({ universe, masterData, from, to, title }: StatelessUniverseWidgetProps) => {
     const { fixtureTypes } = useMasterDataMaps()

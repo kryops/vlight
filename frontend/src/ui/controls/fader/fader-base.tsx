@@ -49,19 +49,56 @@ const cornerLabel_overflow = css`
 `
 
 export interface FaderBaseProps {
+  /**
+   * Label to display in the top-left corner.
+   *
+   * The display of long labels can be controlled via {@link cornerLabelOverflow}.
+   */
   cornerLabel?: string
+
+  /**
+   * Controls whether the corner label can overflow the fader container.
+   *
+   * Defaults to `false`.
+   */
   cornerLabelOverflow?: boolean
+
+  /**
+   * Controls whether the fader is part of a color picker.
+   *
+   * Changes the margins so the content will not jump when switching between
+   * the color picker and the faders.
+   *
+   * Defaults to `false`.
+   */
   colorPicker?: boolean
+
   className?: string
+
+  /**
+   * Touch handler that is called with the touch position as fraction from 0-1.
+   */
   onTouch?: (fraction: number) => void
+
+  /**
+   * Handler to be called when the mouse/finger is lifted.
+   */
   onUp?: () => void
+
   children?: ReactNode
 }
 
+/**
+ * Base component for a fader without a button.
+ *
+ * Displays
+ * - the track
+ * - an optional corner label
+ */
 export function FaderBase({
   cornerLabel,
-  cornerLabelOverflow,
-  colorPicker,
+  cornerLabelOverflow = false,
+  colorPicker = false,
   className,
   onTouch,
   onUp,

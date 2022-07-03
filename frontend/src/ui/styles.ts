@@ -3,11 +3,16 @@ import { mix } from 'polished'
 export const baselinePx = 4
 export const fontSizePx = 16
 
+/**
+ * Returns a size applying the given factor to a baseline size.
+ */
 export function baseline(factor = 1): string {
   return `${factor * baselinePx}px`
 }
 
 export const inputWidth = baseline(64)
+
+// z-index levels
 
 export const zNavigation = 10
 export const zOverlay = 20
@@ -49,6 +54,10 @@ function getCssVariableName(name: ThemeColor, level?: number) {
   return `--${name[0]}${level}`
 }
 
+/**
+ * Returns the CSS strings for the CSS variable definitions
+ * controlling all colors.
+ */
 export function getCssVariableDefinitions(isLight = false): string {
   return Object.keys(colors)
     .filter(key => key !== 'background')

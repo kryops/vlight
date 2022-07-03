@@ -8,6 +8,14 @@ import { MemoriesActions } from './memories-actions'
 import { MemoriesMultiControl } from './memories-multi-control'
 import { LiveMemories } from './live-memories'
 
+/**
+ * Memories page.
+ *
+ * Displays:
+ * - a multi-control widget
+ * - widgets for all configured memories
+ * - live memories
+ */
 const MemoriesPage = memoInProduction(() => {
   const { memories } = useMasterData()
 

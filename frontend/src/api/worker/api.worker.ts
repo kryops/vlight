@@ -8,23 +8,36 @@ import {
 
 import { ApiState, processApiMessages } from './processing'
 
+/*
+ * Web worker that communicates with the backend and sends throttled updates to the frontend.
+ */
+
 export interface ApiWorkerState {
   state: Partial<ApiState> | undefined
   connecting: boolean
 }
 
 export type ApiWorkerCommand =
+  /** Command to send the complete state to the frontend. */
   | { type: 'state' }
+  /** Command to send all state updates to the frontend immediately. */
   | { type: 'update' }
+  /** Command to send a message to the backend. */
   | { type: 'message'; message: ApiInMessage }
 
+/** WebSocket connection to the backend */
 let socket: WebSocket | undefined
 
+/** Indicates whether the WebSocket is currently connecting. */
 let connecting: boolean
+/** The current API state that has been synchronized with the backend. */
 let apiState: ApiState | undefined
+/** The API state that has been synchronized to the client. */
 let clientApiState: ApiState | undefined
+/** Messages from the backend that have not been processed. */
 let messageQueue: ApiOutMessage[] = []
 
+/** Sends the complete state to the frontend. */
 function sendState() {
   const message: ApiWorkerState = { state: apiState, connecting }
   // TypeScript wants DOM API, but we are in a Web Worker
@@ -32,12 +45,16 @@ function sendState() {
   postMessageFn(message)
 }
 
+/** Processes the message queue to update the current state. */
 function processMessageQueue() {
   if (!messageQueue.length) return
   apiState = processApiMessages(messageQueue, apiState)
   messageQueue = []
 }
 
+/**
+ * Sends all state updates to the client, in the shape of a partial state object.
+ */
 function sendClientUpdate() {
   if (clientApiState === apiState) return
 

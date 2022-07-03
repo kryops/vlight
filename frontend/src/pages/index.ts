@@ -21,9 +21,16 @@ export interface RouteEntry {
 export interface NavItemEntry extends RouteEntry {
   icon: string
   label: string
+  /**
+   * Determines whether the item should be highlighted based on the current state.
+   * (excluding the DMX universe state to avoid frequent re-renders)
+   */
   highlighted?: (apiState: ApiState) => boolean
 }
 
+/**
+ * The content of the main navigation.
+ */
 export const mainNavigationItems: NavItemEntry[] = [
   mapPageNavItem,
   universePageNavItem,
@@ -35,6 +42,9 @@ export const mainNavigationItems: NavItemEntry[] = [
   configPageNavItem,
 ]
 
+/**
+ * Routes that do not have a corresponding navigation item.
+ */
 export const standaloneRoutes: RouteEntry[] = [
   settingsPageEntry,
   entitiesPageEntry,

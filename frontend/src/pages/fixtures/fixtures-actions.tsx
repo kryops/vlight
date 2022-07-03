@@ -7,6 +7,12 @@ import { useApiState, useMasterData } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 
+/**
+ * Corner actions for the fixtures page:
+ * - Configure
+ * - All on
+ * - All off
+ */
 export function FixturesActions() {
   const { fixtures } = useMasterData()
   const fixturesState = useApiState('fixtures')

@@ -8,6 +8,10 @@ export interface DynamicPageActionsProps {
   dynamicPage: DynamicPage
 }
 
+/**
+ * Corner actions for dynamic pages:
+ * - Configure
+ */
 export function DynamicPageActions({ dynamicPage }: DynamicPageActionsProps) {
   return (
     <>

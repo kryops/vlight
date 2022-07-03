@@ -8,12 +8,14 @@ import { useState } from 'react'
 
 import { setFixtureGroupState } from '../../api'
 import { useApiState, useMasterDataAndMaps } from '../../hooks/api'
-import { useCommonFixtureMapping } from '../../hooks/fixtures'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { MultiToggleInput } from '../../ui/forms/multi-toggle-input'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 
+/**
+ * Collapsible widget to control multiple fixture groups together.
+ */
 export function FixtureGroupMultiControl() {
   const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([])
 
@@ -26,7 +28,7 @@ export function FixtureGroupMultiControl() {
   const allFixtureIds = selectedGroups
     .flatMap(group => group.fixtures)
     .filter(isUnique)
-  const mapping = useCommonFixtureMapping(allFixtureIds)
+  const mapping = getCommonFixtureMapping(allFixtureIds, masterDataAndMaps)
   const fixtureGroupStates = useApiState('fixtureGroups')
 
   const commonState = getCommonFixtureState(

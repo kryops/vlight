@@ -9,6 +9,11 @@ export const page = css`
   margin: -${baseline(1)};
 `
 
+/**
+ * Map page.
+ *
+ * Displays a map with all fixtures and their current DMX state.
+ */
 const MapPage = memoInProduction(() => {
   return (
     <>

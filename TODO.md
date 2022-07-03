@@ -57,9 +57,8 @@
 
 ## Tech
 
-- Properly document frontend code
+- Add React Error Boundaries (MainContainer, modal dialogs, widgets)
 - Performance: manual DOM operations for universe changes (especially with fading)
-- React Error Boundaries
 - Backend restructuring
   - easier masterData extension / new entity process?
 - Simplify / remove frontend API worker?

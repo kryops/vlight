@@ -57,15 +57,43 @@ const bottomLine = css`
 `
 
 export interface WidgetProps {
+  /**
+   * Widget title, displayed at the top.
+   */
   title?: string | ReactElement
+
+  /**
+   * Displayed to the right of the {@link title}.
+   */
   titleSide?: string | ReactElement
+
   onTitleClick?: () => void
+
+  /**
+   * Controls whether the widget is currently turned on.
+   *
+   * - `true`: turned on
+   * - `false`: turned off
+   * - `undefined`: cannot be turned on or off
+   */
   turnedOn?: boolean
+
+  /**
+   * If set, displays a line with the given color to the bottom of the widget.
+   */
   bottomLineColor?: string
+
   className?: string
+
+  /**
+   * CSS class name applied to the container that wraps this component's children.
+   */
   contentClassName?: string
 }
 
+/**
+ * Generic widget component.
+ */
 export function Widget({
   title,
   titleSide,

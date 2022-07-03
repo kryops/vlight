@@ -70,22 +70,71 @@ const iconStyle = css`
 `
 
 export interface ButtonProps {
+  /** The button's content. */
   children?: ReactNode
+
+  /**
+   * Normal click handler.
+   *
+   * For time-critical actions, consider using {@link onDown} and {@link onUp} instead.
+   */
   onClick?: (
     event?: React.MouseEvent<HTMLElement> | NormalizedTouchEvent<HTMLDivElement>
   ) => void
-  /** NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling. */
+
+  /**
+   * Handler to be executed when the user taps onto the button.
+   *
+   * NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling.
+   */
   onDown?: () => void
-  /** NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling. */
+
+  /**
+   * Handler to be executed when the user lifts a pointer off the button.
+   *
+   * NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling.
+   */
   onUp?: () => void
+
+  /** SVG path of the icon to display on the button. */
   icon?: string
+
+  /** Color to display the icon in. */
   iconColor?: string
+
+  /**
+   * Displays the button as a block element.
+   *
+   * Default to `false`.
+   */
   block?: boolean
+
+  /**
+   * Displays the button as:
+   * - `true`: Active
+   * - `false`: Inactive
+   * - `undefined`: Neutral
+   */
   active?: boolean
+
+  /**
+   * Displays the button as disabled.
+   *
+   * Defaults to `false`.
+   */
   disabled?: boolean
+
+  /**
+   * Displays the button without background.
+   *
+   * Defaults to `false`.
+   */
   transparent?: boolean
-  className?: string
+
+  /** Title to be displayed as tooltip. */
   title?: string
+
+  className?: string
 }
 
 export function Button({
@@ -93,12 +142,12 @@ export function Button({
   onClick,
   onDown,
   onUp,
-  block,
+  block = false,
   icon,
   iconColor,
   active,
-  disabled,
-  transparent,
+  disabled = false,
+  transparent = false,
   className,
   title,
 }: ButtonProps) {

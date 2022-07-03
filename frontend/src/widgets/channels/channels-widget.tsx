@@ -8,6 +8,9 @@ export interface ChannelsWidgetProps {
   title?: string
 }
 
+/**
+ * Widget to display DMX channel faders.
+ */
 export const ChannelsWidget = ({ from, to, title }: ChannelsWidgetProps) => {
   const channels = useApiState('channels')
 

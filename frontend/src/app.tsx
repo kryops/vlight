@@ -9,6 +9,10 @@ import { SettingsWrapper } from './settings'
 import { OverlayContainer } from './ui/overlays/overlay'
 
 // Cannot use strict mode due to https://github.com/atlassian/react-beautiful-dnd/issues/2350
+
+/**
+ * Main app component.
+ */
 const App = () => (
   <ErrorBoundary>
     <BrowserRouter>

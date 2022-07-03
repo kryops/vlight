@@ -110,10 +110,16 @@ const deleteIcon = css`
 export interface WidgetInputProps {
   value: WidgetConfig | undefined
   onChange: (value: WidgetConfig) => void
+
+  /** If set, allows deleting the widget. */
   onDelete?: () => void
+
   className?: string
 }
 
+/**
+ * Input to select a widget with.
+ */
 export function WidgetInput({
   value,
   onChange,

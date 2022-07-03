@@ -107,6 +107,11 @@ function computeStopWidths(gradientPositions: number[]): number[] {
   })
 }
 
+/**
+ * Dialog content for editing a memory scene state.
+ *
+ * Displays a fixture state input, and optionally a gradient editor.
+ */
 export function MemorySceneStateEditor({
   scene,
   state: initialState,

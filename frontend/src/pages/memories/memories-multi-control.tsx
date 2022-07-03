@@ -10,6 +10,9 @@ import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { MultiToggleInput } from '../../ui/forms/multi-toggle-input'
 
+/**
+ * Collapsible widget to control multiple memories together.
+ */
 export function MemoriesMultiControl() {
   const [selectedMemoryIds, setSelectedMemoryIds] = useState<string[]>([])
 

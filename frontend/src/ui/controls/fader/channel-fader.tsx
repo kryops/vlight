@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { css } from '@linaria/core'
 
 import { memoInProduction } from '../../../util/development'
@@ -17,11 +17,22 @@ export interface ChannelFaderProps {
   onChange: (channel: number, value: number) => void
 }
 
+/**
+ * Fader specifivally for a DMX channel.
+ *
+ * Displays
+ * - the channel number as label
+ * - the channel type from the fixture mapping as sub-label
+ * - the fixture name in the corner if this channel is the start of a fixture
+ */
 export const ChannelFader = memoInProduction(
   ({ channel, value, onChange }: ChannelFaderProps) => {
+    const onChangeRef = useRef(onChange)
+    onChangeRef.current = onChange
+
     const changeHandler = useCallback(
-      (value: number) => onChange(channel, value),
-      [channel, onChange]
+      (value: number) => onChangeRef.current(channel, value),
+      [channel]
     )
 
     const { masterData, masterDataMaps } = useMasterDataAndMaps()

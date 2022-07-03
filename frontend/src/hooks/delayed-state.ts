@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 
+/**
+ * React Hook that allows setting a state that is only applied after a delay.
+ *
+ * Useful for components that want to switch to a local state during interaction.
+ */
 export function useDelayedState<T>(
   initialValue: T,
   ms = 300

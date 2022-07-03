@@ -3,6 +3,10 @@ import { highestRandomValue, lowestRandomValue } from '@vlight/utils'
 
 import { getFixtureStateColor } from '../../util/fixtures'
 
+/**
+ * Maps a chase color to a CSS color string or gradient
+ * (containing the min-max range for random values).
+ */
 export function getChasePreviewColor(color: ChaseColor): string {
   const high =
     getFixtureStateColor({

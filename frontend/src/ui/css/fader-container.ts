@@ -2,6 +2,9 @@ import { css } from '@linaria/core'
 
 import { baseline } from '../styles'
 
+/**
+ * CSS class that defines a scrollable container around multiple faders.
+ */
 export const faderContainer = css`
   display: flex;
   align-items: stretch;

@@ -11,6 +11,9 @@ const loadingScreen = css`
   justify-content: center;
 `
 
+/**
+ * Loading screen that displays a loading spinner in the center.
+ */
 export const LoadingScreen = () => (
   <div className={loadingScreen}>
     <Icon icon={iconLoading} className={rotateAnimation} />

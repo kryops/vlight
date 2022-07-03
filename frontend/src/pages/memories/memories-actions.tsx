@@ -8,6 +8,13 @@ import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 import { openEntityEditor } from '../config/entities/editors'
 
+/**
+ * Corner actions for the memories page:
+ * - Add memory
+ * - Configure
+ * - All on
+ * - All off
+ */
 export function MemoriesActions() {
   const { memories } = useMasterData()
   const memoriesState = useApiState('memories')

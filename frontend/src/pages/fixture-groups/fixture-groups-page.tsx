@@ -7,6 +7,13 @@ import { Header } from '../../ui/containers/header'
 import { FixtureGroupsActions } from './fixture-group-actions'
 import { FixtureGroupMultiControl } from './fixture-group-multi-control'
 
+/**
+ * Fixture groups page.
+ *
+ * Displays
+ * - a multi-control widget
+ * - widgets for all configured fixture groups
+ */
 const FixtureGroupsPage = memoInProduction(() => {
   const { fixtureGroups } = useMasterData()
 

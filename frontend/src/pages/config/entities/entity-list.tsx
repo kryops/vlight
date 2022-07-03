@@ -43,6 +43,9 @@ export interface EntityListProps<T extends EntityName> {
   entries: EntityType<T>[]
 }
 
+/**
+ * Sortable list of master data entries that can be edited or deleted.
+ */
 export function EntityList<T extends EntityName>({
   type,
   entries,

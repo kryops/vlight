@@ -19,6 +19,11 @@ const channelsPage = css`
 // TODO add paging / virtual scrolling?
 const allChannels = createRangeArray(1, 512)
 
+/**
+ * Channels page.
+ *
+ * Displays faders for all DMX channels.
+ */
 const ChannelsPage = memoInProduction(() => {
   const channels = useApiState('channels')
 

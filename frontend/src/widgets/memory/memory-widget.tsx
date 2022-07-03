@@ -8,6 +8,9 @@ export interface MemoryWidgetProps {
   memory: Memory
 }
 
+/**
+ * Widget to display a memory.
+ */
 export const MemoryWidget = ({ memory }: MemoryWidgetProps) => {
   const memoryState = useApiStateEntry('memories', memory.id)
 

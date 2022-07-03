@@ -4,6 +4,11 @@ import { iconLight, iconLightOff } from '../../ui/icons'
 import { useApiState } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 
+/**
+ * Corner actions for the chases page:
+ * - All on
+ * - All off
+ */
 export function ChasesActions() {
   const liveChasesState = useApiState('liveChases')
 

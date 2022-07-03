@@ -83,17 +83,28 @@ export interface StatelessMapWidgetProps {
   universe?: number[]
   highlightedFixtures?: IdType[]
   additionalShapes?: AdditionalMapShape[]
+
+  /**
+   * Controls whether to display the widget as stand-alone,
+   * increasing its width.
+   *
+   * Defaults to `false`.
+   */
   standalone?: boolean
+
   className?: string
 }
 
+/**
+ * Stateless widget to display a map of fixtures or shapes, optionally with a DMX universe state.
+ */
 export const StatelessMapWidget = memoInProduction(
   ({
     universe,
     fixtures,
     highlightedFixtures,
     additionalShapes,
-    standalone,
+    standalone = false,
     className,
   }: StatelessMapWidgetProps) => {
     const { fixtureTypes } = useMasterDataMaps()

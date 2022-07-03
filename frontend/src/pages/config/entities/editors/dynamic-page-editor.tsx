@@ -97,6 +97,11 @@ const paragraph = css`
   margin: ${baseline()} 0;
 `
 
+/**
+ * Dialog content to edit a dynamic page.
+ *
+ * TODO improve UI/UX
+ */
 export function DynamicPageEditor({
   entry,
   onChange,

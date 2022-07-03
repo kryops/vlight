@@ -2,7 +2,7 @@ import { css } from '@linaria/core'
 import { ReactNode } from 'react'
 
 import { baseline } from '../styles'
-import { flexEndSpacer, flexWrap } from '../css/flex'
+import { flexEndSpacerString, flexWrap } from '../css/flex'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 
@@ -21,10 +21,15 @@ const grid = css`
 const gridCell = css`
   justify-content: stretch;
 
-  ${flexEndSpacer}
+  ${flexEndSpacerString}
 `
 
 export interface GridCell {
+  /**
+   * Factor to stretch the cell compared to its siblings.
+   *
+   * Defaults to 1.
+   */
   factor?: number
   children: ReactNode
   className?: string
@@ -36,6 +41,9 @@ export interface GridProps {
   className?: string
 }
 
+/**
+ * Flexible responsive grid row component.
+ */
 export const Grid = memoInProduction(
   ({ headline, cells, className }: GridProps) => {
     const factorSum = cells.reduce((sum, { factor }) => sum + (factor ?? 1), 0)

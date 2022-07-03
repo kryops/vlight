@@ -14,6 +14,9 @@ export interface StatelessChannelsWidgetProps {
   title?: string
 }
 
+/**
+ * Stateless widget to display DMX channel faders.
+ */
 export const StatelessChannelsWidget = memoInProduction(
   ({ channels, from, to, title }: StatelessChannelsWidgetProps) => {
     const range = createRangeArray(from, to)

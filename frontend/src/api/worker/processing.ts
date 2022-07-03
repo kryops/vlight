@@ -10,6 +10,7 @@ import { mergeFixtureStates, mergeMemoryStates } from '@vlight/controls'
 
 import { getUniverseIndex } from '../util'
 
+/** Current version of the state. Increased each time the backend emits a state update. */
 let stateVersion = 0
 
 export type ApiState = {
@@ -22,6 +23,7 @@ export type ApiState = {
   version?: number
 }
 
+/** Applies changed channels to a universe, returning a changed copy. */
 function processChannelDeltaMap(
   universe: number[] | undefined,
   message: { [channel: number]: number }

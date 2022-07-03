@@ -7,6 +7,11 @@ import { useApiState } from '../../hooks/api'
 
 const allChannels = createRangeArray(1, 512)
 
+/**
+ * Corner actions for the channels page:
+ * - All on
+ * - All off
+ */
 export function ChannelsActions() {
   const channelsState = useApiState('channels')
   const isActive = channelsState.some(value => value !== 0)

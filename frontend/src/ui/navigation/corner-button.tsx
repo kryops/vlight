@@ -17,10 +17,20 @@ const cornerButton = css`
 export interface CornerButtonProps {
   icon: string
   tooltip?: string
+
+  /**
+   * Color shade between 0-4.
+   *
+   * Defaults to 2.
+   */
   shade?: ColorShade
+
   onClick: () => void
 }
 
+/**
+ * Button to display in the bottom left corner
+ */
 export const CornerButton = memoInProduction(
   ({ icon, tooltip, shade, onClick }: CornerButtonProps) => (
     <div title={tooltip} className={cornerButton} onClick={onClick}>

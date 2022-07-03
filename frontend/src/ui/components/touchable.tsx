@@ -18,15 +18,34 @@ export type RawTouchEventListener = (
 ) => void
 
 export interface TouchableProps {
+  /** Listener for all touch or mouse events. */
   onTouch?: TouchEventListener
+
+  /** Listener for touch/mouse down events. */
   onDown?: TouchEventListener
+
+  /** Listener for touch/mouse up events. */
   onUp?: TouchEventListener
+
+  /** Listener for touch/mouse move events. */
   onMove?: TouchEventListener
+
+  /**
+   * Controls whether to prevent scrolling.
+   *
+   * Defaults to `false`.
+   */
   preventScroll?: boolean
-  className?: string
+
+  /** Title to display as tooltip. */
   title?: string
+
+  className?: string
 }
 
+/**
+ * Container element that normalizes mouse, touch and pointer events.
+ */
 export const Touchable = forwardRef<
   HTMLDivElement,
   TouchableProps & { children: any }

@@ -8,6 +8,13 @@ import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 import { openEntityEditor } from '../config/entities/editors'
 
+/**
+ * Corner actions for the fixture groups page:
+ * - Add group
+ * - Configure
+ * - All on
+ * - All off
+ */
 export function FixtureGroupsActions() {
   const { fixtureGroups } = useMasterData()
   const fixtureGroupsState = useApiState('fixtureGroups')

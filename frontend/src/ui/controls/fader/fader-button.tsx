@@ -33,13 +33,30 @@ const subLabelStyle = css`
 `
 
 export interface FaderButtonProps {
+  /**
+   * Fraction between 0-1 to place the button on the fader.
+   */
   fraction: number
+
+  /** Primary label on the button. */
   label?: string
+
+  /** Secondary label on the button. */
   subLabel?: string
+
+  /**
+   * Height in px.
+   *
+   * Defaults to 25% more than the fader width.
+   */
   height?: number
+
   className?: string
 }
 
+/**
+ * A fader button / knob.
+ */
 export function FaderButton({
   fraction,
   label,

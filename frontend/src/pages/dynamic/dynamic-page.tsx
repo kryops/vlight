@@ -8,6 +8,9 @@ import { Header } from '../../ui/containers/header'
 
 import { DynamicPageActions } from './dynamic-page-actions'
 
+/**
+ * Displays a user-configured dynamic page with an ID given as route param.
+ */
 const DynamicPage = memoInProduction(() => {
   const { id } = useParams<{ id: string }>()
   const masterData = useMasterData()

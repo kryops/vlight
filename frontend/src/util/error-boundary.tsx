@@ -11,6 +11,9 @@ interface ErrorBoundaryState {
   componentStack?: string
 }
 
+/**
+ * React error boundary component that catches rendering errors.
+ */
 export class ErrorBoundary extends Component<
   { children?: any },
   ErrorBoundaryState

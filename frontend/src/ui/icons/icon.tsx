@@ -43,18 +43,56 @@ const icon_padding = css`
 `
 
 export interface IconProps {
+  /** SVG 24x24 icon path string. */
   icon: string
+
+  /**
+   * Color shade from 0-4.
+   *
+   * Defaults to 0 (maximum intensity).
+   */
   shade?: ColorShade
+
   color?: string
+
+  /**
+   * Size in multiples of the baseline width.
+   *
+   * Defaults to 6.
+   */
   size?: number
+
   className?: string
+
+  /** CSS class name applied to the SVG path itself. */
   pathClassName?: string
+
+  /**
+   * Controls whether the icon should be displayed inline.
+   *
+   * Default to `false`.
+   */
   inline?: boolean
+
+  /**
+   * Size in multiples of the baseline width,
+   * or true for a default padding.
+   */
   padding?: boolean | number
+
+  /**
+   * Controls whether the icon has a hover effect.
+   *
+   * Default to `false`.
+   */
   hoverable?: boolean
+
   onClick?: (event: ReactMouseEvent<SVGSVGElement, MouseEvent>) => void
 }
 
+/**
+ * Generic icon component.
+ */
 export const Icon = memoInProduction(
   ({
     icon,
@@ -63,9 +101,9 @@ export const Icon = memoInProduction(
     pathClassName,
     color,
     size,
-    inline,
+    inline = false,
     padding,
-    hoverable,
+    hoverable = false,
     onClick,
   }: IconProps) => {
     return (

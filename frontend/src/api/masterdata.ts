@@ -1,13 +1,15 @@
 import { MasterData, EntityName, MasterDataMaps } from '@vlight/types'
 
-/*
- * Convenience access to the master data.
- * In React components, access through `userMasterDataMaps()`
+/**
+ * Convenience access to the master data as maps.
+ * In React components, access through `useMasterDataMaps()`
  */
-
 export const masterDataMaps: MasterDataMaps = {} as MasterDataMaps
 
-export function updateMasterData(masterData: MasterData): void {
+/**
+ * Updates the master data maps with master data from the backend.
+ */
+export function updateMasterDataMapsFromBackend(masterData: MasterData): void {
   for (const [key, entries] of Object.entries(masterData)) {
     if (!masterDataMaps[key as EntityName])
       masterDataMaps[key as EntityName] = new Map()

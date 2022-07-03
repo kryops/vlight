@@ -7,6 +7,13 @@ import { iconConfig } from '../../ui/icons'
 
 import { entityUiMapping } from './entities/entity-ui-mapping'
 
+/**
+ * Configuration page.
+ *
+ * Displays links to
+ * - the settings page
+ * - configuration pages for all master data entities
+ */
 const ConfigPage = memoInProduction(() => {
   return (
     <div>

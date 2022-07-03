@@ -13,6 +13,13 @@ import { entityUiMapping } from './entity-ui-mapping'
 import { EntityList } from './entity-list'
 import { openEntityEditor } from './editors'
 
+/**
+ * Page to edit raw (non pre-processed) master data entities of a certain type
+ * set by a route param.
+ *
+ * Displays a sortable list of entries that can be edited or deleted,
+ * and a button to add one.
+ */
 const EntitiesPage = memoInProduction(() => {
   const { type } = useParams<{ type: EntityName }>()
   const rawMasterData = useRawMasterData()

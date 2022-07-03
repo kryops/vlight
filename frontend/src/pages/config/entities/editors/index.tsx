@@ -7,6 +7,11 @@ import { okCancel } from '../../../../ui/overlays/buttons'
 import { EntityEditorProps, entityUiMapping } from '../entity-ui-mapping'
 import { apiState } from '../../../../api/api-state'
 
+/**
+ * Opens an editor for a master data entity type, editing the entry with the given ID.
+ *
+ * Does nothing if it does not exist.
+ */
 export function openEntityEditorForId<T extends EntityName>(
   type: T,
   id: IdType
@@ -19,6 +24,12 @@ export function openEntityEditorForId<T extends EntityName>(
   openEntityEditor(type, entry as any)
 }
 
+/**
+ * Opens an editor for a master data entity type.
+ *
+ * @param entry if given, an existing entry is edited;
+ *   otherwise, a new one is created.
+ */
 export async function openEntityEditor<T extends EntityName>(
   type: T,
   entry?: EntityType<T>

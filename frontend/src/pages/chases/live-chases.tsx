@@ -37,6 +37,9 @@ function getNewLiveChase(): LiveChase {
   }
 }
 
+/**
+ * Displays widgets for all live chases.
+ */
 export function LiveChases() {
   const liveChases = useApiState('liveChases')
 

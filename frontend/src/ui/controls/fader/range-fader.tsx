@@ -30,17 +30,49 @@ const track = css`
 `
 
 export interface RangeFaderProps {
+  /** The current fader range. */
   value: ValueRange<number>
+
+  /** Minimum value. Defaults to 0. */
   min?: number
+
+  /** Maximum value. Defaults to 100. */
   max?: number
+
+  /** Step size. If set, rounds the range values accordingly. */
   step?: number
+
+  /**
+   * Label to display in the top-left corner.
+   *
+   * The display of long labels can be controlled via {@link cornerLabelOverflow}.
+   */
   cornerLabel?: string
+
+  /**
+   * Controls whether the corner label can overflow the fader container.
+   *
+   * Defaults to `false`.
+   */
   cornerLabelOverflow?: boolean
-  onChange: (value: ValueRange<number>) => void
+
+  /**
+   * Controls whether the fader is part of a color picker.
+   *
+   * Changes the margins so the content will not jump when switching between
+   * the color picker and the faders.
+   *
+   * Defaults to `false`.
+   */
   colorPicker?: boolean
+
+  onChange: (value: ValueRange<number>) => void
   className?: string
 }
 
+/**
+ * Fader that controls a range between 2 values.
+ */
 export const RangeFader = memoInProduction(
   ({
     value,

@@ -5,9 +5,23 @@ import { baseline } from '../styles'
 import { flexWrap } from '../css/flex'
 
 export interface HeaderProps {
+  /**
+   * HTML headline level.
+   *
+   * Defaults to 1.
+   */
   level?: number
+
   children?: ReactNode
+
+  /**
+   * Content to the left of the {@link children}.
+   */
   leftContent?: ReactNode
+
+  /**
+   * Content to the right of the {@link children}, aligned right.
+   */
   rightContent?: ReactNode
 }
 
@@ -22,6 +36,9 @@ const rightContainer = css`
   text-align: right;
 `
 
+/**
+ * Header / headline component.
+ */
 export function Header({
   level = 1,
   children,

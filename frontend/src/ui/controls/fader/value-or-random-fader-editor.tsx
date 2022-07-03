@@ -31,6 +31,14 @@ function getValueOrRandomType(valueOrRandom: ValueOrRandom<any>) {
   return ValueOrRandomType.Value
 }
 
+/**
+ * Converts between
+ * - a single value
+ * - multiple values
+ * - a range of values
+ *
+ * @param min controls the minimum value, often 0.
+ */
 export function convertValueOrRandom(
   value: ValueOrRandom<number>,
   type: ValueOrRandomType,
@@ -63,11 +71,26 @@ export interface ValueOrRandomFaderEditorProps {
   title?: string
   value?: ValueOrRandom<number>
   onChange: (value: ValueOrRandom<number>) => void
+
+  /** Minimum value. Defaults to 0. */
   min?: number
+
+  /** Maximum value. Defaults to 100. */
   max?: number
+
+  /** Step size. If set, rounds the value accordingly. */
   step?: number
 }
 
+/**
+ * Dialog content to change the type and value(s) of a fader
+ * that controls values for random applications (e.g. a chase).
+ *
+ * Supports
+ * - a single value
+ * - multiple values
+ * - a range of values
+ */
 export function ValueOrRandomFaderEditor({
   value,
   onChange,

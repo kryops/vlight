@@ -22,6 +22,11 @@ const sceneStyle = css`
   border: 1px solid ${primaryShade(1)};
 `
 
+/**
+ * Dialog content to edit a memory.
+ *
+ * Displays editors for the memory's scenes as well as a map preview.
+ */
 export function MemoryEditor({
   entry,
   onChange,

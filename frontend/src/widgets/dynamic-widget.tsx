@@ -17,6 +17,9 @@ export interface DynamicWidgetProps {
   config: WidgetConfig
 }
 
+/**
+ * Component that renders a widget based on a dynamic widget configuration.
+ */
 export const DynamicWidget = memoInProduction(
   ({ config }: DynamicWidgetProps) => {
     const { fixtures, fixtureGroups, memories } = useMasterDataMaps()

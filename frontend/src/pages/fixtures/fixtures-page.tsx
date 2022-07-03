@@ -7,6 +7,13 @@ import { useMasterData } from '../../hooks/api'
 import { FixturesActions } from './fixtures-actions'
 import { FixturesMultiControl } from './fixtures-multi-control'
 
+/**
+ * Fixtures page.
+ *
+ * Displays
+ * - a multi-control widget
+ * - widgets for all configured fixtures
+ */
 const FixturesPage = memoInProduction(() => {
   const { fixtures } = useMasterData()
 

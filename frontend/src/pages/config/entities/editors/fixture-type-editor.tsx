@@ -30,6 +30,11 @@ const fixtureBorderStyleEntries: SelectEntry<FixtureBorderStyle>[] = [
   { value: 'dashed', label: 'Dashed' },
 ]
 
+/**
+ * Dialog content to edit a fixture type.
+ *
+ * Displays a form as well as a map shape preview.
+ */
 export function FixtureTypeEditor({
   entry,
   onChange,
@@ -51,7 +56,7 @@ export function FixtureTypeEditor({
             />
             <Label
               label="Mapping"
-              description="Comma-separated - Special values: m, r, g, b"
+              description="Comma-separated - Special values: m, r, g, b, w, uv"
               input={
                 <TextInput
                   value={mappingString}

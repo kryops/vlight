@@ -3,6 +3,9 @@ import { interpolateGradientPositions } from '@vlight/controls'
 
 import { getFixtureStateColor } from './fixtures'
 
+/**
+ * Maps a memory scene state to a CSS color or gradient.
+ */
 export function getMemorySceneStatePreviewBackground(
   state: MemorySceneState
 ): string {

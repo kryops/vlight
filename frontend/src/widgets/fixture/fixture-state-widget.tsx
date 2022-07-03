@@ -24,14 +24,27 @@ const colorPickerIconStyle = css`
 
 export interface FixtureStateWidgetProps {
   fixtureState: FixtureState
+
+  /** Channel type mapping. */
   mapping: string[]
+
   title?: string
   titleSide?: ReactNode
   onChange: (newState: Partial<FixtureState>) => void
+
+  /**
+   * Controls whether to disable the on button in the widget.
+   *
+   * Defaults to `false`.
+   */
   disableOn?: boolean
+
   className?: string
 }
 
+/**
+ * Stateless low-level widget to display a fixture state.
+ */
 export const FixtureStateWidget = memoInProduction(
   ({
     fixtureState,
@@ -39,7 +52,7 @@ export const FixtureStateWidget = memoInProduction(
     title,
     titleSide,
     onChange,
-    disableOn,
+    disableOn = false,
     className,
   }: FixtureStateWidgetProps) => {
     const colorPickerCapable = colorPickerColors.every(c => mapping.includes(c))

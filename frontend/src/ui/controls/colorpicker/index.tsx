@@ -82,21 +82,40 @@ const defaultHeight = css`
 `
 
 export interface ColorPickerProps {
+  /** Red color. Defaults to 0. */
   r?: number
+
+  /** Green color. Defaults to 0. */
   g?: number
+
+  /** Blue color. Defaults to 0. */
   b?: number
+
   onChange: (color: ColorPickerColor) => void
+
+  /**
+   * If set, a default height is applied to the color picker;
+   * otherwise, it stretches to fill the available height.
+   *
+   * Defaults to `false`.
+   */
   setDefaultHeight?: boolean
+
   className?: string
 }
 
+/**
+ * RGB color picker component.
+ *
+ * Displays a 2D color gradient as well as color presets.
+ */
 export const ColorPicker = memoInProduction(
   ({
     r = 0,
     g = 0,
     b = 0,
     onChange,
-    setDefaultHeight,
+    setDefaultHeight = false,
     className,
   }: ColorPickerProps) => {
     const [localColor, setLocalColor] =

@@ -10,6 +10,9 @@ export interface NormalizedTouchEvent<T extends HTMLElement = HTMLElement> {
   stopPropagation: () => void
 }
 
+/**
+ * Returns a normalized representation of a mouse, touch, or pointer event.
+ */
 export function normalizeTouchEvent<T extends HTMLElement = HTMLElement>(
   e: PointerEvent<T> | TouchEvent<T>
 ): NormalizedTouchEvent<T> {
@@ -46,6 +49,9 @@ export interface OffsetCoordinates {
   height: number
 }
 
+/**
+ * Returns the position offset of the event relative to a reference DOM object.
+ */
 export function getTouchEventOffset(
   e: NormalizedTouchEvent<HTMLElement>,
   ref: RefObject<HTMLElement>
@@ -65,6 +71,10 @@ export function getTouchEventOffset(
   return { x, y, xFraction, yFraction, width, height }
 }
 
+/**
+ * Converts a touch offset so that it would apply within
+ * margins inside the target element.
+ */
 export function getFractionWithMargin(
   offset: OffsetCoordinates,
   margin: number

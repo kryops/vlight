@@ -38,16 +38,29 @@ export interface EntityEditorProps<T extends EntityName> {
 }
 
 export interface EntityEntry<T extends EntityName> {
+  /** Entity name to display as headline and on the overview page. */
   name: string
+
+  /** SVG icon path for this entity type. */
   icon: string
+
+  /** Editor component to open in a dialog when clicking on an entry. */
   editor?: ComponentType<EntityEditorProps<T>>
+
+  /** Preview of an entry in the list. Defaults to its name or ID. */
   listPreview?: (
     entity: EntityType<T>,
     masterDataMaps: MasterDataMaps
   ) => ReactNode
+
+  /** Function to create a new entry with default values. */
   newEntityFactory?: () => Omit<EntityType<T>, 'id'>
 }
 
+/**
+ * Mapping of all entity types to their UI representation, editors,
+ * and new entry factories.
+ */
 export const entityUiMapping: { [key in EntityName]: EntityEntry<key> } = {
   fixtureTypes: {
     name: 'Fixture Types',

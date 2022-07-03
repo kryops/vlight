@@ -7,6 +7,9 @@ import { dynamicPageRoute, _entryRoute } from './routes'
 
 import { mainNavigationItems, standaloneRoutes } from '.'
 
+/**
+ * Displays the content of the current route.
+ */
 export const RoutesOutlet = memoInProduction(() => (
   <Routes>
     {[...mainNavigationItems, ...standaloneRoutes].map(

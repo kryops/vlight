@@ -8,6 +8,9 @@ export interface CheckboxProps {
   className?: string
 }
 
+/**
+ * Checkbox input component with boolean values.
+ */
 export function Checkbox({
   value,
   onChange,

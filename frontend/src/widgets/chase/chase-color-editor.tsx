@@ -24,12 +24,25 @@ const colorPickerStyle = css`
 `
 
 export interface ChaseColorEditorProps {
+  /**
+   * Members of the chase as fixture list strings.
+   */
   members: string[]
+
+  /**
+   * The color to edit.
+   *
+   * Defaults to adding a new color.
+   */
   color?: ChaseColor
+
   onChange: (newValue: ChaseColor | null) => void
   onClose?: (success: boolean) => void
 }
 
+/**
+ * Dialog content to add or edit the color of a chase.
+ */
 export function ChaseColorEditor({
   color,
   members,

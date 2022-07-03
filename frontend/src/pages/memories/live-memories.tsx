@@ -21,6 +21,12 @@ const widgetContainer = css`
   margin-right: ${baseline(0)};
 `
 
+/**
+ * Displays
+ * - a button to add a live memory
+ * - a multi-control
+ * - widgets for all live memory
+ */
 export function LiveMemories() {
   const liveMemories = useApiState('liveMemories')
 

@@ -15,4 +15,5 @@ export const universePageRoute = '/universe'
 export const mapPageRoute = '/map'
 export const dynamicPageRoute = (id = ':id'): string => `/dynamic/${id}`
 
+/** The initial route when opening the client. */
 export const _entryRoute = mapPageRoute

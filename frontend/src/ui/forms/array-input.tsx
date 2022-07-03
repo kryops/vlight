@@ -12,9 +12,20 @@ import { TypedInputProps } from './typed-input'
 export interface ArrayInputProps<T> {
   value: Array<T | undefined>
   onChange: (value: Array<T>) => void
+
+  /** Component for a single item. */
   Input: ComponentType<TypedInputProps<T>>
+
+  /**
+   * Controls whether to allow removing array entries.
+   *
+   * Defaults to `false`.
+   */
   displayRemoveButtons?: boolean
+
   className?: string
+
+  /** CSS class name to apply to the container for each entry. */
   entryClassName?: string
 }
 
@@ -38,11 +49,17 @@ function removeUndefined<T>(arr: (T | undefined)[]): T[] {
   return arr.filter(it => it !== undefined) as T[]
 }
 
+/**
+ * Input wrapper component to edit arrays.
+ *
+ * Always renders an empty/undefined input element at the end
+ * to add new values to the array.
+ */
 export function ArrayInput<T>({
   value,
   onChange,
   Input,
-  displayRemoveButtons,
+  displayRemoveButtons = false,
   className,
   entryClassName,
 }: ArrayInputProps<T>) {

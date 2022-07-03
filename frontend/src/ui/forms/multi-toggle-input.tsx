@@ -9,8 +9,17 @@ export interface MultiToggleInputProps<T> {
   value: Array<T>
   entries: T[]
   onChange: (value: Array<T>) => void
+
+  /**
+   * Function to provide the value to display for each entry.
+   *
+   * Defaults to the value's string representation.
+   */
   getDisplayValue?: (value: T) => ReactNode
+
   className?: string
+
+  /** CSS class name to be applied to the container for each entry. */
   entryClassName?: string
 }
 
@@ -27,6 +36,9 @@ const entryStyle = css`
   width: auto;
 `
 
+/**
+ * Input component to toggle multiple entries of the same type.
+ */
 export function MultiToggleInput<T>({
   value,
   entries,

@@ -4,17 +4,45 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
 import { memoInProduction } from '../../util/development'
 
 export interface SortableListProps<T> {
+  /**
+   * The list's entries.
+   *
+   * Can be anything, use {@link renderEntryContent} to render them.
+   */
   entries: T[]
-  onChange: (entries: T[]) => void
-  containerClassName?: string
-  entryClassName?: string
+
+  /**
+   * Renders a list entry.
+   * Wrapped in drag/drop containers.
+   */
   renderEntryContent: (entry: T) => ReactNode
+
+  /** Called after an element was dragged to reorder the list. */
+  onChange: (entries: T[]) => void
+
+  /** CSS class name to be applied to the container. */
+  containerClassName?: string
+
+  /**
+   * CSS class name to be applied to each list entry
+   * (the parent element of what {@link renderEntryContent}) renders.
+   */
+  entryClassName?: string
+
+  /**
+   * Creates a unique key for the given entry.
+   *
+   * Defaults to the index.
+   */
   getKey?: (entry: T) => string | number
 }
 
 let sortableListIndex = 0
 
-// recommended performance optimization
+/**
+ * Not necessary to extract this into a separate component,
+ * but recommended for performance reasons.
+ */
 const InnerSortableList = memoInProduction(
   ({
     entries,
@@ -48,6 +76,9 @@ const InnerSortableList = memoInProduction(
   }
 )
 
+/**
+ * Sortable list of entries of the same type.
+ */
 export function SortableList<T>({
   entries,
   onChange,

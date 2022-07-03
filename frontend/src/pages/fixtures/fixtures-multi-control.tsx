@@ -2,24 +2,29 @@ import {
   mapFixtureList,
   getCommonFixtureState,
   mergeFixtureStates,
+  getCommonFixtureMapping,
 } from '@vlight/controls'
 import { isTruthy } from '@vlight/utils'
 import { useState } from 'react'
 
 import { setFixtureState } from '../../api'
 import { useApiState, useMasterDataAndMaps } from '../../hooks/api'
-import { useCommonFixtureMapping } from '../../hooks/fixtures'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { FixtureListInput } from '../../ui/forms/fixture-list-input'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 
+/**
+ * Collapsible widget to control multiple fixtures together.
+ *
+ * Allows selection by definition, type, and group.
+ */
 export function FixturesMultiControl() {
   const [fixtureStrings, setFixtureStrings] = useState<string[]>([])
 
   const masterDataAndMaps = useMasterDataAndMaps()
   const { masterData, masterDataMaps } = masterDataAndMaps
-  const mapping = useCommonFixtureMapping(fixtureStrings)
+  const mapping = getCommonFixtureMapping(fixtureStrings, masterDataAndMaps)
   const fixtureStates = useApiState('fixtures')
 
   if (masterData.fixtures.length < 2) return null

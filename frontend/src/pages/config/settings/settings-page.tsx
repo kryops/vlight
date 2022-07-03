@@ -10,6 +10,11 @@ import { showDialog } from '../../../ui/overlays/dialog'
 import { resetState } from '../../../api'
 import { yesNo } from '../../../ui/overlays/buttons'
 
+/**
+ * The settings page.
+ *
+ * Allows changing the frontend settings, as well as resetting the backend state.
+ */
 const SettingsPage = memoInProduction(() => {
   const settings = useSettings()
   const { lightMode, updateSettings } = settings

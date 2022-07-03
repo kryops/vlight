@@ -51,22 +51,46 @@ const barLevel = css`
 
 export interface BarProps {
   value: number
+
+  /** Minimum value. Defaults to 0. */
   min?: number
+
+  /** Maximum value. Defaults to 1. */
   max?: number
+
+  /** Primary label. */
   label?: string
+
+  /** Secondary label displayed in the top right corner. */
   topCornerLabel?: string
+
+  /** Secondary label displayed in the bottom left corner. */
   bottomCornerLabel?: string
+
+  /**
+   * Controls whether the bottom corner label can overflow the container.
+   *
+   * Defaults to `false`.
+   */
   bottomCornerLabelOverflow?: boolean
+
+  /**
+   * Color applied to the bottom border.
+   */
   color?: string
+
   className?: string
 }
 
+/**
+ * Bar for displaying a value, e.g. for a DMX channel.
+ */
 export const Bar = memoInProduction(
   ({
     label,
     topCornerLabel,
     bottomCornerLabel,
-    bottomCornerLabelOverflow,
+    bottomCornerLabelOverflow = false,
     value,
     min = 0,
     max = 1,

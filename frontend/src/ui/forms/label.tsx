@@ -5,9 +5,19 @@ import { baseline, textShade } from '../styles'
 import { cx } from '../../util/styles'
 
 export interface LabelProps {
+  /** Label to be displayed to the left (or above) the input. */
   label: string | ReactNode
-  description?: string | ReactNode
+
   input: ReactNode
+
+  /** Description to be displayed below the input. */
+  description?: string | ReactNode
+
+  /**
+   * If set, disables the responsiveness and always displays the label above the input.
+   *
+   * Defaults to `false`.
+   */
   forceSmall?: boolean
 }
 
@@ -50,7 +60,15 @@ const descriptionStyle = css`
   font-size: 80%;
 `
 
-export function Label({ label, input, description, forceSmall }: LabelProps) {
+/**
+ * Component to wrap an input with a label.
+ */
+export function Label({
+  label,
+  input,
+  description,
+  forceSmall = false,
+}: LabelProps) {
   return (
     <>
       <div className={cx(container, !forceSmall && containerResponsive)}>

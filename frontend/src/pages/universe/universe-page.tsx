@@ -28,6 +28,9 @@ const universeBar_connected = css`
   margin-right: ${baseline(-1.25)};
 `
 
+/**
+ * Displays the current state of the DMX universe as channel bars.
+ */
 const UniversePage = memoInProduction(() => {
   const universe = useDmxUniverse()
   const { masterData, masterDataMaps } = useMasterDataAndMaps()

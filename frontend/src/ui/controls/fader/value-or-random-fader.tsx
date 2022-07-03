@@ -20,13 +20,26 @@ import {
 
 export interface ValueOrRandomFaderProps {
   value: ValueOrRandom<number>
+
+  /** Minimum value. Defaults to 0. */
   min?: number
+
+  /** Maximum value. Defaults to 100. */
   max?: number
+
+  /** Step size. If set, rounds the value accordingly. */
   step?: number
+
   label?: string
   onChange: (value: ValueOrRandom<number>) => void
 }
 
+/**
+ * Fader that supports
+ * - a single value
+ * - multiple values
+ * - a range of values
+ */
 export const ValueOrRandomFader = memoInProduction(
   ({
     value,

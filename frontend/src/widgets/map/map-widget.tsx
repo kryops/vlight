@@ -7,6 +7,11 @@ export interface MapWidgetProps {
   className?: string
 }
 
+/**
+ * Widget to display a map of all fixtures with the current DMX universe state.
+ *
+ * NOTE: Re-renders up to 20 times a second.
+ */
 export const MapWidget = ({ standalone, className }: MapWidgetProps) => {
   const universe = useDmxUniverse()
   const masterData = useMasterData()
