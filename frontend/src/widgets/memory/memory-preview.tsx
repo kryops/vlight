@@ -10,6 +10,12 @@ import { StatelessMapWidget } from '../map/stateless-map-widget'
 
 export interface MemoryPreviewProps {
   scenes: MemoryScene[]
+  /**
+   * Displays the order of fixtures if the memory has a single scene.
+   *
+   * Defaults to `false`.
+   */
+  displayFixtureOrder?: boolean
   className?: string
 }
 
@@ -49,7 +55,11 @@ function getMemoryUniverse(
   return universe
 }
 
-export function MemoryPreview({ scenes, className }: MemoryPreviewProps) {
+export function MemoryPreview({
+  scenes,
+  displayFixtureOrder = false,
+  className,
+}: MemoryPreviewProps) {
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
 
   const universe = getMemoryUniverse(scenes, masterData, masterDataMaps)
@@ -59,6 +69,11 @@ export function MemoryPreview({ scenes, className }: MemoryPreviewProps) {
       fixtures={masterData.fixtures}
       universe={universe}
       className={className}
+      highlightedFixtures={
+        displayFixtureOrder && scenes.length === 1
+          ? mapFixtureList(scenes[0].members, { masterData, masterDataMaps })
+          : undefined
+      }
     />
   )
 }

@@ -28,7 +28,6 @@
   - Fade/transition
   - Kick off multiple changes at once
 - Memories
-  - Display order of fixtures in preview
   - Button instead of fader
   - In a row: repeat n times
   - Alternating: alternate after n fixtures

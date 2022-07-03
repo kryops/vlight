@@ -64,7 +64,7 @@ export function MemoryEditor({
             </a>
           </>
         }
-        right={<MemoryPreview scenes={scenes.value} />}
+        right={<MemoryPreview scenes={scenes.value} displayFixtureOrder />}
         rightClassName={editorPreviewColumn}
         fixed
       />

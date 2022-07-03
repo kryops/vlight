@@ -2,12 +2,13 @@ import { FixtureBorderStyle, FixtureShape, FixtureType } from '@vlight/types'
 import { css, cx } from '@linaria/core'
 import { CSSProperties, ReactNode } from 'react'
 
-import { baselinePx, iconShade } from '../../ui/styles'
+import { backgroundColor, baselinePx, iconShade } from '../../ui/styles'
 
 const shapeStyle = css`
   border: 1px solid ${iconShade(1)};
   box-sizing: border-box;
   font-size: 0.65rem;
+  text-shadow: 1px 1px 2px ${backgroundColor};
   text-align: center;
   display: flex;
   align-items: center;
