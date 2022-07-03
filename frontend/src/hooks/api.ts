@@ -12,23 +12,31 @@ export function useApiConnecting(): boolean {
       setState(workerState.connecting)
     }
 
-    apiStateEmitter.onAny(eventHandler)
+    apiStateEmitter.on('connecting', eventHandler)
 
     return () => {
-      apiStateEmitter.offAny(eventHandler)
+      apiStateEmitter.off('connecting', eventHandler)
     }
   }, [])
 
   return state
 }
 
-export function useCompleteApiState(): ApiState {
+export function useCompleteApiState(except?: Array<keyof ApiState>): ApiState {
   const [, forceUpdate] = useReducer(state => state + 1, 0)
+  const exceptRef = useRef(except)
+  exceptRef.current = except
 
   useEffect(() => {
-    apiStateEmitter.onAny(forceUpdate)
+    const listener = (eventName: string) => {
+      if (!exceptRef.current?.includes(eventName as any)) {
+        forceUpdate()
+      }
+    }
+
+    apiStateEmitter.onAny(listener)
     return () => {
-      apiStateEmitter.onAny(forceUpdate)
+      apiStateEmitter.offAny(listener)
     }
   }, [forceUpdate])
 

@@ -34,7 +34,7 @@ export interface NavigationProps {
 export const Navigation = memoInProduction(
   ({ showLabels, floating }: NavigationProps) => {
     const masterData = useMasterData()
-    const apiState = useCompleteApiState()
+    const apiState = useCompleteApiState(['universe'])
     const { dynamicPages } = masterData
 
     return (
