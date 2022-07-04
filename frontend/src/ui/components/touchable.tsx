@@ -1,5 +1,11 @@
 import { css } from '@linaria/core'
-import { forwardRef, PointerEvent, TouchEvent, useRef } from 'react'
+import {
+  forwardRef,
+  PointerEvent,
+  TouchEvent,
+  useRef,
+  CSSProperties,
+} from 'react'
 
 import { NormalizedTouchEvent, normalizeTouchEvent } from '../../util/touch'
 import { cx } from '../../util/styles'
@@ -41,6 +47,8 @@ export interface TouchableProps {
   title?: string
 
   className?: string
+
+  style?: CSSProperties
 }
 
 /**
@@ -57,6 +65,7 @@ export const Touchable = forwardRef<
       onUp,
       onMove,
       className,
+      style,
       children,
       title,
       preventScroll,
@@ -108,6 +117,7 @@ export const Touchable = forwardRef<
     return (
       <div
         className={cx(preventScroll && preventScrollStyle, className)}
+        style={style}
         title={title}
         ref={ref}
         onPointerDown={

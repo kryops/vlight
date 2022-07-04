@@ -78,6 +78,7 @@ export interface AdditionalMapShape {
   xSize?: number
   ySize?: number
 }
+
 export interface StatelessMapWidgetProps {
   fixtures?: Fixture[]
   universe?: number[]
@@ -92,6 +93,16 @@ export interface StatelessMapWidgetProps {
    */
   standalone?: boolean
 
+  /**
+   * Controls whether to display the channels on the fixtures.
+   *
+   * Defaults to `false`.
+   */
+  displayChannels?: boolean
+
+  onFixtureDown?: (fixture: Fixture) => void
+  onFixtureUp?: (fixture: Fixture) => void
+
   className?: string
 }
 
@@ -105,6 +116,9 @@ export const StatelessMapWidget = memoInProduction(
     highlightedFixtures,
     additionalShapes,
     standalone = false,
+    displayChannels = false,
+    onFixtureDown,
+    onFixtureUp,
     className,
   }: StatelessMapWidgetProps) => {
     const { fixtureTypes } = useMasterDataMaps()
@@ -150,11 +164,16 @@ export const StatelessMapWidget = memoInProduction(
                   title={fixture.name}
                   className={fixtureStyle}
                   percentages
+                  onDown={
+                    onFixtureDown ? () => onFixtureDown(fixture) : undefined
+                  }
+                  onUp={onFixtureUp ? () => onFixtureUp(fixture) : undefined}
                 >
                   {highlighted &&
                     highlightedFixtures?.length !== undefined &&
                     highlightedFixtures?.length > 1 &&
                     highlightedIndex + 1}
+                  {displayChannels && fixture.channel}
                 </FixtureTypeMapShape>
               )
             })

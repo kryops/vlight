@@ -3,6 +3,7 @@ import { css, cx } from '@linaria/core'
 import { CSSProperties, ReactNode } from 'react'
 
 import { backgroundColor, baselinePx, iconShade } from '../../ui/styles'
+import { Touchable } from '../../ui/components/touchable'
 
 const shapeStyle = css`
   border: 1px solid ${iconShade(1)};
@@ -48,6 +49,10 @@ export interface MapShapeProps {
    * Defaults to `false`.
    */
   percentages?: boolean
+
+  onDown?: () => void
+  onUp?: () => void
+
   children?: ReactNode
 }
 
@@ -67,6 +72,8 @@ export function MapShape({
   className,
   style,
   percentages,
+  onDown,
+  onUp,
   children,
 }: MapShapeProps) {
   const defaultSize = 5
@@ -87,19 +94,25 @@ export function MapShape({
     borderColor: highlighted ? 'red' : color ? iconShade(0) : undefined,
   }
 
-  return (
-    <div
-      className={cx(
-        shapeStyle,
-        shape !== 'square' && shapeStyle_circle,
-        className
-      )}
-      style={finalStyle}
-      title={title}
-    >
-      {children}
-    </div>
-  )
+  const commonProps = {
+    className: cx(
+      shapeStyle,
+      shape !== 'square' && shapeStyle_circle,
+      className
+    ),
+    style: finalStyle,
+    title: title,
+  }
+
+  if (onDown || onUp) {
+    return (
+      <Touchable {...commonProps} onDown={onDown} onUp={onUp}>
+        {children}
+      </Touchable>
+    )
+  }
+
+  return <div {...commonProps}>{children}</div>
 }
 
 export type FixtureTypeMapShapeProps = Omit<

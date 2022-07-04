@@ -17,7 +17,6 @@
 - Fixtures
   - Channel offset
 - Map
-  - Fixture test mode + show channel for each fixture
   - Change size
 - Speed/Fade control
   - Global vs local speed
