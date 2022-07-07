@@ -242,6 +242,6 @@ export function initLiveChases(): void {
   for (const [id, liveChase] of dictionaryToMap(
     getPersistedState().liveChases
   )) {
-    handleApiMessage({ type: 'live-chase', id, state: liveChase })
+    handleLiveChaseApiMessage({ type: 'live-chase', id, state: liveChase })
   }
 }
