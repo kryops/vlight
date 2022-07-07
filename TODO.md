@@ -40,9 +40,6 @@
 - Dymamic pages
   - Improve layout + editing
   - Multiple widgets of the same type (e.g. memories)
-- Configuration
-  - Fixtures: Show amount of channels for fixture type / whole definition
-  - Fixtures: Default to first free channel, warn about overlapping fixtures
 - New Controls
   - All off (permanently, <> blackout)
   - Programmable buttons

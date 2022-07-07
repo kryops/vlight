@@ -1,6 +1,7 @@
 import { Fixture } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'
 import { useState } from 'react'
+import { css } from '@linaria/core'
 
 import { useFormState } from '../../../../hooks/form'
 import {
@@ -11,7 +12,7 @@ import {
 import { EntityEditorProps } from '../entity-ui-mapping'
 import { Label } from '../../../../ui/forms/label'
 import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget'
-import { useMasterData } from '../../../../hooks/api'
+import { useMasterDataAndMaps } from '../../../../hooks/api'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 import {
   autoWidthInput,
@@ -19,6 +20,51 @@ import {
   editorTitle,
 } from '../../../../ui/css/editor-styles'
 import { Select } from '../../../../ui/forms/select'
+import { baseline, errorShade } from '../../../../ui/styles'
+import { getOccupiedFixtureChannels } from '../../../../util/fixtures'
+
+const errorMessage = css`
+  margin-top: ${baseline(4)};
+  color: ${errorShade(0)};
+`
+
+function formatChannelList(channels: number[]) {
+  if (!channels.length) return ''
+  if (channels.length === 1) return channels[0]
+
+  let segmentStart: number | undefined
+  let lastNumber = -1
+  const segments: string[] = []
+
+  const lastChannel = channels[channels.length - 1]
+
+  for (const channel of channels) {
+    if (!segmentStart) {
+      segmentStart = channel
+    } else {
+      if (channel !== lastNumber + 1) {
+        segments.push(
+          lastNumber === segmentStart
+            ? String(segmentStart)
+            : `${segmentStart} - ${lastNumber}`
+        )
+        segmentStart = channel
+      }
+    }
+
+    lastNumber = channel
+
+    if (channel === lastChannel) {
+      segments.push(
+        lastNumber === segmentStart
+          ? String(segmentStart)
+          : `${segmentStart} - ${lastNumber}`
+      )
+    }
+  }
+
+  return segments.join(', ')
+}
 
 /**
  * Dialog content to edit a fixture definition.
@@ -31,7 +77,7 @@ export function FixtureEditor({
 }: EntityEditorProps<'fixtures'>) {
   const id = entry.id
   const formState = useFormState(entry, { onChange })
-  const masterData = useMasterData()
+  const { masterData, masterDataMaps } = useMasterDataAndMaps()
   const [sharing, setSharing] = useState(!!entry.fixturesSharingChannel)
 
   const { x, y, xOffset, yOffset, count } = formState.values
@@ -54,6 +100,25 @@ export function FixtureEditor({
     ),
     ...(positionedFixtureEntries || []),
   ]
+
+  const occupiedChannels = getOccupiedFixtureChannels(
+    formState.values,
+    masterDataMaps,
+    { isRaw: true }
+  )
+
+  const otherFixtures = masterData.fixtures.filter(
+    fixture => fixture.id !== id && fixture.originalId !== id
+  )
+  const otherFixtureChannels = new Set(
+    otherFixtures.flatMap(fixture =>
+      getOccupiedFixtureChannels(fixture, masterDataMaps)
+    )
+  )
+
+  const overlappingChannels = occupiedChannels.filter(channel =>
+    otherFixtureChannels.has(channel)
+  )
 
   return (
     <>
@@ -158,6 +223,12 @@ export function FixtureEditor({
                 </>
               }
             />
+            {overlappingChannels.length > 0 && (
+              <div className={errorMessage}>
+                Channels overlapping with other fixtures:{' '}
+                {formatChannelList(overlappingChannels)}
+              </div>
+            )}
           </>
         }
         right={

@@ -1,5 +1,12 @@
-import { Fixture, FixtureState, FixtureType, MasterData } from '@vlight/types'
+import {
+  Fixture,
+  FixtureState,
+  FixtureType,
+  MasterData,
+  MasterDataMaps,
+} from '@vlight/types'
 import { ChannelType } from '@vlight/controls'
+import { createRangeArray } from '@vlight/utils'
 
 import { masterDataMaps } from '../api/masterdata'
 
@@ -121,4 +128,24 @@ export function getFixtureAtChannel(
     const maxChannel = fixture.channel + fixtureType.mapping.length - 1
     return maxChannel >= channel
   })
+}
+
+/**
+ * Returns all DMX channels occupied by a fixture
+ * (or raw fixture definition)
+ */
+export function getOccupiedFixtureChannels(
+  fixture: Fixture,
+  masterDataMaps: MasterDataMaps,
+  { isRaw = false }: { isRaw?: boolean } = {}
+): number[] {
+  const channelsPerFixture =
+    masterDataMaps.fixtureTypes.get(fixture.type)?.mapping.length ?? 1
+
+  const count = isRaw ? fixture.count : 1
+
+  return createRangeArray(
+    fixture.channel,
+    fixture.channel - 1 + channelsPerFixture * (count ?? 1)
+  )
 }

@@ -14,6 +14,7 @@ import { baseline } from '../../../ui/styles'
 import { FixtureTypeMapShape } from '../../../widgets/map/map-shape'
 import { masterDataMaps } from '../../../api/masterdata'
 import { apiState } from '../../../api/api-state'
+import { getOccupiedFixtureChannels } from '../../../util/fixtures'
 
 import { FixtureTypeEditor } from './editors/fixture-type-editor'
 import { FixtureEditor } from './editors/fixture-editor'
@@ -82,17 +83,45 @@ export const entityUiMapping: { [key in EntityName]: EntityEntry<key> } = {
     name: 'Fixtures',
     icon: iconLight,
     editor: FixtureEditor,
-    newEntityFactory: () => ({
-      name: 'New Fixture',
-      type: '',
-      channel: 1,
-    }),
+    newEntityFactory: () => {
+      const occupiedChannels =
+        apiState.masterData?.fixtures.flatMap(fixture =>
+          getOccupiedFixtureChannels(fixture, masterDataMaps)
+        ) ?? []
+      const occupiedChannelSet = new Set(occupiedChannels)
+
+      const getGap = (channel: number) => {
+        for (let i = channel + 1; i <= 512; i++) {
+          if (occupiedChannelSet.has(i)) return i - channel - 1
+        }
+        return 512 - channel
+      }
+      const largestGapAfterChannel = [0, ...occupiedChannels].sort(
+        (a, b) => getGap(b) - getGap(a)
+      )[0]
+
+      return {
+        name: 'New Fixture',
+        type: '',
+        channel: largestGapAfterChannel + 1,
+      }
+    },
     listPreview: (entry, masterDataMaps) => {
       const fixtureTypeName = masterDataMaps.fixtureTypes.get(entry.type)?.name
+      const occupiedChannels = getOccupiedFixtureChannels(
+        entry,
+        masterDataMaps,
+        { isRaw: true }
+      )
+      const maxChannel = Math.max(...occupiedChannels)
+
       return (
         <>
           {entry.name}
-          <div className={smallInfo}>Ch {entry.channel}</div>
+          <div className={smallInfo}>
+            Ch {entry.channel}
+            {maxChannel !== entry.channel ? ` - ${maxChannel}` : ''}
+          </div>
           {entry.count && entry.count > 2 && (
             <div className={smallInfo}>{entry.count}x</div>
           )}
