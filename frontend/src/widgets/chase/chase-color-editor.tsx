@@ -2,16 +2,12 @@ import { css } from '@linaria/core'
 import { ChannelType } from '@vlight/controls'
 import { ChaseColor } from '@vlight/types'
 import { highestRandomValue } from '@vlight/utils'
-import { useEffect, useState } from 'react'
 
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
-import { Button } from '../../ui/buttons/button'
 import { ColorPicker } from '../../ui/controls/colorpicker'
 import { colorPickerColors } from '../../ui/controls/colorpicker/util'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
-import { editorTitle } from '../../ui/css/editor-styles'
 import { faderContainer } from '../../ui/css/fader-container'
-import { iconDelete } from '../../ui/icons'
 
 const colorPickerContainer = css`
   display: flex;
@@ -31,40 +27,23 @@ export interface ChaseColorEditorProps {
 
   /**
    * The color to edit.
-   *
-   * Defaults to adding a new color.
    */
-  color?: ChaseColor
+  color: ChaseColor
 
   onChange: (newValue: ChaseColor | null) => void
-  onClose?: (success: boolean) => void
 }
 
 /**
- * Dialog content to add or edit the color of a chase.
+ * Component to edit a single chase color.
  */
 export function ChaseColorEditor({
   color,
   members,
   onChange,
-  onClose,
 }: ChaseColorEditorProps) {
-  const [localState, setLocalState] = useState(
-    color ?? { channels: { [ChannelType.Master]: 255, [ChannelType.Red]: 255 } }
-  )
-
-  useEffect(
-    () => {
-      if (!color) onChange(localState)
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
-  )
-
   const mapping = useCommonFixtureMapping(members)
 
   const onChangeWrapper = (newColor: ChaseColor) => {
-    setLocalState(newColor)
     onChange(newColor)
   }
 
@@ -74,11 +53,11 @@ export function ChaseColorEditor({
       step={1}
       key={channelType + index}
       label={channelType.toUpperCase()}
-      value={localState?.channels[channelType] ?? 0}
+      value={color.channels[channelType] ?? 0}
       onChange={newValue =>
-        onChangeWrapper({
-          ...localState,
-          channels: { ...localState?.channels, [channelType]: newValue },
+        onChange({
+          ...color,
+          channels: { ...color.channels, [channelType]: newValue },
         })
       }
     />
@@ -86,15 +65,12 @@ export function ChaseColorEditor({
 
   const colorPickerCapable = colorPickerColors.every(c => mapping.includes(c))
 
-  const r = highestRandomValue(localState?.channels[ChannelType.Red] ?? 0)
-  const g = highestRandomValue(localState?.channels[ChannelType.Green] ?? 0)
-  const b = highestRandomValue(localState?.channels[ChannelType.Blue] ?? 0)
+  const r = highestRandomValue(color.channels[ChannelType.Red] ?? 0)
+  const g = highestRandomValue(color.channels[ChannelType.Green] ?? 0)
+  const b = highestRandomValue(color.channels[ChannelType.Blue] ?? 0)
 
   return (
     <>
-      <h3 className={editorTitle}>
-        {color ? 'Edit Chase Color' : 'Add Chase Color'}
-      </h3>
       {colorPickerCapable && (
         <div className={colorPickerContainer}>
           <ColorPicker
@@ -103,8 +79,8 @@ export function ChaseColorEditor({
             b={b}
             onChange={colorPickerColor =>
               onChangeWrapper({
-                ...localState,
-                channels: { ...localState.channels, ...colorPickerColor },
+                ...color,
+                channels: { ...color.channels, ...colorPickerColor },
               })
             }
             setDefaultHeight
@@ -113,17 +89,6 @@ export function ChaseColorEditor({
         </div>
       )}
       <div className={faderContainer}>{mapping.map(renderFader)}</div>
-      {color && onClose && (
-        <Button
-          onClick={() => {
-            onChange(null)
-            onClose(true)
-          }}
-          icon={iconDelete}
-        >
-          Remove Color
-        </Button>
-      )}
     </>
   )
 }

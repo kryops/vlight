@@ -31,6 +31,7 @@ function getNewLiveChase(): LiveChase {
     colors: [
       { channels: { [ChannelType.Master]: 255, [ChannelType.Red]: 255 } },
     ],
+    colorsDraft: null,
     single: true,
     burst: false,
     fadeLockedToSpeed: true,

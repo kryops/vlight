@@ -1,7 +1,8 @@
 import { ChaseColor, IdType, LiveChase } from '@vlight/types'
 import { css } from '@linaria/core'
 import { useEffect, useRef, useState } from 'react'
-import { ensureBetween } from '@vlight/utils'
+import { ensureBetween, isTruthy } from '@vlight/utils'
+import { ChannelType } from '@vlight/controls'
 
 import { deleteLiveChase, setLiveChaseState, setLiveChaseStep } from '../../api'
 import { Widget } from '../../ui/containers/widget'
@@ -16,6 +17,7 @@ import {
   iconFast,
   iconHalfSpeed,
   iconMultiple,
+  iconOk,
   iconPercentage,
   iconSingle,
   iconSlow,
@@ -26,18 +28,23 @@ import {
   iconSync,
   iconTime,
 } from '../../ui/icons'
-import { Icon } from '../../ui/icons/icon'
-import { baseline, errorShade, successShade } from '../../ui/styles'
+import {
+  baseline,
+  errorShade,
+  primaryShade,
+  successShade,
+} from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
-import { showDialog, showDialogWithReturnValue } from '../../ui/overlays/dialog'
-import { okCancel, yesNo } from '../../ui/overlays/buttons'
+import { showDialog } from '../../ui/overlays/dialog'
+import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { Button } from '../../ui/buttons/button'
 import { useTapSync } from '../../hooks/speed'
 import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
+import { cx } from '../../util/styles'
 
 import { getChasePreviewColor } from './utils'
-import { ChaseColorEditor } from './chase-color-editor'
+import { ChaseColorsEditor } from './chase-colors-editor'
 
 /** 25 fps */
 const maxSpeed = 0.04
@@ -60,6 +67,12 @@ const colorContainer = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+`
+
+const draftContainer = css`
+  margin-left: ${baseline()};
+  border: 1px dashed ${primaryShade(0)};
+  padding: ${baseline()};
 `
 
 const colorStyle = css`
@@ -160,10 +173,50 @@ export const StatelessLiveChaseWidget = memoInProduction(
         burst: true,
       })
     }
+
     const stopSpeedBurst = () => {
       update(speedBurstBackup.current)
       // If the chase was fading before, this will trigger an additional step to start fading again immediately
       setLiveChaseStep(id)
+    }
+
+    const openColorDialog = async ({
+      colors,
+      initialIndex,
+      isDraft,
+    }: {
+      colors: ChaseColor[]
+      initialIndex: number
+      isDraft?: boolean
+    }) => {
+      const draftValue = 'draft'
+      let newColors: ChaseColor[] = colors
+      const result = await showDialog<true | null | typeof draftValue>(
+        <ChaseColorsEditor
+          colors={colors}
+          members={state.members}
+          initialIndex={initialIndex}
+          isDraft={isDraft}
+          onChange={value => (newColors = value)}
+        />,
+        [
+          buttonOk,
+          !isDraft &&
+            ({
+              label: 'Set as Draft',
+              value: draftValue,
+              icon: iconTime,
+            } as const),
+          buttonCancel,
+        ].filter(isTruthy),
+        { showCloseButton: true }
+      )
+      if (!result) return
+      update(
+        result === draftValue || isDraft
+          ? { colorsDraft: newColors }
+          : { colors: newColors }
+      )
     }
 
     return (
@@ -241,33 +294,14 @@ export const StatelessLiveChaseWidget = memoInProduction(
                   style={{
                     background: getChasePreviewColor(color),
                   }}
-                  onClick={async () => {
-                    const result =
-                      await showDialogWithReturnValue<ChaseColor | null>(
-                        (onChange, onClose) => (
-                          <ChaseColorEditor
-                            members={state.members}
-                            color={color}
-                            onChange={onChange}
-                            onClose={onClose}
-                          />
-                        ),
-                        okCancel,
-                        { showCloseButton: true }
-                      )
-                    if (result === undefined) return
-
-                    update({
-                      colors:
-                        result === null
-                          ? state.colors.filter(it => it !== color)
-                          : state.colors.map(it =>
-                              it === color ? result : it
-                            ),
+                  onClick={() =>
+                    openColorDialog({
+                      colors: state.colors,
+                      initialIndex: index,
                     })
-                  }}
+                  }
                 >
-                  {state.colors.length < 4 && (
+                  {state.colors.length > 1 && state.colors.length < 4 && (
                     <Button
                       icon={iconDelete}
                       title="Remove Color"
@@ -282,26 +316,56 @@ export const StatelessLiveChaseWidget = memoInProduction(
                   )}
                 </div>
               ))}
-              <Icon
+              <Button
                 icon={iconAdd}
-                hoverable
-                onClick={async () => {
-                  const result =
-                    await showDialogWithReturnValue<ChaseColor | null>(
-                      onChange => (
-                        <ChaseColorEditor
-                          members={state.members}
-                          onChange={onChange}
-                        />
-                      ),
-                      okCancel,
-                      { showCloseButton: true }
-                    )
-                  if (!result) return
-                  update({ colors: [...state.colors, result] })
-                }}
+                transparent
+                onClick={() =>
+                  openColorDialog({
+                    colors: [
+                      ...state.colors,
+                      {
+                        channels: {
+                          [ChannelType.Master]: 255,
+                          [ChannelType.Red]: 255,
+                        },
+                      },
+                    ],
+                    initialIndex: state.colors.length,
+                  })
+                }
               />
             </div>
+            {state.colorsDraft && (
+              <div className={cx(colorContainer, draftContainer)}>
+                {state.colorsDraft.map((color, index) => (
+                  <div
+                    key={index}
+                    className={colorStyle}
+                    style={{
+                      background: getChasePreviewColor(color),
+                    }}
+                    onClick={() =>
+                      openColorDialog({
+                        colors: state.colorsDraft ?? [],
+                        initialIndex: index,
+                        isDraft: true,
+                      })
+                    }
+                  />
+                ))}
+                <Button
+                  icon={iconOk}
+                  transparent
+                  title="Apply draft"
+                  onClick={() =>
+                    update({
+                      colors: state.colorsDraft ?? [],
+                      colorsDraft: null,
+                    })
+                  }
+                />
+              </div>
+            )}
             <Fader
               max={255}
               step={1}

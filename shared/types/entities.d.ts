@@ -432,6 +432,9 @@ export interface LiveChase {
   /** The colors that make up this chase. */
   colors: ChaseColor[]
 
+  /** Draft for new colors to apply. */
+  colorsDraft: ChaseColor[] | null
+
   /**
    * The fade speed in seconds.
    * For values greater than {@link speed}, the fading will never complete, but
