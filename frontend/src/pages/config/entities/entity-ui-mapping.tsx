@@ -59,10 +59,10 @@ export interface EntityEntry<T extends EntityName> {
 }
 
 /**
- * Mapping of all entity types to their UI representation, editors,
+ * Mapping of configurable entity types to their UI representation, editors,
  * and new entry factories.
  */
-export const entityUiMapping: { [key in EntityName]: EntityEntry<key> } = {
+export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
   fixtureTypes: {
     name: 'Fixture Types',
     icon: iconFixtureType,

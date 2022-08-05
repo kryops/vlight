@@ -1,4 +1,3 @@
-import { css } from '@linaria/core'
 import { ChannelType } from '@vlight/controls'
 import { ChaseColor } from '@vlight/types'
 import { highestRandomValue } from '@vlight/utils'
@@ -8,16 +7,6 @@ import { ColorPicker } from '../../ui/controls/colorpicker'
 import { colorPickerColors } from '../../ui/controls/colorpicker/util'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { faderContainer } from '../../ui/css/fader-container'
-
-const colorPickerContainer = css`
-  display: flex;
-  justify-content: stretch;
-`
-
-const colorPickerStyle = css`
-  width: auto;
-  flex: 1 1 auto;
-`
 
 export interface ChaseColorEditorProps {
   /**
@@ -70,25 +59,21 @@ export function ChaseColorEditor({
   const b = highestRandomValue(color.channels[ChannelType.Blue] ?? 0)
 
   return (
-    <>
+    <div className={faderContainer}>
       {colorPickerCapable && (
-        <div className={colorPickerContainer}>
-          <ColorPicker
-            r={r}
-            g={g}
-            b={b}
-            onChange={colorPickerColor =>
-              onChangeWrapper({
-                ...color,
-                channels: { ...color.channels, ...colorPickerColor },
-              })
-            }
-            setDefaultHeight
-            className={colorPickerStyle}
-          />
-        </div>
+        <ColorPicker
+          r={r}
+          g={g}
+          b={b}
+          onChange={colorPickerColor =>
+            onChangeWrapper({
+              ...color,
+              channels: { ...color.channels, ...colorPickerColor },
+            })
+          }
+        />
       )}
-      <div className={faderContainer}>{mapping.map(renderFader)}</div>
-    </>
+      {mapping.map(renderFader)}
+    </div>
   )
 }

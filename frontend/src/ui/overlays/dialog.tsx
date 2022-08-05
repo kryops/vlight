@@ -1,7 +1,10 @@
-import { ReactElement } from 'react'
+import { ReactElement, useState } from 'react'
+
+import { Label } from '../forms/label'
+import { TextInput } from '../forms/typed-input'
 
 import { showModal, ModalProps } from './modal'
-import { ModalButton, buttonOk } from './buttons'
+import { ModalButton, buttonOk, okCancel } from './buttons'
 
 /**
  * Shows the given content in a dialog, and returns the value of the button that was pressed.
@@ -45,4 +48,45 @@ export async function showDialogWithReturnValue<T>(
     newCloseHandler => (closeHandler = newCloseHandler)
   )
   return result ? value : undefined
+}
+
+/**
+ * Shows a simple dialog that prompts for a string value.
+ *
+ * Returns the value on success, `undefined` if the dialog was canceled
+ * or nothing was entered.
+ */
+export async function showPromptDialog(label: string, initialValue?: string) {
+  const FormComponent = ({
+    onChange,
+    close,
+  }: {
+    onChange: (newValue: string | undefined) => void
+    close: (success: boolean) => void
+  }) => {
+    const [value, setValue] = useState<string | undefined>(initialValue)
+    return (
+      <Label
+        label={label}
+        input={
+          <TextInput
+            value={value}
+            onChange={newValue => {
+              setValue(newValue)
+              onChange(newValue)
+            }}
+            autoFocus
+            onKeyDown={event => {
+              if (event.key === 'Enter') close(true)
+            }}
+          />
+        }
+      />
+    )
+  }
+
+  return showDialogWithReturnValue<string | undefined>(
+    (onChange, close) => <FormComponent onChange={onChange} close={close} />,
+    okCancel
+  )
 }

@@ -74,7 +74,7 @@ export function EntityList<T extends EntityName>({
             onClick={() => openEntityEditor(type, entry)}
           >
             <Icon icon={iconDrag} inline />
-            {entityUiMapping[type].listPreview?.(
+            {entityUiMapping[type]?.listPreview?.(
               entry as any,
               masterDataMaps
             ) ??

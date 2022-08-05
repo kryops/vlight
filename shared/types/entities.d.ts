@@ -212,6 +212,17 @@ export interface Memory extends DbEntity {
 }
 
 /**
+ * Preset for live chase colors.
+ */
+export interface ChaseColorPreset extends DbEntity {
+  /** The name of the preset. */
+  name: string
+
+  /** The persisted chase colors. */
+  colors: ChaseColor[]
+}
+
+/**
  * The stop of a gradient that is applied to fixtures.
  */
 export interface FixtureStateGradient {
@@ -233,6 +244,7 @@ interface MasterDataMapping {
   fixtureGroups: FixtureGroup
   memories: Memory
   dynamicPages: DynamicPage
+  chaseColorPresets: ChaseColorPreset
 }
 
 /**
@@ -433,7 +445,7 @@ export interface LiveChase {
   colors: ChaseColor[]
 
   /** Draft for new colors to apply. */
-  colorsDraft: ChaseColor[] | null
+  colorsDraft?: ChaseColor[] | null
 
   /**
    * The fade speed in seconds.

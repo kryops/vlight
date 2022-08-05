@@ -228,7 +228,7 @@ export function DynamicPageEditor({
             onClick={() =>
               changeRowProperty(row, 'cells', [
                 ...row.cells,
-                entityUiMapping.dynamicPages.newEntityFactory!().rows[0]
+                entityUiMapping.dynamicPages!.newEntityFactory!().rows[0]
                   .cells[0],
               ])
             }
@@ -259,7 +259,7 @@ export function DynamicPageEditor({
       ))}
       <a
         onClick={() =>
-          rows.add(entityUiMapping.dynamicPages.newEntityFactory!().rows[0])
+          rows.add(entityUiMapping.dynamicPages!.newEntityFactory!().rows[0])
         }
       >
         <Icon icon={iconAdd} inline /> Add row

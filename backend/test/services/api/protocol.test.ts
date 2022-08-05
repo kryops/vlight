@@ -23,6 +23,7 @@ function getMasterDataMock(): MasterData {
     fixtureTypes: [],
     fixtures: [],
     memories: [],
+    chaseColorPresets: [],
   }
 }
 

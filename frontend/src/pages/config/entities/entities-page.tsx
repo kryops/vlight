@@ -41,7 +41,7 @@ const EntitiesPage = memoInProduction(() => {
         }
       >
         <BackArrow />
-        <BackLink>{entityUiMapping[type].name}</BackLink>
+        <BackLink>{entityUiMapping[type]?.name}</BackLink>
       </Header>
       <EntityList type={type} entries={entries as any} />
     </div>

@@ -35,11 +35,11 @@ export async function openEntityEditor<T extends EntityName>(
   entry?: EntityType<T>
 ) {
   const Editor: ComponentType<EntityEditorProps<T>> | undefined =
-    entityUiMapping[type].editor as any
+    entityUiMapping[type]?.editor as any
 
   if (!Editor) return
 
-  const factory = entityUiMapping[type].newEntityFactory
+  const factory = entityUiMapping[type]?.newEntityFactory
 
   if (!entry && !factory) return
 

@@ -49,6 +49,7 @@ const stopSelectionEntry = css`
   flex: 1 1 0;
   margin: 0 ${baseline(0.5)};
   min-width: ${baseline(8)};
+  border: 1px solid ${iconShade(0)};
 `
 
 const stopSelectionEntry_active = css`

@@ -70,7 +70,7 @@ export function MemorySceneEditor({
                   ...scene,
                   states: [
                     ...scene.states,
-                    entityUiMapping.memories.newEntityFactory!().scenes[0]
+                    entityUiMapping.memories!.newEntityFactory!().scenes[0]
                       .states[0],
                   ],
                 })

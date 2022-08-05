@@ -49,7 +49,7 @@ export function LiveMemories() {
               )
 
               setLiveMemoryState(newId, {
-                ...entityUiMapping.memories.newEntityFactory!().scenes[0],
+                ...entityUiMapping.memories!.newEntityFactory!().scenes[0],
                 value: 255,
                 on: false,
               })

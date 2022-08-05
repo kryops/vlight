@@ -34,7 +34,6 @@
   - Apply by map coordinates instead of member order
 - Chases
   - Rename
-  - Pre-configured / presets (including multi-color presets)
   - Color distribution: random, equal, relative
   - Turn off other chases while in burst mode
 - Dymamic pages

@@ -172,7 +172,7 @@ export function Button({
           color={iconColor}
           inline
           className={children ? iconStyle : undefined}
-          hoverable={transparentIcon && !inactive}
+          hoverable={transparentIcon && active === undefined}
           shade={transparentIcon && !inactive ? 0 : 1}
         />
       )}

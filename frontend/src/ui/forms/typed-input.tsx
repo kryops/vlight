@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { Input } from './input'
+import { Input, InputProps } from './input'
 
-export interface TypedInputProps<T> {
+export interface TypedInputProps<T> extends Omit<InputProps, 'value'> {
   value: T | undefined
   onChange: (value: T | undefined) => void
   className?: string

@@ -7,11 +7,12 @@ import { Button } from '../../ui/buttons/button'
 import { Clickable } from '../../ui/components/clickable'
 import { editorTitle } from '../../ui/css/editor-styles'
 import { iconAdd, iconDelete } from '../../ui/icons'
-import { baseline } from '../../ui/styles'
+import { baseline, iconShade } from '../../ui/styles'
 import { cx } from '../../util/styles'
 
 import { ChaseColorEditor } from './chase-color-editor'
 import { getChasePreviewColor } from './utils'
+import { ChaseColorPresets } from './chase-color-presets'
 
 const colorsContainer = css`
   display: flex;
@@ -28,6 +29,7 @@ const colorContainer = css`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  border: 1px solid ${iconShade(0)};
 `
 
 const colorContainer_active = css`
@@ -36,7 +38,7 @@ const colorContainer_active = css`
   margin-bottom: 0;
 `
 
-const removeButton = css`
+const colorRemoveButton = css`
   background: rgba(0, 0, 0, 0.2) !important;
   align-self: stretch;
   display: flex;
@@ -113,7 +115,7 @@ export function ChaseColorsEditor({
                 icon={iconDelete}
                 title="Remove Color"
                 transparent
-                className={removeButton}
+                className={colorRemoveButton}
                 onClick={event => {
                   event?.stopPropagation()
                   onChangeWrapper(localState.filter(it => it !== color))
@@ -140,6 +142,7 @@ export function ChaseColorsEditor({
           }}
         />
       </div>
+
       {selectedColor && (
         <ChaseColorEditor
           members={members}
@@ -155,6 +158,11 @@ export function ChaseColorsEditor({
           }
         />
       )}
+
+      <ChaseColorPresets
+        currentColors={localState}
+        onChange={onChangeWrapper}
+      />
     </>
   )
 }
