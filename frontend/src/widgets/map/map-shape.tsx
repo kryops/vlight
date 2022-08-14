@@ -14,6 +14,7 @@ const shapeStyle = css`
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
 `
 
 const shapeStyle_circle = css`
