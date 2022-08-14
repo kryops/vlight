@@ -52,7 +52,6 @@
 
 ## Tech
 
-- Add React Error Boundaries (MainContainer, modal dialogs, widgets)
 - Performance: manual DOM operations for universe changes (especially with fading)
 - Backend restructuring
   - easier masterData extension / new entity process?

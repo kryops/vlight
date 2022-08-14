@@ -9,6 +9,7 @@ import { Navigation } from '../navigation/navigation'
 import { baseline, zNavigation, backgroundColor } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
+import { ErrorBoundary } from '../../util/error-boundary'
 
 import { LoadingScreen } from './loading-screen'
 import { CornerOverlay } from './corner-overlay'
@@ -77,9 +78,11 @@ export const MainContainer = memoInProduction(() => {
         />
       )}
       <div className={cx(content, navOverlayed && content_blurred)}>
-        <Suspense fallback={<LoadingScreen />}>
-          <RoutesOutlet />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<LoadingScreen />}>
+            <RoutesOutlet />
+          </Suspense>
+        </ErrorBoundary>
       </div>
       <CornerOverlay />
     </div>

@@ -4,6 +4,7 @@ import { css } from '@linaria/core'
 import { Icon } from '../icons/icon'
 import { zOverlay, primaryShade, baseline, iconShade } from '../styles'
 import { iconClose } from '../icons'
+import { ErrorBoundary } from '../../util/error-boundary'
 
 import { removeOverlay, addOverlay } from './overlay'
 import { ModalButton } from './buttons'
@@ -146,7 +147,7 @@ export function Modal<T>({
             />
           )}
           {title && <h2 className={titleStyle}>{title}</h2>}
-          {content}
+          <ErrorBoundary>{content}</ErrorBoundary>
           {buttons && (
             <div className={buttonContainer}>
               {buttons.map(({ icon, label, value }, index) => (

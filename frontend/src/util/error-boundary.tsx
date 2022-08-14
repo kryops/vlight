@@ -1,14 +1,17 @@
 import { Component } from 'react'
 import { logger } from '@vlight/utils'
 
+import { Button } from '../ui/buttons/button'
+import { iconSync } from '../ui/icons'
+
 interface ErrorInfo {
   componentStack: string
 }
 
 interface ErrorBoundaryState {
-  error?: Error
-  stackTrace?: string
-  componentStack?: string
+  error: Error | null
+  stackTrace: string | null
+  componentStack: string | null
 }
 
 /**
@@ -18,7 +21,11 @@ export class ErrorBoundary extends Component<
   { children?: any },
   ErrorBoundaryState
 > {
-  state: ErrorBoundaryState = {}
+  state: ErrorBoundaryState = {
+    error: null,
+    stackTrace: null,
+    componentStack: null,
+  }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     this.prepareError(error, info)
@@ -29,7 +36,7 @@ export class ErrorBoundary extends Component<
       return
     }
 
-    let stackTrace = error.stack
+    let stackTrace = error.stack ?? null
     try {
       const stacktraceJs = await import('stacktrace-js')
       stackTrace = (await stacktraceJs.fromError(error))
@@ -45,15 +52,23 @@ export class ErrorBoundary extends Component<
   }
 
   render() {
-    const { error, componentStack, stackTrace } = this.state
+    const { error } = this.state
     if (error) {
       return (
         <div>
-          {error.toString()}
-          <hr />
-          <pre>{stackTrace}</pre>
-          <hr />
-          <pre>{componentStack}</pre>
+          Error: {error.toString()}
+          <br />
+          <Button
+            transparent
+            icon={iconSync}
+            onClick={() =>
+              this.setState({
+                error: null,
+                componentStack: null,
+                stackTrace: null,
+              })
+            }
+          />
         </div>
       )
     }

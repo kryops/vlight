@@ -12,6 +12,7 @@ import {
 import { cx } from '../../util/styles'
 import { Clickable } from '../components/clickable'
 import { iconOn } from '../icons'
+import { ErrorBoundary } from '../../util/error-boundary'
 
 const widget = css`
   flex: 1 1 auto;
@@ -133,7 +134,9 @@ export function Widget({
           {titleSide && <div className={titleSideContainer}>{titleSide}</div>}
         </div>
       )}
-      <div className={cx(section, contentClassName)}>{children}</div>
+      <div className={cx(section, contentClassName)}>
+        <ErrorBoundary>{children}</ErrorBoundary>
+      </div>
       {bottomLineColor && (
         <div className={bottomLine} style={{ background: bottomLineColor }} />
       )}
