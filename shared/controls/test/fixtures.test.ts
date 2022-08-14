@@ -17,6 +17,7 @@ const masterData: MasterData = {
   fixtureGroups,
   dynamicPages: [],
   memories: [],
+  chaseColorPresets: [],
 }
 
 const masterDataMaps: MasterDataMaps = {
@@ -25,6 +26,7 @@ const masterDataMaps: MasterDataMaps = {
   fixtureGroups: entityArrayToMap(fixtureGroups),
   dynamicPages: new Map(),
   memories: new Map(),
+  chaseColorPresets: new Map(),
 }
 
 describe('mapFixtureList', () => {
