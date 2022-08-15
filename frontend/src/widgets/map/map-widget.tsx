@@ -1,4 +1,5 @@
-import { useDmxUniverse, useMasterData } from '../../hooks/api'
+import { useMasterData } from '../../hooks/api'
+import { memoInProduction } from '../../util/development'
 
 import {
   StatelessMapWidget,
@@ -12,15 +13,14 @@ type MapWidgetProps = Omit<StatelessMapWidgetProps, 'fixtures' | 'universe'>
  *
  * NOTE: Re-renders up to 20 times a second.
  */
-export const MapWidget = (props: MapWidgetProps) => {
-  const universe = useDmxUniverse()
+export const MapWidget = memoInProduction((props: MapWidgetProps) => {
   const masterData = useMasterData()
 
   return (
     <StatelessMapWidget
-      universe={universe}
       fixtures={masterData.fixtures}
+      enableDmxUniverse
       {...props}
     />
   )
-}
+})

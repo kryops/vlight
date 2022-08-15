@@ -81,7 +81,22 @@ export interface AdditionalMapShape {
 
 export interface StatelessMapWidgetProps {
   fixtures?: Fixture[]
+
+  /**
+   * An explicit DMX universe.
+   *
+   * If you want to display the state of the global DMX universe,
+   * prefer {@link enableDmxUniverse} instead.
+   */
   universe?: number[]
+
+  /**
+   * Controls whether the fixture shapes will update themselves
+   * to the state of the current DMX universe, circumventing React
+   * for performance.
+   */
+  enableDmxUniverse?: boolean
+
   highlightedFixtures?: IdType[]
   additionalShapes?: AdditionalMapShape[]
 
@@ -117,6 +132,7 @@ export const StatelessMapWidget = memoInProduction(
     additionalShapes,
     standalone = false,
     displayChannels = false,
+    enableDmxUniverse = false,
     onFixtureDown,
     onFixtureUp,
     className,
@@ -160,6 +176,7 @@ export const StatelessMapWidget = memoInProduction(
                     universe &&
                     getEffectiveFixtureColor(fixture, fixtureType, universe)
                   }
+                  channel={enableDmxUniverse ? fixture.channel : undefined}
                   highlighted={highlighted}
                   title={fixture.name}
                   className={fixtureStyle}

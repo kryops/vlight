@@ -94,7 +94,7 @@ export function getFixtureStateColor(
  * Maps a DMX universe state to the effective color of a fixture.
  */
 export function getEffectiveFixtureColor(
-  fixture: Fixture,
+  fixture: Pick<Fixture, 'channel'>,
   fixtureType: FixtureType | undefined,
   universe: number[]
 ): string | undefined {
