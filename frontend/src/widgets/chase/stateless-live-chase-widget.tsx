@@ -98,10 +98,8 @@ const activeButton = css`
     width: ${baseline(7.5)};
     height: ${baseline(7.5)};
     border-radius: 100%;
-    border: 2px dotted ${successShade(0)};
+    border: 2px solid ${successShade(0)};
     pointer-events: none;
-
-    animation: rotate 5s linear infinite;
   }
 
   @keyframes rotate {
