@@ -25,7 +25,7 @@ export interface VLightConfiguration {
    *
    * Default to `info` in production and `debug` in development.
    */
-  logLevel: LogLevel
+  logLevel: LogLevel | `${LogLevel}`
 
   /**
    * The size of the DMX universe.

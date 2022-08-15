@@ -1,7 +1,7 @@
 const startTime = Date.now()
 
 import sourceMapSupport from 'source-map-support'
-import { setLogLevel, logger } from '@vlight/utils'
+import { setLogLevel, logger, LogLevel } from '@vlight/utils'
 
 import { initApi } from './services/api'
 import { httpServer } from './services/http/express'
@@ -36,7 +36,7 @@ if (!isDevelopment) {
   })
 }
 
-setLogLevel(logLevel)
+setLogLevel(logLevel as LogLevel)
 
 // actual initialization
 
