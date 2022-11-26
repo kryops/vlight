@@ -44,10 +44,10 @@ describe('services/universe', () => {
   })
 
   it('throws on invalid channels', () => {
-    expect(() => setUniverseChannel(channelUniverse, -1, 0)).toThrowError()
-    expect(() => setUniverseChannel(channelUniverse, 0, 0)).toThrowError()
+    expect(() => setUniverseChannel(channelUniverse, -1, 0)).toThrow()
+    expect(() => setUniverseChannel(channelUniverse, 0, 0)).toThrow()
     expect(() =>
       setUniverseChannel(channelUniverse, universeSize + 1, 0)
-    ).toThrowError()
+    ).toThrow()
   })
 })

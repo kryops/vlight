@@ -1,7 +1,7 @@
 import { css } from '@linaria/core'
 
 import { mainNavigationItems } from '../../pages'
-import { primaryShade, zNavigation } from '../styles'
+import { iconShade, primaryShade, zNavigation } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { useCompleteApiState, useMasterData } from '../../hooks/api'
@@ -23,7 +23,7 @@ const navigation_floating = css`
   top: 0;
   left: 0;
   z-index: ${zNavigation};
-  box-shadow: 2px 0 10px icon(10%);
+  box-shadow: 2px 0 10px ${iconShade(2)};
 `
 
 export interface NavigationProps {
