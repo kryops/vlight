@@ -37,9 +37,6 @@
     "start": "cross-env NODE_ENV=production && node .",
     "test": "jest"
   },
-  "resolutions": {
-    "@linaria/babel-preset": "4.2.2"
-  },
   "dependencies": {
     "@mdi/js": "^7.0.96",
     "cross-env": "^7.0.3",
