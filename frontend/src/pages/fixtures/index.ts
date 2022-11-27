@@ -1,6 +1,6 @@
 import { iconLight } from '../../ui/icons'
 import { isAnyOn } from '../../util/state'
-import { NavItemEntry } from '../index'
+import { NavItemEntry } from '../types'
 import { fixturesPageRoute } from '../routes'
 
 import FixturesPage from './fixtures-page'

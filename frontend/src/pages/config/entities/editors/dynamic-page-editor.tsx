@@ -9,7 +9,7 @@ import { assertNever } from '@vlight/utils'
 
 import { useFormState, useFormStateArray } from '../../../../hooks/form'
 import { FormTextInput } from '../../../../ui/forms/form-input'
-import { EntityEditorProps, entityUiMapping } from '../entity-ui-mapping'
+import { EntityEditorProps } from '../types'
 import { editorTitle } from '../../../../ui/css/editor-styles'
 import { Label } from '../../../../ui/forms/label'
 import { iconAdd, iconDelete, iconDown, iconUp } from '../../../../ui/icons'
@@ -20,6 +20,7 @@ import { useMasterDataMaps } from '../../../../hooks/api'
 import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
 import { okCancel } from '../../../../ui/overlays/buttons'
 import { SortableList } from '../../../../ui/containers/sortable-list'
+import { newDynamicPageFactory } from '../new-entity-factories'
 
 import { DynamicPageCellEditor } from './dynamic-page-cell-editor'
 
@@ -226,11 +227,7 @@ export function DynamicPageEditor({
           />
           <a
             onClick={() =>
-              changeRowProperty(row, 'cells', [
-                ...row.cells,
-                entityUiMapping.dynamicPages!.newEntityFactory!().rows[0]
-                  .cells[0],
-              ])
+              changeRowProperty(row, 'cells', [...row.cells, { widgets: [] }])
             }
           >
             <Icon icon={iconAdd} inline /> Add cell
@@ -257,11 +254,7 @@ export function DynamicPageEditor({
           )}
         </div>
       ))}
-      <a
-        onClick={() =>
-          rows.add(entityUiMapping.dynamicPages!.newEntityFactory!().rows[0])
-        }
-      >
+      <a onClick={() => rows.add(newDynamicPageFactory().rows[0])}>
         <Icon icon={iconAdd} inline /> Add row
       </a>
     </>

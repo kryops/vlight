@@ -1,7 +1,6 @@
 import { css } from '@linaria/core'
 import { MemoryScene, MemorySceneState } from '@vlight/types'
 
-import { entityUiMapping } from '../entity-ui-mapping'
 import { Label } from '../../../../ui/forms/label'
 import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
@@ -13,6 +12,7 @@ import { okCancel } from '../../../../ui/overlays/buttons'
 import { FixtureListInput } from '../../../../ui/forms/fixture-list-input'
 import { SortableList } from '../../../../ui/containers/sortable-list'
 import { flexAuto } from '../../../../ui/css/flex'
+import { newMemoryFactory } from '../new-entity-factories'
 
 import { MemorySceneStateEditor } from './memory-scene-state-editor'
 
@@ -70,8 +70,7 @@ export function MemorySceneEditor({
                   ...scene,
                   states: [
                     ...scene.states,
-                    entityUiMapping.memories!.newEntityFactory!().scenes[0]
-                      .states[0],
+                    newMemoryFactory().scenes[0].states[0],
                   ],
                 })
               }

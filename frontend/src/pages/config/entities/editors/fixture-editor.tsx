@@ -9,7 +9,7 @@ import {
   FormNumberInput,
   FormEntityReferenceSelect,
 } from '../../../../ui/forms/form-input'
-import { EntityEditorProps } from '../entity-ui-mapping'
+import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
 import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget'
 import { useMasterDataAndMaps } from '../../../../hooks/api'

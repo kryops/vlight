@@ -1,5 +1,5 @@
 import { iconConfig } from '../../ui/icons'
-import { NavItemEntry } from '../index'
+import { NavItemEntry } from '../types'
 import { configPageRoute } from '../routes'
 
 import ConfigPage from './config-page'

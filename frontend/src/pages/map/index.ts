@@ -1,5 +1,5 @@
 import { iconMap } from '../../ui/icons'
-import { NavItemEntry } from '../index'
+import { NavItemEntry } from '../types'
 import { mapPageRoute } from '../routes'
 
 import MapPage from './map-page'

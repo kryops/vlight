@@ -1,6 +1,6 @@
 import { iconMemory } from '../../ui/icons'
 import { isAnyOn } from '../../util/state'
-import { NavItemEntry } from '../index'
+import { NavItemEntry } from '../types'
 import { memoriesPageRoute } from '../routes'
 
 import MemoriesPage from './memories-page'

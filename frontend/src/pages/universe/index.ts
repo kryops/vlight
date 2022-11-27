@@ -1,5 +1,5 @@
 import { iconUniverse } from '../../ui/icons'
-import { NavItemEntry } from '../index'
+import { NavItemEntry } from '../types'
 import { universePageRoute } from '../routes'
 
 import UniversePage from './universe-page'

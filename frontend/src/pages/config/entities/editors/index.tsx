@@ -4,7 +4,8 @@ import { ComponentType } from 'react'
 import { showDialog } from '../../../../ui/overlays/dialog'
 import { editEntity } from '../../../../api'
 import { okCancel } from '../../../../ui/overlays/buttons'
-import { EntityEditorProps, entityUiMapping } from '../entity-ui-mapping'
+import { entityUiMapping } from '../entity-ui-mapping'
+import { EntityEditorProps } from '../types'
 import { apiState } from '../../../../api/api-state'
 
 /**

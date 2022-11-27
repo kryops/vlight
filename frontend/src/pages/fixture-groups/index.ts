@@ -1,6 +1,6 @@
 import { iconGroup } from '../../ui/icons'
 import { isAnyOn } from '../../util/state'
-import { NavItemEntry } from '../index'
+import { NavItemEntry } from '../types'
 import { fixtureGroupsPageRoute } from '../routes'
 
 import FixtureGroupsPage from './fixture-groups-page'

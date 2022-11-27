@@ -1,5 +1,5 @@
 import { iconFader } from '../../ui/icons'
-import { NavItemEntry } from '../index'
+import { NavItemEntry } from '../types'
 import { channelsPageRoute } from '../routes'
 
 import ChannelsPage from './channels-page'

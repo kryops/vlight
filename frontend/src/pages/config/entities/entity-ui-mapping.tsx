@@ -1,7 +1,7 @@
 import { ComponentType, ReactNode } from 'react'
 import { EntityName, EntityType, MasterDataMaps } from '@vlight/types'
 import { css } from '@linaria/core'
-import { ChannelType, mapFixtureList } from '@vlight/controls'
+import { mapFixtureList } from '@vlight/controls'
 
 import {
   iconFixtureType,
@@ -21,6 +21,14 @@ import { FixtureEditor } from './editors/fixture-editor'
 import { FixtureGroupEditor } from './editors/fixture-group-editor'
 import { MemoryEditor } from './editors/memory-editor'
 import { DynamicPageEditor } from './editors/dynamic-page-editor'
+import {
+  newDynamicPageFactory,
+  newFixtureFactory,
+  newFixtureGroupFactory,
+  newFixtureTypeFactory,
+  newMemoryFactory,
+} from './new-entity-factories'
+import { EntityEditorProps } from './types'
 
 const smallInfo = css`
   font-size: 0.75rem;
@@ -32,11 +40,6 @@ const fixtureTypeStyle = css`
   display: inline-block;
   margin-right: ${baseline(2)};
 `
-
-export interface EntityEditorProps<T extends EntityName> {
-  entry: EntityType<T>
-  onChange: (entry: EntityType<T>) => void
-}
 
 export interface EntityEntry<T extends EntityName> {
   /** Entity name to display as headline and on the overview page. */
@@ -67,10 +70,7 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
     name: 'Fixture Types',
     icon: iconFixtureType,
     editor: FixtureTypeEditor,
-    newEntityFactory: () => ({
-      name: 'New Fixture Type',
-      mapping: [ChannelType.Master],
-    }),
+    newEntityFactory: newFixtureTypeFactory,
     listPreview: entry => (
       <>
         <FixtureTypeMapShape fixtureType={entry} className={fixtureTypeStyle} />
@@ -83,29 +83,7 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
     name: 'Fixtures',
     icon: iconLight,
     editor: FixtureEditor,
-    newEntityFactory: () => {
-      const occupiedChannels =
-        apiState.masterData?.fixtures.flatMap(fixture =>
-          getOccupiedFixtureChannels(fixture, masterDataMaps)
-        ) ?? []
-      const occupiedChannelSet = new Set(occupiedChannels)
-
-      const getGap = (channel: number) => {
-        for (let i = channel + 1; i <= 512; i++) {
-          if (occupiedChannelSet.has(i)) return i - channel - 1
-        }
-        return 512 - channel
-      }
-      const largestGapAfterChannel = [0, ...occupiedChannels].sort(
-        (a, b) => getGap(b) - getGap(a)
-      )[0]
-
-      return {
-        name: 'New Fixture',
-        type: '',
-        channel: largestGapAfterChannel + 1,
-      }
-    },
+    newEntityFactory: newFixtureFactory,
     listPreview: (entry, masterDataMaps) => {
       const fixtureTypeName = masterDataMaps.fixtureTypes.get(entry.type)?.name
       const occupiedChannels = getOccupiedFixtureChannels(
@@ -136,10 +114,7 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
     name: 'Fixture Groups',
     icon: iconGroup,
     editor: FixtureGroupEditor,
-    newEntityFactory: () => ({
-      name: 'New Fixture Group',
-      fixtures: [],
-    }),
+    newEntityFactory: newFixtureGroupFactory,
     listPreview: entry => (
       <>
         {entry.name}
@@ -159,40 +134,12 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
     name: 'Memories',
     icon: iconMemory,
     editor: MemoryEditor,
-    newEntityFactory: () => ({
-      name: 'New Memory',
-      scenes: [
-        {
-          members: [],
-          states: [
-            {
-              on: true,
-              channels: {
-                m: 255,
-                r: 255,
-                g: 255,
-                b: 255,
-              },
-            },
-          ],
-        },
-      ],
-    }),
+    newEntityFactory: newMemoryFactory,
   },
   dynamicPages: {
     name: 'Dynamic Pages',
     icon: iconDynamicPage,
     editor: DynamicPageEditor,
-    newEntityFactory: () => ({
-      rows: [
-        {
-          cells: [
-            {
-              widgets: [],
-            },
-          ],
-        },
-      ],
-    }),
+    newEntityFactory: newDynamicPageFactory,
   },
 }

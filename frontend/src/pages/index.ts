@@ -1,7 +1,3 @@
-import { ComponentType } from 'react'
-
-import { ApiState } from '../api/worker/processing'
-
 import { universePageNavItem } from './universe'
 import { channelsPageNavItem } from './channels'
 import { fixturesPageNavItem } from './fixtures'
@@ -12,21 +8,7 @@ import { configPageNavItem } from './config'
 import { settingsPageEntry } from './config/settings'
 import { entitiesPageEntry } from './config/entities'
 import { mapPageNavItem } from './map'
-
-export interface RouteEntry {
-  route: string
-  page: ComponentType
-}
-
-export interface NavItemEntry extends RouteEntry {
-  icon: string
-  label: string
-  /**
-   * Determines whether the item should be highlighted based on the current state.
-   * (excluding the DMX universe state to avoid frequent re-renders)
-   */
-  highlighted?: (apiState: ApiState) => boolean
-}
+import { NavItemEntry, RouteEntry } from './types'
 
 /**
  * The content of the main navigation.

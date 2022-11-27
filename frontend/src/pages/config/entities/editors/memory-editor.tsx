@@ -2,7 +2,7 @@ import { css } from '@linaria/core'
 
 import { useFormState, useFormStateArray } from '../../../../hooks/form'
 import { FormTextInput } from '../../../../ui/forms/form-input'
-import { EntityEditorProps, entityUiMapping } from '../entity-ui-mapping'
+import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
 import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
@@ -13,6 +13,7 @@ import {
   editorPreviewColumn,
   editorTitle,
 } from '../../../../ui/css/editor-styles'
+import { newMemoryFactory } from '../new-entity-factories'
 
 import { MemorySceneEditor } from './memory-scene-editor'
 
@@ -58,13 +59,7 @@ export function MemoryEditor({
                 />
               </div>
             ))}
-            <a
-              onClick={() =>
-                scenes.add(
-                  entityUiMapping.memories!.newEntityFactory!().scenes[0]
-                )
-              }
-            >
+            <a onClick={() => scenes.add(newMemoryFactory().scenes[0])}>
               <Icon icon={iconAdd} inline /> Add scene
             </a>
           </>

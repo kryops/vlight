@@ -1,4 +1,4 @@
-import { RouteEntry } from '../../index'
+import { RouteEntry } from '../../types'
 import { settingsPageRoute } from '../../routes'
 
 import SettingsPage from './settings-page'

@@ -7,7 +7,7 @@ import {
   FormSelect,
   FormTextInput,
 } from '../../../../ui/forms/form-input'
-import { EntityEditorProps } from '../entity-ui-mapping'
+import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
 import { TextInput } from '../../../../ui/forms/typed-input'
 import { SelectEntry } from '../../../../ui/forms/select'

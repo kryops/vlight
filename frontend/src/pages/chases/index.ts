@@ -1,6 +1,6 @@
 import { iconChase } from '../../ui/icons'
 import { isAnyOn } from '../../util/state'
-import { NavItemEntry } from '../index'
+import { NavItemEntry } from '../types'
 import { chasesPageRoute } from '../routes'
 
 import ChasesPage from './chases-page'
