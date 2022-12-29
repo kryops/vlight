@@ -11,6 +11,7 @@ import { useApiState, useMasterDataAndMaps } from '../../hooks/api'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { MultiToggleInput } from '../../ui/forms/multi-toggle-input'
+import { iconGroup } from '../../ui/icons'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 
 /**
@@ -56,6 +57,7 @@ export function FixtureGroupMultiControl() {
         right={
           selectedGroupIds.length > 0 && (
             <FixtureStateWidget
+              icon={iconGroup}
               title={`${selectedGroupIds.length} Groups`}
               mapping={mapping}
               fixtureState={commonState}

@@ -8,6 +8,7 @@ import {
   errorShade,
   successShade,
   baselinePx,
+  iconShade,
 } from '../styles'
 import { cx } from '../../util/styles'
 import { Clickable } from '../components/clickable'
@@ -58,6 +59,9 @@ const bottomLine = css`
 `
 
 export interface WidgetProps {
+  /** SVG path of the icon to display next to the title. */
+  icon?: string
+
   /**
    * Widget title, displayed at the top.
    */
@@ -96,6 +100,7 @@ export interface WidgetProps {
  * Generic widget component.
  */
 export function Widget({
+  icon,
   title,
   titleSide,
   onTitleClick,
@@ -115,12 +120,26 @@ export function Widget({
         turnedOn !== undefined && stateClassName
       )}
     >
-      {(title || titleSide || turnedOn !== undefined) && (
+      {(icon || title || titleSide || turnedOn !== undefined) && (
         <div className={cx(section, widgetTitle)}>
           <div>
             <Clickable onClick={onTitleClick}>
+              {icon && (
+                <Icon
+                  icon={icon}
+                  color={
+                    turnedOn
+                      ? successShade(0)
+                      : turnedOn === false
+                      ? errorShade(0)
+                      : iconShade(1)
+                  }
+                  inline
+                />
+              )}
+              {icon && ' '}
               {title}
-              {turnedOn !== undefined && (
+              {turnedOn !== undefined && icon === undefined && (
                 <Icon
                   icon={iconOn}
                   color={turnedOn ? successShade(0) : errorShade(0)}

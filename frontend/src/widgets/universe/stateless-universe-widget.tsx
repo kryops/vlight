@@ -15,6 +15,7 @@ import {
 import { getUniverseIndex } from '../../api/util'
 import { Bar } from '../../ui/controls/bar'
 import { useMasterDataMaps } from '../../hooks/api'
+import { iconUniverse } from '../../ui/icons'
 
 const barRows = 3
 
@@ -62,7 +63,7 @@ export const StatelessUniverseWidget = memoInProduction(
     )
 
     return (
-      <Widget title={title ?? `Universe ${from} - ${to}`}>
+      <Widget icon={iconUniverse} title={title ?? `Universe ${from} - ${to}`}>
         <div
           className={cx(flexWrap, container)}
           style={{ maxWidth: maxWidth + 'px' }}

@@ -49,6 +49,7 @@ import {
   mdiPercent,
   mdiClockOutline,
   mdiRename,
+  mdiImageSync,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -97,6 +98,7 @@ export const iconLights = mdiLightbulbGroupOutline
 export const iconLightOff = mdiLightbulbOffOutline
 export const iconGroup = mdiGroup
 export const iconMemory = mdiImageFrame
+export const iconLiveMemory = mdiImageSync
 export const iconChase = mdiAnimationPlay
 export const iconExperiment = mdiFlaskOutline
 export const iconColorPicker = mdiPaletteOutline

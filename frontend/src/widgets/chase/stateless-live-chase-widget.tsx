@@ -12,6 +12,7 @@ import { flexWrap } from '../../ui/css/flex'
 import { FixtureListInput } from '../../ui/forms/fixture-list-input'
 import {
   iconAdd,
+  iconChase,
   iconDelete,
   iconDoubleSpeed,
   iconFast,
@@ -239,6 +240,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
 
     return (
       <Widget
+        icon={iconChase}
         title={title}
         onTitleClick={() => update({ on: !state.on })}
         turnedOn={state.on}

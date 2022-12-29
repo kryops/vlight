@@ -9,6 +9,7 @@ import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { MultiToggleInput } from '../../ui/forms/multi-toggle-input'
+import { iconLiveMemory } from '../../ui/icons'
 
 /**
  * Collapsible widget to control multiple live memories together.
@@ -39,6 +40,7 @@ export function LiveMemoriesMultiControl() {
         right={
           selectedMemoryIds.length > 0 && (
             <Widget
+              icon={iconLiveMemory}
               title={`${selectedMemoryIds.length} Memories`}
               onTitleClick={() =>
                 selectedMemoryIds.forEach(id =>

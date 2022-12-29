@@ -4,6 +4,7 @@ import { mergeFixtureStates } from '@vlight/controls'
 import { useMasterDataMaps, useApiStateEntry } from '../../hooks/api'
 import { setFixtureState } from '../../api'
 import { memoInProduction } from '../../util/development'
+import { iconLight } from '../../ui/icons'
 
 import { FixtureStateWidget } from './fixture-state-widget'
 
@@ -36,6 +37,7 @@ export const FixtureWidget = memoInProduction(
 
     return (
       <FixtureStateWidget
+        icon={iconLight}
         title={getFixtureName(fixture, fixtureType)}
         fixtureState={fixtureState}
         mapping={fixtureType.mapping}

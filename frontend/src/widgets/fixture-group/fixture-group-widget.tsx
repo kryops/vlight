@@ -6,7 +6,7 @@ import { useApiStateEntry } from '../../hooks/api'
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
 import { FixtureStateWidget } from '../fixture/fixture-state-widget'
 import { Icon } from '../../ui/icons/icon'
-import { iconConfig } from '../../ui/icons'
+import { iconConfig, iconGroup } from '../../ui/icons'
 import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { memoInProduction } from '../../util/development'
 
@@ -28,6 +28,7 @@ export const FixtureGroupWidget = memoInProduction(
 
     return (
       <FixtureStateWidget
+        icon={iconGroup}
         title={`${group.name ?? group.id} (${group.fixtures.length})`}
         titleSide={
           <Icon

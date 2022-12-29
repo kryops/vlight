@@ -28,6 +28,7 @@ export interface FixtureStateWidgetProps {
   /** Channel type mapping. */
   mapping: string[]
 
+  icon?: string
   title?: string
   titleSide?: ReactNode
   onChange: (newState: Partial<FixtureState>) => void
@@ -49,6 +50,7 @@ export const FixtureStateWidget = memoInProduction(
   ({
     fixtureState,
     mapping,
+    icon,
     title,
     titleSide,
     onChange,
@@ -97,6 +99,7 @@ export const FixtureStateWidget = memoInProduction(
     return (
       <Widget
         className={className}
+        icon={icon}
         title={title}
         onTitleClick={
           disableOn

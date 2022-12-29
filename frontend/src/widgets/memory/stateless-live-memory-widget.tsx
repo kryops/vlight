@@ -10,7 +10,7 @@ import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { Button } from '../../ui/buttons/button'
-import { iconDelete, iconRename } from '../../ui/icons'
+import { iconDelete, iconLiveMemory, iconRename } from '../../ui/icons'
 import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
 import { yesNo } from '../../ui/overlays/buttons'
 
@@ -58,6 +58,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
   ({ id, state, title }: StatelessLiveMemoryWidgetProps) => {
     return (
       <Widget
+        icon={iconLiveMemory}
         title={title}
         onTitleClick={() => setLiveMemoryState(id, { on: !state.on }, true)}
         turnedOn={state.on}

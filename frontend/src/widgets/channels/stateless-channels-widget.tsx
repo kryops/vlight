@@ -6,6 +6,7 @@ import { ChannelFader } from '../../ui/controls/fader/channel-fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { memoInProduction } from '../../util/development'
 import { getUniverseIndex } from '../../api/util'
+import { iconFader } from '../../ui/icons'
 
 export interface StatelessChannelsWidgetProps {
   channels: number[]
@@ -22,7 +23,7 @@ export const StatelessChannelsWidget = memoInProduction(
     const range = createRangeArray(from, to)
 
     return (
-      <Widget title={title ?? `Channels ${from} - ${to}`}>
+      <Widget icon={iconFader} title={title ?? `Channels ${from} - ${to}`}>
         <div className={faderContainer}>
           {range.map(channel => (
             <ChannelFader

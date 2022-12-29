@@ -9,6 +9,7 @@ import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { MultiToggleInput } from '../../ui/forms/multi-toggle-input'
+import { iconMemory } from '../../ui/icons'
 
 /**
  * Collapsible widget to control multiple memories together.
@@ -42,6 +43,7 @@ export function MemoriesMultiControl() {
         right={
           selectedMemoryIds.length > 0 && (
             <Widget
+              icon={iconMemory}
               title={`${selectedMemoryIds.length} Memories`}
               onTitleClick={() =>
                 setMemoryState(

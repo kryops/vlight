@@ -12,6 +12,7 @@ import { useApiState, useMasterDataAndMaps } from '../../hooks/api'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { FixtureListInput } from '../../ui/forms/fixture-list-input'
+import { iconLights } from '../../ui/icons'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 
 /**
@@ -53,6 +54,7 @@ export function FixturesMultiControl() {
         right={
           allFixtureIds.length > 0 && (
             <FixtureStateWidget
+              icon={iconLights}
               title={`${allFixtureIds.length} Fixtures`}
               mapping={mapping}
               fixtureState={commonFixtureState}

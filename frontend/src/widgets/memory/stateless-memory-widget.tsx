@@ -7,7 +7,7 @@ import { Button } from '../../ui/buttons/button'
 import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
-import { iconConfig, iconLight } from '../../ui/icons'
+import { iconConfig, iconLight, iconMemory } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
@@ -36,6 +36,7 @@ export const StatelessMemoryWidget = memoInProduction(
     return (
       <Widget
         key={memory.id}
+        icon={iconMemory}
         title={memory.name ?? memory.id}
         titleSide={
           <Icon
