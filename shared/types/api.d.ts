@@ -1,6 +1,5 @@
 import {
   Dictionary,
-  FixtureChannels,
   FixtureState,
   IdType,
   MasterData,

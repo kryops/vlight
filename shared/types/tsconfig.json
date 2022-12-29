@@ -9,7 +9,8 @@
     "declaration": true,
     "composite": true,
     "incremental": true,
-    "skipLibCheck": true
+    "skipLibCheck": false,
+    "skipDefaultLibCheck": true
   },
   "include": ["."]
 }
