@@ -12,7 +12,9 @@ const clickable = css`
  * Container element that can be clicked on.
  */
 export function Clickable(props: LinkProps) {
-  return (
-    <a {...props} className={cx(props.className, props.onClick && clickable)} />
-  )
+  if (props.onClick) {
+    return <a {...props} className={cx(props.className, clickable)} />
+  } else {
+    return <span {...props} />
+  }
 }

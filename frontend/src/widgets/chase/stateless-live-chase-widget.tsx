@@ -42,6 +42,7 @@ import { Button } from '../../ui/buttons/button'
 import { useTapSync } from '../../hooks/speed'
 import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
 import { cx } from '../../util/styles'
+import { apiState } from '../../api/api-state'
 
 import { getChasePreviewColor } from './utils'
 import { ChaseColorsEditor } from './chase-colors-editor'
@@ -151,16 +152,30 @@ export const StatelessLiveChaseWidget = memoInProduction(
       if (!isCurrentlyFast) setFastMode(false)
     }, [isCurrentlyFast])
 
-    const speedBurstBackup = useRef<Partial<LiveChase>>({})
+    const speedBurstBackup = useRef<
+      Partial<LiveChase> & { otherChases?: string[] }
+    >({})
     const startSpeedBurst = () => {
       // likely hit the button multiple times
       if (!state.burst) {
+        // disable other chases temporarily in single mode
+        const otherChases =
+          state.single && !state.on
+            ? Object.keys(apiState.liveChases).filter(
+                chase => chase !== id && apiState.liveChases[chase].on
+              )
+            : []
+        otherChases.forEach(chase =>
+          setLiveChaseState(chase, { on: false }, true)
+        )
+
         speedBurstBackup.current = {
           speed: state.speed,
           fade: state.fade,
           stopped: state.stopped,
           on: state.on,
           burst: false,
+          otherChases,
         }
       }
       update({
@@ -173,9 +188,13 @@ export const StatelessLiveChaseWidget = memoInProduction(
     }
 
     const stopSpeedBurst = () => {
-      update(speedBurstBackup.current)
+      const { otherChases, ...chaseState } = speedBurstBackup.current
+      update(chaseState)
       // If the chase was fading before, this will trigger an additional step to start fading again immediately
       setLiveChaseStep(id)
+      otherChases?.forEach(chase =>
+        setLiveChaseState(chase, { on: true }, true)
+      )
     }
 
     const openColorDialog = async ({

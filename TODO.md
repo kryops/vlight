@@ -33,7 +33,6 @@
 - Chases
   - Rename
   - Color distribution: random, equal, relative
-  - Turn off other chases while in burst mode
 - Dymamic pages
   - Improve layout + editing
   - Multiple widgets of the same type (e.g. memories)
