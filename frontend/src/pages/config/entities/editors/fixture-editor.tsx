@@ -80,7 +80,8 @@ export function FixtureEditor({
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
   const [sharing, setSharing] = useState(!!entry.fixturesSharingChannel)
 
-  const { x, y, xOffset, yOffset, count } = formState.values
+  const { x, y, xOffset, yOffset, count, fixturesSharingChannel } =
+    formState.values
 
   const idSuffixes = createRangeArray(1, count ?? 1)
   const positionedFixtureEntries =
@@ -198,31 +199,47 @@ export function FixtureEditor({
                   formState={formState}
                   name={sharing ? 'fixturesSharingChannel' : 'count'}
                   min={1}
+                  step={1}
                 />
               }
             />
-            <Label
-              label="Position offset"
-              input={
-                <>
+            {!sharing && count !== undefined && count >= 2 && (
+              <Label
+                label="Channel offset"
+                input={
                   <FormNumberInput
                     formState={formState}
-                    name="xOffset"
-                    min={-100}
-                    max={100}
-                    className={autoWidthInput}
+                    name="channelOffset"
+                    min={0}
+                    step={1}
                   />
-                  {' / '}
-                  <FormNumberInput
-                    formState={formState}
-                    name="yOffset"
-                    min={-100}
-                    max={100}
-                    className={autoWidthInput}
-                  />
-                </>
-              }
-            />
+                }
+              />
+            )}
+            {(count ?? fixturesSharingChannel ?? 1) >= 2 && (
+              <Label
+                label="Position offset"
+                input={
+                  <>
+                    <FormNumberInput
+                      formState={formState}
+                      name="xOffset"
+                      min={-100}
+                      max={100}
+                      className={autoWidthInput}
+                    />
+                    {' / '}
+                    <FormNumberInput
+                      formState={formState}
+                      name="yOffset"
+                      min={-100}
+                      max={100}
+                      className={autoWidthInput}
+                    />
+                  </>
+                }
+              />
+            )}
             {overlappingChannels.length > 0 && (
               <div className={errorMessage}>
                 Channels overlapping with other fixtures:{' '}

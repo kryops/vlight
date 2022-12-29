@@ -23,9 +23,20 @@ function replaceIndexPlaceholder<T extends string | undefined>(
 }
 
 /** Computes the DMX channel the fixture with the given index. */
-function computeChannel(type: IdType, baseChannel: number, index: number) {
+function computeChannel({
+  type,
+  baseChannel,
+  channelOffset,
+  index,
+}: {
+  type: IdType
+  baseChannel: number
+  channelOffset: number | undefined
+  index: number
+}) {
   const fixtureType = masterDataMaps.fixtureTypes.get(type)
-  const numChannels = fixtureType ? fixtureType.mapping.length : 1
+  const numChannels =
+    (fixtureType ? fixtureType.mapping.length : 1) + (channelOffset ?? 0)
   return baseChannel + (index - 1) * numChannels
 }
 
@@ -36,7 +47,7 @@ function computeChannel(type: IdType, baseChannel: number, index: number) {
  */
 function processFixture(fixture: Fixture): Fixture | Fixture[] {
   const { id, type, channel, name } = fixture
-  const { count, xOffset, yOffset, ...resetToKeep } = fixture
+  const { count, xOffset, yOffset, channelOffset, ...resetToKeep } = fixture
 
   const fixtureType = masterDataMaps.fixtureTypes.get(type)
   if (!fixtureType) {
@@ -56,7 +67,12 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
     originalId: id,
     name: replaceIndexPlaceholder(name, index, true),
     type,
-    channel: computeChannel(type, channel, index),
+    channel: computeChannel({
+      type,
+      baseChannel: channel,
+      channelOffset,
+      index,
+    }),
     x:
       fixture.x !== undefined
         ? fixture.x + (index - 1) * (fixture.xOffset ?? 8)

@@ -141,11 +141,14 @@ export function getOccupiedFixtureChannels(
 ): number[] {
   const channelsPerFixture =
     masterDataMaps.fixtureTypes.get(fixture.type)?.mapping.length ?? 1
+  const channelOffset = fixture.channelOffset ?? 0
 
-  const count = isRaw ? fixture.count : 1
+  const count = Math.floor(isRaw ? fixture.count ?? 1 : 1)
 
-  return createRangeArray(
-    fixture.channel,
-    fixture.channel - 1 + channelsPerFixture * (count ?? 1)
-  )
+  return new Array(count).fill(0).flatMap((_, index) => {
+    const startChannel =
+      fixture.channel + index * (channelsPerFixture + channelOffset)
+
+    return createRangeArray(startChannel, startChannel + channelsPerFixture - 1)
+  })
 }

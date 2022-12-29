@@ -7,6 +7,7 @@ const fixtures = [
     count: 4,
     x: 40,
     y: 90,
+    channelOffset: 4,
   },
   {
     id: '3x12',

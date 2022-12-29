@@ -14,8 +14,6 @@
   - Fixtures with multiple light sources
   - Moving heads
   - Special colors preview (amber, UV)
-- Fixtures
-  - Channel offset
 - Map
   - Change size
 - Speed/Fade control

@@ -28,11 +28,20 @@ export interface Fixture extends DbEntity {
 
   /**
    * The fixture count for this definition. The fixtures' channels are mapped in a row,
-   * starting at the configured {@link channel}.
+   * starting at the configured {@link channel}, leaving {@link channelOffset} channels in between.
    *
    * Defaults to 1.
    */
   count?: number
+
+  /**
+   * Specifies the channel offset between the fixtures.
+   *
+   * Only relevant if {@link count} is greater than 1.
+   *
+   * Defaults to 0.
+   */
+  channelOffset?: number
 
   /**
    * The count of fixtures sharing the same channel.

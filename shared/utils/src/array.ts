@@ -36,9 +36,12 @@ export function arrayRange<T>(
   max: number,
   cb: (current: number) => T
 ): T[] {
-  const entries: T[] = []
+  const length = Math.floor(max - min + 1)
+  if (length <= 0) return []
+
+  const entries: T[] = new Array(length)
   for (let current = min; current <= max; current++) {
-    entries.push(cb(current))
+    entries[current - min] = cb(current)
   }
 
   return entries
@@ -48,9 +51,12 @@ export function arrayRange<T>(
  * Creates an array containing a range of numbers.
  */
 export function createRangeArray(min: number, max: number): number[] {
-  const arr: number[] = []
+  const length = Math.floor(max - min + 1)
+  if (length <= 0) return []
+
+  const arr: number[] = new Array(length)
   for (let i = min; i <= max; i++) {
-    arr.push(i)
+    arr[i - min] = i
   }
   return arr
 }

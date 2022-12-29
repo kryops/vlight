@@ -100,7 +100,7 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
             Ch {entry.channel}
             {maxChannel !== entry.channel ? ` - ${maxChannel}` : ''}
           </div>
-          {entry.count && entry.count > 2 && (
+          {entry.count && entry.count >= 2 && (
             <div className={smallInfo}>{entry.count}x</div>
           )}
           {fixtureTypeName && (
