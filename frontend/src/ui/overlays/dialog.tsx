@@ -33,9 +33,10 @@ export async function showDialogWithReturnValue<T>(
     close: (success: boolean) => void
   ) => ReactElement,
   buttons: ModalButton<any>[] = [buttonOk as ModalButton<any>],
-  additionalProps: Partial<ModalProps<T>> = {}
+  additionalProps: Partial<ModalProps<T> & { initialValue?: T }> = {}
 ): Promise<T | undefined> {
-  let value: T | undefined = undefined
+  const { initialValue, ...passThrough } = additionalProps
+  let value: T | undefined = initialValue
   let closeHandler: (value: any) => void
   const element = contentFactory(
     (newValue: T) => (value = newValue),
@@ -44,24 +45,37 @@ export async function showDialogWithReturnValue<T>(
   const result = await showDialog(
     element,
     buttons,
-    additionalProps,
+    passThrough,
     newCloseHandler => (closeHandler = newCloseHandler)
   )
   return result ? value : undefined
 }
 
+export interface PromptDialogResult {
+  value: string | undefined
+}
+
+interface PromptDialogArgs {
+  title?: string
+  label: string
+  initialValue?: string
+}
+
 /**
  * Shows a simple dialog that prompts for a string value.
  *
- * Returns the value on success, `undefined` if the dialog was canceled
- * or nothing was entered.
+ * Returns the value on success, `undefined` if the dialog was canceled.
  */
-export async function showPromptDialog(label: string, initialValue?: string) {
+export async function showPromptDialog({
+  title,
+  label,
+  initialValue,
+}: PromptDialogArgs): Promise<string | undefined> {
   const FormComponent = ({
     onChange,
     close,
   }: {
-    onChange: (newValue: string | undefined) => void
+    onChange: (newValue: PromptDialogResult) => void
     close: (success: boolean) => void
   }) => {
     const [value, setValue] = useState<string | undefined>(initialValue)
@@ -73,7 +87,7 @@ export async function showPromptDialog(label: string, initialValue?: string) {
             value={value}
             onChange={newValue => {
               setValue(newValue)
-              onChange(newValue)
+              onChange({ value: newValue })
             }}
             autoFocus
             onKeyDown={event => {
@@ -85,8 +99,13 @@ export async function showPromptDialog(label: string, initialValue?: string) {
     )
   }
 
-  return showDialogWithReturnValue<string | undefined>(
+  const result = await showDialogWithReturnValue<PromptDialogResult>(
     (onChange, close) => <FormComponent onChange={onChange} close={close} />,
-    okCancel
+    okCancel,
+    {
+      title,
+      initialValue: { value: initialValue },
+    }
   )
+  return result ? result.value ?? '' : undefined
 }

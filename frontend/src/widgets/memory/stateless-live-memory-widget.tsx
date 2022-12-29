@@ -10,8 +10,8 @@ import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { Button } from '../../ui/buttons/button'
-import { iconDelete } from '../../ui/icons'
-import { showDialog } from '../../ui/overlays/dialog'
+import { iconDelete, iconRename } from '../../ui/icons'
+import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
 import { yesNo } from '../../ui/overlays/buttons'
 
 import { MemoryPreview } from './memory-preview'
@@ -65,11 +65,26 @@ export const StatelessLiveMemoryWidget = memoInProduction(
         titleSide={
           <div className={controls}>
             <Button
+              icon={iconRename}
+              title="Rename"
+              transparent
+              onClick={async () => {
+                const name = await showPromptDialog({
+                  title: 'Rename Live Memory',
+                  label: 'Name',
+                  initialValue: state.name,
+                })
+                if (name) {
+                  setLiveMemoryState(id, { name }, true)
+                }
+              }}
+            />
+            <Button
               icon={iconDelete}
               title="Delete"
               transparent
               onClick={async () => {
-                if (await showDialog('Delete Live Memory?', yesNo)) {
+                if (await showDialog(`Delete Live Memory "${title}"?`, yesNo)) {
                   deleteLiveMemory(id)
                 }
               }}

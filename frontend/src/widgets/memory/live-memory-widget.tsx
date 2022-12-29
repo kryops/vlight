@@ -25,7 +25,7 @@ export const LiveMemoryWidget = memoInProduction(
       <StatelessLiveMemoryWidget
         id={id}
         state={liveMemoryState}
-        title={title}
+        title={title ?? liveMemoryState.name ?? `Live Memory ${id}`}
       />
     )
   }

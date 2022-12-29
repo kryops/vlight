@@ -232,7 +232,19 @@ export function WidgetInput({
             <Select
               entries={Object.keys(
                 apiState[widgetTypes[value.type].stateReference!] ?? {}
-              )}
+              ).map(id => {
+                const stateReference =
+                  apiState[widgetTypes[value.type].stateReference!]
+                return {
+                  value: id,
+                  label:
+                    typeof stateReference === 'object' &&
+                    (stateReference as any)[id] &&
+                    (stateReference as any)[id].name
+                      ? (stateReference as any)[id].name
+                      : id,
+                }
+              })}
               value={value.id}
               onChange={newValue =>
                 onChange({

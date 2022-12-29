@@ -11,6 +11,7 @@ import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
 import { StatelessLiveChaseWidget } from '../../widgets/chase/stateless-live-chase-widget'
+import { showPromptDialog } from '../../ui/overlays/dialog'
 
 const container = css`
   margin-top: ${baseline(4)};
@@ -54,14 +55,23 @@ export function LiveChases() {
             size={8}
             hoverable
             inline
-            onClick={() => {
+            onClick={async () => {
+              const name = await showPromptDialog({
+                title: 'Add Live Chase',
+                label: 'Name',
+              })
+              if (name === undefined) return
+
               const newId = String(
                 Math.max(
                   0,
                   ...Object.keys(liveChases).map(it => parseInt(it))
                 ) + 1
               )
-              setLiveChaseState(newId, getNewLiveChase())
+              setLiveChaseState(newId, {
+                ...getNewLiveChase(),
+                name: name || undefined,
+              })
             }}
           />
         }
@@ -72,7 +82,7 @@ export function LiveChases() {
         {Object.entries(liveChases).map(([id, liveChase]) => (
           <StatelessLiveChaseWidget
             key={id}
-            title={`Live Chase ${id}`}
+            title={liveChase.name ?? `Live Chase ${id}`}
             id={id}
             state={liveChase}
           />

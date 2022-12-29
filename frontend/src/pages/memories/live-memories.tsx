@@ -6,6 +6,7 @@ import { Header } from '../../ui/containers/header'
 import { pageWithWidgets } from '../../ui/css/page'
 import { iconAdd } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
+import { showPromptDialog } from '../../ui/overlays/dialog'
 import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
 import { StatelessLiveMemoryWidget } from '../../widgets/memory/stateless-live-memory-widget'
@@ -40,7 +41,13 @@ export function LiveMemories() {
             size={8}
             hoverable
             inline
-            onClick={() => {
+            onClick={async () => {
+              const name = await showPromptDialog({
+                title: 'Add Live Memory',
+                label: 'Name',
+              })
+              if (name === undefined) return
+
               const newId = String(
                 Math.max(
                   0,
@@ -52,6 +59,7 @@ export function LiveMemories() {
                 ...entityUiMapping.memories!.newEntityFactory!().scenes[0],
                 value: 255,
                 on: false,
+                name: name || undefined,
               })
             }}
           />
@@ -66,7 +74,7 @@ export function LiveMemories() {
         {Object.entries(liveMemories).map(([id, memory]) => (
           <StatelessLiveMemoryWidget
             key={id}
-            title={`Live Memory ${id}`}
+            title={memory.name ?? `Live Memory ${id}`}
             id={id}
             state={memory}
           />

@@ -20,6 +20,10 @@ export const LiveChaseWidget = ({ id, title }: LiveChaseWidgetProps) => {
   }
 
   return (
-    <StatelessLiveChaseWidget id={id} state={liveChaseState} title={title} />
+    <StatelessLiveChaseWidget
+      id={id}
+      state={liveChaseState}
+      title={title ?? liveChaseState.name ?? `Live Chase ${id}`}
+    />
   )
 }

@@ -39,6 +39,9 @@ export interface ChaseColorPreset extends DbEntity {
  * It is meant to be changed frequently throughout a live show.
  */
 export interface LiveChase {
+  /** The name of the chase. */
+  name?: string
+
   /**
    * Turns the chase on and off.
    *

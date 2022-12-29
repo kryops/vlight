@@ -48,6 +48,7 @@ import {
   mdiArrowExpandHorizontal,
   mdiPercent,
   mdiClockOutline,
+  mdiRename,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -59,6 +60,7 @@ export const iconOn = mdiPower
 export const iconBack = mdiChevronLeft
 export const iconDelete = mdiDelete
 export const iconAdd = mdiPlusCircle
+export const iconRename = mdiRename
 export const iconUp = mdiArrowUp
 export const iconDown = mdiArrowDown
 export const iconExpand = mdiChevronDown

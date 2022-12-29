@@ -82,6 +82,9 @@ export interface MemoryState {
  * It consists of a single scene that is directly displayed in the memory's widget.
  */
 export interface LiveMemory extends MemoryScene {
+  /** The name of the memory. */
+  name?: string
+
   /** Turns the memory on and off. */
   on: boolean
 

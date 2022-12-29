@@ -70,21 +70,11 @@ export const DynamicWidget = memoInProduction(
 
       case 'live-memory':
         return (
-          <LiveMemoryWidget
-            key={`live-memory${config.id}`}
-            id={config.id}
-            title={`Live Memory ${config.id}`}
-          />
+          <LiveMemoryWidget key={`live-memory${config.id}`} id={config.id} />
         )
 
       case 'live-chase':
-        return (
-          <LiveChaseWidget
-            key={`live-chase${config.id}`}
-            id={config.id}
-            title={`Live Chase ${config.id}`}
-          />
-        )
+        return <LiveChaseWidget key={`live-chase${config.id}`} id={config.id} />
 
       case 'map':
         return <MapWidget />

@@ -78,10 +78,11 @@ export function ChaseColorPresets({
             key={preset.id}
             onClick={async () => {
               if (editingPresets) {
-                const name = await showPromptDialog(
-                  'Rename Preset',
-                  preset.name
-                )
+                const name = await showPromptDialog({
+                  title: 'Rename Preset',
+                  label: 'Name',
+                  initialValue: preset.name,
+                })
                 if (!name) return
                 editEntity('chaseColorPresets', {
                   ...preset,
@@ -140,8 +141,12 @@ export function ChaseColorPresets({
           title="Save current state as preset"
           transparent
           onClick={async () => {
-            const name = await showPromptDialog('Save as Preset')
-            if (!name) return
+            const name = await showPromptDialog({
+              title: 'Save as Preset',
+              label: 'Name',
+            })
+            if (name === undefined) return
+
             editEntity('chaseColorPresets', {
               id: '',
               name,

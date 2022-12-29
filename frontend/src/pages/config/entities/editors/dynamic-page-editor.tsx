@@ -1,7 +1,10 @@
 import { css } from '@linaria/core'
 import {
+  Dictionary,
   DynamicPageCell,
   DynamicPageRow,
+  LiveChase,
+  LiveMemory,
   MasterDataMaps,
   WidgetConfig,
 } from '@vlight/types'
@@ -16,7 +19,7 @@ import { iconAdd, iconDelete, iconDown, iconUp } from '../../../../ui/icons'
 import { Icon } from '../../../../ui/icons/icon'
 import { baseline, primaryShade } from '../../../../ui/styles'
 import { TextInput } from '../../../../ui/forms/typed-input'
-import { useMasterDataMaps } from '../../../../hooks/api'
+import { useApiState, useMasterDataMaps } from '../../../../hooks/api'
 import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
 import { okCancel } from '../../../../ui/overlays/buttons'
 import { SortableList } from '../../../../ui/containers/sortable-list'
@@ -26,7 +29,9 @@ import { DynamicPageCellEditor } from './dynamic-page-cell-editor'
 
 function getWidgetDisplayString(
   widget: WidgetConfig,
-  masterDataMaps: MasterDataMaps
+  masterDataMaps: MasterDataMaps,
+  liveChases: Dictionary<LiveChase>,
+  liveMemories: Dictionary<LiveMemory>
 ) {
   const titlePrefix =
     'title' in widget && widget.title ? `${widget.title}: ` : ''
@@ -55,11 +60,15 @@ function getWidgetDisplayString(
         memories.get(widget.id)?.name ?? widget.id
       }`
 
-    case 'live-memory':
-      return `${titlePrefix}Live Memory ${widget.id}`
+    case 'live-memory': {
+      const name = liveMemories[widget.id]?.name ?? widget.id
+      return `${titlePrefix}Live Memory ${name}`
+    }
 
-    case 'live-chase':
-      return `${titlePrefix}Live Chase ${widget.id}`
+    case 'live-chase': {
+      const name = liveChases[widget.id]?.name ?? widget.id
+      return `${titlePrefix}Live Chase ${name}`
+    }
 
     case 'map':
       return `${titlePrefix}Map`
@@ -110,6 +119,8 @@ export function DynamicPageEditor({
   const formState = useFormState(entry, { onChange })
   const rows = useFormStateArray(formState, 'rows')
   const masterDataMaps = useMasterDataMaps()
+  const liveChases = useApiState('liveChases')
+  const liveMemories = useApiState('liveMemories')
 
   function changeRowProperty<TKey extends keyof DynamicPageRow>(
     row: DynamicPageRow,
@@ -214,7 +225,12 @@ export function DynamicPageEditor({
                 </div>
                 {cell.widgets.map((widget, widgetIndex) => (
                   <p key={widgetIndex} className={paragraph}>
-                    {getWidgetDisplayString(widget, masterDataMaps)}
+                    {getWidgetDisplayString(
+                      widget,
+                      masterDataMaps,
+                      liveChases,
+                      liveMemories
+                    )}
                   </p>
                 ))}
                 {cell.widgets.length === 0 && (

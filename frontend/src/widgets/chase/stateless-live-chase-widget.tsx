@@ -19,6 +19,7 @@ import {
   iconMultiple,
   iconOk,
   iconPercentage,
+  iconRename,
   iconSingle,
   iconSlow,
   iconSpeedBurst,
@@ -35,7 +36,7 @@ import {
   successShade,
 } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
-import { showDialog } from '../../ui/overlays/dialog'
+import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
 import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { Button } from '../../ui/buttons/button'
@@ -456,11 +457,26 @@ export const StatelessLiveChaseWidget = memoInProduction(
               onClick={() => update({ single: !state.single })}
             />
             <Button
+              icon={iconRename}
+              title="Rename"
+              transparent
+              onClick={async () => {
+                const name = await showPromptDialog({
+                  title: 'Rename Live Chase',
+                  label: 'Name',
+                  initialValue: state.name,
+                })
+                if (name) {
+                  update({ name })
+                }
+              }}
+            />
+            <Button
               icon={iconDelete}
               title="Delete"
               transparent
               onClick={async () => {
-                if (await showDialog('Delete Live Chase?', yesNo)) {
+                if (await showDialog(`Delete Live Chase "${title}"?`, yesNo)) {
                   deleteLiveChase(id)
                 }
               }}
