@@ -11,7 +11,7 @@ module.exports = function (api) {
         {
           modules: isTest ? 'commonjs' : false,
           useBuiltIns: 'entry',
-          corejs: '3.21',
+          corejs: '3.27',
         },
       ],
       [
@@ -30,12 +30,6 @@ module.exports = function (api) {
           useESModules: !isTest,
         },
       ],
-
-      // stage-3
-      '@babel/plugin-syntax-dynamic-import',
-      ['@babel/plugin-proposal-class-properties', { loose: false }],
-      '@babel/plugin-proposal-optional-chaining',
-      '@babel/plugin-proposal-nullish-coalescing-operator',
 
       // optimization
       '@babel/plugin-transform-react-constant-elements',
