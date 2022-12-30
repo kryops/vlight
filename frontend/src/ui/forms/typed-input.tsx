@@ -40,7 +40,13 @@ export function NumberInput({ value, onChange, ...rest }: NumberInputProps) {
       type="number"
       value={String(internalValue ?? '')}
       onChange={newValue => {
-        const numberValue = newValue === '' ? undefined : parseFloat(newValue)
+        const rawNumberValue =
+          newValue === '' ? undefined : parseFloat(newValue)
+        const numberValue =
+          rest.step && Number(rest.step) === 1
+            ? rawNumberValue && Math.floor(rawNumberValue)
+            : rawNumberValue
+
         setInternalValue(numberValue)
         onChange(numberValue)
       }}
