@@ -31,6 +31,7 @@ Controls
 - 🎞 Live Chases
 - 🗺 Map Overview
 - ✨ Universe Overview
+- 🌎 Global Master / Blackout
 
 Inputs
 

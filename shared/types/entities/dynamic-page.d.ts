@@ -74,6 +74,13 @@ export interface MapWidgetConfig {
 }
 
 /**
+ * Widget to display the DMX master and blackout controls.
+ */
+export interface DmxMasterWidgetConfig {
+  type: 'dmx-master'
+}
+
+/**
  * Configuration for a widget to be displayed on a dynamic page.
  */
 export type WidgetConfig =
@@ -85,6 +92,7 @@ export type WidgetConfig =
   | LiveMemoryWidgetConfig
   | MapWidgetConfig
   | LiveChaseWidgetConfig
+  | DmxMasterWidgetConfig
 
 /** A cell of a {@link DynamicPageRow}. */
 export interface DynamicPageCell {

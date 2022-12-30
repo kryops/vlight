@@ -62,6 +62,7 @@ const button_transparent = css`
 const buttonBlock = css`
   display: block;
   width: 100%;
+  box-sizing: border-box;
   margin: ${baseline()} 0;
 `
 

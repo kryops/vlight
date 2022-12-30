@@ -6,12 +6,11 @@ import {
   recomputeAndBroadcastDmxChannel,
 } from './computing'
 import { dmxUniverse } from './state'
-
 /**
  * Exported as function instead of the variable directly
- * so we can add blackout/swop features later
+ * so we can add swop features later
  */
-export function getDmxUniverse(): Buffer {
+export function getDmxUniverse() {
   return dmxUniverse
 }
 
@@ -38,7 +37,7 @@ export {
   setUniverseState,
   isUniverseEmpty,
 } from './universe-functions'
-export { setUniverseChannel } from './computing'
+export { setUniverseChannel, getDmxMaster } from './computing'
 export { fadeUniverse, stopFading } from './fading'
 
 export type { Universe, UniverseState } from './types'

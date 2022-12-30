@@ -17,6 +17,7 @@ import {
   ApiLiveMemoryMessage,
   ApiLiveChaseMessage,
   LiveChase,
+  ApiDmxMasterMessage,
 } from '@vlight/types'
 
 export function getApiChannelMessage(
@@ -143,5 +144,12 @@ export function getApiLiveChaseStepMessage(
     state: liveChase,
     merge: true,
     step: true,
+  }
+}
+
+export function getApiDmxMasterMessage(value: number): ApiDmxMasterMessage {
+  return {
+    type: 'dmx-master',
+    value,
   }
 }

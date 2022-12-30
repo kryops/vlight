@@ -8,8 +8,9 @@ export type Universe = Buffer
  */
 export interface UniverseState {
   /**
+   * The universe's master value.
    *
-   * Defaults to 1.
+   * Defaults to 255.
    */
   masterValue?: number
 

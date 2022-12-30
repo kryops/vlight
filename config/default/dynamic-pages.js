@@ -28,6 +28,9 @@ const dynamicPages = [
               {
                 type: 'map',
               },
+              {
+                type: 'dmx-master',
+              },
             ],
           },
         ],

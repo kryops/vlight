@@ -24,6 +24,7 @@ import {
   getApiLiveMemoryMessage,
   getApiLiveChaseMessage,
   getApiLiveChaseStepMessage,
+  getApiDmxMasterMessage,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
 
@@ -176,6 +177,13 @@ export function setEntities<T extends EntityName>(
  */
 export function resetState(): void {
   sendApiMessage(getResetStateMessage())
+}
+
+/**
+ * Changes the DMX master value.
+ */
+export function setDmxMaster(value: number): void {
+  sendApiMessage(getApiDmxMasterMessage(value))
 }
 
 /**

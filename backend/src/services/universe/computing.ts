@@ -1,13 +1,21 @@
 import { ChannelType, channelMappingsAffectedByMaster } from '@vlight/controls'
+import { ApiDmxMasterMessage } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'
 
 import { broadcastUniverseChannelToDevices } from '../../devices'
 import { broadcastUniverseChannelToApiClients } from '../api'
+import { registerApiMessageHandler } from '../api/registry'
 import { masterData, masterDataMaps } from '../masterdata'
+import { getPersistedState } from '../state'
 
-import { universeStates, dmxUniverse, universes } from './state'
+import { universeStates, rawDmxUniverse, universes, dmxUniverse } from './state'
 import { Universe } from './types'
-import { getUniverseIndex, assertValidChannel } from './utils'
+import {
+  getUniverseIndex,
+  assertValidChannel,
+  getChannelFromUniverseIndex,
+  applyMasterValue,
+} from './utils'
 
 /**
  * A list of channels for each master channel that are affected by it.
@@ -27,6 +35,50 @@ const masterChannelByChannel = new Map<number, number>()
  */
 const fadedChannels = new Set<number>()
 
+/** Global DMX master value. */
+let dmxMaster = 255
+
+export function getDmxMaster() {
+  return dmxMaster
+}
+
+/**
+ * Applies the DMX master value to the given channel.
+ *
+ * @returns whether the final outgoing DMX value was changed.
+ */
+function applyDmxMaster(channel: number): boolean {
+  const universeIndex = getUniverseIndex(channel)
+  const rawValue = rawDmxUniverse[universeIndex]
+  const newValue = fadedChannels.has(channel)
+    ? applyMasterValue(rawValue, dmxMaster)
+    : rawValue
+
+  const currentValue = dmxUniverse[universeIndex]
+  if (currentValue === newValue) return false
+
+  dmxUniverse[universeIndex] = newValue
+  return true
+}
+
+function handleDmxMasterApiMessage(message: ApiDmxMasterMessage): boolean {
+  const { value } = message
+  if (dmxMaster === value) return false
+
+  dmxMaster = value
+
+  rawDmxUniverse.forEach((value, index) => {
+    if (value === 0) return
+    const channel = getChannelFromUniverseIndex(index)
+
+    if (applyDmxMaster(channel)) {
+      broadcastUniverseChannel(channel)
+    }
+  })
+
+  return true
+}
+
 /**
  * Initializes caches for the relationships of DMX channels with regard to their
  * fixture's master channel in order to speed up universe computations.
@@ -35,6 +87,7 @@ export function initUniverseComputingData(): void {
   affectedChannelsByMasterChannel.clear()
   masterChannelByChannel.clear()
   fadedChannels.clear()
+  dmxMaster = getPersistedState().dmxMaster
 
   for (const fixture of masterData.fixtures) {
     const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
@@ -71,6 +124,8 @@ export function initUniverseComputingData(): void {
       masterChannelByChannel.set(channel, masterChannel)
     )
   }
+
+  registerApiMessageHandler('dmx-master', handleDmxMasterApiMessage)
 }
 
 /**
@@ -110,7 +165,8 @@ export function getFinalChannelValue(
   // in a different universe and reduce the channel's value accordingly
   const affectingMasterChannel = masterChannelByChannel.get(channel)
   if (affectingMasterChannel && !universeForceMaster) {
-    const highestMaster = dmxUniverse[getUniverseIndex(affectingMasterChannel)]
+    const highestMaster =
+      rawDmxUniverse[getUniverseIndex(affectingMasterChannel)]
     const sameUniverseMaster = getFinalChannelValue(
       universe,
       affectingMasterChannel
@@ -182,7 +238,7 @@ function computeDmxChannelChange(
   }
 
   const index = getUniverseIndex(channel)
-  const currentDmxValue = dmxUniverse[index]
+  const currentDmxValue = rawDmxUniverse[index]
 
   // If the new value is identical to the current outgoing DMX value, it cannot change
   if (finalNewUniverseValue === currentDmxValue) {
@@ -200,8 +256,8 @@ function computeDmxChannelChange(
 
   // If the new value is higher than the current outgoing value, it is the new outgoing value
   if (finalNewUniverseValue > currentDmxValue) {
-    dmxUniverse[index] = finalNewUniverseValue
-    return true
+    rawDmxUniverse[index] = finalNewUniverseValue
+    return applyDmxMaster(channel)
   }
 
   // Now, the only thing we can do is to iterate over all universes and find the highest value
@@ -224,8 +280,8 @@ function computeDmxChannelChange(
     return false
   }
 
-  dmxUniverse[index] = newDmxValue
-  return true
+  rawDmxUniverse[index] = newDmxValue
+  return applyDmxMaster(channel)
 }
 
 /**
@@ -274,7 +330,7 @@ export function computeAndBroadcastDmxChannelChange(
  */
 function recomputeDmxChannel(channel: number): boolean {
   const index = getUniverseIndex(channel)
-  const oldValue = dmxUniverse[index]
+  const oldValue = rawDmxUniverse[index]
   let newValue = 0
 
   for (const universe of universes) {
@@ -285,8 +341,8 @@ function recomputeDmxChannel(channel: number): boolean {
   }
 
   if (oldValue !== newValue) {
-    dmxUniverse[index] = newValue
-    return true
+    rawDmxUniverse[index] = newValue
+    return applyDmxMaster(channel)
   }
   return false
 }

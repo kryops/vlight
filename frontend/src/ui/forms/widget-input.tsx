@@ -87,6 +87,12 @@ export const widgetTypes: { [type in WidgetType]: WidgetMapping<type> } = {
       type: 'map',
     }),
   },
+  'dmx-master': {
+    name: 'DMX Master',
+    defaultValueFactory: () => ({
+      type: 'dmx-master',
+    }),
+  },
 }
 
 const typeSelectEntries: SelectEntry<WidgetType>[] = Object.entries(

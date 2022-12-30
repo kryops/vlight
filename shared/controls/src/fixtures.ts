@@ -143,15 +143,17 @@ export function mapFixtureStateToChannels(
       return 0
     }
 
-    if (channelType === ChannelType.Master) masterChannelValue
+    if (channelType === ChannelType.Master) return masterChannelValue
 
     const rawValue = state.channels[channelType] ?? 0
 
-    if (hasMasterChannel) return rawValue
+    if (hasMasterChannel || !channelMappingsAffectedByMaster.has(channelType))
+      return rawValue
 
-    return channelMappingsAffectedByMaster.has(channelType)
-      ? Math.round((rawValue * masterChannelValue) / 255)
-      : rawValue
+    if (masterChannelValue === 255) return rawValue
+    if (masterChannelValue === 0 || rawValue === 0) return 0
+
+    return Math.round((masterChannelValue / 255) * rawValue)
   })
 }
 

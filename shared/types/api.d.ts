@@ -110,6 +110,16 @@ export interface ApiLiveChaseMessage {
   merge?: boolean
 }
 
+/** Change the DMX master value. */
+export interface ApiDmxMasterMessage {
+  type: 'dmx-master'
+
+  /**
+   * DMX master value from 0-255.
+   */
+  value: number
+}
+
 // Incoming messages
 
 /** Overwrite the master data entities of a certain type. */
@@ -158,6 +168,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiUpdateEntityMessage<T>
   | ApiRemoveEntityMessage<T>
   | ApiResetStateMessage
+  | ApiDmxMasterMessage
 
 // Outgoing messages
 
@@ -194,6 +205,9 @@ export interface ApiStateMessage {
 
   /** Dictionary of all live chase control states. */
   liveChases: Dictionary<LiveChase>
+
+  /** Global DMX master value. */
+  dmxMaster: number
 }
 
 /**
@@ -238,3 +252,4 @@ export type ApiOutMessage =
   | ApiMemoryStateMessage
   | ApiLiveMemoryMessage
   | ApiLiveChaseMessage
+  | ApiDmxMasterMessage

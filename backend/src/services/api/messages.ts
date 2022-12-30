@@ -1,7 +1,7 @@
 import { ApiStateMessage } from '@vlight/types'
 import { mapToDictionary } from '@vlight/utils'
 
-import { getDmxUniverse } from '../universe'
+import { getDmxMaster, getDmxUniverse } from '../universe'
 import { channelUniverse } from '../../controls/channels'
 import { fixtureStates } from '../../controls/fixtures'
 import { fixtureGroupStates } from '../../controls/fixture-groups'
@@ -25,5 +25,6 @@ export function getFullState(): ApiStateMessage {
     memories: mapToDictionary(memoryStates),
     liveMemories: mapToDictionary(liveMemories),
     liveChases: mapToDictionary(liveChases),
+    dmxMaster: getDmxMaster(),
   })
 }

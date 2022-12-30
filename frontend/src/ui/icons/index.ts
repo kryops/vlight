@@ -50,6 +50,7 @@ import {
   mdiClockOutline,
   mdiRename,
   mdiImageSync,
+  mdiEarth,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -89,6 +90,7 @@ export const iconTime = mdiClockOutline
 export const iconCheckbox = mdiCheckboxBlankOutline
 export const iconCheckbox_checked = mdiCheckboxOutline
 
+export const iconGlobal = mdiEarth
 export const iconMap = mdiMap
 export const iconUniverse = mdiStarFourPoints
 export const iconFader = mdiTuneVertical

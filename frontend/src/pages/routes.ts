@@ -1,5 +1,6 @@
 import { EntityName } from '@vlight/types'
 
+export const globalPageRoute = '/global'
 export const channelsPageRoute = '/channels'
 export const fixturesPageRoute = '/fixtures'
 export const fixtureGroupsPageRoute = '/fixture-groups'

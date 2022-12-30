@@ -22,3 +22,16 @@ export function assertValidChannel(channel: number): void {
     throw new Error(`invalid channel: ${channel}`)
   }
 }
+
+/**
+ * Applies the given master value to the given raw value.
+ */
+export function applyMasterValue(
+  rawValue: number,
+  masterValue: number
+): number {
+  if (masterValue === 255) return rawValue
+  if (masterValue === 0 || rawValue === 0) return 0
+
+  return Math.round((masterValue / 255) * rawValue)
+}

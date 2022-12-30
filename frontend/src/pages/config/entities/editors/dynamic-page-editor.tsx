@@ -73,6 +73,9 @@ function getWidgetDisplayString(
     case 'map':
       return `${titlePrefix}Map`
 
+    case 'dmx-master':
+      return `${titlePrefix}DMX Master`
+
     default:
       assertNever(widget)
   }

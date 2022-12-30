@@ -65,6 +65,7 @@ describe('api/protocol', () => {
         memories,
         liveMemories,
         liveChases,
+        dmxMaster: 255,
       })
     ).toEqual({
       type: 'state',
@@ -77,6 +78,7 @@ describe('api/protocol', () => {
       memories,
       liveMemories,
       liveChases,
+      dmxMaster: 255,
     })
   })
 

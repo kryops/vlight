@@ -26,6 +26,7 @@ import {
 } from './config'
 import { broadcastApplicationStateToApiClients } from './api'
 import { registerApiMessageHandler } from './api/registry'
+import { getDmxMaster } from './universe/computing'
 
 /** The state that is persisted to disk. */
 export interface PersistedState {
@@ -35,6 +36,7 @@ export interface PersistedState {
   memories: Dictionary<MemoryState>
   liveMemories: Dictionary<LiveMemory>
   liveChases: Dictionary<LiveChase>
+  dmxMaster: number
 }
 
 const stateConfigFileName = 'state'
@@ -47,6 +49,7 @@ function getEmptyPersistedState(): PersistedState {
     memories: {},
     liveMemories: {},
     liveChases: {},
+    dmxMaster: 255,
   }
 }
 
@@ -77,6 +80,7 @@ function getCurrentState(): PersistedState {
     memories: mapToDictionary(memoryStates, isNotInitialState),
     liveMemories: mapToDictionary(liveMemories),
     liveChases: mapToDictionary(liveChases),
+    dmxMaster: getDmxMaster(),
   }
 }
 

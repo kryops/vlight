@@ -9,6 +9,7 @@ import { settingsPageEntry } from './config/settings'
 import { entitiesPageEntry } from './config/entities'
 import { mapPageNavItem } from './map'
 import { NavItemEntry, RouteEntry } from './types'
+import { globalPageNavItem } from './global'
 
 /**
  * The content of the main navigation.
@@ -16,6 +17,7 @@ import { NavItemEntry, RouteEntry } from './types'
 export const mainNavigationItems: NavItemEntry[] = [
   mapPageNavItem,
   universePageNavItem,
+  globalPageNavItem,
   channelsPageNavItem,
   fixturesPageNavItem,
   fixtureGroupsPageNavItem,

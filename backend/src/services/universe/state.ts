@@ -2,7 +2,12 @@ import { Universe, UniverseState } from './types'
 import { createUniverse } from './universe-functions'
 
 /**
- * The outgoing DMX universe.
+ * The raw outgoing DMX universe (global DMX master not applied).
+ */
+export const rawDmxUniverse = createUniverse()
+
+/**
+ * The outgoing DMX universe (global DMX master applied).
  */
 export const dmxUniverse = createUniverse()
 

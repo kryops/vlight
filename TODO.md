@@ -3,8 +3,6 @@
 ## Roadmap
 
 - Universe features
-  - Global blackout
-  - Global master
   - All on
   - Swop (single chase active, rest blackout)
   - Complete fixture override/reservation (e.g. when controlled by a chase)
