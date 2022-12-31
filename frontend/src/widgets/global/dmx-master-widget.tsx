@@ -5,6 +5,7 @@ import { useApiState } from '../../hooks/api'
 import { Button } from '../../ui/buttons/button'
 import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
+import { iconGlobal } from '../../ui/icons'
 import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 
@@ -16,7 +17,7 @@ export const DmxMasterWidget = memoInProduction(() => {
   const dmxMaster = useApiState('dmxMaster')
 
   return (
-    <Widget title="DMX Master">
+    <Widget title="DMX Master" icon={iconGlobal}>
       <Fader max={255} step={1} value={dmxMaster} onChange={setDmxMaster} />
       <div className={buttonContainer}>
         <Button block onDown={() => setDmxMaster(255)}>
