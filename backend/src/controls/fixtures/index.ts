@@ -28,6 +28,14 @@ let fixtureUniverse: Universe
 /** A map containing the states of all fixture controls. */
 export const fixtureStates: Map<IdType, FixtureState> = new Map()
 
+function isAnyFixtureOn() {
+  for (const fixtureState of fixtureStates.values()) {
+    if (fixtureState.on) return true
+  }
+
+  return false
+}
+
 /**
  * Sets the given state to the outgoing fixture DMX universe.
  *
@@ -60,6 +68,12 @@ function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
     fixtureStates.set(id, state)
     setFixtureStateToUniverse(fixture, state)
   })
+
+  if (isAnyFixtureOn()) {
+    addUniverse(fixtureUniverse)
+  } else {
+    removeUniverse(fixtureUniverse)
+  }
 }
 
 function setFixtureState(
@@ -82,7 +96,15 @@ function setFixtureState(
   )
 
   fixtureStates.set(id, newState)
-  return setFixtureStateToUniverse(fixture, newState)
+  const changed = setFixtureStateToUniverse(fixture, newState)
+
+  if (state.on) {
+    addUniverse(fixtureUniverse)
+  } else if (state.on === false && !isAnyFixtureOn()) {
+    removeUniverse(fixtureUniverse)
+  }
+
+  return changed
 }
 
 function handleApiMessage(message: ApiFixtureStateMessage) {
@@ -102,7 +124,6 @@ function reload(reloadState?: boolean) {
       ? dictionaryToMap(getPersistedState().fixtures)
       : oldFixtureStates
   )
-  addUniverse(fixtureUniverse)
 }
 
 export function init(): void {
@@ -111,8 +132,6 @@ export function init(): void {
 
   const persistedState = dictionaryToMap(getPersistedState().fixtures)
   setFixtureStatesFrom(persistedState)
-
-  addUniverse(fixtureUniverse)
 
   controlRegistry.register({ reload })
   registerApiMessageHandler('fixture', handleApiMessage)
