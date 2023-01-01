@@ -34,10 +34,11 @@ export {
   addUniverse,
   removeUniverse,
   overwriteUniverse,
+  setUniverseChannel,
   setUniverseState,
   isUniverseEmpty,
 } from './universe-functions'
-export { setUniverseChannel, getDmxMaster } from './computing'
+export { getDmxMaster } from './computing'
 export { fadeUniverse, stopFading } from './fading'
 
 export type { Universe, UniverseState } from './types'

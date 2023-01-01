@@ -8,11 +8,14 @@ import {
   computeAndBroadcastDmxChannelChange,
   computeUniverseChannelRawValueChange,
   getFinalChannelValue,
-  setUniverseChannel,
 } from './computing'
 import { universes, universeStates } from './state'
 import { Universe, UniverseState } from './types'
-import { getUniverseIndex, getChannelFromUniverseIndex } from './utils'
+import {
+  getUniverseIndex,
+  getChannelFromUniverseIndex,
+  writeUniverseChannel,
+} from './utils'
 
 /**
  * Creates a DMX universe, optionally filling it with the values of the given fixture states.
@@ -42,6 +45,33 @@ export function createUniverse(
 }
 
 /**
+ * Sets the DMX value of the given channel in the given universe.
+ *
+ * Triggers a recomputation of the channel itself and all affected channels.
+ */
+export function setUniverseChannel(
+  universe: Universe,
+  channel: number,
+  value: number
+): boolean {
+  const index = getUniverseIndex(channel)
+  const oldValue = universe[index]
+  if (!writeUniverseChannel(universe, channel, value)) return false
+
+  if (!universes.has(universe)) return true
+
+  computeUniverseChannelRawValueChange({
+    universe,
+    channel,
+    newValue: value,
+    oldValue,
+    skipAffectedChannels: universes.size === 1,
+  })
+
+  return true
+}
+
+/**
  * Adds the given universe to the list of active universes.
  *
  * Recomputes the outgoing DMX universe accordingly.
@@ -55,14 +85,17 @@ export function addUniverse(universe: Universe, state?: UniverseState): void {
   universes.add(universe)
   if (state) universeStates.set(universe, state)
 
+  const skipAffectedChannels = universes.size === 1
+
   universe.forEach((value, index) => {
     if (value !== 0)
-      computeUniverseChannelRawValueChange(
+      computeUniverseChannelRawValueChange({
         universe,
-        getChannelFromUniverseIndex(index),
-        value,
-        0
-      )
+        channel: getChannelFromUniverseIndex(index),
+        newValue: value,
+        oldValue: 0,
+        skipAffectedChannels,
+      })
   })
 }
 
@@ -77,14 +110,17 @@ export function removeUniverse(universe: Universe): void {
   universes.delete(universe)
   universeStates.delete(universe)
 
+  const skipAffectedChannels = universes.size === 0
+
   universe.forEach((value, index) => {
     if (value !== 0)
-      computeUniverseChannelRawValueChange(
+      computeUniverseChannelRawValueChange({
         universe,
-        getChannelFromUniverseIndex(index),
-        0,
-        value
-      )
+        channel: getChannelFromUniverseIndex(index),
+        newValue: 0,
+        oldValue: value,
+        skipAffectedChannels,
+      })
   })
 }
 
@@ -99,12 +135,10 @@ export function overwriteUniverse(
 ): boolean {
   let changed = false
 
-  universe1.forEach((value, index) => {
+  universe1.forEach((_, index) => {
     const channel = getChannelFromUniverseIndex(index)
-    const newValue = universe2[index]
 
-    if (newValue !== value) {
-      setUniverseChannel(universe1, channel, newValue)
+    if (setUniverseChannel(universe1, channel, universe2[index])) {
       changed = true
     }
   })
@@ -144,14 +178,17 @@ export function setUniverseState(
   universeStates.set(universe, { ...oldState, ...state })
 
   if (masterValueChanged) {
+    const skipAffectedChannels = universes.size === 1
+
     universe.forEach((value, index) => {
       if (value !== 0) {
         const channel = getChannelFromUniverseIndex(index)
-        computeAndBroadcastDmxChannelChange(
+        computeAndBroadcastDmxChannelChange({
           channel,
-          getFinalChannelValue(universe, channel, value),
-          oldFinalChannelValues.get(channel)!
-        )
+          newValue: getFinalChannelValue(universe, channel, value),
+          oldValue: oldFinalChannelValues.get(channel)!,
+          skipAffectedChannels,
+        })
       }
     })
   }

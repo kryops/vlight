@@ -1,11 +1,11 @@
 import { logger } from '@vlight/utils'
 
-import { setUniverseChannel } from './computing'
 import { Universe } from './types'
 import {
   cloneUniverse,
   getDifferentChannels,
   overwriteUniverse,
+  setUniverseChannel,
 } from './universe-functions'
 import { getUniverseIndex } from './utils'
 

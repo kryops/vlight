@@ -12,9 +12,9 @@ import { universeStates, rawDmxUniverse, universes, dmxUniverse } from './state'
 import { Universe } from './types'
 import {
   getUniverseIndex,
-  assertValidChannel,
   getChannelFromUniverseIndex,
   applyMasterValue,
+  writeUniverseChannel,
 } from './utils'
 
 /**
@@ -54,11 +54,37 @@ function applyDmxMaster(channel: number): boolean {
     ? applyMasterValue(rawValue, dmxMaster)
     : rawValue
 
-  const currentValue = dmxUniverse[universeIndex]
-  if (currentValue === newValue) return false
+  return writeUniverseChannel(dmxUniverse, channel, newValue)
+}
 
-  dmxUniverse[universeIndex] = newValue
-  return true
+/**
+ * Broadcasts the given channel to all
+ * - DMX devices
+ * - API clients
+ */
+function broadcastUniverseChannel(channel: number) {
+  broadcastUniverseChannelToDevices(
+    channel,
+    dmxUniverse[getUniverseIndex(channel)]
+  )
+  broadcastUniverseChannelToApiClients(channel)
+}
+
+/**
+ * Applies the given value to the raw (non-faded) DMX universe
+ * and broadcasts the channel to API clients and devices if the final outgoing
+ * DMX universe changed.
+ *
+ * @returns whether the final outgoing DMX universe changed.
+ */
+function setRawDmxValue(channel: number, value: number): boolean {
+  if (!writeUniverseChannel(rawDmxUniverse, channel, value)) return false
+
+  const changedDmx = applyDmxMaster(channel)
+  if (changedDmx) {
+    broadcastUniverseChannel(channel)
+  }
+  return changedDmx
 }
 
 function handleDmxMasterApiMessage(message: ApiDmxMasterMessage): boolean {
@@ -149,81 +175,69 @@ export function getFinalChannelValue(
   let factor = 1
 
   // Apply the universe's master value first, which is necessary for the affecting master channel later
-  const universeMasterChannelValue = universeStates.get(universe)?.masterValue
-  const universeForceMaster = universeStates.get(universe)?.forceMaster
+  const universeState = universeStates.get(universe)
+  const universeMasterChannelValue = universeState?.masterValue
+  const universeForceMaster = universeState?.forceMaster
 
   if (
     universeMasterChannelValue !== undefined &&
     universeMasterChannelValue !== 255 &&
     (fadedChannels.has(channel) || universeForceMaster)
   ) {
+    if (universeMasterChannelValue === 0) return 0
     factor *= universeMasterChannelValue / 255
   }
-  if (factor === 0) return 0
 
   // If the channel is affected by the fixture's master channel, we check if the master channel is set higher
   // in a different universe and reduce the channel's value accordingly
-  const affectingMasterChannel = masterChannelByChannel.get(channel)
-  if (affectingMasterChannel && !universeForceMaster) {
-    const highestMaster =
-      rawDmxUniverse[getUniverseIndex(affectingMasterChannel)]
-    const sameUniverseMaster = getFinalChannelValue(
-      universe,
-      affectingMasterChannel
-    )
-    if (sameUniverseMaster < highestMaster) {
-      factor *= sameUniverseMaster / highestMaster
+  if (universes.size > 1) {
+    const affectingMasterChannel = masterChannelByChannel.get(channel)
+    if (affectingMasterChannel && !universeForceMaster) {
+      const highestMaster =
+        rawDmxUniverse[getUniverseIndex(affectingMasterChannel)]
+      const sameUniverseMaster = getFinalChannelValue(
+        universe,
+        affectingMasterChannel
+      )
+      if (sameUniverseMaster < highestMaster) {
+        factor *= sameUniverseMaster / highestMaster
+      }
     }
+    if (factor === 0) return 0
   }
-  if (factor === 0) return 0
 
   return factor === 1 ? value : Math.round(value * factor)
 }
 
 /**
- * Broadcasts the given channel to all
- * - DMX devices
- * - API clients
- */
-function broadcastUniverseChannel(channel: number) {
-  broadcastUniverseChannelToDevices(
-    channel,
-    dmxUniverse[getUniverseIndex(channel)]
-  )
-  broadcastUniverseChannelToApiClients(channel)
-}
-
-/**
- * Sets the DMX value of the given channel in the given universe.
+ * Recomputes the outgoing DMX value for the given channel by iterating over all
+ * universes and finding the highest value.
  *
- * Triggers a recomputation of the channel itself and all affected channels.
+ * Broadcasts the channel to all devices and API clients if changed.
+ *
+ * Returns whether the outgoing value was changed.
+ *
+ * To react to channel changes, use {@link computeAndBroadcastDmxChannelChange} instead.
  */
-export function setUniverseChannel(
-  universe: Universe,
-  channel: number,
-  value: number
-): boolean {
-  assertValidChannel(channel)
-  const index = getUniverseIndex(channel)
-  const oldValue = universe[index]
+export function recomputeAndBroadcastDmxChannel(channel: number): boolean {
+  let newValue = 0
 
-  if (oldValue === value) {
-    return false
+  for (const universe of universes) {
+    const value = getFinalChannelValue(universe, channel)
+    if (value > newValue) newValue = value
+
+    if (value === 255) break
   }
 
-  universe[index] = value
-
-  if (!universes.has(universe)) return true
-
-  computeUniverseChannelRawValueChange(universe, channel, value, oldValue)
-
-  return true
+  return setRawDmxValue(channel, newValue)
 }
 
 /**
  * Recomputes the final outgoing DMX value of the given channel after a value change.
  *
  * Takes many shortcuts if it can determine that the outgoing DMX value will not change.
+ *
+ * Broadcasts the channel to all devices and API clients if changed.
  *
  * Returns whether anything was actually changed.
  */
@@ -256,32 +270,21 @@ function computeDmxChannelChange(
 
   // If the new value is higher than the current outgoing value, it is the new outgoing value
   if (finalNewUniverseValue > currentDmxValue) {
-    rawDmxUniverse[index] = finalNewUniverseValue
-    return applyDmxMaster(channel)
+    return setRawDmxValue(channel, finalNewUniverseValue)
   }
 
-  // Now, the only thing we can do is to iterate over all universes and find the highest value
+  // Now, the only thing we can do is to iterate over all universes and find the highest value.
+  // We cannot take a shortcut here if there is only a single universe active, as this function
+  // is also called after removing a universe.
 
-  let newDmxValue = finalNewUniverseValue
+  return recomputeAndBroadcastDmxChannel(channel)
+}
 
-  for (const universe of universes) {
-    const universeValue = getFinalChannelValue(universe, channel)
-    // If any universe is set to 255, the overall value cannot change.
-    // value can't be 255 here, as that would have been >= currentValue
-    if (universeValue === 255) {
-      return false
-    }
-    if (universeValue > newDmxValue) {
-      newDmxValue = universeValue
-    }
-  }
-
-  if (newDmxValue === currentDmxValue) {
-    return false
-  }
-
-  rawDmxUniverse[index] = newDmxValue
-  return applyDmxMaster(channel)
+export interface ComputeAndBroadcastDmxChannelChangeArgs {
+  channel: number
+  newValue: number
+  oldValue: number
+  skipAffectedChannels?: boolean
 }
 
 /**
@@ -293,70 +296,30 @@ function computeDmxChannelChange(
  * Takes the final new and old values as arguments; for the raw universe values,
  * use {@link computeUniverseChannelRawValueChange} instead.
  */
-export function computeAndBroadcastDmxChannelChange(
-  channel: number,
-  finalNewUniverseValue: number,
-  finalOldUniverseValue: number
-): boolean {
-  const changedDmx = computeDmxChannelChange(
-    channel,
-    finalNewUniverseValue,
-    finalOldUniverseValue
-  )
-
-  if (changedDmx) {
-    broadcastUniverseChannel(channel)
-  }
+export function computeAndBroadcastDmxChannelChange({
+  channel,
+  newValue,
+  oldValue,
+  skipAffectedChannels = false,
+}: ComputeAndBroadcastDmxChannelChangeArgs): boolean {
+  const changedDmx = computeDmxChannelChange(channel, newValue, oldValue)
 
   // We need to recompute all affected channels even if the outgoing DMX value did not change
-  // as it might affect their multiplying factors
-  affectedChannelsByMasterChannel
-    .get(channel)
-    ?.forEach(affectedChannel =>
-      recomputeAndBroadcastDmxChannel(affectedChannel)
-    )
+  // as it might affect their multiplying factors.
+  if (!skipAffectedChannels) {
+    affectedChannelsByMasterChannel
+      .get(channel)
+      ?.forEach(affectedChannel =>
+        recomputeAndBroadcastDmxChannel(affectedChannel)
+      )
+  }
 
   return changedDmx
 }
 
-/**
- * Recomputes the outgoing DMX value for the given channel by iterating over all
- * universes and finding the highest value.
- *
- * Returns whether the outgoing value was changed.
- *
- * To determine whether the outgoing value of a channel changed after a value change,
- * use {@link computeDmxChannelChange} instead.
- */
-function recomputeDmxChannel(channel: number): boolean {
-  const index = getUniverseIndex(channel)
-  const oldValue = rawDmxUniverse[index]
-  let newValue = 0
-
-  for (const universe of universes) {
-    const value = getFinalChannelValue(universe, channel)
-    if (value > newValue) newValue = value
-
-    if (value === 255) break
-  }
-
-  if (oldValue !== newValue) {
-    rawDmxUniverse[index] = newValue
-    return applyDmxMaster(channel)
-  }
-  return false
-}
-
-/**
- * Recomputes the final outgoing DMX value of the given channel,
- * and broadcasts it to all devices and API clients if changed.
- *
- * To react to channel changes, use {@link computeAndBroadcastDmxChannelChange} instead.
- */
-export function recomputeAndBroadcastDmxChannel(channel: number): boolean {
-  const changedDmx = recomputeDmxChannel(channel)
-  if (changedDmx) broadcastUniverseChannel(channel)
-  return changedDmx
+export interface ComputeUniverseChannelRawValueChangeArgs
+  extends ComputeAndBroadcastDmxChannelChangeArgs {
+  universe: Universe
 }
 
 /**
@@ -367,17 +330,19 @@ export function recomputeAndBroadcastDmxChannel(channel: number): boolean {
  *
  * Takes the raw new and old universe values as arguments.
  */
-export function computeUniverseChannelRawValueChange(
-  universe: Universe,
-  channel: number,
-  rawValue: number,
-  rawOldValue: number
-): void {
-  if (rawValue === rawOldValue) return
+export function computeUniverseChannelRawValueChange({
+  universe,
+  channel,
+  newValue,
+  oldValue,
+  skipAffectedChannels = false,
+}: ComputeUniverseChannelRawValueChangeArgs): boolean {
+  if (newValue === oldValue) return false
 
-  computeAndBroadcastDmxChannelChange(
+  return computeAndBroadcastDmxChannelChange({
     channel,
-    getFinalChannelValue(universe, channel, rawValue),
-    getFinalChannelValue(universe, channel, rawOldValue)
-  )
+    newValue: getFinalChannelValue(universe, channel, newValue),
+    oldValue: getFinalChannelValue(universe, channel, oldValue),
+    skipAffectedChannels,
+  })
 }

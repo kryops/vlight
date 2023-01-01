@@ -1,5 +1,7 @@
 import { universeSize } from '../config'
 
+import { Universe } from './types'
+
 /**
  * Converts a channel number (1-512) to a universe index (0-511).
  */
@@ -34,4 +36,23 @@ export function applyMasterValue(
   if (masterValue === 0 || rawValue === 0) return 0
 
   return Math.round((masterValue / 255) * rawValue)
+}
+
+/**
+ * Writes the channel's value to the universe.
+ *
+ * @returns whether the value was actually changed.
+ */
+export function writeUniverseChannel(
+  universe: Universe,
+  channel: number,
+  value: number
+): boolean {
+  assertValidChannel(channel)
+
+  const index = getUniverseIndex(channel)
+  if (universe[index] === value) return false
+
+  universe[index] = value
+  return true
 }
