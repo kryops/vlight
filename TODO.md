@@ -31,7 +31,6 @@
   - Color distribution: random, equal, relative
 - Dymamic pages
   - Improve layout + editing
-  - Multiple widgets of the same type (e.g. memories)
 - New Controls
   - All off (permanently, <> blackout)
   - Programmable buttons

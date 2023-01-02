@@ -1,5 +1,6 @@
-import { ComponentType, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { css } from '@linaria/core'
+import { toArray } from '@vlight/utils'
 
 import { Icon } from '../icons/icon'
 import { iconDelete } from '../icons'
@@ -10,11 +11,11 @@ import { flexAuto } from '../css/flex'
 import { TypedInputProps } from './typed-input'
 
 export interface ArrayInputProps<T> {
-  value: Array<T | undefined>
+  value: T | undefined | Array<T | undefined>
   onChange: (value: Array<T>) => void
 
-  /** Component for a single item. */
-  Input: ComponentType<TypedInputProps<T>>
+  /** Renders the input component for a single item. */
+  renderInput: (props: TypedInputProps<T>) => JSX.Element
 
   /**
    * Controls whether to allow removing array entries.
@@ -58,17 +59,23 @@ function removeUndefined<T>(arr: (T | undefined)[]): T[] {
 export function ArrayInput<T>({
   value,
   onChange,
-  Input,
+  renderInput,
   displayRemoveButtons = false,
   className,
   entryClassName,
 }: ArrayInputProps<T>) {
-  const outgoingValueRef = useRef(value)
-  const [valueToUse, setValueToUse] = useState(removeTrailingUndefined(value))
+  const sanitizedValue = useMemo(
+    () => (value === undefined ? [] : toArray(value)),
+    [value]
+  )
+  const outgoingValueRef = useRef(sanitizedValue)
+  const [valueToUse, setValueToUse] = useState(
+    removeTrailingUndefined(sanitizedValue)
+  )
 
-  if (outgoingValueRef.current !== value) {
-    outgoingValueRef.current = value
-    setValueToUse(value)
+  if (outgoingValueRef.current !== sanitizedValue) {
+    outgoingValueRef.current = sanitizedValue
+    setValueToUse(sanitizedValue)
   }
 
   function onChangeInternal(value: (T | undefined)[]) {
@@ -78,14 +85,14 @@ export function ArrayInput<T>({
     setValueToUse(removeTrailingUndefined(value))
   }
 
-  const toRender = [...valueToUse, undefined]
+  const toRender = useMemo(() => [...valueToUse, undefined], [valueToUse])
 
   return (
     <div className={cx(flexAuto, className)}>
       {toRender.map((singleValue, index) => {
         const changeSingleValue = (newSingleValue: T | undefined) => {
           if (newSingleValue !== undefined && index === valueToUse.length) {
-            onChangeInternal([...value, newSingleValue])
+            onChangeInternal([...sanitizedValue, newSingleValue])
           } else {
             const newValue = [...valueToUse]
             newValue[index] = newSingleValue
@@ -95,7 +102,7 @@ export function ArrayInput<T>({
 
         return (
           <div key={index} className={cx(entry, entryClassName)}>
-            <Input value={singleValue} onChange={changeSingleValue} />
+            {renderInput({ value: singleValue, onChange: changeSingleValue })}
             {displayRemoveButtons && singleValue !== undefined && (
               <Icon
                 icon={iconDelete}

@@ -27,43 +27,43 @@ export interface ChannelsWidgetConfig {
 }
 
 /**
- * Widget to control the state of a fixture.
+ * Widget to control the state of one or multiple fixtures.
  */
 export interface FixtureWidgetConfig {
   type: 'fixture'
-  id: string
+  id: string | string[]
 }
 
 /**
- * Widget to control the state of a fixture group.
+ * Widget to control the state of one or multiple fixture groups.
  */
 export interface FixtureGroupWidgetConfig {
   type: 'fixture-group'
-  id: string
+  id: string | string[]
 }
 
 /**
- * Widget to control the state of a memory.
+ * Widget to control the state of one or multiple memories.
  */
 export interface MemoryWidgetConfig {
   type: 'memory'
-  id: string
+  id: string | string[]
 }
 
 /**
- * Widget to control the state of a live memory.
+ * Widget to control the state of one or multiple live memories.
  */
 export interface LiveMemoryWidgetConfig {
   type: 'live-memory'
-  id: string
+  id: string | string[]
 }
 
 /**
- * Widget to control the state of a live chase.
+ * Widget to control the state of one or multiple live chases.
  */
 export interface LiveChaseWidgetConfig {
   type: 'live-chase'
-  id: string
+  id: string | string[]
 }
 
 /**

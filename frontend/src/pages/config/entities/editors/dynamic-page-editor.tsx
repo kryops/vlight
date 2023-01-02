@@ -8,7 +8,7 @@ import {
   MasterDataMaps,
   WidgetConfig,
 } from '@vlight/types'
-import { assertNever } from '@vlight/utils'
+import { assertNever, toArray } from '@vlight/utils'
 
 import { useFormState, useFormStateArray } from '../../../../hooks/form'
 import { FormTextInput } from '../../../../ui/forms/form-input'
@@ -45,28 +45,38 @@ function getWidgetDisplayString(
     case 'channels':
       return `${titlePrefix}Channels ${widget.from} - ${widget.to}`
 
-    case 'fixture':
-      return `${titlePrefix}Fixture ${
-        fixtures.get(widget.id)?.name ?? widget.id
-      }`
+    case 'fixture': {
+      const name = toArray(widget.id)
+        .map(id => fixtures.get(id)?.name ?? id)
+        .join(', ')
+      return `${titlePrefix}Fixture ${name}`
+    }
 
-    case 'fixture-group':
-      return `${titlePrefix}Group ${
-        fixtureGroups.get(widget.id)?.name ?? widget.id
-      }`
+    case 'fixture-group': {
+      const name = toArray(widget.id)
+        .map(id => fixtureGroups.get(id)?.name ?? id)
+        .join(', ')
+      return `${titlePrefix}Group ${name}`
+    }
 
-    case 'memory':
-      return `${titlePrefix}Memory ${
-        memories.get(widget.id)?.name ?? widget.id
-      }`
+    case 'memory': {
+      const name = toArray(widget.id)
+        .map(id => memories.get(id)?.name ?? id)
+        .join(', ')
+      return `${titlePrefix}Memory ${name}`
+    }
 
     case 'live-memory': {
-      const name = liveMemories[widget.id]?.name ?? widget.id
+      const name = toArray(widget.id)
+        .map(id => liveMemories[id]?.name ?? id)
+        .join(', ')
       return `${titlePrefix}Live Memory ${name}`
     }
 
     case 'live-chase': {
-      const name = liveChases[widget.id]?.name ?? widget.id
+      const name = toArray(widget.id)
+        .map(id => liveChases[id]?.name ?? id)
+        .join(', ')
       return `${titlePrefix}Live Chase ${name}`
     }
 

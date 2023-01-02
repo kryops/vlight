@@ -117,3 +117,10 @@ export function preferredOrder<T>(arr: T[], preferred: T[]): T[] {
 
   return arr
 }
+
+/**
+ * Wraps a value in an array if the value is not an array already.
+ */
+export function toArray<T>(value: T | T[]): T[] {
+  return Array.isArray(value) ? value : [value]
+}

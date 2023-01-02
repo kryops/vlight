@@ -13,6 +13,7 @@ import { Label } from './label'
 import { Select, SelectEntry } from './select'
 import { NumberInput, TextInput } from './typed-input'
 import { EntityReferenceSelect } from './entity-reference-select'
+import { ArrayInput } from './array-input'
 
 type WidgetType = WidgetConfig['type']
 type WidgetOfType<T extends WidgetType> = Extract<WidgetConfig, { type: T }>
@@ -215,17 +216,24 @@ export function WidgetInput({
         value?.type === 'fixture-group' ||
         value?.type === 'memory') && (
         <Label
-          label="Entity"
+          label="Entities"
           input={
-            <EntityReferenceSelect
-              entity={widgetTypes[value.type].entityReference!}
+            <ArrayInput
               value={value.id}
               onChange={newValue =>
                 onChange({
                   ...value,
-                  id: newValue ?? '',
+                  id: newValue,
                 })
               }
+              renderInput={inputProps => (
+                <EntityReferenceSelect
+                  entity={widgetTypes[value.type].entityReference!}
+                  addUndefinedOption
+                  {...inputProps}
+                />
+              )}
+              displayRemoveButtons
             />
           }
         />
@@ -233,31 +241,40 @@ export function WidgetInput({
 
       {(value?.type === 'live-memory' || value?.type === 'live-chase') && (
         <Label
-          label="Entity"
+          label="Entities"
           input={
-            <Select
-              entries={Object.keys(
-                apiState[widgetTypes[value.type].stateReference!] ?? {}
-              ).map(id => {
-                const stateReference =
-                  apiState[widgetTypes[value.type].stateReference!]
-                return {
-                  value: id,
-                  label:
-                    typeof stateReference === 'object' &&
-                    (stateReference as any)[id] &&
-                    (stateReference as any)[id].name
-                      ? (stateReference as any)[id].name
-                      : id,
-                }
-              })}
+            <ArrayInput
               value={value.id}
               onChange={newValue =>
                 onChange({
                   ...value,
-                  id: newValue ?? '',
+                  id: newValue,
                 })
               }
+              renderInput={inputProps => (
+                <Select
+                  entries={[
+                    undefined,
+                    ...Object.keys(
+                      apiState[widgetTypes[value.type].stateReference!] ?? {}
+                    ).map(id => {
+                      const stateReference =
+                        apiState[widgetTypes[value.type].stateReference!]
+                      return {
+                        value: id,
+                        label:
+                          typeof stateReference === 'object' &&
+                          (stateReference as any)[id] &&
+                          (stateReference as any)[id].name
+                            ? (stateReference as any)[id].name
+                            : id,
+                      }
+                    }),
+                  ]}
+                  {...inputProps}
+                />
+              )}
+              displayRemoveButtons
             />
           }
         />

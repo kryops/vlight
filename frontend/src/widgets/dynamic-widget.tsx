@@ -1,5 +1,5 @@
 import { WidgetConfig } from '@vlight/types'
-import { assertNever } from '@vlight/utils'
+import { assertNever, toArray } from '@vlight/utils'
 
 import { useMasterDataMaps } from '../hooks/api'
 import { memoInProduction } from '../util/development'
@@ -49,33 +49,61 @@ export const DynamicWidget = memoInProduction(
         )
 
       case 'fixture':
-        const fixture = fixtures.get(config.id)
-        return fixture ? (
-          <FixtureWidget key={`fixture${config.id}`} fixture={fixture} />
-        ) : null
+        return (
+          <>
+            {toArray(config.id).map(id => {
+              const fixture = fixtures.get(id)
+              return fixture ? (
+                <FixtureWidget key={`fixture${id}`} fixture={fixture} />
+              ) : null
+            })}
+          </>
+        )
 
       case 'fixture-group':
-        const fixtureGroup = fixtureGroups.get(config.id)
-        return fixtureGroup ? (
-          <FixtureGroupWidget
-            key={`fixture-group${config.id}`}
-            group={fixtureGroup}
-          />
-        ) : null
+        return (
+          <>
+            {toArray(config.id).map(id => {
+              const fixtureGroup = fixtureGroups.get(id)
+              return fixtureGroup ? (
+                <FixtureGroupWidget
+                  key={`fixture-group${id}`}
+                  group={fixtureGroup}
+                />
+              ) : null
+            })}
+          </>
+        )
 
       case 'memory':
-        const memory = memories.get(config.id)
-        return memory ? (
-          <MemoryWidget key={`memory${config.id}`} memory={memory} />
-        ) : null
+        return (
+          <>
+            {toArray(config.id).map(id => {
+              const memory = memories.get(id)
+              return memory ? (
+                <MemoryWidget key={`memory${id}`} memory={memory} />
+              ) : null
+            })}
+          </>
+        )
 
       case 'live-memory':
         return (
-          <LiveMemoryWidget key={`live-memory${config.id}`} id={config.id} />
+          <>
+            {toArray(config.id).map(id => {
+              return <LiveMemoryWidget key={`live-memory${id}`} id={id} />
+            })}
+          </>
         )
 
       case 'live-chase':
-        return <LiveChaseWidget key={`live-chase${config.id}`} id={config.id} />
+        return (
+          <>
+            {toArray(config.id).map(id => {
+              return <LiveChaseWidget key={`live-chase${id}`} id={id} />
+            })}
+          </>
+        )
 
       case 'map':
         return <MapWidget />

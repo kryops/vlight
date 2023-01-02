@@ -62,7 +62,7 @@ export function Select<T>({
       value={String(activeIndex)}
       onChange={event => {
         const newIndex = parseInt(event.target.value)
-        onChange(normalizedEntries[newIndex]?.value ?? (null as any))
+        onChange(normalizedEntries[newIndex]?.value as T)
       }}
       className={cx(select, className)}
     >
