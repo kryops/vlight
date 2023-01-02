@@ -12,7 +12,6 @@ import { universeStates, rawDmxUniverse, universes, dmxUniverse } from './state'
 import { Universe } from './types'
 import {
   getUniverseIndex,
-  getChannelFromUniverseIndex,
   applyMasterValue,
   writeUniverseChannel,
 } from './utils'
@@ -87,16 +86,15 @@ function setRawDmxValue(channel: number, value: number): boolean {
   return changedDmx
 }
 
-function handleDmxMasterApiMessage(message: ApiDmxMasterMessage): boolean {
+export function handleDmxMasterApiMessage(
+  message: ApiDmxMasterMessage
+): boolean {
   const { value } = message
   if (dmxMaster === value) return false
 
   dmxMaster = value
 
-  rawDmxUniverse.forEach((value, index) => {
-    if (value === 0) return
-    const channel = getChannelFromUniverseIndex(index)
-
+  fadedChannels.forEach(channel => {
     if (applyDmxMaster(channel)) {
       broadcastUniverseChannel(channel)
     }
