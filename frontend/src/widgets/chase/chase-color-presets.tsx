@@ -11,6 +11,7 @@ import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
 import { useMasterData } from '../../hooks/api'
 import { Icon } from '../../ui/icons/icon'
 import { yesNo } from '../../ui/overlays/buttons'
+import { flexContainer } from '../../ui/css/flex'
 
 import { getChasePreviewColor } from './utils'
 
@@ -33,9 +34,7 @@ const presetContainer = css`
   margin: ${baseline()};
 `
 
-const presetColors = css`
-  display: flex;
-`
+const presetColors = flexContainer
 
 const presetColor = css`
   flex: 1 1 auto;

@@ -1,25 +1,21 @@
 const dynamicPages = [
   {
     id: 'dyn1',
-    icon: 'mdiAirballoon',
     headline: 'Foobar',
     rows: [
       {
-        headline: 'Universe, Channels, Map',
+        headline: 'Global',
         cells: [
           {
             widgets: [
+              {
+                type: 'dmx-master',
+              },
               {
                 type: 'universe',
                 from: 1,
                 to: 8,
                 title: 'Universe',
-              },
-              {
-                type: 'channels',
-                from: 1,
-                to: 8,
-                title: 'Channels',
               },
             ],
           },
@@ -28,18 +24,20 @@ const dynamicPages = [
               {
                 type: 'map',
               },
-              {
-                type: 'dmx-master',
-              },
             ],
           },
         ],
       },
       {
-        headline: 'Fixtures, Groups, Memories',
+        headline: 'Channels, Fixtures, Groups',
         cells: [
           {
             widgets: [
+              {
+                type: 'channels',
+                from: 1,
+                to: 4,
+              },
               {
                 type: 'fixture',
                 id: 'bar_1',
@@ -50,6 +48,10 @@ const dynamicPages = [
               },
             ],
           },
+        ],
+      },
+      {
+        cells: [
           {
             widgets: [
               {
@@ -58,27 +60,24 @@ const dynamicPages = [
               },
               {
                 type: 'live-memory',
-                id: '1',
+                id: '2',
               },
             ],
           },
-        ],
-      },
-      {
-        cells: [
           {
             widgets: [
               {
                 type: 'live-chase',
-                id: '1',
+                id: ['1'],
               },
             ],
           },
         ],
-        headline: 'Chases',
+        headline: 'Memories, Chases',
       },
     ],
     name: 'Test Dynamic Page',
+    icon: 'mdiAirballoon',
   },
 ]
 

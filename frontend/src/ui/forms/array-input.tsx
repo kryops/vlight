@@ -2,11 +2,11 @@ import { useMemo, useRef, useState } from 'react'
 import { css } from '@linaria/core'
 import { toArray } from '@vlight/utils'
 
-import { Icon } from '../icons/icon'
 import { iconDelete } from '../icons'
 import { cx } from '../../util/styles'
 import { baseline } from '../styles'
 import { flexAuto } from '../css/flex'
+import { Button } from '../buttons/button'
 
 import { TypedInputProps } from './typed-input'
 
@@ -33,6 +33,7 @@ export interface ArrayInputProps<T> {
 const entry = css`
   display: flex;
   margin: ${baseline(2)} 0;
+  align-items: center;
 `
 
 function removeTrailingUndefined<T extends any[]>(arr: T): T {
@@ -104,10 +105,10 @@ export function ArrayInput<T>({
           <div key={index} className={cx(entry, entryClassName)}>
             {renderInput({ value: singleValue, onChange: changeSingleValue })}
             {displayRemoveButtons && singleValue !== undefined && (
-              <Icon
+              <Button
                 icon={iconDelete}
                 onClick={() => changeSingleValue(undefined)}
-                hoverable
+                transparent
               />
             )}
           </div>

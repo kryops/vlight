@@ -18,8 +18,13 @@ const grid = css`
   }
 `
 
+const headlineStyle = css`
+  margin: ${baseline(2)} 0;
+`
+
 const gridCell = css`
   justify-content: stretch;
+  align-items: flex-start;
 
   ${flexEndSpacerString}
 `
@@ -49,7 +54,7 @@ export const Grid = memoInProduction(
     const factorSum = cells.reduce((sum, { factor }) => sum + (factor ?? 1), 0)
     return (
       <>
-        {headline && <h2>{headline}</h2>}
+        {headline && <h2 className={headlineStyle}>{headline}</h2>}
         <div className={cx(grid, className)}>
           {cells.map(({ factor, children, className }, index) => (
             <div

@@ -35,6 +35,13 @@ export interface SortableListProps<T> {
    * Defaults to the index.
    */
   getKey?: (entry: T) => string | number
+
+  /**
+   * Sorting direction.
+   *
+   * Defaults to vertical.
+   */
+  direction?: 'vertical' | 'horizontal'
 }
 
 let sortableListIndex = 0
@@ -86,6 +93,7 @@ export function SortableList<T>({
   entryClassName,
   renderEntryContent,
   getKey,
+  direction,
 }: SortableListProps<T>) {
   const [droppableId] = useState(() => sortableListIndex++)
 
@@ -104,6 +112,7 @@ export function SortableList<T>({
       <Droppable
         droppableId={String(droppableId)}
         isDropDisabled={entries.length < 2}
+        direction={direction}
       >
         {provided => (
           <div

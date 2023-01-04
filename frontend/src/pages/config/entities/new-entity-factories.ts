@@ -79,7 +79,11 @@ export function newDynamicPageFactory(): WithoutId<DynamicPage> {
       {
         cells: [
           {
-            widgets: [],
+            widgets: [
+              {
+                type: 'map',
+              },
+            ],
           },
         ],
       },

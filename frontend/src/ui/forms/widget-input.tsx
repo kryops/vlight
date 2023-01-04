@@ -4,10 +4,11 @@ import { ensureBetween } from '@vlight/utils'
 
 import { baseline, primaryShade } from '../styles'
 import { cx } from '../../util/styles'
-import { Icon } from '../icons/icon'
 import { iconDelete } from '../icons'
 import { apiState } from '../../api/api-state'
 import { ApiState } from '../../api/worker/processing'
+import { Button } from '../buttons/button'
+import { flexContainer } from '../css/flex'
 
 import { Label } from './label'
 import { Select, SelectEntry } from './select'
@@ -102,16 +103,9 @@ const typeSelectEntries: SelectEntry<WidgetType>[] = Object.entries(
 
 const container = css`
   padding: ${baseline(2)};
-  margin: ${baseline()} ${baseline(-2)};
+  margin: ${baseline()} 0;
   background: ${primaryShade(2)};
   cursor: pointer;
-`
-
-const deleteIcon = css`
-  float: right;
-  padding: ${baseline(2)};
-  margin: ${baseline(-2)};
-  margin-left: 0;
 `
 
 export interface WidgetInputProps {
@@ -135,31 +129,27 @@ export function WidgetInput({
 }: WidgetInputProps) {
   return (
     <div className={cx(container, className)}>
-      {onDelete && (
-        <Icon
-          icon={iconDelete}
-          className={deleteIcon}
-          hoverable
-          inline
-          onClick={event => {
-            event.stopPropagation()
-            onDelete()
+      <div className={flexContainer}>
+        <Select
+          entries={typeSelectEntries}
+          value={value?.type}
+          onChange={newValue => {
+            if (!newValue) return
+            onChange(widgetTypes[newValue].defaultValueFactory())
           }}
         />
-      )}
-      <Label
-        label="Type"
-        input={
-          <Select
-            entries={typeSelectEntries}
-            value={value?.type}
-            onChange={newValue => {
-              if (!newValue) return
-              onChange(widgetTypes[newValue].defaultValueFactory())
+        {onDelete && (
+          <Button
+            icon={iconDelete}
+            title="Remove widget"
+            transparent
+            onClick={event => {
+              event?.stopPropagation()
+              onDelete()
             }}
           />
-        }
-      />
+        )}
+      </div>
 
       {(value?.type === 'universe' || value?.type === 'channels') && (
         <>

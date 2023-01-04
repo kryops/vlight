@@ -26,3 +26,18 @@ export const flexWrap = css`
   display: flex;
   flex-wrap: wrap;
 `
+
+/**
+ * CSS class to create a flex container.
+ */
+export const flexContainer = css`
+  display: flex;
+`
+
+/**
+ * CSS class to create a vertical flex container.
+ */
+export const verticalFlexContainer = css`
+  display: flex;
+  flex-direction: column;
+`

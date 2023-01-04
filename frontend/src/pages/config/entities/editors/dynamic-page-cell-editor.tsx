@@ -1,20 +1,13 @@
 import { useState } from 'react'
-import { css } from '@linaria/core'
 import { DynamicPageCell } from '@vlight/types'
 
 import { editorTitle } from '../../../../ui/css/editor-styles'
 import { Label } from '../../../../ui/forms/label'
 import { NumberInput } from '../../../../ui/forms/typed-input'
-import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd } from '../../../../ui/icons'
 import { WidgetInput, widgetTypes } from '../../../../ui/forms/widget-input'
-import { baseline } from '../../../../ui/styles'
 import { SortableList } from '../../../../ui/containers/sortable-list'
-
-const addLink = css`
-  display: inline-block;
-  margin-top: ${baseline(2)};
-`
+import { Button } from '../../../../ui/buttons/button'
 
 export interface DynamicPageCellEditorProps {
   cell: DynamicPageCell
@@ -41,7 +34,7 @@ export function DynamicPageCellEditor({
 
   return (
     <>
-      <h2 className={editorTitle}>Edit Dynamic Page Cell</h2>
+      <h2 className={editorTitle}>Dynamic Page Cell</h2>
       <Label
         label="Factor"
         input={
@@ -51,6 +44,7 @@ export function DynamicPageCellEditor({
           />
         }
       />
+
       <h4>Widgets</h4>
 
       <SortableList
@@ -75,17 +69,16 @@ export function DynamicPageCellEditor({
         )}
       />
 
-      <a
+      <Button
+        icon={iconAdd}
+        block
         onClick={() =>
           setCellProperty('widgets', [
             ...localCell.widgets,
-            widgetTypes.universe.defaultValueFactory(),
+            widgetTypes.map.defaultValueFactory(),
           ])
         }
-        className={addLink}
-      >
-        <Icon icon={iconAdd} inline /> Add widget
-      </a>
+      />
     </>
   )
 }

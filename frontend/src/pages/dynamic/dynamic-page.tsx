@@ -1,12 +1,17 @@
 import { useParams } from 'react-router'
+import { useState } from 'react'
+import { DynamicPage as DynamicPageEntity } from '@vlight/types'
 
-import { useMasterData } from '../../hooks/api'
+import { useMasterData, useRawMasterData } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'
 import { Grid } from '../../ui/containers/grid'
 import { DynamicWidget } from '../../widgets/dynamic-widget'
 import { Header } from '../../ui/containers/header'
-
-import { DynamicPageActions } from './dynamic-page-actions'
+import { iconClose, iconConfig, iconOk } from '../../ui/icons'
+import { DynamicPageEditor } from '../config/entities/editors/dynamic-page-editor'
+import { editEntity } from '../../api'
+import { Button } from '../../ui/buttons/button'
+import { centeredText } from '../../ui/css/basic-styles'
 
 /**
  * Displays a user-configured dynamic page with an ID given as route param.
@@ -14,33 +19,88 @@ import { DynamicPageActions } from './dynamic-page-actions'
 const DynamicPage = memoInProduction(() => {
   const { id } = useParams<{ id: string }>()
   const masterData = useMasterData()
+  const rawMasterData = useRawMasterData()
+  const [editing, setEditing] = useState(false)
+  const [editedPage, setEditedPage] = useState<DynamicPageEntity | null>(null)
+
   const page = masterData.dynamicPages.find(p => p.id === id)
-  if (!page) return null
+  const rawPage = rawMasterData.dynamicPages.find(p => p.id === id)
+
+  if (!page || !rawPage) return null
 
   const { headline, rows } = page
 
+  const cancelEditing = () => {
+    setEditing(false)
+    setEditedPage(null)
+  }
+
+  const save = () => {
+    if (editedPage !== null) {
+      editEntity('dynamicPages', editedPage)
+    }
+    cancelEditing()
+  }
+
   return (
-    <div>
-      <Header rightContent={<DynamicPageActions dynamicPage={page} />}>
+    <>
+      <Header
+        rightContent={
+          editing ? (
+            <>
+              <Button
+                icon={iconClose}
+                transparent
+                onClick={cancelEditing}
+                title="Cancel"
+              />
+              <Button icon={iconOk} title="Save" transparent onClick={save} />
+            </>
+          ) : (
+            <Button
+              icon={iconConfig}
+              title="Edit"
+              transparent
+              onClick={() => setEditing(true)}
+            />
+          )
+        }
+      >
         {headline}
       </Header>
-      {rows.map(({ headline, cells }, index) => (
-        <Grid
-          key={index}
-          headline={headline}
-          cells={cells.map(({ factor, widgets }) => ({
-            factor,
-            children: (
-              <>
-                {widgets.map((widget, index) => (
-                  <DynamicWidget key={index} config={widget} />
-                ))}
-              </>
-            ),
-          }))}
-        />
-      ))}
-    </div>
+
+      {editing ? (
+        <>
+          <DynamicPageEditor entry={rawPage} onChange={setEditedPage} inline />
+          <br />
+          <div className={centeredText}>
+            <Button icon={iconOk} onClick={save}>
+              Save
+            </Button>
+            <Button icon={iconClose} onClick={cancelEditing}>
+              Cancel
+            </Button>
+          </div>
+        </>
+      ) : (
+        rows.map(({ headline, cells }, index) => (
+          <Grid
+            key={index}
+            headline={headline}
+            cells={cells.map(({ factor, widgets }) => ({
+              factor,
+              children: (
+                <>
+                  {widgets.map((widget, index) => (
+                    <DynamicWidget key={index} config={widget} />
+                  ))}
+                </>
+              ),
+            }))}
+          />
+        ))
+      )}
+    </>
   )
 })
 

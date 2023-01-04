@@ -6,7 +6,7 @@ import { useState } from 'react'
 import { useMasterDataAndMaps, useRawMasterData } from '../../hooks/api'
 import { cx } from '../../util/styles'
 import { Button } from '../buttons/button'
-import { flexAuto } from '../css/flex'
+import { flexAuto, verticalFlexContainer, flexContainer } from '../css/flex'
 import {
   iconList,
   iconFixtureType,
@@ -20,14 +20,9 @@ import { useDelayedState } from '../../hooks/delayed-state'
 
 import { SortableFixtureMapping } from './sortable-fixture-mapping'
 
-const container = css`
-  display: flex;
-  flex-direction: column;
-`
+const container = verticalFlexContainer
 
-const categoryContainer = css`
-  display: flex;
-`
+const categoryContainer = flexContainer
 
 const categoryEntry = css`
   flex: 1 1 0;

@@ -29,8 +29,8 @@
   - Apply by map coordinates instead of member order
 - Chases
   - Color distribution: random, equal, relative
-- Dymamic pages
-  - Improve layout + editing
+- Dynamic Pages
+  - Multi-control widgets
 - New Controls
   - All off (permanently, <> blackout)
   - Programmable buttons

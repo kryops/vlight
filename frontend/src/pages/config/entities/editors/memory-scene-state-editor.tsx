@@ -23,6 +23,7 @@ import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
 import { getFixtureStateColor } from '../../../../util/fixtures'
 import { cx } from '../../../../util/styles'
 import { editorTitle } from '../../../../ui/css/editor-styles'
+import { flexContainer } from '../../../../ui/css/flex'
 
 const widget = css`
   border: none;
@@ -58,9 +59,7 @@ const stopSelectionEntry_active = css`
   margin-bottom: 0;
 `
 
-const optionsContainer = css`
-  display: flex;
-`
+const optionsContainer = flexContainer
 
 const positionContainer = css`
   flex: 1 0 auto;

@@ -31,7 +31,7 @@ const headline = css`
 
 const rightContainer = css`
   flex: 1 0 auto;
-  margin-bottom: 1rem;
+  margin-bottom: ${baseline(2)};
   margin-left: ${baseline()};
   text-align: right;
 `

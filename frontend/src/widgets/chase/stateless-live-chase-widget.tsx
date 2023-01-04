@@ -8,7 +8,7 @@ import { deleteLiveChase, setLiveChaseState, setLiveChaseStep } from '../../api'
 import { Widget } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
-import { flexWrap } from '../../ui/css/flex'
+import { flexAuto, flexWrap } from '../../ui/css/flex'
 import { FixtureListInput } from '../../ui/forms/fixture-list-input'
 import {
   iconAdd,
@@ -62,9 +62,7 @@ const leftColumn = css`
   margin-bottom: ${baseline(2)};
 `
 
-const rightColumn = css`
-  flex: 1 1 auto;
-`
+const rightColumn = flexAuto
 
 const colorContainer = css`
   display: flex;

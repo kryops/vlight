@@ -26,7 +26,7 @@ const select = css`
   padding: ${baseline()};
   background: ${backgroundColor};
   color: ${textShade(0)};
-  border: 1px solid ${textShade(0)};
+  border: 1px solid ${textShade(1)};
   max-width: 95vw;
 `
 
