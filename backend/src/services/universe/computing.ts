@@ -107,7 +107,7 @@ export function handleDmxMasterApiMessage(
  * Initializes caches for the relationships of DMX channels with regard to their
  * fixture's master channel in order to speed up universe computations.
  */
-export function initUniverseComputingData(): void {
+export function initUniverseComputingData(isReload = false): void {
   affectedChannelsByMasterChannel.clear()
   masterChannelByChannel.clear()
   fadedChannels.clear()
@@ -149,7 +149,9 @@ export function initUniverseComputingData(): void {
     )
   }
 
-  registerApiMessageHandler('dmx-master', handleDmxMasterApiMessage)
+  if (!isReload) {
+    registerApiMessageHandler('dmx-master', handleDmxMasterApiMessage)
+  }
 }
 
 /**

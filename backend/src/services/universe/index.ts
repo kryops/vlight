@@ -15,7 +15,7 @@ export function getDmxUniverse() {
 }
 
 export function reloadUniverseService(): void {
-  initUniverseComputingData()
+  initUniverseComputingData(true)
   for (let channel = 1; channel <= universeSize; channel++) {
     recomputeAndBroadcastDmxChannel(channel)
   }
