@@ -7,6 +7,7 @@ import { useApiState, useMasterData } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 import { openEntityEditor } from '../config/entities/editors'
+import { HotkeyContext } from '../../hooks/hotkey'
 
 /**
  * Corner actions for the fixture groups page:
@@ -28,7 +29,7 @@ export function FixtureGroupsActions() {
   }
 
   return (
-    <>
+    <HotkeyContext.Provider value={true}>
       <Button
         icon={iconAdd}
         transparent
@@ -41,6 +42,8 @@ export function FixtureGroupsActions() {
         icon={iconLight}
         onClick={() => setOnForAllFixtureGroups(true)}
         disabled={isAllOn(fixtureGroupsState)}
+        title="All on"
+        hotkey="o"
       >
         ON
       </Button>
@@ -48,9 +51,11 @@ export function FixtureGroupsActions() {
         icon={iconLightOff}
         onClick={() => setOnForAllFixtureGroups(false)}
         disabled={!isAnyOn(fixtureGroupsState)}
+        title="All off"
+        hotkey="p"
       >
         OFF
       </Button>
-    </>
+    </HotkeyContext.Provider>
   )
 }

@@ -37,7 +37,7 @@
   - Non-live chases
   - Sequences/shows
 - Inputs
-  - Keyboard shortcuts/keybindings
+  - Custom keybindings
   - LaunchPad input
   - XTouch input
   - External input mapping

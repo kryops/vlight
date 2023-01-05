@@ -38,13 +38,14 @@ export interface StatelessLiveChaseWidgetProps {
   id: IdType
   state: LiveChase
   title?: string
+  hotkeysActive?: boolean
 }
 
 /**
  * Stateless widget to display a live chase.
  */
 export const StatelessLiveChaseWidget = memoInProduction(
-  ({ id, state, title }: StatelessLiveChaseWidgetProps) => {
+  ({ id, state, title, hotkeysActive }: StatelessLiveChaseWidgetProps) => {
     const update = (newState: Partial<LiveChase>) =>
       setLiveChaseState(id, newState, true)
 
@@ -67,6 +68,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
         turnedOn={state.on}
         contentClassName={flexWrap}
         titleSide={<LiveChaseWidgetTopControls id={id} state={state} />}
+        hotkeysActive={hotkeysActive}
       >
         <div className={leftColumn}>
           <FixtureListInput

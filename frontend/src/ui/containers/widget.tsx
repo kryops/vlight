@@ -14,6 +14,7 @@ import { cx } from '../../util/styles'
 import { Clickable } from '../components/clickable'
 import { iconOn } from '../icons'
 import { ErrorBoundary } from '../../util/error-boundary'
+import { HotkeyContext, useHotkey } from '../../hooks/hotkey'
 
 const widget = css`
   flex: 1 1 auto;
@@ -47,6 +48,12 @@ const widgetTurnedOff = css`
 const widgetTurnedOn = css`
   border-color: ${primaryShade(0)};
   background: ${primaryShade(3)};
+`
+
+const widgetWithHotkeys = css`
+  outline-style: dashed;
+  outline-color: ${iconShade(0)};
+  outline-width: 1px;
 `
 
 const widgetIndicator = css`
@@ -84,6 +91,11 @@ export interface WidgetProps {
   turnedOn?: boolean
 
   /**
+   * Controls whether keyboard hotkeys inside the widget are active.
+   */
+  hotkeysActive?: boolean
+
+  /**
    * If set, displays a line with the given color to the bottom of the widget.
    */
   bottomLineColor?: string
@@ -105,6 +117,7 @@ export function Widget({
   titleSide,
   onTitleClick,
   turnedOn,
+  hotkeysActive,
   bottomLineColor,
   className,
   contentClassName,
@@ -112,53 +125,65 @@ export function Widget({
 }: PropsWithChildren<WidgetProps>) {
   const stateClassName = turnedOn ? widgetTurnedOn : widgetTurnedOff
 
+  useHotkey(
+    'Space',
+    event => {
+      onTitleClick?.()
+      event.preventDefault()
+    },
+    { forceActive: hotkeysActive }
+  )
+
   return (
-    <div
-      className={cx(
-        widget,
-        className,
-        turnedOn !== undefined && stateClassName
-      )}
-    >
-      {(icon || title || titleSide || turnedOn !== undefined) && (
-        <div className={cx(section, widgetTitle)}>
-          <div>
-            <Clickable onClick={onTitleClick}>
-              {icon && (
-                <Icon
-                  icon={icon}
-                  color={
-                    turnedOn
-                      ? successShade(0)
-                      : turnedOn === false
-                      ? errorShade(0)
-                      : iconShade(1)
-                  }
-                  inline
-                />
-              )}
-              {icon && ' '}
-              {title}
-              {turnedOn !== undefined && icon === undefined && (
-                <Icon
-                  icon={iconOn}
-                  color={turnedOn ? successShade(0) : errorShade(0)}
-                  className={widgetIndicator}
-                  inline
-                  padding
-                />
-              )}
-            </Clickable>
+    <HotkeyContext.Provider value={!!hotkeysActive}>
+      <div
+        className={cx(
+          widget,
+          className,
+          turnedOn !== undefined && stateClassName,
+          hotkeysActive && widgetWithHotkeys
+        )}
+      >
+        {(icon || title || titleSide || turnedOn !== undefined) && (
+          <div className={cx(section, widgetTitle)}>
+            <div>
+              <Clickable onClick={onTitleClick}>
+                {icon && (
+                  <Icon
+                    icon={icon}
+                    color={
+                      turnedOn
+                        ? successShade(0)
+                        : turnedOn === false
+                        ? errorShade(0)
+                        : iconShade(1)
+                    }
+                    inline
+                  />
+                )}
+                {icon && ' '}
+                {title}
+                {turnedOn !== undefined && icon === undefined && (
+                  <Icon
+                    icon={iconOn}
+                    color={turnedOn ? successShade(0) : errorShade(0)}
+                    className={widgetIndicator}
+                    inline
+                    padding
+                  />
+                )}
+              </Clickable>
+            </div>
+            {titleSide && <div className={titleSideContainer}>{titleSide}</div>}
           </div>
-          {titleSide && <div className={titleSideContainer}>{titleSide}</div>}
+        )}
+        <div className={cx(section, contentClassName)}>
+          <ErrorBoundary>{children}</ErrorBoundary>
         </div>
-      )}
-      <div className={cx(section, contentClassName)}>
-        <ErrorBoundary>{children}</ErrorBoundary>
+        {bottomLineColor && (
+          <div className={bottomLine} style={{ background: bottomLineColor }} />
+        )}
       </div>
-      {bottomLineColor && (
-        <div className={bottomLine} style={{ background: bottomLineColor }} />
-      )}
-    </div>
+    </HotkeyContext.Provider>
   )
 }

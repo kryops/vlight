@@ -6,6 +6,7 @@ import { iconConfig, iconLight, iconLightOff } from '../../ui/icons'
 import { useApiState, useMasterData } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
+import { HotkeyContext } from '../../hooks/hotkey'
 
 /**
  * Corner actions for the fixtures page:
@@ -26,7 +27,7 @@ export function FixturesActions() {
   }
 
   return (
-    <>
+    <HotkeyContext.Provider value={true}>
       <Link to={entitiesPageRoute('fixtures')}>
         <Button icon={iconConfig} transparent />
       </Link>
@@ -34,6 +35,8 @@ export function FixturesActions() {
         icon={iconLight}
         onClick={() => setOnForAllFixtures(true)}
         disabled={isAllOn(fixturesState)}
+        title="All on"
+        hotkey="o"
       >
         ON
       </Button>
@@ -41,9 +44,11 @@ export function FixturesActions() {
         icon={iconLightOff}
         onClick={() => setOnForAllFixtures(false)}
         disabled={!isAnyOn(fixturesState)}
+        title="All off"
+        hotkey="p"
       >
         OFF
       </Button>
-    </>
+    </HotkeyContext.Provider>
   )
 }

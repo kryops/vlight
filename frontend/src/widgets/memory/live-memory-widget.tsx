@@ -8,13 +8,14 @@ import { StatelessLiveMemoryWidget } from './stateless-live-memory-widget'
 export interface LiveMemoryWidgetProps {
   id: IdType
   title?: string
+  hotkeysActive?: boolean
 }
 
 /**
  * Widget to display a live memory.
  */
 export const LiveMemoryWidget = memoInProduction(
-  ({ id, title }: LiveMemoryWidgetProps) => {
+  ({ id, title, hotkeysActive }: LiveMemoryWidgetProps) => {
     const liveMemoryState = useApiStateEntry('liveMemories', id)
 
     if (!liveMemoryState) {
@@ -26,6 +27,7 @@ export const LiveMemoryWidget = memoInProduction(
         id={id}
         state={liveMemoryState}
         title={title ?? liveMemoryState.name ?? `Live Memory ${id}`}
+        hotkeysActive={hotkeysActive}
       />
     )
   }

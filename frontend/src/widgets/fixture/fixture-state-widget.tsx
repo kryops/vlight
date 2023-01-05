@@ -40,6 +40,8 @@ export interface FixtureStateWidgetProps {
    */
   disableOn?: boolean
 
+  hotkeysActive?: boolean
+
   className?: string
 }
 
@@ -55,6 +57,7 @@ export const FixtureStateWidget = memoInProduction(
     titleSide,
     onChange,
     disableOn = false,
+    hotkeysActive,
     className,
   }: FixtureStateWidgetProps) => {
     const colorPickerCapable = colorPickerColors.every(c => mapping.includes(c))
@@ -126,6 +129,7 @@ export const FixtureStateWidget = memoInProduction(
           ) : undefined
         }
         turnedOn={disableOn ? undefined : fixtureState.on}
+        hotkeysActive={hotkeysActive}
         bottomLineColor={getFixtureStateColor(fixtureState)}
       >
         <div className={faderContainer}>

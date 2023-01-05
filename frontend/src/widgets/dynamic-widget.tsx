@@ -16,13 +16,14 @@ import { DmxMasterWidget } from './global/dmx-master-widget'
 
 export interface DynamicWidgetProps {
   config: WidgetConfig
+  hotkeysActive?: boolean
 }
 
 /**
  * Component that renders a widget based on a dynamic widget configuration.
  */
 export const DynamicWidget = memoInProduction(
-  ({ config }: DynamicWidgetProps) => {
+  ({ config, hotkeysActive }: DynamicWidgetProps) => {
     const { fixtures, fixtureGroups, memories } = useMasterDataMaps()
 
     // TODO investigate why the keys are needed
@@ -54,7 +55,11 @@ export const DynamicWidget = memoInProduction(
             {toArray(config.id).map(id => {
               const fixture = fixtures.get(id)
               return fixture ? (
-                <FixtureWidget key={`fixture${id}`} fixture={fixture} />
+                <FixtureWidget
+                  key={`fixture${id}`}
+                  fixture={fixture}
+                  hotkeysActive={hotkeysActive}
+                />
               ) : null
             })}
           </>
@@ -69,6 +74,7 @@ export const DynamicWidget = memoInProduction(
                 <FixtureGroupWidget
                   key={`fixture-group${id}`}
                   group={fixtureGroup}
+                  hotkeysActive={hotkeysActive}
                 />
               ) : null
             })}
@@ -81,7 +87,11 @@ export const DynamicWidget = memoInProduction(
             {toArray(config.id).map(id => {
               const memory = memories.get(id)
               return memory ? (
-                <MemoryWidget key={`memory${id}`} memory={memory} />
+                <MemoryWidget
+                  key={`memory${id}`}
+                  memory={memory}
+                  hotkeysActive={hotkeysActive}
+                />
               ) : null
             })}
           </>
@@ -91,7 +101,13 @@ export const DynamicWidget = memoInProduction(
         return (
           <>
             {toArray(config.id).map(id => {
-              return <LiveMemoryWidget key={`live-memory${id}`} id={id} />
+              return (
+                <LiveMemoryWidget
+                  key={`live-memory${id}`}
+                  id={id}
+                  hotkeysActive={hotkeysActive}
+                />
+              )
             })}
           </>
         )
@@ -100,7 +116,13 @@ export const DynamicWidget = memoInProduction(
         return (
           <>
             {toArray(config.id).map(id => {
-              return <LiveChaseWidget key={`live-chase${id}`} id={id} />
+              return (
+                <LiveChaseWidget
+                  key={`live-chase${id}`}
+                  id={id}
+                  hotkeysActive={hotkeysActive}
+                />
+              )
             })}
           </>
         )
@@ -109,7 +131,7 @@ export const DynamicWidget = memoInProduction(
         return <MapWidget />
 
       case 'dmx-master':
-        return <DmxMasterWidget />
+        return <DmxMasterWidget hotkeysActive={hotkeysActive} />
 
       default:
         assertNever(config)

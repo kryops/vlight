@@ -12,6 +12,7 @@ import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
 import { StatelessLiveChaseWidget } from '../../widgets/chase/stateless-live-chase-widget'
 import { showPromptDialog } from '../../ui/overlays/dialog'
+import { memoInProduction } from '../../util/development'
 
 const container = css`
   margin-top: ${baseline(4)};
@@ -39,55 +40,62 @@ function getNewLiveChase(): LiveChase {
   }
 }
 
+export interface LiveChasesProps {
+  activeHotkeyIndex?: number | null
+}
+
 /**
  * Displays widgets for all live chases.
  */
-export function LiveChases() {
-  const liveChases = useApiState('liveChases')
+export const LiveChases = memoInProduction(
+  ({ activeHotkeyIndex }: LiveChasesProps) => {
+    const liveChases = useApiState('liveChases')
 
-  return (
-    <div className={container}>
-      <Header
-        level={3}
-        rightContent={
-          <Icon
-            icon={iconAdd}
-            size={8}
-            hoverable
-            inline
-            onClick={async () => {
-              const name = await showPromptDialog({
-                title: 'Add Live Chase',
-                label: 'Name',
-              })
-              if (name === undefined) return
+    return (
+      <div className={container}>
+        <Header
+          level={3}
+          rightContent={
+            <Icon
+              icon={iconAdd}
+              size={8}
+              hoverable
+              inline
+              onClick={async () => {
+                const name = await showPromptDialog({
+                  title: 'Add Live Chase',
+                  label: 'Name',
+                })
+                if (name === undefined) return
 
-              const newId = String(
-                Math.max(
-                  0,
-                  ...Object.keys(liveChases).map(it => parseInt(it))
-                ) + 1
-              )
-              setLiveChaseState(newId, {
-                ...getNewLiveChase(),
-                name: name || undefined,
-              })
-            }}
-          />
-        }
-      >
-        Live Chases
-      </Header>
-      <div className={cx(pageWithWidgets, widgetContainer)}>
-        {Object.entries(liveChases).map(([id, liveChase]) => (
-          <StatelessLiveChaseWidget
-            key={id}
-            title={liveChase.name ?? `Live Chase ${id}`}
-            id={id}
-            state={liveChase}
-          />
-        ))}
+                const newId = String(
+                  Math.max(
+                    0,
+                    ...Object.keys(liveChases).map(it => parseInt(it))
+                  ) + 1
+                )
+                setLiveChaseState(newId, {
+                  ...getNewLiveChase(),
+                  name: name || undefined,
+                })
+              }}
+            />
+          }
+        >
+          Live Chases
+        </Header>
+        <div className={cx(pageWithWidgets, widgetContainer)}>
+          {Object.entries(liveChases).map(([id, liveChase], index) => (
+            <StatelessLiveChaseWidget
+              key={id}
+              title={liveChase.name ?? `Live Chase ${id}`}
+              id={id}
+              state={liveChase}
+              hotkeysActive={activeHotkeyIndex === index}
+            />
+          ))}
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
+)

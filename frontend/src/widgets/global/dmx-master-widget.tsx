@@ -13,20 +13,40 @@ const buttonContainer = css`
   margin-left: ${baseline(4)};
 `
 
-export const DmxMasterWidget = memoInProduction(() => {
-  const dmxMaster = useApiState('dmxMaster')
+export interface DmxMasterWidgetProps {
+  hotkeysActive?: boolean
+}
 
-  return (
-    <Widget title="DMX Master" icon={iconGlobal}>
-      <Fader max={255} step={1} value={dmxMaster} onChange={setDmxMaster} />
-      <div className={buttonContainer}>
-        <Button block onDown={() => setDmxMaster(255)}>
-          ON
-        </Button>
-        <Button block onDown={() => setDmxMaster(0)}>
-          OFF
-        </Button>
-      </div>
-    </Widget>
-  )
-})
+export const DmxMasterWidget = memoInProduction(
+  ({ hotkeysActive }: DmxMasterWidgetProps) => {
+    const dmxMaster = useApiState('dmxMaster')
+
+    return (
+      <Widget
+        title="DMX Master"
+        icon={iconGlobal}
+        hotkeysActive={hotkeysActive}
+      >
+        <Fader max={255} step={1} value={dmxMaster} onChange={setDmxMaster} />
+        <div className={buttonContainer}>
+          <Button
+            block
+            onDown={() => setDmxMaster(255)}
+            title="Set to full"
+            hotkey="n"
+          >
+            ON
+          </Button>
+          <Button
+            block
+            onDown={() => setDmxMaster(0)}
+            title="Set to zero"
+            hotkey="m"
+          >
+            OFF
+          </Button>
+        </div>
+      </Widget>
+    )
+  }
+)

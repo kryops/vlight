@@ -49,7 +49,7 @@ export function useCompleteApiState(except?: Array<keyof ApiState>): ApiState {
     return () => {
       apiStateEmitter.offAny(listener)
     }
-  }, [forceUpdate])
+  }, [])
 
   return apiState
 }
@@ -150,3 +150,34 @@ export function useMasterDataAndMaps(): MasterDataWithMaps {
  * NOTE: This Hook may re-render up to 20 times per second.
  */
 export const useDmxUniverse = (): number[] => useApiState('universe')
+
+/**
+ * React Hook that returns the value selected from the API state,
+ * only re-rendering on changes (except for the DMX universe).
+ *
+ * For complex values, you need to do a deep equality check.
+ */
+export function useApiStateSelector<T>(
+  selector: (apiState: ApiState, oldValue: T | undefined) => T
+) {
+  const [currentState, setCurrentState] = useState(
+    selector(apiState, undefined)
+  )
+  const selectorRef = useRef(selector)
+  selectorRef.current = selector
+
+  useEffect(() => {
+    const listener = (eventName: string) => {
+      if (eventName === 'universe') return
+
+      setCurrentState(oldValue => selectorRef.current(apiState, oldValue))
+    }
+
+    apiStateEmitter.onAny(listener)
+    return () => {
+      apiStateEmitter.offAny(listener)
+    }
+  }, [])
+
+  return currentState
+}

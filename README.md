@@ -37,7 +37,7 @@ Inputs
 
 - 🖱 Mouse
 - 📱 Touch
-- (Planned: ⌨️ Keyboard)
+- ⌨️ Keyboard (partial)
 - (Planned: 🕹 Physical input devices)
 
 Supported DMX Interfaces

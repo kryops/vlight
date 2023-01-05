@@ -7,6 +7,7 @@ import { useApiState, useMasterData } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 import { openEntityEditor } from '../config/entities/editors'
+import { HotkeyContext } from '../../hooks/hotkey'
 
 /**
  * Corner actions for the memories page:
@@ -34,7 +35,7 @@ export function MemoriesActions() {
   }
 
   return (
-    <>
+    <HotkeyContext.Provider value={true}>
       <Button
         icon={iconAdd}
         transparent
@@ -47,6 +48,8 @@ export function MemoriesActions() {
         icon={iconLight}
         onClick={() => setOnForAllMemories(true)}
         disabled={isAllOn(memoriesState) && isAllOn(liveMemoriesState)}
+        title="All on"
+        hotkey="o"
       >
         ON
       </Button>
@@ -54,9 +57,11 @@ export function MemoriesActions() {
         icon={iconLightOff}
         onClick={() => setOnForAllMemories(false)}
         disabled={!isAnyOn(memoriesState) && !isAnyOn(liveMemoriesState)}
+        title="All off"
+        hotkey="p"
       >
         OFF
       </Button>
-    </>
+    </HotkeyContext.Provider>
   )
 }

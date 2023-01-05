@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { baseline, iconShade, primaryShade, textShade } from '../styles'
 import { cx } from '../../util/styles'
@@ -7,6 +7,7 @@ import { Touchable } from '../components/touchable'
 import { Icon } from '../icons/icon'
 import { Clickable } from '../components/clickable'
 import { NormalizedTouchEvent } from '../../util/touch'
+import { useHotkey } from '../../hooks/hotkey'
 
 const button = css`
   display: inline-block;
@@ -57,6 +58,10 @@ const button_transparent = css`
   &:active {
     background: transparent;
   }
+
+  &.${button_active} > svg {
+    opacity: 1;
+  }
 `
 
 const buttonBlock = css`
@@ -103,6 +108,9 @@ export interface ButtonProps {
   /** Color to display the icon in. */
   iconColor?: string
 
+  /** Hotkey to activate the button with. */
+  hotkey?: string
+
   /**
    * Displays the button as a block element.
    *
@@ -143,27 +151,53 @@ export function Button({
   onClick,
   onDown,
   onUp,
-  block = false,
   icon,
   iconColor,
+  hotkey,
   active,
   disabled = false,
+  block = false,
   transparent = false,
   className,
   title,
 }: ButtonProps) {
+  const [hotkeyPressed, setHotkeyPressed] = useState(false)
+
+  const hotkeyEnabled = useHotkey(
+    hotkey,
+    event => {
+      if (event.type === 'keyup') {
+        onUp?.()
+        setHotkeyPressed(false)
+      } else {
+        onDown?.()
+        onClick?.()
+        setHotkeyPressed(true)
+      }
+    },
+    { keyup: true }
+  )
+
   const transparentIcon = !children && transparent
   const inactive = active === false || disabled
 
   const classNames = cx(
     button,
     block && buttonBlock,
-    active === true && button_active,
+    (active === true || hotkeyPressed) && button_active,
     inactive && button_inactive,
     disabled && button_disabled,
     transparent && button_transparent,
     className
   )
+
+  const hotkeyTooltip =
+    hotkey && hotkeyEnabled ? `(${hotkey.toUpperCase()})` : undefined
+
+  const titleToDisplay =
+    title && hotkeyTooltip
+      ? `${title} ${hotkeyTooltip}`
+      : title || hotkeyTooltip
 
   const content = (
     <>
@@ -184,14 +218,14 @@ export function Button({
   return onDown || onUp ? (
     <Touchable
       className={classNames}
-      title={title}
+      title={titleToDisplay}
       onDown={onDown}
       onUp={onUp ?? onClick}
     >
       {content}
     </Touchable>
   ) : (
-    <Clickable className={classNames} title={title} onClick={onClick}>
+    <Clickable className={classNames} title={titleToDisplay} onClick={onClick}>
       {content}
     </Clickable>
   )

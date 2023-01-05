@@ -20,13 +20,14 @@ export function getFixtureName(
 
 export interface FixtureWidgetProps {
   fixture: Fixture
+  hotkeysActive?: boolean
 }
 
 /**
  * Widget to display a fixture.
  */
 export const FixtureWidget = memoInProduction(
-  ({ fixture }: FixtureWidgetProps) => {
+  ({ fixture, hotkeysActive }: FixtureWidgetProps) => {
     const { fixtureTypes } = useMasterDataMaps()
     const fixtureType = fixtureTypes.get(fixture.type)
     const fixtureState = useApiStateEntry('fixtures', fixture.id)
@@ -41,6 +42,7 @@ export const FixtureWidget = memoInProduction(
         title={getFixtureName(fixture, fixtureType)}
         fixtureState={fixtureState}
         mapping={fixtureType.mapping}
+        hotkeysActive={hotkeysActive}
         onChange={partialState =>
           setFixtureState(
             fixture.id,

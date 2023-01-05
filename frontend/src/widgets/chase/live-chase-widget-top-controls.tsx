@@ -112,12 +112,14 @@ export const LiveChaseWidgetTopControls = memoInProduction(
           transparent
           onDown={startSpeedBurst}
           onUp={stopSpeedBurst}
+          hotkey="x"
         />
         <Button
           icon={iconStep}
           title="Step"
           transparent
           onDown={() => setLiveChaseStep(id)}
+          hotkey="c"
         />
         <Button
           icon={iconDoubleSpeed}
@@ -126,6 +128,7 @@ export const LiveChaseWidgetTopControls = memoInProduction(
           onDown={() =>
             updateSpeed(Math.max(state.speed / 2, liveChaseMaxSpeed))
           }
+          hotkey="v"
         />
         <Button
           icon={iconHalfSpeed}
@@ -134,9 +137,16 @@ export const LiveChaseWidgetTopControls = memoInProduction(
           onDown={() =>
             updateSpeed(Math.min(state.speed * 2, liveChaseMinSpeed))
           }
+          hotkey="b"
         />
         &nbsp;&nbsp;
-        <Button icon={iconSync} title="Tap Sync" transparent onDown={tapSync} />
+        <Button
+          icon={iconSync}
+          title="Tap Sync"
+          transparent
+          onDown={tapSync}
+          hotkey="n"
+        />
         &nbsp;&nbsp;
         <Button
           icon={state.stopped ? iconStop : iconStart}
@@ -150,6 +160,7 @@ export const LiveChaseWidgetTopControls = memoInProduction(
               on: state.on || !!state.stopped,
             })
           }
+          hotkey="m"
         />
       </div>
     )

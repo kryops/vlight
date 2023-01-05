@@ -1,10 +1,11 @@
 import { css } from '@linaria/core'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 import { Icon } from '../icons/icon'
 import { baseline, primaryShade } from '../styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
+import { useHotkey } from '../../hooks/hotkey'
 
 const paddingBaseline = 3
 
@@ -58,6 +59,9 @@ export interface NavItemProps {
    * Defaults to `false`.
    */
   highlighted?: boolean
+
+  /** Hotkey to navigate to the item's destination with. */
+  hotkey?: string
 }
 
 /**
@@ -70,7 +74,12 @@ export const NavItem = memoInProduction(
     label,
     showLabel = false,
     highlighted = false,
+    hotkey,
   }: NavItemProps) => {
+    const navigate = useNavigate()
+
+    useHotkey(hotkey, () => navigate(to), { forceActive: true })
+
     return (
       <NavLink
         to={to}

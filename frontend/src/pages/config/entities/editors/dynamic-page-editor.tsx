@@ -99,6 +99,7 @@ function getWidgetDisplayString(
 
 const rowStyle = css`
   padding: ${baseline(2)} 0;
+  padding-bottom: 0;
   margin: ${baseline(2)} ${baseline(-2)};
   border: 1px solid ${primaryShade(1)};
 `

@@ -3115,6 +3115,7 @@ __metadata:
     react: ^18.2.0
     react-beautiful-dnd: ^13.1.1
     react-dom: ^18.2.0
+    react-hotkeys-hook: ^4.3.2
     react-refresh: ^0.14.0
     react-router: ^6.6.1
     react-router-dom: ^6.6.1
@@ -9485,6 +9486,16 @@ __metadata:
   peerDependencies:
     react: ^18.2.0
   checksum: 7d323310bea3a91be2965f9468d552f201b1c27891e45ddc2d6b8f717680c95a75ae0bc1e3f5cf41472446a2589a75aed4483aee8169287909fcd59ad149e8cc
+  languageName: node
+  linkType: hard
+
+"react-hotkeys-hook@npm:^4.3.2":
+  version: 4.3.2
+  resolution: "react-hotkeys-hook@npm:4.3.2"
+  peerDependencies:
+    react: ">=16.8.1"
+    react-dom: ">=16.8.1"
+  checksum: aaf0007c0496e7b319f27cb943e4529fe368a86c42e73086b89971c72ea1ac0bb6d58b42ab49c55f6c346ecc334cf3a611f24f758ee1d15bf65d857324098c4c
   languageName: node
   linkType: hard
 

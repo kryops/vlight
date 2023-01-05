@@ -7,12 +7,17 @@ import { StatelessLiveChaseWidget } from './stateless-live-chase-widget'
 export interface LiveChaseWidgetProps {
   id: IdType
   title?: string
+  hotkeysActive?: boolean
 }
 
 /**
  * Widget to display a live chase.
  */
-export const LiveChaseWidget = ({ id, title }: LiveChaseWidgetProps) => {
+export const LiveChaseWidget = ({
+  id,
+  title,
+  hotkeysActive,
+}: LiveChaseWidgetProps) => {
   const liveChaseState = useApiStateEntry('liveChases', id)
 
   if (!liveChaseState) {
@@ -24,6 +29,7 @@ export const LiveChaseWidget = ({ id, title }: LiveChaseWidgetProps) => {
       id={id}
       state={liveChaseState}
       title={title ?? liveChaseState.name ?? `Live Chase ${id}`}
+      hotkeysActive={hotkeysActive}
     />
   )
 }

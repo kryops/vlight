@@ -12,13 +12,14 @@ import { memoInProduction } from '../../util/development'
 
 export interface FixtureGroupWidgetProps {
   group: FixtureGroup
+  hotkeysActive?: boolean
 }
 
 /**
  * Widget to display a fixture group.
  */
 export const FixtureGroupWidget = memoInProduction(
-  ({ group }: FixtureGroupWidgetProps) => {
+  ({ group, hotkeysActive }: FixtureGroupWidgetProps) => {
     const groupState = useApiStateEntry('fixtureGroups', group.id)
     const groupMapping = useCommonFixtureMapping(group.fixtures)
 
@@ -41,6 +42,7 @@ export const FixtureGroupWidget = memoInProduction(
         }
         fixtureState={groupState}
         mapping={groupMapping}
+        hotkeysActive={hotkeysActive}
         onChange={partialState =>
           setFixtureGroupState(
             group.id,

@@ -10,6 +10,23 @@ import { dynamicPageRoute } from '../../pages/routes'
 
 import { NavItem } from './nav-item'
 
+const navigationHotkeys = [
+  'Shift+1',
+  'Shift+2',
+  'Shift+3',
+  'Shift+4',
+  'Shift+5',
+  'Shift+6',
+  'Shift+7',
+  'Shift+8',
+  'Shift+9',
+  'Shift+q',
+  'Shift+w',
+  'Shift+e',
+  'Shift+r',
+  'Shift+t',
+]
+
 const navigation = css`
   flex: 0 0 auto;
   height: 100%;
@@ -53,23 +70,27 @@ export const Navigation = memoInProduction(
 
     return (
       <div className={cx(navigation, floating && navigation_floating)}>
-        {mainNavigationItems.map(({ route, icon, label, highlighted }) => (
-          <NavItem
-            key={route}
-            to={route}
-            icon={icon}
-            label={label}
-            showLabel={showLabels}
-            highlighted={highlighted?.(apiState) ?? false}
-          />
-        ))}
-        {dynamicPages.map(({ id, icon, headline }) => (
+        {mainNavigationItems.map(
+          ({ route, icon, label, highlighted }, index) => (
+            <NavItem
+              key={route}
+              to={route}
+              icon={icon}
+              label={label}
+              showLabel={showLabels}
+              highlighted={highlighted?.(apiState) ?? false}
+              hotkey={navigationHotkeys[index]}
+            />
+          )
+        )}
+        {dynamicPages.map(({ id, icon, headline }, index) => (
           <NavItem
             key={id}
             to={dynamicPageRoute(id)}
             icon={icon ?? iconDynamicPage}
             label={headline ?? id}
             showLabel={showLabels}
+            hotkey={navigationHotkeys[index + mainNavigationItems.length]}
           />
         ))}
       </div>

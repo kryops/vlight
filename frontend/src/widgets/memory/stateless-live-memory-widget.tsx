@@ -49,13 +49,14 @@ export interface StatelessLiveMemoryWidgetProps {
   id: IdType
   state: LiveMemory
   title?: string
+  hotkeysActive?: boolean
 }
 
 /**
  * Stateless widget to display a live memory.
  */
 export const StatelessLiveMemoryWidget = memoInProduction(
-  ({ id, state, title }: StatelessLiveMemoryWidgetProps) => {
+  ({ id, state, title, hotkeysActive }: StatelessLiveMemoryWidgetProps) => {
     return (
       <Widget
         icon={iconLiveMemory}
@@ -63,6 +64,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
         onTitleClick={() => setLiveMemoryState(id, { on: !state.on }, true)}
         turnedOn={state.on}
         contentClassName={flexWrap}
+        hotkeysActive={hotkeysActive}
         titleSide={
           <div className={controls}>
             <Button

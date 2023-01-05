@@ -5,6 +5,7 @@ import { Icon } from '../icons/icon'
 import { zOverlay, primaryShade, baseline, iconShade } from '../styles'
 import { iconClose } from '../icons'
 import { ErrorBoundary } from '../../util/error-boundary'
+import { useHotkey } from '../../hooks/hotkey'
 
 import { removeOverlay, addOverlay } from './overlay'
 import { ModalButton } from './buttons'
@@ -131,6 +132,26 @@ export function Modal<T>({
   closeOnBackDrop = false,
   showCloseButton = false,
 }: ModalProps<T>) {
+  useHotkey(
+    'Esc',
+    () => {
+      const closeOrNoButton = buttons?.find(
+        button => button.value === null || button.value === false
+      )
+      if (closeOrNoButton) onClose(closeOrNoButton.value)
+    },
+    { forceActive: true }
+  )
+
+  useHotkey(
+    'Return',
+    () => {
+      const okButton = buttons?.find(button => button.value === true)
+      if (okButton) onClose(okButton.value)
+    },
+    { forceActive: true }
+  )
+
   return (
     <div
       className={backDrop}

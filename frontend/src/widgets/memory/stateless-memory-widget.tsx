@@ -26,13 +26,14 @@ const fader = css`
 export interface StatelessMemoryWidgetProps {
   memory: Memory
   state: MemoryState
+  hotkeysActive?: boolean
 }
 
 /**
  * Stateless widget to display a memory.
  */
 export const StatelessMemoryWidget = memoInProduction(
-  ({ memory, state }: StatelessMemoryWidgetProps) => {
+  ({ memory, state, hotkeysActive }: StatelessMemoryWidgetProps) => {
     return (
       <Widget
         key={memory.id}
@@ -57,6 +58,7 @@ export const StatelessMemoryWidget = memoInProduction(
           )
         }
         turnedOn={state.on}
+        hotkeysActive={hotkeysActive}
       >
         <div className={container}>
           <div className={faderContainer}>
@@ -88,6 +90,8 @@ export const StatelessMemoryWidget = memoInProduction(
               )
             }
             onUp={() => setMemoryState(memory.id, { on: false }, true)}
+            title="Instant on/off"
+            hotkey="m"
           />
         </div>
       </Widget>

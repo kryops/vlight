@@ -1,6 +1,6 @@
 import { useParams } from 'react-router'
 import { useState } from 'react'
-import { DynamicPage as DynamicPageEntity } from '@vlight/types'
+import { DynamicPage as DynamicPageEntity, WidgetConfig } from '@vlight/types'
 
 import { useMasterData, useRawMasterData } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'
@@ -12,6 +12,13 @@ import { DynamicPageEditor } from '../config/entities/editors/dynamic-page-edito
 import { editEntity } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { centeredText } from '../../ui/css/basic-styles'
+import { useNumberHotkey } from '../../hooks/hotkey'
+
+const widgetTypesWithoutHotkeys: Array<WidgetConfig['type']> = [
+  'universe',
+  'channels',
+  'map',
+]
 
 /**
  * Displays a user-configured dynamic page with an ID given as route param.
@@ -25,6 +32,11 @@ const DynamicPage = memoInProduction(() => {
 
   const page = masterData.dynamicPages.find(p => p.id === id)
   const rawPage = rawMasterData.dynamicPages.find(p => p.id === id)
+
+  const flatWidgets = (page?.rows ?? [])
+    .flatMap(row => row.cells.flatMap(cell => cell.widgets))
+    .filter(widget => !widgetTypesWithoutHotkeys.includes(widget.type))
+  const activeHotkeyIndex = useNumberHotkey(flatWidgets.length)
 
   if (!page || !rawPage) return null
 
@@ -92,7 +104,13 @@ const DynamicPage = memoInProduction(() => {
               children: (
                 <>
                   {widgets.map((widget, index) => (
-                    <DynamicWidget key={index} config={widget} />
+                    <DynamicWidget
+                      key={index}
+                      config={widget}
+                      hotkeysActive={
+                        flatWidgets.indexOf(widget) === activeHotkeyIndex
+                      }
+                    />
                   ))}
                 </>
               ),
