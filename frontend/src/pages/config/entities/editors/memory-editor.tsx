@@ -1,4 +1,5 @@
 import { css } from '@linaria/core'
+import { MemoryScene } from '@vlight/types'
 
 import { useFormState, useFormStateArray } from '../../../../hooks/form'
 import { FormTextInput } from '../../../../ui/forms/form-input'
@@ -14,6 +15,7 @@ import {
   editorTitle,
 } from '../../../../ui/css/editor-styles'
 import { newMemoryFactory } from '../new-entity-factories'
+import { useEvent } from '../../../../hooks/performance'
 
 import { MemorySceneEditor } from './memory-scene-editor'
 
@@ -35,6 +37,12 @@ export function MemoryEditor({
   const formState = useFormState(entry, { onChange })
   const scenes = useFormStateArray(formState, 'scenes')
 
+  const changeScene = useEvent(
+    (newScene: MemoryScene, oldScene: MemoryScene) => {
+      scenes.update(oldScene, newScene)
+    }
+  )
+
   return (
     <>
       <h2 className={editorTitle}>{entry.id ? 'Edit' : 'Add'} Memory</h2>
@@ -53,10 +61,7 @@ export function MemoryEditor({
                     <Icon icon={iconDelete} inline hoverable />
                   </a>
                 </h3>
-                <MemorySceneEditor
-                  scene={scene}
-                  onChange={newScene => scenes.update(scene, newScene)}
-                />
+                <MemorySceneEditor scene={scene} onChange={changeScene} />
               </div>
             ))}
             <a onClick={() => scenes.add(newMemoryFactory().scenes[0])}>

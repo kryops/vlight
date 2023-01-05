@@ -17,6 +17,7 @@ import { faderContainer } from '../../ui/css/fader-container'
 import { getFixtureStateColor } from '../../util/fixtures'
 import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
 import { baseline } from '../../ui/styles'
+import { useEvent } from '../../hooks/performance'
 
 const colorPickerIconStyle = css`
   margin-left: ${baseline(2)};
@@ -91,12 +92,10 @@ export const FixtureStateWidget = memoInProduction(
       />
     )
 
-    const onColorPickerChange = useCallback(
-      (color: ColorPickerColor) =>
-        onChange({
-          channels: { ...color },
-        }),
-      [onChange]
+    const onColorPickerChange = useEvent((color: ColorPickerColor) =>
+      onChange({
+        channels: { ...color },
+      })
     )
 
     return (

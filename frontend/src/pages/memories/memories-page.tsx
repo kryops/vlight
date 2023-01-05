@@ -21,7 +21,8 @@ const MemoriesPage = memoInProduction(() => {
   const { memories } = useMasterData()
 
   const liveMemoriesCount = useApiStateSelector(
-    apiState => Object.keys(apiState.liveMemories).length
+    apiState => Object.keys(apiState.liveMemories).length,
+    { event: 'liveMemories' }
   )
   const activeHotkeyIndex = useNumberHotkey(memories.length + liveMemoriesCount)
 

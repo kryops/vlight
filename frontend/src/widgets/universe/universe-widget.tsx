@@ -1,4 +1,6 @@
-import { useDmxUniverse, useMasterData } from '../../hooks/api'
+import { apiState } from '../../api/api-state'
+import { getUniverseIndex } from '../../api/util'
+import { useApiStateSelector, useMasterData } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'
 
 import { StatelessUniverseWidget } from './stateless-universe-widget'
@@ -16,12 +18,21 @@ export interface UniverseWidgetProps {
  */
 export const UniverseWidget = memoInProduction(
   ({ from, to, title }: UniverseWidgetProps) => {
-    const universe = useDmxUniverse()
+    // only re-render if the displayed channels actually change
+    useApiStateSelector<number[] | undefined>(
+      currentApiState =>
+        currentApiState.universe?.slice(
+          getUniverseIndex(from),
+          getUniverseIndex(to)
+        ),
+      { includeUniverse: true, event: 'universe' }
+    )
+
     const masterData = useMasterData()
 
     return (
       <StatelessUniverseWidget
-        universe={universe}
+        universe={apiState.universe!}
         masterData={masterData}
         from={from}
         to={to}

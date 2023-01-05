@@ -6,6 +6,7 @@ import { zOverlay, primaryShade, baseline, iconShade } from '../styles'
 import { iconClose } from '../icons'
 import { ErrorBoundary } from '../../util/error-boundary'
 import { useHotkey } from '../../hooks/hotkey'
+import { useEvent } from '../../hooks/performance'
 
 import { removeOverlay, addOverlay } from './overlay'
 import { ModalButton } from './buttons'
@@ -152,10 +153,12 @@ export function Modal<T>({
     { forceActive: true }
   )
 
+  const closeModal = useEvent(() => onClose(null as any))
+
   return (
     <div
       className={backDrop}
-      onClick={closeOnBackDrop ? () => onClose(null as any) : undefined}
+      onClick={closeOnBackDrop ? closeModal : undefined}
     >
       <div className={modalContainer}>
         <div className={modal}>
@@ -164,7 +167,7 @@ export function Modal<T>({
               icon={iconClose}
               className={closeButton}
               hoverable
-              onClick={() => onClose(null as any)}
+              onClick={closeModal}
             />
           )}
           {title && <h2 className={titleStyle}>{title}</h2>}

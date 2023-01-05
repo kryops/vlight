@@ -124,3 +124,10 @@ export function preferredOrder<T>(arr: T[], preferred: T[]): T[] {
 export function toArray<T>(value: T | T[]): T[] {
   return Array.isArray(value) ? value : [value]
 }
+
+/**
+ * Does a shallow comparison between two arrays.
+ */
+export function arrayShallowEqual<T>(a: T[], b: T[]): boolean {
+  return a.length === b.length && a.every((value, index) => b[index] === value)
+}

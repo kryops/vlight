@@ -1,4 +1,6 @@
-import { useApiState } from '../../hooks/api'
+import { apiState } from '../../api/api-state'
+import { getUniverseIndex } from '../../api/util'
+import { useApiStateSelector } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'
 
 import { StatelessChannelsWidget } from './stateless-channels-widget'
@@ -14,11 +16,19 @@ export interface ChannelsWidgetProps {
  */
 export const ChannelsWidget = memoInProduction(
   ({ from, to, title }: ChannelsWidgetProps) => {
-    const channels = useApiState('channels')
+    // only re-render if the displayed channels change
+    useApiStateSelector<number[] | undefined>(
+      currentApiState =>
+        currentApiState.channels?.slice(
+          getUniverseIndex(from),
+          getUniverseIndex(to)
+        ),
+      { event: 'channels' }
+    )
 
     return (
       <StatelessChannelsWidget
-        channels={channels}
+        channels={apiState.channels!}
         from={from}
         to={to}
         title={title}

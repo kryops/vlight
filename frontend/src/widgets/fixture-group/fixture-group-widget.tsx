@@ -1,4 +1,4 @@
-import { FixtureGroup } from '@vlight/types'
+import { FixtureGroup, FixtureState } from '@vlight/types'
 import { mergeFixtureStates } from '@vlight/controls'
 
 import { setFixtureGroupState } from '../../api'
@@ -9,6 +9,7 @@ import { Icon } from '../../ui/icons/icon'
 import { iconConfig, iconGroup } from '../../ui/icons'
 import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { memoInProduction } from '../../util/development'
+import { useEvent } from '../../hooks/performance'
 
 export interface FixtureGroupWidgetProps {
   group: FixtureGroup
@@ -23,6 +24,17 @@ export const FixtureGroupWidget = memoInProduction(
     const groupState = useApiStateEntry('fixtureGroups', group.id)
     const groupMapping = useCommonFixtureMapping(group.fixtures)
 
+    const onChange = useEvent((partialState: Partial<FixtureState>) =>
+      setFixtureGroupState(
+        group.id,
+        mergeFixtureStates(groupState, partialState)
+      )
+    )
+
+    const openEditor = useEvent(() =>
+      openEntityEditorForId('fixtureGroups', group.id)
+    )
+
     if (!groupState) {
       return null
     }
@@ -34,7 +46,7 @@ export const FixtureGroupWidget = memoInProduction(
         titleSide={
           <Icon
             icon={iconConfig}
-            onClick={() => openEntityEditorForId('fixtureGroups', group.id)}
+            onClick={openEditor}
             shade={1}
             hoverable
             inline
@@ -43,12 +55,7 @@ export const FixtureGroupWidget = memoInProduction(
         fixtureState={groupState}
         mapping={groupMapping}
         hotkeysActive={hotkeysActive}
-        onChange={partialState =>
-          setFixtureGroupState(
-            group.id,
-            mergeFixtureStates(groupState, partialState)
-          )
-        }
+        onChange={onChange}
       />
     )
   }

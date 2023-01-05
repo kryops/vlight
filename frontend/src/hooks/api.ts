@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from 'react'
 import { MasterData, MasterDataMaps } from '@vlight/types'
+import { shallowEqual } from '@vlight/utils'
 
 import { masterDataMaps } from '../api/masterdata'
 import { ApiState } from '../api/worker/processing'
@@ -144,21 +145,22 @@ export function useMasterDataAndMaps(): MasterDataWithMaps {
   return { masterData, masterDataMaps }
 }
 
-/**
- * React Hook that returns the current DMX universe and re-renders on changes.
- *
- * NOTE: This Hook may re-render up to 20 times per second.
- */
-export const useDmxUniverse = (): number[] => useApiState('universe')
+export interface UseApiStateSelectorOptions {
+  /** Only event to listen to. */
+  event?: keyof ApiState
+  /** Controls whether to also listen to the universe event. */
+  includeUniverse?: boolean
+}
 
 /**
  * React Hook that returns the value selected from the API state,
  * only re-rendering on changes (except for the DMX universe).
  *
- * For complex values, you need to do a deep equality check.
+ * Does a shallow equality check on array and object values
  */
 export function useApiStateSelector<T>(
-  selector: (apiState: ApiState, oldValue: T | undefined) => T
+  selector: (apiState: ApiState, oldValue: T | undefined) => T,
+  options?: UseApiStateSelectorOptions
 ) {
   const [currentState, setCurrentState] = useState(
     selector(apiState, undefined)
@@ -167,17 +169,29 @@ export function useApiStateSelector<T>(
   selectorRef.current = selector
 
   useEffect(() => {
-    const listener = (eventName: string) => {
-      if (eventName === 'universe') return
+    const listener = (eventNameOrData: any) => {
+      if (eventNameOrData === 'universe' && !options?.includeUniverse) return
 
-      setCurrentState(oldValue => selectorRef.current(apiState, oldValue))
+      setCurrentState(oldValue => {
+        const newValue = selectorRef.current(apiState, oldValue)
+        return shallowEqual(newValue, oldValue) ? oldValue : newValue
+      })
     }
 
-    apiStateEmitter.onAny(listener)
+    if (options?.event) apiStateEmitter.on(options?.event, listener)
+    else apiStateEmitter.onAny(listener)
     return () => {
-      apiStateEmitter.offAny(listener)
+      if (options?.event) apiStateEmitter.off(options?.event, listener)
+      else apiStateEmitter.offAny(listener)
     }
-  }, [])
+  }, [options?.includeUniverse, options?.event])
 
   return currentState
 }
+
+/**
+ * React Hook that returns the current DMX universe and re-renders on changes.
+ *
+ * NOTE: This Hook may re-render up to 20 times per second.
+ */
+export const useDmxUniverse = (): number[] => useApiState('universe')

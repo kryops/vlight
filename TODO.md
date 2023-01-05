@@ -44,6 +44,7 @@
 
 ## Tech
 
+- Avoid more unnecessary re-rendering
 - Backend restructuring
   - easier masterData extension / new entity process?
 - Simplify / remove frontend API worker?

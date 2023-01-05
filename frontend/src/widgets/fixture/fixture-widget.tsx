@@ -1,10 +1,11 @@
-import { Fixture, FixtureType } from '@vlight/types'
+import { Fixture, FixtureState, FixtureType } from '@vlight/types'
 import { mergeFixtureStates } from '@vlight/controls'
 
 import { useMasterDataMaps, useApiStateEntry } from '../../hooks/api'
 import { setFixtureState } from '../../api'
 import { memoInProduction } from '../../util/development'
 import { iconLight } from '../../ui/icons'
+import { useEvent } from '../../hooks/performance'
 
 import { FixtureStateWidget } from './fixture-state-widget'
 
@@ -32,6 +33,13 @@ export const FixtureWidget = memoInProduction(
     const fixtureType = fixtureTypes.get(fixture.type)
     const fixtureState = useApiStateEntry('fixtures', fixture.id)
 
+    const onChange = useEvent((partialState: Partial<FixtureState>) =>
+      setFixtureState(
+        fixture.id,
+        mergeFixtureStates(fixtureState, partialState)
+      )
+    )
+
     if (!fixtureState || !fixtureType) {
       return null
     }
@@ -43,12 +51,7 @@ export const FixtureWidget = memoInProduction(
         fixtureState={fixtureState}
         mapping={fixtureType.mapping}
         hotkeysActive={hotkeysActive}
-        onChange={partialState =>
-          setFixtureState(
-            fixture.id,
-            mergeFixtureStates(fixtureState, partialState)
-          )
-        }
+        onChange={onChange}
       />
     )
   }

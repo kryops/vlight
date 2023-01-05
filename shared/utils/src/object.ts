@@ -26,3 +26,16 @@ export function mergeObjects<T extends Record<string, any>>(
 
   return result as T
 }
+
+/**
+ * Compares two objects for shallow equality
+ */
+export function objectShallowEqual<T extends object>(a: T, b: T): boolean {
+  if (Object.keys(a).length !== Object.keys(b).length) return false
+
+  for (const [key, value] of Object.entries(a)) {
+    if (value !== (b as any)[key]) return false
+  }
+
+  return true
+}

@@ -2,6 +2,7 @@ import { IdType } from '@vlight/types'
 import { ComponentType } from 'react'
 
 import { FormState } from '../../hooks/form'
+import { useEvent } from '../../hooks/performance'
 
 import { TextInput, TypedInputProps, NumberInput } from './typed-input'
 import { Checkbox } from './checkbox'
@@ -142,10 +143,14 @@ export function FormFixtureListInput<
   ...rest
 }: FormInputProps<TValue[], TValues, TName> &
   Omit<FixtureListInputProps, 'value' | 'onChange'>) {
+  const onChange = useEvent((value: string[]) =>
+    formState.changeValue(name, value as any)
+  )
+
   return (
     <FixtureListInput
       value={formState.values[name] as any}
-      onChange={value => formState.changeValue(name, value as any)}
+      onChange={onChange}
       {...rest}
     />
   )

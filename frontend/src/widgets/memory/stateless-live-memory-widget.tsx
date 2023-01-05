@@ -1,5 +1,6 @@
-import { IdType, LiveMemory } from '@vlight/types'
+import { IdType, LiveMemory, MemoryScene } from '@vlight/types'
 import { css } from '@linaria/core'
+import { useMemo } from 'react'
 
 import { deleteLiveMemory, setLiveMemoryState } from '../../api'
 import { MemorySceneEditor } from '../../pages/config/entities/editors/memory-scene-editor'
@@ -13,6 +14,7 @@ import { Button } from '../../ui/buttons/button'
 import { iconDelete, iconLiveMemory, iconRename } from '../../ui/icons'
 import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
 import { yesNo } from '../../ui/overlays/buttons'
+import { useDeepEqualMemo, useEvent } from '../../hooks/performance'
 
 import { MemoryPreview } from './memory-preview'
 
@@ -57,6 +59,18 @@ export interface StatelessLiveMemoryWidgetProps {
  */
 export const StatelessLiveMemoryWidget = memoInProduction(
   ({ id, state, title, hotkeysActive }: StatelessLiveMemoryWidgetProps) => {
+    const { on, value, ...rawScene } = state
+    const scene = useDeepEqualMemo(rawScene)
+    const scenes = useMemo(() => [scene], [scene])
+
+    const changeScene = useEvent((newState: MemoryScene) =>
+      setLiveMemoryState(id, newState, true)
+    )
+
+    const changeValue = useEvent((value: number) =>
+      setLiveMemoryState(id, { value }, true)
+    )
+
     return (
       <Widget
         icon={iconLiveMemory}
@@ -96,11 +110,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
         }
       >
         <div className={leftColumn}>
-          <MemorySceneEditor
-            scene={state}
-            onChange={newState => setLiveMemoryState(id, newState, true)}
-            compact
-          />
+          <MemorySceneEditor scene={scene} onChange={changeScene} compact />
         </div>
         <div className={cx(flexWrap, rightColumn)}>
           <Fader
@@ -108,9 +118,9 @@ export const StatelessLiveMemoryWidget = memoInProduction(
             max={255}
             step={1}
             value={state.value ?? 0}
-            onChange={value => setLiveMemoryState(id, { value }, true)}
+            onChange={changeValue}
           />
-          <MemoryPreview className={preview} scenes={[state]} />
+          <MemoryPreview className={preview} scenes={scenes} />
         </div>
       </Widget>
     )

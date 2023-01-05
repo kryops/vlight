@@ -9,6 +9,7 @@ import { editorTitle } from '../../ui/css/editor-styles'
 import { iconAdd, iconDelete } from '../../ui/icons'
 import { baseline, iconShade } from '../../ui/styles'
 import { cx } from '../../util/styles'
+import { useEvent } from '../../hooks/performance'
 
 import { ChaseColorEditor } from './chase-color-editor'
 import { getChasePreviewColor } from './utils'
@@ -87,10 +88,12 @@ export function ChaseColorsEditor({
   const effectiveIndex = Math.min(localState.length - 1, selectedIndex)
   const selectedColor: ChaseColor | undefined = localState[effectiveIndex]
 
-  const onChangeWrapper = (newColors: ChaseColor[]) => {
+  const onChangeWrapper = useEvent((newColors: ChaseColor[]) => {
     setLocalState(newColors)
     onChange(newColors)
-  }
+  })
+
+  const getCurrentColors = useEvent(() => localState)
 
   return (
     <>
@@ -160,7 +163,7 @@ export function ChaseColorsEditor({
       )}
 
       <ChaseColorPresets
-        currentColors={localState}
+        getCurrentColors={getCurrentColors}
         onChange={onChangeWrapper}
       />
     </>

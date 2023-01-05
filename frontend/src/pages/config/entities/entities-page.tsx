@@ -8,6 +8,7 @@ import { Icon } from '../../../ui/icons/icon'
 import { iconAdd } from '../../../ui/icons'
 import { BackLink } from '../../../ui/components/back-link'
 import { Header } from '../../../ui/containers/header'
+import { useEvent } from '../../../hooks/performance'
 
 import { entityUiMapping } from './entity-ui-mapping'
 import { EntityList } from './entity-list'
@@ -24,6 +25,8 @@ const EntitiesPage = memoInProduction(() => {
   const { type } = useParams<{ type: EntityName }>()
   const rawMasterData = useRawMasterData()
 
+  const openEditor = useEvent(() => type && openEntityEditor(type))
+
   if (!type || !entityUiMapping[type]) return null
   const entries = rawMasterData[type]
 
@@ -31,13 +34,7 @@ const EntitiesPage = memoInProduction(() => {
     <div>
       <Header
         rightContent={
-          <Icon
-            icon={iconAdd}
-            size={8}
-            hoverable
-            inline
-            onClick={() => openEntityEditor(type)}
-          />
+          <Icon icon={iconAdd} size={8} hoverable inline onClick={openEditor} />
         }
       >
         <BackArrow />

@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom'
 import { setLiveMemoryState, setMemoryState } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconAdd, iconConfig, iconLight, iconLightOff } from '../../ui/icons'
-import { useApiState, useMasterData } from '../../hooks/api'
+import { useApiStateSelector } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 import { openEntityEditor } from '../config/entities/editors'
 import { HotkeyContext } from '../../hooks/hotkey'
+import { apiState } from '../../api/api-state'
 
 /**
  * Corner actions for the memories page:
@@ -17,17 +18,18 @@ import { HotkeyContext } from '../../hooks/hotkey'
  * - All off
  */
 export function MemoriesActions() {
-  const { memories } = useMasterData()
-  const memoriesState = useApiState('memories')
-  const liveMemoriesState = useApiState('liveMemories')
+  const { allOn, allOff } = useApiStateSelector(apiState => ({
+    allOn: isAllOn(apiState.memories) && isAllOn(apiState.liveMemories),
+    allOff: !isAnyOn(apiState.memories) && !isAnyOn(apiState.liveMemories),
+  }))
 
   function setOnForAllMemories(on: boolean) {
     setMemoryState(
-      memories.map(it => it.id),
+      apiState.masterData!.memories.map(it => it.id),
       { on },
       true
     )
-    Object.entries(liveMemoriesState).forEach(([id, liveMemory]) => {
+    Object.entries(apiState.liveMemories).forEach(([id, liveMemory]) => {
       if (liveMemory.on !== on) {
         setLiveMemoryState(id, { on }, true)
       }
@@ -47,7 +49,7 @@ export function MemoriesActions() {
       <Button
         icon={iconLight}
         onClick={() => setOnForAllMemories(true)}
-        disabled={isAllOn(memoriesState) && isAllOn(liveMemoriesState)}
+        disabled={allOn}
         title="All on"
         hotkey="o"
       >
@@ -56,7 +58,7 @@ export function MemoriesActions() {
       <Button
         icon={iconLightOff}
         onClick={() => setOnForAllMemories(false)}
-        disabled={!isAnyOn(memoriesState) && !isAnyOn(liveMemoriesState)}
+        disabled={allOff}
         title="All off"
         hotkey="p"
       >

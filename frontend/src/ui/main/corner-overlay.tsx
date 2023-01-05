@@ -1,5 +1,6 @@
 import { css } from '@linaria/core'
 
+import { useEvent } from '../../hooks/performance'
 import { useSettings } from '../../hooks/settings'
 import { MapWidget } from '../../widgets/map/map-widget'
 import { useBreakpoint } from '../hooks/breakpoint'
@@ -40,6 +41,11 @@ export function CornerOverlay() {
 
   const displayMiniMap = isLarge && miniMap
 
+  const toggleMiniMap = useEvent(() => updateSettings({ miniMap: !miniMap }))
+  const toggleLightMode = useEvent(() =>
+    updateSettings({ lightMode: !lightMode })
+  )
+
   return (
     <>
       <div className={cornerOverlay}>
@@ -48,14 +54,14 @@ export function CornerOverlay() {
             className={cornerIcon}
             icon={iconMap}
             hoverable
-            onClick={() => updateSettings({ miniMap: !miniMap })}
+            onClick={toggleMiniMap}
           />
         )}
         <Icon
           className={cornerIcon}
           icon={iconLight}
           hoverable
-          onClick={() => updateSettings({ lightMode: !lightMode })}
+          onClick={toggleLightMode}
         />
       </div>
       {displayMiniMap && <MapWidget className={miniMapOverlay} />}

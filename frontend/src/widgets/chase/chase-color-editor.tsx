@@ -3,8 +3,12 @@ import { ChaseColor } from '@vlight/types'
 import { highestRandomValue } from '@vlight/utils'
 
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
+import { useEvent } from '../../hooks/performance'
 import { ColorPicker } from '../../ui/controls/colorpicker'
-import { colorPickerColors } from '../../ui/controls/colorpicker/util'
+import {
+  ColorPickerColor,
+  colorPickerColors,
+} from '../../ui/controls/colorpicker/util'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { faderContainer } from '../../ui/css/fader-container'
 
@@ -32,10 +36,6 @@ export function ChaseColorEditor({
 }: ChaseColorEditorProps) {
   const mapping = useCommonFixtureMapping(members)
 
-  const onChangeWrapper = (newColor: ChaseColor) => {
-    onChange(newColor)
-  }
-
   const renderFader = (channelType: string, index = 0) => (
     <ValueOrRandomFader
       max={255}
@@ -58,20 +58,17 @@ export function ChaseColorEditor({
   const g = highestRandomValue(color.channels[ChannelType.Green] ?? 0)
   const b = highestRandomValue(color.channels[ChannelType.Blue] ?? 0)
 
+  const changeColor = useEvent((colorPickerColor: ColorPickerColor) =>
+    onChange({
+      ...color,
+      channels: { ...color.channels, ...colorPickerColor },
+    })
+  )
+
   return (
     <div className={faderContainer}>
       {colorPickerCapable && (
-        <ColorPicker
-          r={r}
-          g={g}
-          b={b}
-          onChange={colorPickerColor =>
-            onChangeWrapper({
-              ...color,
-              channels: { ...color.channels, ...colorPickerColor },
-            })
-          }
-        />
+        <ColorPicker r={r} g={g} b={b} onChange={changeColor} />
       )}
       {mapping.map(renderFader)}
     </div>

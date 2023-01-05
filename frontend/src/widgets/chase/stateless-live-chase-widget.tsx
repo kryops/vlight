@@ -1,4 +1,4 @@
-import { IdType, LiveChase } from '@vlight/types'
+import { IdType, LiveChase, ValueOrRandom } from '@vlight/types'
 import { css } from '@linaria/core'
 import { useEffect, useState } from 'react'
 
@@ -13,6 +13,7 @@ import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
+import { useEvent, useShallowEqualMemo } from '../../hooks/performance'
 
 import { LiveChaseWidgetColorControls } from './live-chase-widget-color-controls'
 import { isLiveChaseCurrentlyFast, updateLiveChaseSpeed } from './utils'
@@ -49,8 +50,11 @@ export const StatelessLiveChaseWidget = memoInProduction(
     const update = (newState: Partial<LiveChase>) =>
       setLiveChaseState(id, newState, true)
 
-    const updateSpeed = (speed: number) =>
+    const changeSpeed = useEvent((speed: number) =>
       updateLiveChaseSpeed(id, state, speed)
+    )
+
+    const changeValue = useEvent((value: number) => update({ value }))
 
     const isCurrentlyFast = isLiveChaseCurrentlyFast(state)
     const [fastMode, setFastMode] = useState(isCurrentlyFast)
@@ -59,6 +63,25 @@ export const StatelessLiveChaseWidget = memoInProduction(
     useEffect(() => {
       if (!isCurrentlyFast) setFastMode(false)
     }, [isCurrentlyFast])
+
+    const members = useShallowEqualMemo(state.members)
+    const changeMembers = useEvent((members: string[]) => update({ members }))
+
+    const changeFadeTime = useEvent((value: number) =>
+      update({
+        fade: state.fadeLockedToSpeed ? (value / 100) * state.speed : value,
+      })
+    )
+
+    const toggleFadeLockedToSpeed = useEvent(() =>
+      update({ fadeLockedToSpeed: !state.fadeLockedToSpeed })
+    )
+
+    const changeLight = useEvent((light: ValueOrRandom<number>) =>
+      update({ light })
+    )
+
+    const toggleFastMode = useEvent(() => setFastMode(!fastMode))
 
     return (
       <Widget
@@ -72,8 +95,8 @@ export const StatelessLiveChaseWidget = memoInProduction(
       >
         <div className={leftColumn}>
           <FixtureListInput
-            value={state.members}
-            onChange={members => update({ members })}
+            value={members}
+            onChange={changeMembers}
             ordering
             compact
           />
@@ -86,14 +109,14 @@ export const StatelessLiveChaseWidget = memoInProduction(
               max={255}
               step={1}
               value={state.value ?? 0}
-              onChange={value => update({ value })}
+              onChange={changeValue}
               label="Value"
             />
             <Fader
               min={useFastMode ? liveChaseFastMinSpeed : liveChaseMinSpeed}
               max={liveChaseMaxSpeed}
               value={state.speed}
-              onChange={updateSpeed}
+              onChange={changeSpeed}
               label="Speed"
               subLabel={`${state.speed.toFixed(2)}s`}
             />
@@ -111,25 +134,17 @@ export const StatelessLiveChaseWidget = memoInProduction(
                   ? ((state.fade ?? 0) / state.speed) * 100
                   : state.fade ?? 0
               }
-              onChange={value =>
-                update({
-                  fade: state.fadeLockedToSpeed
-                    ? (value / 100) * state.speed
-                    : value,
-                })
-              }
+              onChange={changeFadeTime}
               label="Fade"
               subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
               bottomIcon={state.fadeLockedToSpeed ? iconPercentage : iconTime}
-              onBottomIconClick={() =>
-                update({ fadeLockedToSpeed: !state.fadeLockedToSpeed })
-              }
+              onBottomIconClick={toggleFadeLockedToSpeed}
             />
             <ValueOrRandomFader
               min={0}
               max={1}
               value={state.light}
-              onChange={light => update({ light })}
+              onChange={changeLight}
               label="Light"
             />
           </div>
@@ -138,7 +153,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
             id={id}
             state={state}
             title={title}
-            onToggleFastMode={() => setFastMode(!fastMode)}
+            onToggleFastMode={toggleFastMode}
             useFastMode={useFastMode}
           />
         </div>

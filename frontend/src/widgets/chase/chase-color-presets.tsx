@@ -12,6 +12,7 @@ import { useMasterData } from '../../hooks/api'
 import { Icon } from '../../ui/icons/icon'
 import { yesNo } from '../../ui/overlays/buttons'
 import { flexContainer } from '../../ui/css/flex'
+import { memoInProduction } from '../../util/development'
 
 import { getChasePreviewColor } from './utils'
 
@@ -51,7 +52,7 @@ export interface ChaseColorPresetsProps {
   /**
    * The current colors to save in the preset
    */
-  currentColors: ChaseColor[]
+  getCurrentColors: () => ChaseColor[]
 
   onChange: (newValue: ChaseColor[]) => void
 }
@@ -59,113 +60,112 @@ export interface ChaseColorPresetsProps {
 /**
  * Displays the chase color presets and allows editing and deleting them.
  */
-export function ChaseColorPresets({
-  currentColors,
-  onChange,
-}: ChaseColorPresetsProps) {
-  const masterData = useMasterData()
-  const [editingPresets, setEditingPresets] = useState(false)
+export const ChaseColorPresets = memoInProduction(
+  ({ getCurrentColors, onChange }: ChaseColorPresetsProps) => {
+    const masterData = useMasterData()
+    const [editingPresets, setEditingPresets] = useState(false)
 
-  return (
-    <div className={presetsContainer}>
-      <div className={presetsInnerContainer}>
-        {masterData.chaseColorPresets.length === 0 && (
-          <i style={{ lineHeight: 2.4 }}>&nbsp; No presets saved.</i>
-        )}
-        {masterData.chaseColorPresets.map(preset => (
-          <Clickable
-            key={preset.id}
-            onClick={async () => {
-              if (editingPresets) {
-                const name = await showPromptDialog({
-                  title: 'Rename Preset',
-                  label: 'Name',
-                  initialValue: preset.name,
-                })
-                if (!name) return
-                editEntity('chaseColorPresets', {
-                  ...preset,
-                  name,
-                })
-              } else {
-                onChange(preset.colors)
-              }
-            }}
-            className={presetContainer}
-          >
-            <div className={presetColors}>
-              {preset.colors.map((color, index) => (
-                <div
-                  key={index}
-                  className={presetColor}
-                  style={{
-                    background: getChasePreviewColor(color),
-                  }}
-                />
-              ))}
-            </div>
-            <div className={presetName}>
-              {preset.name}
-              {editingPresets && (
-                <>
-                  <br />
-                  <br />
-                  <Icon
-                    size={4}
-                    icon={iconDelete}
-                    hoverable
-                    inline
-                    padding
-                    onClick={async event => {
-                      event.stopPropagation()
-                      const result = await showDialog(
-                        `Really delete color preset "${preset.name}"?`,
-                        yesNo
-                      )
-                      if (result) {
-                        return removeEntity('chaseColorPresets', preset.id)
-                      }
+    return (
+      <div className={presetsContainer}>
+        <div className={presetsInnerContainer}>
+          {masterData.chaseColorPresets.length === 0 && (
+            <i style={{ lineHeight: 2.4 }}>&nbsp; No presets saved.</i>
+          )}
+          {masterData.chaseColorPresets.map(preset => (
+            <Clickable
+              key={preset.id}
+              onClick={async () => {
+                if (editingPresets) {
+                  const name = await showPromptDialog({
+                    title: 'Rename Preset',
+                    label: 'Name',
+                    initialValue: preset.name,
+                  })
+                  if (!name) return
+                  editEntity('chaseColorPresets', {
+                    ...preset,
+                    name,
+                  })
+                } else {
+                  onChange(preset.colors)
+                }
+              }}
+              className={presetContainer}
+            >
+              <div className={presetColors}>
+                {preset.colors.map((color, index) => (
+                  <div
+                    key={index}
+                    className={presetColor}
+                    style={{
+                      background: getChasePreviewColor(color),
                     }}
                   />
-                </>
-              )}
-            </div>
-          </Clickable>
-        ))}
-      </div>
+                ))}
+              </div>
+              <div className={presetName}>
+                {preset.name}
+                {editingPresets && (
+                  <>
+                    <br />
+                    <br />
+                    <Icon
+                      size={4}
+                      icon={iconDelete}
+                      hoverable
+                      inline
+                      padding
+                      onClick={async event => {
+                        event.stopPropagation()
+                        const result = await showDialog(
+                          `Really delete color preset "${preset.name}"?`,
+                          yesNo
+                        )
+                        if (result) {
+                          return removeEntity('chaseColorPresets', preset.id)
+                        }
+                      }}
+                    />
+                  </>
+                )}
+              </div>
+            </Clickable>
+          ))}
+        </div>
 
-      <div>
-        <Button
-          icon={iconAdd}
-          title="Save current state as preset"
-          transparent
-          onClick={async () => {
-            const name = await showPromptDialog({
-              title: 'Save as Preset',
-              label: 'Name',
-            })
-            if (name === undefined) return
-
-            editEntity('chaseColorPresets', {
-              id: '',
-              name,
-              colors: currentColors,
-            })
-          }}
-        />
-        <br />
-        {masterData.chaseColorPresets.length > 0 && (
+        <div>
           <Button
-            icon={iconConfig}
-            title="Rename or delete presets"
+            icon={iconAdd}
+            title="Save current state as preset"
             transparent
-            active={editingPresets ? true : undefined}
             onClick={async () => {
-              setEditingPresets(!editingPresets)
+              const name = await showPromptDialog({
+                title: 'Save as Preset',
+                label: 'Name',
+              })
+              if (name === undefined) return
+
+              editEntity('chaseColorPresets', {
+                id: '',
+                name,
+                colors: getCurrentColors(),
+              })
             }}
           />
-        )}
+          <br />
+          {masterData.chaseColorPresets.length > 0 && (
+            <Button
+              icon={iconConfig}
+              title="Rename or delete presets"
+              transparent
+              active={editingPresets ? true : undefined}
+              onClick={async () => {
+                setEditingPresets(!editingPresets)
+              }}
+            />
+          )}
+        </div>
       </div>
-    </div>
-  )
-}
+    )
+  }
+)

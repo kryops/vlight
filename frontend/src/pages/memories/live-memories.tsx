@@ -1,6 +1,7 @@
 import { css } from '@linaria/core'
 
 import { setLiveMemoryState } from '../../api'
+import { apiState } from '../../api/api-state'
 import { useApiState } from '../../hooks/api'
 import { Header } from '../../ui/containers/header'
 import { pageWithWidgets } from '../../ui/css/page'
@@ -22,6 +23,26 @@ const container = css`
 const widgetContainer = css`
   margin-right: ${baseline(0)};
 `
+
+const addLiveMemory = async () => {
+  const name = await showPromptDialog({
+    title: 'Add Live Memory',
+    label: 'Name',
+  })
+  if (name === undefined) return
+
+  const newId = String(
+    Math.max(0, ...Object.keys(apiState.liveMemories).map(it => parseInt(it))) +
+      1
+  )
+
+  setLiveMemoryState(newId, {
+    ...entityUiMapping.memories!.newEntityFactory!().scenes[0],
+    value: 255,
+    on: false,
+    name: name || undefined,
+  })
+}
 
 export interface LiveMemoriesProps {
   activeHotkeyIndex?: number | null
@@ -47,27 +68,7 @@ export const LiveMemories = memoInProduction(
               size={8}
               hoverable
               inline
-              onClick={async () => {
-                const name = await showPromptDialog({
-                  title: 'Add Live Memory',
-                  label: 'Name',
-                })
-                if (name === undefined) return
-
-                const newId = String(
-                  Math.max(
-                    0,
-                    ...Object.keys(liveMemories).map(it => parseInt(it))
-                  ) + 1
-                )
-
-                setLiveMemoryState(newId, {
-                  ...entityUiMapping.memories!.newEntityFactory!().scenes[0],
-                  value: 255,
-                  on: false,
-                  name: name || undefined,
-                })
-              }}
+              onClick={addLiveMemory}
             />
           }
         >

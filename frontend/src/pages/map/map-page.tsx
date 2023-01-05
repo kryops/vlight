@@ -1,6 +1,6 @@
 import { css } from '@linaria/core'
 import { useReducer, useRef, useState } from 'react'
-import { Dictionary, FixtureState } from '@vlight/types'
+import { Dictionary, Fixture, FixtureState } from '@vlight/types'
 
 import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
@@ -8,12 +8,11 @@ import { MapWidget } from '../../widgets/map/map-widget'
 import { baseline } from '../../ui/styles'
 import { Button } from '../../ui/buttons/button'
 import { useApiState, useMasterDataAndMaps } from '../../hooks/api'
-import {
-  getCommonFixtureMapping,
-  mergeFixtureStates,
-} from '../../../../shared/controls/src'
+import { mergeFixtureStates } from '../../../../shared/controls/src'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 import { setFixtureState } from '../../api'
+import { useEvent } from '../../hooks/performance'
+import { useCommonFixtureMapping } from '../../hooks/fixtures'
 
 export const page = css`
   margin: -${baseline(1)};
@@ -51,6 +50,29 @@ const MapPage = memoInProduction(() => {
 
   const backupStateRef = useRef<Dictionary<FixtureState>>({})
 
+  const onFixtureDown = useEvent((fixture: Fixture) => {
+    if (!(fixtureStates[fixture.id] as any)?.__test)
+      backupStateRef.current[fixture.id] = fixtureStates[fixture.id]
+    return setFixtureState(fixture.id, fixtureTestState)
+  })
+
+  const onFixtureUp = useEvent((fixture: Fixture) => {
+    const backupState = backupStateRef.current[fixture.id] ?? {
+      on: false,
+      channels: {},
+    }
+    return setFixtureState(fixture.id, backupState)
+  })
+
+  const changeFixtureTestState = useEvent(
+    (partialState: Partial<FixtureState>) =>
+      setFixtureTestState(mergeFixtureStates(fixtureTestState, partialState))
+  )
+
+  const fixtureMapping = useCommonFixtureMapping(
+    masterDataAndMaps.masterData.fixtures.map(fixture => fixture.id)
+  )
+
   return (
     <>
       <Header>Map</Header>
@@ -58,27 +80,9 @@ const MapPage = memoInProduction(() => {
         <MapWidget
           standalone={true}
           displayChannels={fixtureTestMode}
-          onFixtureDown={
-            fixtureTestMode
-              ? fixture => {
-                  if (!(fixtureStates[fixture.id] as any)?.__test)
-                    backupStateRef.current[fixture.id] =
-                      fixtureStates[fixture.id]
-                  return setFixtureState(fixture.id, fixtureTestState)
-                }
-              : undefined
-          }
-          onFixtureUp={
-            fixtureTestMode
-              ? fixture => {
-                  const backupState = backupStateRef.current[fixture.id] ?? {
-                    on: false,
-                    channels: {},
-                  }
-                  return setFixtureState(fixture.id, backupState)
-                }
-              : undefined
-          }
+          key={fixtureTestMode ? '1' : '0'}
+          onFixtureDown={fixtureTestMode ? onFixtureDown : undefined}
+          onFixtureUp={fixtureTestMode ? onFixtureUp : undefined}
         />
         <div>
           <Button active={fixtureTestMode} onClick={toggleFixtureTestMode}>
@@ -90,15 +94,8 @@ const MapPage = memoInProduction(() => {
             disableOn
             title="Fixture Test State"
             fixtureState={fixtureTestState}
-            mapping={getCommonFixtureMapping(
-              masterDataAndMaps.masterData.fixtures.map(fixture => fixture.id),
-              masterDataAndMaps
-            )}
-            onChange={partialState =>
-              setFixtureTestState(
-                mergeFixtureStates(fixtureTestState, partialState)
-              )
-            }
+            mapping={fixtureMapping}
+            onChange={changeFixtureTestState}
           />
         )}
       </div>

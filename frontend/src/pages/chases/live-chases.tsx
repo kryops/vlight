@@ -13,6 +13,7 @@ import { cx } from '../../util/styles'
 import { StatelessLiveChaseWidget } from '../../widgets/chase/stateless-live-chase-widget'
 import { showPromptDialog } from '../../ui/overlays/dialog'
 import { memoInProduction } from '../../util/development'
+import { apiState } from '../../api/api-state'
 
 const container = css`
   margin-top: ${baseline(4)};
@@ -40,6 +41,22 @@ function getNewLiveChase(): LiveChase {
   }
 }
 
+const addLiveChase = async () => {
+  const name = await showPromptDialog({
+    title: 'Add Live Chase',
+    label: 'Name',
+  })
+  if (name === undefined) return
+
+  const newId = String(
+    Math.max(0, ...Object.keys(apiState.liveChases).map(it => parseInt(it))) + 1
+  )
+  setLiveChaseState(newId, {
+    ...getNewLiveChase(),
+    name: name || undefined,
+  })
+}
+
 export interface LiveChasesProps {
   activeHotkeyIndex?: number | null
 }
@@ -61,24 +78,7 @@ export const LiveChases = memoInProduction(
               size={8}
               hoverable
               inline
-              onClick={async () => {
-                const name = await showPromptDialog({
-                  title: 'Add Live Chase',
-                  label: 'Name',
-                })
-                if (name === undefined) return
-
-                const newId = String(
-                  Math.max(
-                    0,
-                    ...Object.keys(liveChases).map(it => parseInt(it))
-                  ) + 1
-                )
-                setLiveChaseState(newId, {
-                  ...getNewLiveChase(),
-                  name: name || undefined,
-                })
-              }}
+              onClick={addLiveChase}
             />
           }
         >

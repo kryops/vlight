@@ -1,20 +1,28 @@
 import { setLiveChaseState } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconLight, iconLightOff } from '../../ui/icons'
-import { useApiState } from '../../hooks/api'
+import { useApiStateSelector } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { HotkeyContext } from '../../hooks/hotkey'
+import { memoInProduction } from '../../util/development'
+import { apiState } from '../../api/api-state'
 
 /**
  * Corner actions for the chases page:
  * - All on
  * - All off
  */
-export function ChasesActions() {
-  const liveChasesState = useApiState('liveChases')
+export const ChasesActions = memoInProduction(() => {
+  const { allOn, allOff } = useApiStateSelector(
+    apiState => ({
+      allOn: isAllOn(apiState.liveChases),
+      allOff: !isAnyOn(apiState.liveChases),
+    }),
+    { event: 'liveChases' }
+  )
 
   function setOnForAllChases(on: boolean) {
-    Object.entries(liveChasesState).forEach(([id, liveChase]) => {
+    Object.entries(apiState.liveChases).forEach(([id, liveChase]) => {
       if (liveChase.on !== on) {
         setLiveChaseState(id, { on }, true)
       }
@@ -26,7 +34,7 @@ export function ChasesActions() {
       <Button
         icon={iconLight}
         onClick={() => setOnForAllChases(true)}
-        disabled={isAllOn(liveChasesState)}
+        disabled={allOn}
         title="All on"
         hotkey="o"
       >
@@ -35,7 +43,7 @@ export function ChasesActions() {
       <Button
         icon={iconLightOff}
         onClick={() => setOnForAllChases(false)}
-        disabled={!isAnyOn(liveChasesState)}
+        disabled={allOff}
         title="All off"
         hotkey="p"
       >
@@ -43,4 +51,4 @@ export function ChasesActions() {
       </Button>
     </HotkeyContext.Provider>
   )
-}
+})

@@ -3,8 +3,9 @@ import { createRangeArray } from '@vlight/utils'
 import { setChannels } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconLight, iconLightOff } from '../../ui/icons'
-import { useApiState } from '../../hooks/api'
+import { useApiStateSelector } from '../../hooks/api'
 import { HotkeyContext } from '../../hooks/hotkey'
+import { memoInProduction } from '../../util/development'
 
 const allChannels = createRangeArray(1, 512)
 
@@ -13,10 +14,17 @@ const allChannels = createRangeArray(1, 512)
  * - All on
  * - All off
  */
-export function ChannelsActions() {
-  const channelsState = useApiState('channels')
-  const isActive = channelsState.some(value => value !== 0)
-  const isFullOn = isActive && channelsState.every(value => value === 255)
+export const ChannelsActions = memoInProduction(() => {
+  const { isActive, isFullOn } = useApiStateSelector(
+    ({ channels }) => {
+      const isActive = channels?.some(value => value !== 0)
+      return {
+        isActive,
+        isFullOn: isActive && channels?.every(value => value === 255),
+      }
+    },
+    { event: 'channels' }
+  )
 
   return (
     <HotkeyContext.Provider value={true}>
@@ -40,4 +48,4 @@ export function ChannelsActions() {
       </Button>
     </HotkeyContext.Provider>
   )
-}
+})

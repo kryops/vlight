@@ -4,6 +4,7 @@ import {
   MemorySceneState,
   MemoryScene,
   FixtureStateGradient,
+  FixtureState,
 } from '@vlight/types'
 import { ensureBetween } from '@vlight/utils'
 import {
@@ -24,6 +25,7 @@ import { getFixtureStateColor } from '../../../../util/fixtures'
 import { cx } from '../../../../util/styles'
 import { editorTitle } from '../../../../ui/css/editor-styles'
 import { flexContainer } from '../../../../ui/css/flex'
+import { useDeepEqualMemo, useEvent } from '../../../../hooks/performance'
 
 const widget = css`
   border: none;
@@ -158,6 +160,22 @@ export function MemorySceneStateEditor({
   const activeGradientStop =
     Array.isArray(localState) && localState[currentStop]
 
+  const fixtureState = useDeepEqualMemo<FixtureState>({
+    on: true,
+    channels: activeGradientStop ? activeGradientStop.channels : {},
+  })
+
+  const changeGradientStop = useEvent((newState: Partial<FixtureState>) =>
+    setGradientEntry(currentStop, { channels: newState.channels })
+  )
+
+  const changeFixtureState = useEvent((partialState: Partial<FixtureState>) => {
+    if (Array.isArray(localState)) return
+    const newState = mergeFixtureStates(localState, partialState)
+    setLocalState(newState)
+    onChange(newState)
+  })
+
   const content = Array.isArray(localState) ? (
     <>
       <div
@@ -190,11 +208,9 @@ export function MemorySceneStateEditor({
       {activeGradientStop && (
         <>
           <FixtureStateWidget
-            fixtureState={{ on: true, channels: activeGradientStop.channels }}
+            fixtureState={fixtureState}
             mapping={mapping}
-            onChange={newState =>
-              setGradientEntry(currentStop, { channels: newState.channels })
-            }
+            onChange={changeGradientStop}
             disableOn
             className={widget}
           />
@@ -276,11 +292,7 @@ export function MemorySceneStateEditor({
     <FixtureStateWidget
       fixtureState={localState}
       mapping={mapping}
-      onChange={partialState => {
-        const newState = mergeFixtureStates(localState, partialState)
-        setLocalState(newState)
-        onChange(newState)
-      }}
+      onChange={changeFixtureState}
       disableOn
       className={widget}
     />

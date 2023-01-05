@@ -1,5 +1,6 @@
 import { Icon } from '../icons/icon'
 import { iconCheckbox_checked, iconCheckbox } from '../icons'
+import { useEvent } from '../../hooks/performance'
 
 export interface CheckboxProps {
   value: boolean | undefined
@@ -17,10 +18,12 @@ export function Checkbox({
   inline,
   className,
 }: CheckboxProps) {
+  const toggle = useEvent(() => onChange(!value))
+
   return (
     <Icon
       icon={value ? iconCheckbox_checked : iconCheckbox}
-      onClick={() => onChange(!value)}
+      onClick={toggle}
       inline={inline}
       className={className}
     />

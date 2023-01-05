@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'
 import { setFixtureState } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconConfig, iconLight, iconLightOff } from '../../ui/icons'
-import { useApiState, useMasterData } from '../../hooks/api'
+import { useApiStateSelector } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 import { HotkeyContext } from '../../hooks/hotkey'
+import { apiState } from '../../api/api-state'
 
 /**
  * Corner actions for the fixtures page:
@@ -15,12 +16,17 @@ import { HotkeyContext } from '../../hooks/hotkey'
  * - All off
  */
 export function FixturesActions() {
-  const { fixtures } = useMasterData()
-  const fixturesState = useApiState('fixtures')
+  const { allOn, allOff } = useApiStateSelector(
+    apiState => ({
+      allOn: isAllOn(apiState.fixtures),
+      allOff: !isAnyOn(apiState.fixtures),
+    }),
+    { event: 'fixtures' }
+  )
 
   function setOnForAllFixtures(on: boolean) {
     setFixtureState(
-      fixtures.map(it => it.id),
+      apiState.masterData!.fixtures.map(it => it.id),
       { on },
       true
     )
@@ -34,7 +40,7 @@ export function FixturesActions() {
       <Button
         icon={iconLight}
         onClick={() => setOnForAllFixtures(true)}
-        disabled={isAllOn(fixturesState)}
+        disabled={allOn}
         title="All on"
         hotkey="o"
       >
@@ -43,7 +49,7 @@ export function FixturesActions() {
       <Button
         icon={iconLightOff}
         onClick={() => setOnForAllFixtures(false)}
-        disabled={!isAnyOn(fixturesState)}
+        disabled={allOff}
         title="All off"
         hotkey="p"
       >

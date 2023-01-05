@@ -2,6 +2,7 @@ import { css } from '@linaria/core'
 import { Memory, MemoryState } from '@vlight/types'
 
 import { setMemoryState } from '../../api'
+import { useEvent } from '../../hooks/performance'
 import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { Button } from '../../ui/buttons/button'
 import { Widget } from '../../ui/containers/widget'
@@ -34,6 +35,20 @@ export interface StatelessMemoryWidgetProps {
  */
 export const StatelessMemoryWidget = memoInProduction(
   ({ memory, state, hotkeysActive }: StatelessMemoryWidgetProps) => {
+    const changeValue = useEvent((value: number) =>
+      setMemoryState(
+        memory.id,
+        {
+          value,
+        },
+        true
+      )
+    )
+
+    const openEditor = useEvent(() =>
+      openEntityEditorForId('memories', memory.id)
+    )
+
     return (
       <Widget
         key={memory.id}
@@ -42,7 +57,7 @@ export const StatelessMemoryWidget = memoInProduction(
         titleSide={
           <Icon
             icon={iconConfig}
-            onClick={() => openEntityEditorForId('memories', memory.id)}
+            onClick={openEditor}
             shade={1}
             hoverable
             inline
@@ -67,15 +82,7 @@ export const StatelessMemoryWidget = memoInProduction(
               max={255}
               step={1}
               value={state.value ?? 0}
-              onChange={value =>
-                setMemoryState(
-                  memory.id,
-                  {
-                    value,
-                  },
-                  true
-                )
-              }
+              onChange={changeValue}
             />
           </div>
           <Button

@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom'
 import { setFixtureGroupState } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconAdd, iconConfig, iconLight, iconLightOff } from '../../ui/icons'
-import { useApiState, useMasterData } from '../../hooks/api'
+import { useApiStateSelector } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 import { openEntityEditor } from '../config/entities/editors'
 import { HotkeyContext } from '../../hooks/hotkey'
+import { memoInProduction } from '../../util/development'
+import { apiState } from '../../api/api-state'
 
 /**
  * Corner actions for the fixture groups page:
@@ -16,13 +18,18 @@ import { HotkeyContext } from '../../hooks/hotkey'
  * - All on
  * - All off
  */
-export function FixtureGroupsActions() {
-  const { fixtureGroups } = useMasterData()
-  const fixtureGroupsState = useApiState('fixtureGroups')
+export const FixtureGroupsActions = memoInProduction(() => {
+  const { allOn, allOff } = useApiStateSelector(
+    apiState => ({
+      allOn: isAllOn(apiState.fixtureGroups),
+      allOff: !isAnyOn(apiState.fixtureGroups),
+    }),
+    { event: 'fixtureGroups' }
+  )
 
   function setOnForAllFixtureGroups(on: boolean) {
     setFixtureGroupState(
-      fixtureGroups.map(it => it.id),
+      apiState.masterData!.fixtureGroups.map(it => it.id),
       { on },
       true
     )
@@ -41,7 +48,7 @@ export function FixtureGroupsActions() {
       <Button
         icon={iconLight}
         onClick={() => setOnForAllFixtureGroups(true)}
-        disabled={isAllOn(fixtureGroupsState)}
+        disabled={allOn}
         title="All on"
         hotkey="o"
       >
@@ -50,7 +57,7 @@ export function FixtureGroupsActions() {
       <Button
         icon={iconLightOff}
         onClick={() => setOnForAllFixtureGroups(false)}
-        disabled={!isAnyOn(fixtureGroupsState)}
+        disabled={allOff}
         title="All off"
         hotkey="p"
       >
@@ -58,4 +65,4 @@ export function FixtureGroupsActions() {
       </Button>
     </HotkeyContext.Provider>
   )
-}
+})

@@ -1,7 +1,7 @@
-import { useCallback } from 'react'
 import { FixtureState } from '@vlight/types'
 
 import { memoInProduction } from '../../../util/development'
+import { useEvent } from '../../../hooks/performance'
 
 import { Fader } from './fader'
 
@@ -28,14 +28,12 @@ export interface FixtureStateFaderProps {
  */
 export const FixtureStateFader = memoInProduction(
   ({ channelType, value, colorPicker, onChange }: FixtureStateFaderProps) => {
-    const changeFn = useCallback(
-      (newValue: number) =>
-        onChange({
-          channels: {
-            [channelType]: newValue,
-          },
-        }),
-      [channelType, onChange]
+    const changeFn = useEvent((newValue: number) =>
+      onChange({
+        channels: {
+          [channelType]: newValue,
+        },
+      })
     )
     return (
       <Fader

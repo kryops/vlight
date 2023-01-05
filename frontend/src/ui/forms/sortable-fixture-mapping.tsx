@@ -7,6 +7,7 @@ import { useMasterDataMaps, useRawMasterData } from '../../hooks/api'
 import { baseline, primaryShade } from '../styles'
 import { SortableList } from '../containers/sortable-list'
 import { cx } from '../../util/styles'
+import { memoInProduction } from '../../util/development'
 
 const container = css`
   margin-top: ${baseline()};
@@ -50,53 +51,55 @@ export interface SortableFixtureMappingProps {
 /**
  * Sortable list of fixture mapping strings.
  */
-export function SortableFixtureMapping({
-  value,
-  onChange,
-  compact,
-}: SortableFixtureMappingProps) {
-  const rawMasterData = useRawMasterData()
-  const masterDataMaps = useMasterDataMaps()
+export const SortableFixtureMapping = memoInProduction(
+  ({ value, onChange, compact }: SortableFixtureMappingProps) => {
+    const rawMasterData = useRawMasterData()
+    const masterDataMaps = useMasterDataMaps()
 
-  return (
-    <SortableList
-      entries={value}
-      getKey={value => value}
-      onChange={onChange}
-      containerClassName={cx(container, compact && container_compact)}
-      entryClassName={entryStyle}
-      renderEntryContent={entry => {
-        let name: string
+    return (
+      <SortableList
+        entries={value}
+        getKey={value => value}
+        onChange={onChange}
+        containerClassName={cx(container, compact && container_compact)}
+        entryClassName={entryStyle}
+        renderEntryContent={entry => {
+          let name: string
 
-        if (entry.startsWith(FixtureMappingPrefix.All)) {
-          const id = entry.slice(FixtureMappingPrefix.All.length)
-          name = `[All]: ${
-            rawMasterData.fixtures.find(fixture => fixture.id === id)?.name ??
-            id
-          }`
-        } else if (entry.startsWith(FixtureMappingPrefix.Group)) {
-          const id = entry.slice(FixtureMappingPrefix.Group.length)
-          name = `[Group]: ${masterDataMaps.fixtureGroups.get(id)?.name ?? id}`
-        } else if (entry.startsWith(FixtureMappingPrefix.Type)) {
-          const id = entry.slice(FixtureMappingPrefix.Type.length)
-          name = `[Type]: ${masterDataMaps.fixtureTypes.get(id)?.name ?? id}`
-        } else {
-          name = masterDataMaps.fixtures.get(entry)?.name ?? entry
-        }
+          if (entry.startsWith(FixtureMappingPrefix.All)) {
+            const id = entry.slice(FixtureMappingPrefix.All.length)
+            name = `[All]: ${
+              rawMasterData.fixtures.find(fixture => fixture.id === id)?.name ??
+              id
+            }`
+          } else if (entry.startsWith(FixtureMappingPrefix.Group)) {
+            const id = entry.slice(FixtureMappingPrefix.Group.length)
+            name = `[Group]: ${
+              masterDataMaps.fixtureGroups.get(id)?.name ?? id
+            }`
+          } else if (entry.startsWith(FixtureMappingPrefix.Type)) {
+            const id = entry.slice(FixtureMappingPrefix.Type.length)
+            name = `[Type]: ${masterDataMaps.fixtureTypes.get(id)?.name ?? id}`
+          } else {
+            name = masterDataMaps.fixtures.get(entry)?.name ?? entry
+          }
 
-        return (
-          <>
-            <Icon className={entryButton} icon={iconDrag} />
-            <div className={entryName}>{name}</div>
-            <Icon
-              className={entryButton}
-              icon={iconDelete}
-              hoverable
-              onClick={() => onChange((value ?? []).filter(it => it !== entry))}
-            />
-          </>
-        )
-      }}
-    />
-  )
-}
+          return (
+            <>
+              <Icon className={entryButton} icon={iconDrag} />
+              <div className={entryName}>{name}</div>
+              <Icon
+                className={entryButton}
+                icon={iconDelete}
+                hoverable
+                onClick={() =>
+                  onChange((value ?? []).filter(it => it !== entry))
+                }
+              />
+            </>
+          )
+        }}
+      />
+    )
+  }
+)

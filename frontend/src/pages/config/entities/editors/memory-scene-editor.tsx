@@ -13,6 +13,8 @@ import { FixtureListInput } from '../../../../ui/forms/fixture-list-input'
 import { SortableList } from '../../../../ui/containers/sortable-list'
 import { flexAuto } from '../../../../ui/css/flex'
 import { newMemoryFactory } from '../new-entity-factories'
+import { useEvent, useShallowEqualMemo } from '../../../../hooks/performance'
+import { memoInProduction } from '../../../../util/development'
 
 import { MemorySceneStateEditor } from './memory-scene-state-editor'
 
@@ -35,7 +37,7 @@ const memoryScenePatternEntries: SelectEntry<MemoryScene['pattern']>[] = [
 
 export interface MemorySceneEditorProps {
   scene: MemoryScene
-  onChange: (scene: MemoryScene) => void
+  onChange: (scene: MemoryScene, oldScene: MemoryScene) => void
   compact?: boolean
 }
 
@@ -44,98 +46,105 @@ export interface MemorySceneEditorProps {
  *
  * Displays a fixture list selection as well as a list of memory states.
  */
-export function MemorySceneEditor({
-  scene,
-  onChange,
-  compact,
-}: MemorySceneEditorProps) {
-  return (
-    <>
-      <FixtureListInput
-        value={scene.members}
-        onChange={newValue => onChange({ ...scene, members: newValue })}
-        ordering
-        compact={compact}
-      />
-      <Label
-        label={
-          <>
-            States{' '}
-            <Icon
-              icon={iconAdd}
-              hoverable
-              inline
-              onClick={() =>
-                onChange({
-                  ...scene,
-                  states: [
-                    ...scene.states,
-                    newMemoryFactory().scenes[0].states[0],
-                  ],
-                })
-              }
-            />
-          </>
-        }
-        input={
-          scene.states.length >= 2 && (
+export const MemorySceneEditor = memoInProduction(
+  ({ scene, onChange, compact }: MemorySceneEditorProps) => {
+    const members = useShallowEqualMemo(scene.members)
+    const changeMembers = useEvent((newValue: string[]) =>
+      onChange({ ...scene, members: newValue }, scene)
+    )
+
+    const addState = useEvent(() =>
+      onChange(
+        {
+          ...scene,
+          states: [...scene.states, newMemoryFactory().scenes[0].states[0]],
+        },
+        scene
+      )
+    )
+
+    return (
+      <>
+        <FixtureListInput
+          value={members}
+          onChange={changeMembers}
+          ordering
+          compact={compact}
+        />
+        <Label
+          label={
             <>
-              Pattern: &nbsp;
-              <Select
-                entries={memoryScenePatternEntries}
-                value={scene.pattern}
-                onChange={newValue => onChange({ ...scene, pattern: newValue })}
+              States <Icon icon={iconAdd} hoverable inline onClick={addState} />
+            </>
+          }
+          input={
+            scene.states.length >= 2 && (
+              <>
+                Pattern: &nbsp;
+                <Select
+                  entries={memoryScenePatternEntries}
+                  value={scene.pattern}
+                  onChange={newValue =>
+                    onChange({ ...scene, pattern: newValue }, scene)
+                  }
+                />
+              </>
+            )
+          }
+        />
+        <SortableList
+          entries={scene.states}
+          onChange={newValue => onChange({ ...scene, states: newValue }, scene)}
+          entryClassName={stateStyle}
+          renderEntryContent={state => (
+            <>
+              <div
+                className={flexAuto}
+                style={{
+                  background: getMemorySceneStatePreviewBackground(state),
+                }}
+                onClick={async () => {
+                  const result =
+                    await showDialogWithReturnValue<MemorySceneState>(
+                      onChange => (
+                        <MemorySceneStateEditor
+                          scene={scene}
+                          state={state}
+                          onChange={onChange}
+                        />
+                      ),
+                      okCancel,
+                      { showCloseButton: true }
+                    )
+                  if (result)
+                    onChange(
+                      {
+                        ...scene,
+                        states: scene.states.map(it =>
+                          it === state ? result : it
+                        ),
+                      },
+                      scene
+                    )
+                }}
+              />
+              <Icon
+                icon={iconDelete}
+                padding
+                onClick={() =>
+                  onChange(
+                    {
+                      ...scene,
+                      states: scene.states.filter(it => it !== state),
+                    },
+                    scene
+                  )
+                }
               />
             </>
-          )
-        }
-      />
-      <SortableList
-        entries={scene.states}
-        onChange={newValue => onChange({ ...scene, states: newValue })}
-        entryClassName={stateStyle}
-        renderEntryContent={state => (
-          <>
-            <div
-              className={flexAuto}
-              style={{
-                background: getMemorySceneStatePreviewBackground(state),
-              }}
-              onClick={async () => {
-                const result =
-                  await showDialogWithReturnValue<MemorySceneState>(
-                    onChange => (
-                      <MemorySceneStateEditor
-                        scene={scene}
-                        state={state}
-                        onChange={onChange}
-                      />
-                    ),
-                    okCancel,
-                    { showCloseButton: true }
-                  )
-                if (result)
-                  onChange({
-                    ...scene,
-                    states: scene.states.map(it =>
-                      it === state ? result : it
-                    ),
-                  })
-              }}
-            />
-            <Icon
-              icon={iconDelete}
-              padding
-              onClick={() =>
-                onChange({
-                  ...scene,
-                  states: scene.states.filter(it => it !== state),
-                })
-              }
-            />
-          </>
-        )}
-      />
-    </>
-  )
-}
+          )}
+        />
+      </>
+    )
+  }
+)

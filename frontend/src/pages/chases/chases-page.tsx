@@ -13,7 +13,8 @@ import { ChasesActions } from './chases-actions'
  */
 const ChasesPage = memoInProduction(() => {
   const liveChasesCount = useApiStateSelector(
-    apiState => Object.keys(apiState.liveChases).length
+    apiState => Object.keys(apiState.liveChases).length,
+    { event: 'liveChases' }
   )
   const activeHotkeyIndex = useNumberHotkey(liveChasesCount)
 
