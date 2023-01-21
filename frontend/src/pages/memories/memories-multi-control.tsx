@@ -1,5 +1,6 @@
+import { IdType } from '@vlight/types'
 import { average } from '@vlight/utils'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { setMemoryState } from '../../api'
 import {
@@ -7,7 +8,7 @@ import {
   useMasterData,
   useMasterDataAndMaps,
 } from '../../hooks/api'
-import { useEvent } from '../../hooks/performance'
+import { useEvent, useShallowEqualMemo } from '../../hooks/performance'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { Widget } from '../../ui/containers/widget'
@@ -40,14 +41,31 @@ function MemoriesMultiControlInner() {
     )
   )
 
+  const getDisplayValue = useCallback(
+    (id: IdType) => masterDataMaps.memories.get(id)?.name ?? id,
+    [masterDataMaps.memories]
+  )
+
+  const memoryIds = useShallowEqualMemo(masterData.memories.map(it => it.id))
+
+  const toggleOn = useEvent(() =>
+    setMemoryState(
+      selectedMemoryIds,
+      {
+        on: !on,
+      },
+      true
+    )
+  )
+
   return (
     <TwoColumDialogContainer
       left={
         <MultiToggleInput
           value={selectedMemoryIds}
-          entries={masterData.memories.map(it => it.id)}
+          entries={memoryIds}
           onChange={setSelectedMemoryIds}
-          getDisplayValue={id => masterDataMaps.memories.get(id)?.name ?? id}
+          getDisplayValue={getDisplayValue}
         />
       }
       right={
@@ -55,15 +73,7 @@ function MemoriesMultiControlInner() {
           <Widget
             icon={iconMemory}
             title={`${selectedMemoryIds.length} Memories`}
-            onTitleClick={() =>
-              setMemoryState(
-                selectedMemoryIds,
-                {
-                  on: !on,
-                },
-                true
-              )
-            }
+            onTitleClick={toggleOn}
             turnedOn={on}
           >
             <div className={faderContainer}>

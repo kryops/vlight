@@ -1,6 +1,18 @@
-import { EntityName, WidgetConfig } from '@vlight/types'
+import {
+  ChannelsWidgetConfig,
+  EntityName,
+  FixtureGroupWidgetConfig,
+  FixtureWidgetConfig,
+  IdType,
+  LiveChaseWidgetConfig,
+  LiveMemoryWidgetConfig,
+  MemoryWidgetConfig,
+  UniverseWidgetConfig,
+  WidgetConfig,
+} from '@vlight/types'
 import { css } from '@linaria/core'
 import { ensureBetween } from '@vlight/utils'
+import { useCallback } from 'react'
 
 import { baseline, primaryShade } from '../styles'
 import { cx } from '../../util/styles'
@@ -9,10 +21,13 @@ import { apiState } from '../../api/api-state'
 import { ApiState } from '../../api/worker/processing'
 import { Button } from '../buttons/button'
 import { flexContainer } from '../css/flex'
+import { useEvent } from '../../hooks/performance'
+import { memoInProduction } from '../../util/development'
+import { useApiState } from '../../hooks/api'
 
 import { Label } from './label'
 import { Select, SelectEntry } from './select'
-import { NumberInput, TextInput } from './typed-input'
+import { NumberInput, TextInput, TypedInputProps } from './typed-input'
 import { EntityReferenceSelect } from './entity-reference-select'
 import { ArrayInput } from './array-input'
 
@@ -108,6 +123,147 @@ const container = css`
   cursor: pointer;
 `
 
+interface WidgetTypeInputProps<T> {
+  value: T
+  onChange: (value: T) => void
+}
+
+function UniverseChannelWidgetInput({
+  value,
+  onChange,
+}: WidgetTypeInputProps<UniverseWidgetConfig | ChannelsWidgetConfig>) {
+  const changeFrom = useEvent((newValue: number | undefined): void =>
+    onChange({
+      ...value,
+      from: ensureBetween(newValue ?? 1, 1, 512),
+    })
+  )
+  const changeTo = useEvent((newValue: number | undefined): void =>
+    onChange({
+      ...value,
+      to: ensureBetween(newValue ?? 512, 1, 512),
+    })
+  )
+  const changeTitle = useEvent((newValue: string | undefined): void =>
+    onChange({
+      ...value,
+      title: newValue,
+    })
+  )
+
+  return (
+    <>
+      <Label
+        label="From"
+        input={
+          <NumberInput
+            value={value.from}
+            onChange={changeFrom}
+            min={1}
+            max={512}
+          />
+        }
+      />
+      <Label
+        label="To"
+        input={
+          <NumberInput value={value.to} onChange={changeTo} min={1} max={512} />
+        }
+      />
+      <Label
+        label="Title"
+        input={<TextInput value={value.title} onChange={changeTitle} />}
+      />
+    </>
+  )
+}
+
+function StaticEntitiesWidgetInput({
+  value,
+  onChange,
+}: WidgetTypeInputProps<
+  FixtureWidgetConfig | FixtureGroupWidgetConfig | MemoryWidgetConfig
+>) {
+  const changeEntities = useEvent((newValue: IdType[]): void =>
+    onChange({
+      ...value,
+      id: newValue,
+    })
+  )
+
+  return (
+    <Label
+      label="Entities"
+      input={
+        <ArrayInput
+          value={value.id}
+          onChange={changeEntities}
+          renderInput={inputProps => (
+            <EntityReferenceSelect
+              entity={widgetTypes[value.type].entityReference!}
+              addUndefinedOption
+              {...inputProps}
+            />
+          )}
+          displayRemoveButtons
+        />
+      }
+    />
+  )
+}
+
+function LiveEntitiesWidgetInput({
+  value,
+  onChange,
+}: WidgetTypeInputProps<LiveMemoryWidgetConfig | LiveChaseWidgetConfig>) {
+  const state = useApiState(widgetTypes[value.type].stateReference!)
+
+  const changeEntities = useEvent((newValue: IdType[]): void =>
+    onChange({
+      ...value,
+      id: newValue,
+    })
+  )
+
+  const renderInput = useCallback(
+    (inputProps: TypedInputProps<string>): JSX.Element => (
+      <Select
+        entries={[
+          undefined,
+          ...Object.keys(state ?? {}).map(id => {
+            const stateReference = state
+            return {
+              value: id,
+              label:
+                typeof stateReference === 'object' &&
+                (stateReference as any)[id] &&
+                (stateReference as any)[id].name
+                  ? (stateReference as any)[id].name
+                  : id,
+            }
+          }),
+        ]}
+        {...inputProps}
+      />
+    ),
+    [state]
+  )
+
+  return (
+    <Label
+      label="Entities"
+      input={
+        <ArrayInput
+          value={value.id}
+          onChange={changeEntities}
+          renderInput={renderInput}
+          displayRemoveButtons
+        />
+      }
+    />
+  )
+}
+
 export interface WidgetInputProps {
   value: WidgetConfig | undefined
   onChange: (value: WidgetConfig) => void
@@ -121,154 +277,54 @@ export interface WidgetInputProps {
 /**
  * Input to select a widget with.
  */
-export function WidgetInput({
-  value,
-  onChange,
-  onDelete,
-  className,
-}: WidgetInputProps) {
-  return (
-    <div className={cx(container, className)}>
-      <div className={flexContainer}>
-        <Select
-          entries={typeSelectEntries}
-          value={value?.type}
-          onChange={newValue => {
-            if (!newValue) return
-            onChange(widgetTypes[newValue].defaultValueFactory())
-          }}
-        />
-        {onDelete && (
-          <Button
-            icon={iconDelete}
-            title="Remove widget"
-            transparent
-            onClick={event => {
-              event?.stopPropagation()
-              onDelete()
-            }}
+export const WidgetInput = memoInProduction(
+  ({ value, onChange, onDelete, className }: WidgetInputProps) => {
+    const onChangeType = useEvent(
+      (newValue: WidgetConfig['type'] | undefined): void => {
+        if (!newValue) return
+        onChange(widgetTypes[newValue].defaultValueFactory())
+      }
+    )
+
+    const onDeleteInternal = useEvent(
+      (event?: { stopPropagation: () => void }) => {
+        event?.stopPropagation()
+        onDelete?.()
+      }
+    )
+
+    return (
+      <div className={cx(container, className)}>
+        <div className={flexContainer}>
+          <Select
+            entries={typeSelectEntries}
+            value={value?.type}
+            onChange={onChangeType}
           />
+          {onDelete && (
+            <Button
+              icon={iconDelete}
+              title="Remove widget"
+              transparent
+              onClick={onDeleteInternal}
+            />
+          )}
+        </div>
+
+        {(value?.type === 'universe' || value?.type === 'channels') && (
+          <UniverseChannelWidgetInput value={value} onChange={onChange} />
+        )}
+
+        {(value?.type === 'fixture' ||
+          value?.type === 'fixture-group' ||
+          value?.type === 'memory') && (
+          <StaticEntitiesWidgetInput value={value} onChange={onChange} />
+        )}
+
+        {(value?.type === 'live-memory' || value?.type === 'live-chase') && (
+          <LiveEntitiesWidgetInput value={value} onChange={onChange} />
         )}
       </div>
-
-      {(value?.type === 'universe' || value?.type === 'channels') && (
-        <>
-          <Label
-            label="From"
-            input={
-              <NumberInput
-                value={value.from}
-                onChange={newValue =>
-                  onChange({
-                    ...value,
-                    from: ensureBetween(newValue ?? 1, 1, 512),
-                  })
-                }
-                min={1}
-                max={512}
-              />
-            }
-          />
-          <Label
-            label="To"
-            input={
-              <NumberInput
-                value={value.to}
-                onChange={newValue =>
-                  onChange({
-                    ...value,
-                    to: ensureBetween(newValue ?? 512, 1, 512),
-                  })
-                }
-                min={1}
-                max={512}
-              />
-            }
-          />
-          <Label
-            label="Title"
-            input={
-              <TextInput
-                value={value.title}
-                onChange={newValue =>
-                  onChange({
-                    ...value,
-                    title: newValue,
-                  })
-                }
-              />
-            }
-          />
-        </>
-      )}
-
-      {(value?.type === 'fixture' ||
-        value?.type === 'fixture-group' ||
-        value?.type === 'memory') && (
-        <Label
-          label="Entities"
-          input={
-            <ArrayInput
-              value={value.id}
-              onChange={newValue =>
-                onChange({
-                  ...value,
-                  id: newValue,
-                })
-              }
-              renderInput={inputProps => (
-                <EntityReferenceSelect
-                  entity={widgetTypes[value.type].entityReference!}
-                  addUndefinedOption
-                  {...inputProps}
-                />
-              )}
-              displayRemoveButtons
-            />
-          }
-        />
-      )}
-
-      {(value?.type === 'live-memory' || value?.type === 'live-chase') && (
-        <Label
-          label="Entities"
-          input={
-            <ArrayInput
-              value={value.id}
-              onChange={newValue =>
-                onChange({
-                  ...value,
-                  id: newValue,
-                })
-              }
-              renderInput={inputProps => (
-                <Select
-                  entries={[
-                    undefined,
-                    ...Object.keys(
-                      apiState[widgetTypes[value.type].stateReference!] ?? {}
-                    ).map(id => {
-                      const stateReference =
-                        apiState[widgetTypes[value.type].stateReference!]
-                      return {
-                        value: id,
-                        label:
-                          typeof stateReference === 'object' &&
-                          (stateReference as any)[id] &&
-                          (stateReference as any)[id].name
-                            ? (stateReference as any)[id].name
-                            : id,
-                      }
-                    }),
-                  ]}
-                  {...inputProps}
-                />
-              )}
-              displayRemoveButtons
-            />
-          }
-        />
-      )}
-    </div>
-  )
-}
+    )
+  }
+)

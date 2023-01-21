@@ -8,6 +8,7 @@ import { Icon } from '../icons/icon'
 import { Clickable } from '../components/clickable'
 import { NormalizedTouchEvent } from '../../util/touch'
 import { useHotkey } from '../../hooks/hotkey'
+import { memoInProduction } from '../../util/development'
 
 const button = css`
   display: inline-block;
@@ -75,7 +76,7 @@ const iconStyle = css`
   margin-right: ${baseline()};
 `
 
-export interface ButtonProps {
+export interface ButtonProps<T> {
   /** The button's content. */
   children?: ReactNode
 
@@ -85,22 +86,29 @@ export interface ButtonProps {
    * For time-critical actions, consider using {@link onDown} and {@link onUp} instead.
    */
   onClick?: (
-    event?: React.MouseEvent<HTMLElement> | NormalizedTouchEvent<HTMLDivElement>
+    event:
+      | React.MouseEvent<HTMLElement>
+      | NormalizedTouchEvent<HTMLDivElement>
+      | undefined,
+    arg: T
   ) => void
+
+  /** Argument to pass to click handlers. */
+  onClickArg?: T
 
   /**
    * Handler to be executed when the user taps onto the button.
    *
    * NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling.
    */
-  onDown?: () => void
+  onDown?: (arg: T) => void
 
   /**
    * Handler to be executed when the user lifts a pointer off the button.
    *
    * NOTE: Prefer {@link onClick} for non-critical actions, as it will not block scrolling.
    */
-  onUp?: () => void
+  onUp?: (arg: T) => void
 
   /** SVG path of the icon to display on the button. */
   icon?: string
@@ -146,87 +154,97 @@ export interface ButtonProps {
   className?: string
 }
 
-export function Button({
-  children,
-  onClick,
-  onDown,
-  onUp,
-  icon,
-  iconColor,
-  hotkey,
-  active,
-  disabled = false,
-  block = false,
-  transparent = false,
-  className,
-  title,
-}: ButtonProps) {
-  const [hotkeyPressed, setHotkeyPressed] = useState(false)
-
-  const hotkeyEnabled = useHotkey(
+export const Button = memoInProduction(
+  <T extends any = undefined>({
+    children,
+    onClick,
+    onDown,
+    onUp,
+    onClickArg,
+    icon,
+    iconColor,
     hotkey,
-    event => {
-      if (event.type === 'keyup') {
-        onUp?.()
-        setHotkeyPressed(false)
-      } else {
-        onDown?.()
-        onClick?.()
-        setHotkeyPressed(true)
-      }
-    },
-    { keyup: true }
-  )
+    active,
+    disabled = false,
+    block = false,
+    transparent = false,
+    className,
+    title,
+  }: ButtonProps<T>) => {
+    const [hotkeyPressed, setHotkeyPressed] = useState(false)
 
-  const transparentIcon = !children && transparent
-  const inactive = active === false || disabled
+    const hotkeyEnabled = useHotkey(
+      hotkey,
+      event => {
+        if (event.type === 'keyup') {
+          onUp?.(onClickArg as T)
+          setHotkeyPressed(false)
+        } else {
+          onDown?.(onClickArg as T)
+          onClick?.(undefined, onClickArg as T)
+          setHotkeyPressed(true)
+        }
+      },
+      { keyup: true }
+    )
 
-  const classNames = cx(
-    button,
-    block && buttonBlock,
-    (active === true || hotkeyPressed) && button_active,
-    inactive && button_inactive,
-    disabled && button_disabled,
-    transparent && button_transparent,
-    className
-  )
+    const transparentIcon = !children && transparent
+    const inactive = active === false || disabled
 
-  const hotkeyTooltip =
-    hotkey && hotkeyEnabled ? `(${hotkey.toUpperCase()})` : undefined
+    const classNames = cx(
+      button,
+      block && buttonBlock,
+      (active === true || hotkeyPressed) && button_active,
+      inactive && button_inactive,
+      disabled && button_disabled,
+      transparent && button_transparent,
+      className
+    )
 
-  const titleToDisplay =
-    title && hotkeyTooltip
-      ? `${title} ${hotkeyTooltip}`
-      : title || hotkeyTooltip
+    const hotkeyTooltip =
+      hotkey && hotkeyEnabled ? `(${hotkey.toUpperCase()})` : undefined
 
-  const content = (
-    <>
-      {icon && (
-        <Icon
-          icon={icon}
-          color={iconColor}
-          inline
-          className={children ? iconStyle : undefined}
-          hoverable={transparentIcon && active === undefined}
-          shade={transparentIcon && !inactive ? 0 : 1}
-        />
-      )}
-      {children}
-    </>
-  )
+    const titleToDisplay =
+      title && hotkeyTooltip
+        ? `${title} ${hotkeyTooltip}`
+        : title || hotkeyTooltip
 
-  return onDown || onUp ? (
-    <Touchable
-      className={classNames}
-      title={titleToDisplay}
-      onDown={onDown}
-      onUp={onUp ?? onClick}
-    >
-      {content}
-    </Touchable>
-  ) : (
-    <Clickable className={classNames} title={titleToDisplay} onClick={onClick}>
-      {content}
-    </Clickable>
-  )
-}
+    const content = (
+      <>
+        {icon && (
+          <Icon
+            icon={icon}
+            color={iconColor}
+            inline
+            className={children ? iconStyle : undefined}
+            hoverable={transparentIcon && active === undefined}
+            shade={transparentIcon && !inactive ? 0 : 1}
+          />
+        )}
+        {children}
+      </>
+    )
+
+    return onDown || onUp ? (
+      <Touchable
+        className={classNames}
+        title={titleToDisplay}
+        onDown={onDown && (() => onDown(onClickArg as T))}
+        onUp={
+          (onUp && (() => onUp(onClickArg as T))) ??
+          (onClick && (() => onClick(undefined, onClickArg as T)))
+        }
+      >
+        {content}
+      </Touchable>
+    ) : (
+      <Clickable
+        className={classNames}
+        title={titleToDisplay}
+        onClick={onClick && (event => onClick(event, onClickArg as T))}
+      >
+        {content}
+      </Clickable>
+    )
+  }
+)

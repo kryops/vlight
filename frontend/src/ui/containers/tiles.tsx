@@ -5,6 +5,7 @@ import { css } from '@linaria/core'
 import { Icon } from '../icons/icon'
 import { primaryShade, baseline } from '../styles'
 import { flexWrap } from '../css/flex'
+import { memoInProduction } from '../../util/development'
 
 /**
  * Container element for rendering tiles in a grid.
@@ -56,18 +57,20 @@ export interface TileProps {
 /**
  * Generic tile component with an icon and a title.
  */
-export function Tile({ icon, title, target, onClick }: TileProps) {
-  const navigate = useNavigate()
+export const Tile = memoInProduction(
+  ({ icon, title, target, onClick }: TileProps) => {
+    const navigate = useNavigate()
 
-  const clickHandler = () => {
-    if (target) navigate(target)
-    onClick?.()
+    const clickHandler = () => {
+      if (target) navigate(target)
+      onClick?.()
+    }
+
+    return (
+      <div className={tile} onClick={clickHandler}>
+        <Icon icon={icon} shade={1} className={tileIcon} />
+        <div className={titleTitle}>{title}</div>
+      </div>
+    )
   }
-
-  return (
-    <div className={tile} onClick={clickHandler}>
-      <Icon icon={icon} shade={1} className={tileIcon} />
-      <div className={titleTitle}>{title}</div>
-    </div>
-  )
-}
+)

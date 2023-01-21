@@ -1,5 +1,7 @@
 import { css } from '@linaria/core'
 import { EntityType, EntityName, MasterData } from '@vlight/types'
+import { getId } from '@vlight/utils'
+import { useCallback } from 'react'
 
 import { removeEntity, setEntities } from '../../../api'
 import { apiStateEmitter, apiState } from '../../../api/api-state'
@@ -10,6 +12,7 @@ import { showDialog } from '../../../ui/overlays/dialog'
 import { yesNo } from '../../../ui/overlays/buttons'
 import { SortableList } from '../../../ui/containers/sortable-list'
 import { useMasterDataMaps } from '../../../hooks/api'
+import { useEvent } from '../../../hooks/performance'
 
 import { openEntityEditor } from './editors'
 import { entityUiMapping } from './entity-ui-mapping'
@@ -52,52 +55,56 @@ export function EntityList<T extends EntityName>({
 }: EntityListProps<T>) {
   const masterDataMaps = useMasterDataMaps()
 
+  const changeEntities = useEvent((newEntries: EntityType<T>[]) => {
+    // Update the client in real-time to prevent flickering
+    ;(apiState.rawMasterData as MasterData) = {
+      ...(apiState.rawMasterData as MasterData),
+      [type]: newEntries as any,
+    }
+    apiStateEmitter.emit('rawMasterData')
+
+    setEntities(type, newEntries)
+  })
+
+  const renderEntryContent = useCallback(
+    (entry: EntityType<T>) => (
+      <>
+        <div
+          className={entryContent}
+          onClick={() => openEntityEditor(type, entry)}
+        >
+          <Icon icon={iconDrag} inline />
+          {entityUiMapping[type]?.listPreview?.(entry as any, masterDataMaps) ??
+            entry.name ??
+            entry.id}
+        </div>
+        <Icon
+          icon={iconDelete}
+          className={entryIcon}
+          hoverable
+          onClick={async () => {
+            const result = await showDialog<boolean | null>(
+              `Really delete "${entry.name}"?`,
+              yesNo,
+              { closeOnBackDrop: true }
+            )
+            if (result) {
+              removeEntity(type, entry.id)
+            }
+          }}
+        />
+      </>
+    ),
+    [type, masterDataMaps]
+  )
+
   return (
     <SortableList
       entries={entries}
-      onChange={newEntries => {
-        // Update the client in real-time to prevent flickering
-        ;(apiState.rawMasterData as MasterData) = {
-          ...(apiState.rawMasterData as MasterData),
-          [type]: newEntries as any,
-        }
-        apiStateEmitter.emit('rawMasterData')
-
-        setEntities(type, newEntries)
-      }}
+      onChange={changeEntities}
       entryClassName={listEntry}
-      getKey={entry => entry.id}
-      renderEntryContent={entry => (
-        <>
-          <div
-            className={entryContent}
-            onClick={() => openEntityEditor(type, entry)}
-          >
-            <Icon icon={iconDrag} inline />
-            {entityUiMapping[type]?.listPreview?.(
-              entry as any,
-              masterDataMaps
-            ) ??
-              entry.name ??
-              entry.id}
-          </div>
-          <Icon
-            icon={iconDelete}
-            className={entryIcon}
-            hoverable
-            onClick={async () => {
-              const result = await showDialog<boolean | null>(
-                `Really delete "${entry.name}"?`,
-                yesNo,
-                { closeOnBackDrop: true }
-              )
-              if (result) {
-                removeEntity(type, entry.id)
-              }
-            }}
-          />
-        </>
-      )}
+      getKey={getId}
+      renderEntryContent={renderEntryContent}
     />
   )
 }

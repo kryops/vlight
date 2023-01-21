@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { ChaseColor } from '@vlight/types'
+import { ChaseColor, ChaseColorPreset } from '@vlight/types'
 import { useState } from 'react'
 
 import { Button } from '../../ui/buttons/button'
@@ -13,6 +13,7 @@ import { Icon } from '../../ui/icons/icon'
 import { yesNo } from '../../ui/overlays/buttons'
 import { flexContainer } from '../../ui/css/flex'
 import { memoInProduction } from '../../util/development'
+import { useEvent } from '../../hooks/performance'
 
 import { getChasePreviewColor } from './utils'
 
@@ -48,6 +49,81 @@ const presetName = css`
   font-size: 80%;
 `
 
+const ChaseColorPresetContainer = memoInProduction(
+  ({
+    preset,
+    onChange,
+    editingPresets,
+  }: {
+    preset: ChaseColorPreset
+    onChange: (newValue: ChaseColor[]) => void
+    editingPresets: boolean
+  }) => {
+    const onClick = useEvent(async () => {
+      if (editingPresets) {
+        const name = await showPromptDialog({
+          title: 'Rename Preset',
+          label: 'Name',
+          initialValue: preset.name,
+        })
+        if (!name) return
+        editEntity('chaseColorPresets', {
+          ...preset,
+          name,
+        })
+      } else {
+        onChange(preset.colors)
+      }
+    })
+
+    const deletePreset = useEvent(
+      async (event: { stopPropagation: () => void }) => {
+        event.stopPropagation()
+        const result = await showDialog(
+          `Really delete color preset "${preset.name}"?`,
+          yesNo
+        )
+        if (result) {
+          return removeEntity('chaseColorPresets', preset.id)
+        }
+      }
+    )
+
+    return (
+      <Clickable key={preset.id} onClick={onClick} className={presetContainer}>
+        <div className={presetColors}>
+          {preset.colors.map((color, index) => (
+            <div
+              key={index}
+              className={presetColor}
+              style={{
+                background: getChasePreviewColor(color),
+              }}
+            />
+          ))}
+        </div>
+        <div className={presetName}>
+          {preset.name}
+          {editingPresets && (
+            <>
+              <br />
+              <br />
+              <Icon
+                size={4}
+                icon={iconDelete}
+                hoverable
+                inline
+                padding
+                onClick={deletePreset}
+              />
+            </>
+          )}
+        </div>
+      </Clickable>
+    )
+  }
+)
+
 export interface ChaseColorPresetsProps {
   /**
    * The current colors to save in the preset
@@ -65,6 +141,24 @@ export const ChaseColorPresets = memoInProduction(
     const masterData = useMasterData()
     const [editingPresets, setEditingPresets] = useState(false)
 
+    const saveCurrentState = useEvent(async () => {
+      const name = await showPromptDialog({
+        title: 'Save as Preset',
+        label: 'Name',
+      })
+      if (name === undefined) return
+
+      editEntity('chaseColorPresets', {
+        id: '',
+        name,
+        colors: getCurrentColors(),
+      })
+    })
+
+    const toggleEditingPresets = useEvent(async () => {
+      setEditingPresets(!editingPresets)
+    })
+
     return (
       <div className={presetsContainer}>
         <div className={presetsInnerContainer}>
@@ -72,64 +166,12 @@ export const ChaseColorPresets = memoInProduction(
             <i style={{ lineHeight: 2.4 }}>&nbsp; No presets saved.</i>
           )}
           {masterData.chaseColorPresets.map(preset => (
-            <Clickable
+            <ChaseColorPresetContainer
               key={preset.id}
-              onClick={async () => {
-                if (editingPresets) {
-                  const name = await showPromptDialog({
-                    title: 'Rename Preset',
-                    label: 'Name',
-                    initialValue: preset.name,
-                  })
-                  if (!name) return
-                  editEntity('chaseColorPresets', {
-                    ...preset,
-                    name,
-                  })
-                } else {
-                  onChange(preset.colors)
-                }
-              }}
-              className={presetContainer}
-            >
-              <div className={presetColors}>
-                {preset.colors.map((color, index) => (
-                  <div
-                    key={index}
-                    className={presetColor}
-                    style={{
-                      background: getChasePreviewColor(color),
-                    }}
-                  />
-                ))}
-              </div>
-              <div className={presetName}>
-                {preset.name}
-                {editingPresets && (
-                  <>
-                    <br />
-                    <br />
-                    <Icon
-                      size={4}
-                      icon={iconDelete}
-                      hoverable
-                      inline
-                      padding
-                      onClick={async event => {
-                        event.stopPropagation()
-                        const result = await showDialog(
-                          `Really delete color preset "${preset.name}"?`,
-                          yesNo
-                        )
-                        if (result) {
-                          return removeEntity('chaseColorPresets', preset.id)
-                        }
-                      }}
-                    />
-                  </>
-                )}
-              </div>
-            </Clickable>
+              preset={preset}
+              onChange={onChange}
+              editingPresets={editingPresets}
+            />
           ))}
         </div>
 
@@ -138,19 +180,7 @@ export const ChaseColorPresets = memoInProduction(
             icon={iconAdd}
             title="Save current state as preset"
             transparent
-            onClick={async () => {
-              const name = await showPromptDialog({
-                title: 'Save as Preset',
-                label: 'Name',
-              })
-              if (name === undefined) return
-
-              editEntity('chaseColorPresets', {
-                id: '',
-                name,
-                colors: getCurrentColors(),
-              })
-            }}
+            onClick={saveCurrentState}
           />
           <br />
           {masterData.chaseColorPresets.length > 0 && (
@@ -159,9 +189,7 @@ export const ChaseColorPresets = memoInProduction(
               title="Rename or delete presets"
               transparent
               active={editingPresets ? true : undefined}
-              onClick={async () => {
-                setEditingPresets(!editingPresets)
-              }}
+              onClick={toggleEditingPresets}
             />
           )}
         </div>

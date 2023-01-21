@@ -1,5 +1,5 @@
 import { LoadingScreen } from '../ui/main/loading-screen'
-import { useApiConnecting, useMasterData } from '../hooks/api'
+import { useApiConnecting, useApiStateSelector } from '../hooks/api'
 
 /**
  * Wrapper component that renders a loading screen instead of its children
@@ -7,9 +7,12 @@ import { useApiConnecting, useMasterData } from '../hooks/api'
  */
 export function ApiWrapper({ children }: { children: any }) {
   const connecting = useApiConnecting()
-  const masterData = useMasterData()
+  const masterDataIsUndefined = useApiStateSelector(
+    apiState => apiState.masterData === undefined,
+    { event: 'masterData' }
+  )
 
-  if (connecting || masterData === undefined) {
+  if (connecting || masterDataIsUndefined) {
     return <LoadingScreen />
   }
 

@@ -86,50 +86,52 @@ const InnerSortableList = memoInProduction(
 /**
  * Sortable list of entries of the same type.
  */
-export function SortableList<T>({
-  entries,
-  onChange,
-  containerClassName,
-  entryClassName,
-  renderEntryContent,
-  getKey,
-  direction,
-}: SortableListProps<T>) {
-  const [droppableId] = useState(() => sortableListIndex++)
+export const SortableList = memoInProduction(
+  <T extends any>({
+    entries,
+    onChange,
+    containerClassName,
+    entryClassName,
+    renderEntryContent,
+    getKey,
+    direction,
+  }: SortableListProps<T>) => {
+    const [droppableId] = useState(() => sortableListIndex++)
 
-  return (
-    <DragDropContext
-      onDragEnd={result => {
-        if (!result.destination) return
+    return (
+      <DragDropContext
+        onDragEnd={result => {
+          if (!result.destination) return
 
-        const newEntries = [...entries]
-        const [removed] = newEntries.splice(result.source.index, 1)
-        newEntries.splice(result.destination.index, 0, removed)
+          const newEntries = [...entries]
+          const [removed] = newEntries.splice(result.source.index, 1)
+          newEntries.splice(result.destination.index, 0, removed)
 
-        onChange(newEntries)
-      }}
-    >
-      <Droppable
-        droppableId={String(droppableId)}
-        isDropDisabled={entries.length < 2}
-        direction={direction}
+          onChange(newEntries)
+        }}
       >
-        {provided => (
-          <div
-            className={containerClassName}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            <InnerSortableList
-              entries={entries}
-              renderEntryContent={renderEntryContent}
-              entryClassName={entryClassName}
-              getKey={getKey}
-            />
-            {provided.placeholder}
-          </div>
-        )}
-      </Droppable>
-    </DragDropContext>
-  )
-}
+        <Droppable
+          droppableId={String(droppableId)}
+          isDropDisabled={entries.length < 2}
+          direction={direction}
+        >
+          {provided => (
+            <div
+              className={containerClassName}
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+            >
+              <InnerSortableList
+                entries={entries}
+                renderEntryContent={renderEntryContent}
+                entryClassName={entryClassName}
+                getKey={getKey}
+              />
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    )
+  }
+)

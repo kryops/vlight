@@ -9,6 +9,20 @@ import { configPageRoute } from '../../routes'
 import { showDialog } from '../../../ui/overlays/dialog'
 import { resetState } from '../../../api'
 import { yesNo } from '../../../ui/overlays/buttons'
+import { useEvent } from '../../../hooks/performance'
+
+const promptResetState = async () => {
+  const result = await showDialog(
+    <>
+      Do you really want to reset the state for all controls?
+      <br />
+      <br />
+      THIS WILL TURN OFF EVERYTHING AND DELETE LIVE MEMORIES AND LIVE CHASES!
+    </>,
+    yesNo
+  )
+  if (result) resetState()
+}
 
 /**
  * The settings page.
@@ -19,21 +33,9 @@ const SettingsPage = memoInProduction(() => {
   const settings = useSettings()
   const { lightMode, updateSettings } = settings
 
-  const toggleSetting = (setting: keyof Settings) =>
+  const toggleSetting = useEvent((setting: keyof Settings) =>
     updateSettings({ [setting]: !settings[setting] })
-
-  const promptResetState = async () => {
-    const result = await showDialog(
-      <>
-        Do you really want to reset the state for all controls?
-        <br />
-        <br />
-        THIS WILL TURN OFF EVERYTHING AND DELETE LIVE MEMORIES AND LIVE CHASES!
-      </>,
-      yesNo
-    )
-    if (result) resetState()
-  }
+  )
 
   return (
     <div>

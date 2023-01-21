@@ -1,6 +1,8 @@
 import { EntityName, IdType, EntityType } from '@vlight/types'
+import { useMemo } from 'react'
 
 import { useApiState } from '../../hooks/api'
+import { memoInProduction } from '../../util/development'
 
 import { Select, SelectEntry } from './select'
 
@@ -33,28 +35,35 @@ export interface EntityReferenceSelectProps {
 /**
  * Select input wrapper to reference an entity of a certain type.
  */
-export function EntityReferenceSelect({
-  entity,
-  useOriginalId = false,
-  addUndefinedOption = false,
-  ...rest
-}: EntityReferenceSelectProps) {
-  const originalEntries = useApiState(
-    useOriginalId ? 'rawMasterData' : 'masterData'
-  )[entity] as EntityType<EntityName>[]
-  const displayEntries: Array<SelectEntry<IdType> | undefined> = originalEntries
-    .map(({ id, name }) => ({
-      value: id,
-      label: name ?? id,
-    }))
-    .sort((a, b) => {
-      if (a.label === b.label) return 0
-      return a.label > b.label ? 1 : -1
-    })
+export const EntityReferenceSelect = memoInProduction(
+  ({
+    entity,
+    useOriginalId = false,
+    addUndefinedOption = false,
+    ...rest
+  }: EntityReferenceSelectProps) => {
+    const originalEntries = useApiState(
+      useOriginalId ? 'rawMasterData' : 'masterData'
+    )[entity] as EntityType<EntityName>[]
 
-  if (addUndefinedOption) {
-    displayEntries.unshift(undefined)
+    const displayEntries = useMemo(() => {
+      const result: Array<SelectEntry<IdType> | undefined> = originalEntries
+        .map(({ id, name }) => ({
+          value: id,
+          label: name ?? id,
+        }))
+        .sort((a, b) => {
+          if (a.label === b.label) return 0
+          return a.label > b.label ? 1 : -1
+        })
+
+      if (addUndefinedOption) {
+        result.unshift(undefined)
+      }
+
+      return result
+    }, [originalEntries, addUndefinedOption])
+
+    return <Select entries={displayEntries} {...rest} />
   }
-
-  return <Select entries={displayEntries} {...rest} />
-}
+)

@@ -3,6 +3,7 @@ import { ComponentType } from 'react'
 
 import { FormState } from '../../hooks/form'
 import { useEvent } from '../../hooks/performance'
+import { memoInProduction } from '../../util/development'
 
 import { TextInput, TypedInputProps, NumberInput } from './typed-input'
 import { Checkbox } from './checkbox'
@@ -26,7 +27,7 @@ export interface FormInputProps<
 function wrapTypedInput<TValue, TAdditionalProps extends object>(
   TypedInput: ComponentType<TypedInputProps<TValue> & TAdditionalProps>
 ) {
-  return function FormInput<
+  return memoInProduction(function FormInput<
     TValues extends { [key in TName]?: TValue | undefined },
     TName extends keyof TValues
   >({
@@ -36,14 +37,18 @@ function wrapTypedInput<TValue, TAdditionalProps extends object>(
   }: FormInputProps<TValue, TValues, TName> &
     Omit<TypedInputProps<TValue>, 'value' | 'onChange'> &
     Omit<TAdditionalProps, 'value' | 'onChange'>) {
+    const onChange = useEvent((value: TValue | undefined): void =>
+      formState.changeValue(name, value as any)
+    )
+
     return (
       <TypedInput
         value={formState.values[name]}
-        onChange={value => formState.changeValue(name, value as any)}
+        onChange={onChange}
         {...(rest as any)}
       />
     )
-  }
+  })
 }
 
 /**
@@ -64,94 +69,111 @@ export const FormCheckbox = wrapTypedInput(Checkbox)
 /**
  * Wrapper around {@link Select} for use with a form state.
  */
-export function FormSelect<
-  TValue,
-  TValues extends { [key in TName]?: TValue | undefined },
-  TName extends keyof TValues
->({
-  formState,
-  name,
-  entries,
-  ...rest
-}: FormInputProps<TValue, TValues, TName> &
-  Omit<SelectProps<TValue>, 'value' | 'onChange'>) {
-  return (
-    <Select
-      entries={entries}
-      value={formState.values[name] as any}
-      onChange={value => formState.changeValue(name, value as any)}
-      {...rest}
-    />
-  )
-}
+export const FormSelect = memoInProduction(
+  <
+    TValue,
+    TValues extends { [key in TName]?: TValue | undefined },
+    TName extends keyof TValues
+  >({
+    formState,
+    name,
+    entries,
+    ...rest
+  }: FormInputProps<TValue, TValues, TName> &
+    Omit<SelectProps<TValue>, 'value' | 'onChange'>) => {
+    const onChange = useEvent((value: any) =>
+      formState.changeValue(name, value as any)
+    )
+
+    return (
+      <Select
+        entries={entries}
+        value={formState.values[name] as any}
+        onChange={onChange}
+        {...rest}
+      />
+    )
+  }
+)
 
 /**
  * Wrapper around {@link EntityReferenceSelect} for use with a form state.
  */
-export function FormEntityReferenceSelect<
-  TValues extends { [key in TName]: IdType },
-  TName extends keyof TValues
->({
-  formState,
-  name,
-  entity,
-  ...rest
-}: FormInputProps<IdType, TValues, TName> &
-  Omit<EntityReferenceSelectProps, 'value' | 'onChange'>) {
-  return (
-    <EntityReferenceSelect
-      entity={entity}
-      value={formState.values[name] as any}
-      onChange={value => formState.changeValue(name, value as any)}
-      {...rest}
-    />
-  )
-}
+export const FormEntityReferenceSelect = memoInProduction(
+  <TValues extends { [key in TName]: IdType }, TName extends keyof TValues>({
+    formState,
+    name,
+    entity,
+    ...rest
+  }: FormInputProps<IdType, TValues, TName> &
+    Omit<EntityReferenceSelectProps, 'value' | 'onChange'>) => {
+    const onChange = useEvent((value: string | undefined) =>
+      formState.changeValue(name, value as any)
+    )
+
+    return (
+      <EntityReferenceSelect
+        entity={entity}
+        value={formState.values[name] as any}
+        onChange={onChange}
+        {...rest}
+      />
+    )
+  }
+)
 
 /**
  * Wrapper around {@link ArrayInput} for use with a form state.
  */
-export function FormArrayInput<
-  TValue,
-  TValues extends { [key in TName]: TValue[] },
-  TName extends keyof TValues
->({
-  formState,
-  name,
-  ...rest
-}: FormInputProps<TValue[], TValues, TName> &
-  Omit<ArrayInputProps<TValue>, 'value' | 'onChange'>) {
-  return (
-    <ArrayInput
-      value={formState.values[name] as any}
-      onChange={value => formState.changeValue(name, value as any)}
-      {...rest}
-    />
-  )
-}
+export const FormArrayInput = memoInProduction(
+  <
+    TValue,
+    TValues extends { [key in TName]: TValue[] },
+    TName extends keyof TValues
+  >({
+    formState,
+    name,
+    ...rest
+  }: FormInputProps<TValue[], TValues, TName> &
+    Omit<ArrayInputProps<TValue>, 'value' | 'onChange'>) => {
+    const onChange = useEvent((value: TValue[]) =>
+      formState.changeValue(name, value as any)
+    )
+
+    return (
+      <ArrayInput
+        value={formState.values[name] as any}
+        onChange={onChange}
+        {...rest}
+      />
+    )
+  }
+)
 
 /**
  * Wrapper around {@link FixtureListInput} for use with a form state.
  */
-export function FormFixtureListInput<
-  TValue,
-  TValues extends { [key in TName]: TValue[] },
-  TName extends keyof TValues
->({
-  formState,
-  name,
-  ...rest
-}: FormInputProps<TValue[], TValues, TName> &
-  Omit<FixtureListInputProps, 'value' | 'onChange'>) {
-  const onChange = useEvent((value: string[]) =>
-    formState.changeValue(name, value as any)
-  )
+export const FormFixtureListInput = memoInProduction(
+  <
+    TValue,
+    TValues extends { [key in TName]: TValue[] },
+    TName extends keyof TValues
+  >({
+    formState,
+    name,
+    ...rest
+  }: FormInputProps<TValue[], TValues, TName> &
+    Omit<FixtureListInputProps, 'value' | 'onChange'>) => {
+    const onChange = useEvent((value: string[]) =>
+      formState.changeValue(name, value as any)
+    )
 
-  return (
-    <FixtureListInput
-      value={formState.values[name] as any}
-      onChange={onChange}
-      {...rest}
-    />
-  )
-}
+    return (
+      <FixtureListInput
+        value={formState.values[name] as any}
+        onChange={onChange}
+        {...rest}
+      />
+    )
+  }
+)

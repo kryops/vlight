@@ -5,7 +5,6 @@ import { useFormState, useFormStateArray } from '../../../../hooks/form'
 import { FormTextInput } from '../../../../ui/forms/form-input'
 import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
-import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
 import { primaryShade, baseline } from '../../../../ui/styles'
 import { MemoryPreview } from '../../../../widgets/memory/memory-preview'
@@ -16,6 +15,7 @@ import {
 } from '../../../../ui/css/editor-styles'
 import { newMemoryFactory } from '../new-entity-factories'
 import { useEvent } from '../../../../hooks/performance'
+import { Button } from '../../../../ui/buttons/button'
 
 import { MemorySceneEditor } from './memory-scene-editor'
 
@@ -43,6 +43,12 @@ export function MemoryEditor({
     }
   )
 
+  const removeScene = useEvent((_event: any, scene: MemoryScene) =>
+    scenes.remove(scene)
+  )
+
+  const addScene = useEvent(() => scenes.add(newMemoryFactory().scenes[0]))
+
   return (
     <>
       <h2 className={editorTitle}>{entry.id ? 'Edit' : 'Add'} Memory</h2>
@@ -57,16 +63,19 @@ export function MemoryEditor({
               <div key={sceneIndex} className={sceneStyle}>
                 <h3>
                   Scene {sceneIndex + 1}{' '}
-                  <a onClick={() => scenes.remove(scene)}>
-                    <Icon icon={iconDelete} inline hoverable />
-                  </a>
+                  <Button<MemoryScene>
+                    icon={iconDelete}
+                    transparent
+                    onClick={removeScene}
+                    onClickArg={scene}
+                  />
                 </h3>
                 <MemorySceneEditor scene={scene} onChange={changeScene} />
               </div>
             ))}
-            <a onClick={() => scenes.add(newMemoryFactory().scenes[0])}>
-              <Icon icon={iconAdd} inline /> Add scene
-            </a>
+            <Button icon={iconAdd} transparent onClick={addScene}>
+              Add scene
+            </Button>
           </>
         }
         right={<MemoryPreview scenes={scenes.value} displayFixtureOrder />}

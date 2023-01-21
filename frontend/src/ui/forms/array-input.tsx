@@ -7,6 +7,7 @@ import { cx } from '../../util/styles'
 import { baseline } from '../styles'
 import { flexAuto } from '../css/flex'
 import { Button } from '../buttons/button'
+import { memoInProduction } from '../../util/development'
 
 import { TypedInputProps } from './typed-input'
 
@@ -57,63 +58,65 @@ function removeUndefined<T>(arr: (T | undefined)[]): T[] {
  * Always renders an empty/undefined input element at the end
  * to add new values to the array.
  */
-export function ArrayInput<T>({
-  value,
-  onChange,
-  renderInput,
-  displayRemoveButtons = false,
-  className,
-  entryClassName,
-}: ArrayInputProps<T>) {
-  const sanitizedValue = useMemo(
-    () => (value === undefined ? [] : toArray(value)),
-    [value]
-  )
-  const outgoingValueRef = useRef(sanitizedValue)
-  const [valueToUse, setValueToUse] = useState(
-    removeTrailingUndefined(sanitizedValue)
-  )
+export const ArrayInput = memoInProduction(
+  <T extends any>({
+    value,
+    onChange,
+    renderInput,
+    displayRemoveButtons = false,
+    className,
+    entryClassName,
+  }: ArrayInputProps<T>) => {
+    const sanitizedValue = useMemo(
+      () => (value === undefined ? [] : toArray(value)),
+      [value]
+    )
+    const outgoingValueRef = useRef(sanitizedValue)
+    const [valueToUse, setValueToUse] = useState(
+      removeTrailingUndefined(sanitizedValue)
+    )
 
-  if (outgoingValueRef.current !== sanitizedValue) {
-    outgoingValueRef.current = sanitizedValue
-    setValueToUse(sanitizedValue)
-  }
+    if (outgoingValueRef.current !== sanitizedValue) {
+      outgoingValueRef.current = sanitizedValue
+      setValueToUse(sanitizedValue)
+    }
 
-  function onChangeInternal(value: (T | undefined)[]) {
-    const valueToSend = removeUndefined(value)
-    outgoingValueRef.current = valueToSend
-    onChange(valueToSend)
-    setValueToUse(removeTrailingUndefined(value))
-  }
+    function onChangeInternal(value: (T | undefined)[]) {
+      const valueToSend = removeUndefined(value)
+      outgoingValueRef.current = valueToSend
+      onChange(valueToSend)
+      setValueToUse(removeTrailingUndefined(value))
+    }
 
-  const toRender = useMemo(() => [...valueToUse, undefined], [valueToUse])
+    const toRender = useMemo(() => [...valueToUse, undefined], [valueToUse])
 
-  return (
-    <div className={cx(flexAuto, className)}>
-      {toRender.map((singleValue, index) => {
-        const changeSingleValue = (newSingleValue: T | undefined) => {
-          if (newSingleValue !== undefined && index === valueToUse.length) {
-            onChangeInternal([...sanitizedValue, newSingleValue])
-          } else {
-            const newValue = [...valueToUse]
-            newValue[index] = newSingleValue
-            onChangeInternal(newValue)
+    return (
+      <div className={cx(flexAuto, className)}>
+        {toRender.map((singleValue, index) => {
+          const changeSingleValue = (newSingleValue: T | undefined) => {
+            if (newSingleValue !== undefined && index === valueToUse.length) {
+              onChangeInternal([...sanitizedValue, newSingleValue])
+            } else {
+              const newValue = [...valueToUse]
+              newValue[index] = newSingleValue
+              onChangeInternal(newValue)
+            }
           }
-        }
 
-        return (
-          <div key={index} className={cx(entry, entryClassName)}>
-            {renderInput({ value: singleValue, onChange: changeSingleValue })}
-            {displayRemoveButtons && singleValue !== undefined && (
-              <Button
-                icon={iconDelete}
-                onClick={() => changeSingleValue(undefined)}
-                transparent
-              />
-            )}
-          </div>
-        )
-      })}
-    </div>
-  )
-}
+          return (
+            <div key={index} className={cx(entry, entryClassName)}>
+              {renderInput({ value: singleValue, onChange: changeSingleValue })}
+              {displayRemoveButtons && singleValue !== undefined && (
+                <Button
+                  icon={iconDelete}
+                  onClick={() => changeSingleValue(undefined)}
+                  transparent
+                />
+              )}
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+)

@@ -71,11 +71,32 @@ export const StatelessLiveMemoryWidget = memoInProduction(
       setLiveMemoryState(id, { value }, true)
     )
 
+    const toggleOn = useEvent(() =>
+      setLiveMemoryState(id, { on: !state.on }, true)
+    )
+
+    const rename = useEvent(async () => {
+      const name = await showPromptDialog({
+        title: 'Rename Live Memory',
+        label: 'Name',
+        initialValue: state.name,
+      })
+      if (name) {
+        setLiveMemoryState(id, { name }, true)
+      }
+    })
+
+    const promptDelete = useEvent(async () => {
+      if (await showDialog(`Delete Live Memory "${title}"?`, yesNo)) {
+        deleteLiveMemory(id)
+      }
+    })
+
     return (
       <Widget
         icon={iconLiveMemory}
         title={title}
-        onTitleClick={() => setLiveMemoryState(id, { on: !state.on }, true)}
+        onTitleClick={toggleOn}
         turnedOn={state.on}
         contentClassName={flexWrap}
         hotkeysActive={hotkeysActive}
@@ -85,26 +106,13 @@ export const StatelessLiveMemoryWidget = memoInProduction(
               icon={iconRename}
               title="Rename"
               transparent
-              onClick={async () => {
-                const name = await showPromptDialog({
-                  title: 'Rename Live Memory',
-                  label: 'Name',
-                  initialValue: state.name,
-                })
-                if (name) {
-                  setLiveMemoryState(id, { name }, true)
-                }
-              }}
+              onClick={rename}
             />
             <Button
               icon={iconDelete}
               title="Delete"
               transparent
-              onClick={async () => {
-                if (await showDialog(`Delete Live Memory "${title}"?`, yesNo)) {
-                  deleteLiveMemory(id)
-                }
-              }}
+              onClick={promptDelete}
             />
           </div>
         }

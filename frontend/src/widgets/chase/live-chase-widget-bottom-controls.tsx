@@ -13,6 +13,7 @@ import { memoInProduction } from '../../util/development'
 import { Button } from '../../ui/buttons/button'
 import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
 import { yesNo } from '../../ui/overlays/buttons'
+import { useEvent } from '../../hooks/performance'
 
 import { isLiveChaseCurrentlyFast } from './utils'
 
@@ -40,16 +41,37 @@ export const LiveChaseWidgetBottomControls = memoInProduction(
 
     const isCurrentlyFast = isLiveChaseCurrentlyFast(state)
 
+    const toggleFastMode = useEvent(() => {
+      if (!isCurrentlyFast) return
+      onToggleFastMode()
+    })
+
+    const toggleSingle = useEvent(() => update({ single: !state.single }))
+
+    const rename = useEvent(async () => {
+      const name = await showPromptDialog({
+        title: 'Rename Live Chase',
+        label: 'Name',
+        initialValue: state.name,
+      })
+      if (name) {
+        update({ name })
+      }
+    })
+
+    const promptDelete = useEvent(async () => {
+      if (await showDialog(`Delete Live Chase "${title}"?`, yesNo)) {
+        deleteLiveChase(id)
+      }
+    })
+
     return (
       <div>
         <Button
           icon={useFastMode ? iconFast : iconSlow}
           title="Toggle fast mode"
           transparent
-          onClick={() => {
-            if (!isCurrentlyFast) return
-            onToggleFastMode()
-          }}
+          onClick={toggleFastMode}
           disabled={!isCurrentlyFast}
         />
         <Button
@@ -60,32 +82,14 @@ export const LiveChaseWidgetBottomControls = memoInProduction(
               : 'Multiple Mode: Will run in addition to other chases'
           }
           transparent
-          onClick={() => update({ single: !state.single })}
+          onClick={toggleSingle}
         />
-        <Button
-          icon={iconRename}
-          title="Rename"
-          transparent
-          onClick={async () => {
-            const name = await showPromptDialog({
-              title: 'Rename Live Chase',
-              label: 'Name',
-              initialValue: state.name,
-            })
-            if (name) {
-              update({ name })
-            }
-          }}
-        />
+        <Button icon={iconRename} title="Rename" transparent onClick={rename} />
         <Button
           icon={iconDelete}
           title="Delete"
           transparent
-          onClick={async () => {
-            if (await showDialog(`Delete Live Chase "${title}"?`, yesNo)) {
-              deleteLiveChase(id)
-            }
-          }}
+          onClick={promptDelete}
         />
       </div>
     )

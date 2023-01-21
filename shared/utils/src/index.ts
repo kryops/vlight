@@ -1,4 +1,5 @@
 export * from './array'
+export * from './function'
 export * from './log'
 export * from './map'
 export * from './number'

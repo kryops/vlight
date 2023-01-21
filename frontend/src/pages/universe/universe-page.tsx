@@ -78,9 +78,7 @@ const UniversePage = memoInProduction(() => {
                 fixtureType ? fixtureType.mapping.length > 1 : false
               }
               color={fixtureColor}
-              className={cx(universeBar, {
-                [universeBar_connected]: isConnected,
-              })}
+              className={cx(universeBar, isConnected && universeBar_connected)}
             />
           )
         })}

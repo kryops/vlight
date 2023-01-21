@@ -14,8 +14,7 @@ import {
   iconLight,
   iconLights,
 } from '../icons'
-import { Icon } from '../icons/icon'
-import { baseline } from '../styles'
+import { baseline, iconShade } from '../styles'
 import { useDelayedState } from '../../hooks/delayed-state'
 import { memoInProduction } from '../../util/development'
 import { useEvent } from '../../hooks/performance'
@@ -220,30 +219,46 @@ export const FixtureListInput = memoInProduction(
       ? categories.filter(it => it !== groupCategory)
       : categories
 
+    const onCategoryClick = useEvent(
+      (_event: any, category: FixtureListCategory | null) =>
+        setActiveCategory(category)
+    )
+
+    const onEntryClick = useEvent((_event: any, entry: string) =>
+      onChangeWrapper(
+        valueToDisplay.includes(entry)
+          ? valueToDisplay.filter(it => it !== entry)
+          : [...valueToDisplay, entry]
+      )
+    )
+
     return (
       <div className={cx(flexAuto, container)}>
         <div className={categoryContainer}>
           {ordering && (
-            <Button
+            <Button<null>
               className={categoryEntry}
               active={activeCategory === null}
-              onClick={() => setActiveCategory(null)}
-            >
-              <Icon icon={iconList} />
-            </Button>
+              icon={iconList}
+              iconColor={iconShade(0)}
+              onClick={onCategoryClick}
+              onClickArg={null}
+            />
           )}
           {availableCategories.map((category, index) => {
             const count = countByCategory.get(category) ?? 0
 
             return (
-              <Button
+              <Button<FixtureListCategory>
                 key={index}
                 className={categoryEntry}
                 active={category === activeCategory}
-                onClick={() => setActiveCategory(category)}
+                onClick={onCategoryClick}
+                onClickArg={category}
                 title={category.label}
+                icon={category.icon}
+                iconColor={iconShade(0)}
               >
-                <Icon icon={category.icon} />
                 {count > 0 && ` ${count}`}
               </Button>
             )
@@ -263,28 +278,27 @@ export const FixtureListInput = memoInProduction(
             {entities.map(entity => {
               const entry = activeCategory?.prefix + entity.id
               const active = valueToDisplay.includes(entry)
+              const text =
+                entity.name +
+                (activeCategory !== fixtureCategory
+                  ? ` [${fixtureCountByEntity.get(entity)}]`
+                  : '')
+
               return (
-                <Button
+                <Button<string>
                   key={entity.id}
                   className={listEntry}
                   active={active}
                   block
-                  onClick={() =>
-                    onChangeWrapper(
-                      active
-                        ? valueToDisplay.filter(it => it !== entry)
-                        : [...valueToDisplay, entry]
-                    )
-                  }
+                  onClick={onEntryClick}
+                  onClickArg={entry}
                   disabled={
                     activeCategory === fixtureCategory &&
                     !active &&
                     allMappedFixtures.has(entity.id)
                   }
                 >
-                  {entity.name}
-                  {activeCategory !== fixtureCategory &&
-                    ` [${fixtureCountByEntity.get(entity)}]`}
+                  {text}
                 </Button>
               )
             })}

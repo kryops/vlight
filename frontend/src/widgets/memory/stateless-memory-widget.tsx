@@ -49,6 +49,28 @@ export const StatelessMemoryWidget = memoInProduction(
       openEntityEditorForId('memories', memory.id)
     )
 
+    const toggleOn = useEvent(() =>
+      setMemoryState(
+        memory.id,
+        {
+          on: !state.on,
+        },
+        true
+      )
+    )
+
+    const instantOn = useEvent(() =>
+      setMemoryState(
+        memory.id,
+        {
+          on: true,
+        },
+        true
+      )
+    )
+
+    const instantOff = () => setMemoryState(memory.id, { on: false }, true)
+
     return (
       <Widget
         key={memory.id}
@@ -63,15 +85,7 @@ export const StatelessMemoryWidget = memoInProduction(
             inline
           />
         }
-        onTitleClick={() =>
-          setMemoryState(
-            memory.id,
-            {
-              on: !state.on,
-            },
-            true
-          )
-        }
+        onTitleClick={toggleOn}
         turnedOn={state.on}
         hotkeysActive={hotkeysActive}
       >
@@ -87,16 +101,8 @@ export const StatelessMemoryWidget = memoInProduction(
           </div>
           <Button
             icon={iconLight}
-            onDown={() =>
-              setMemoryState(
-                memory.id,
-                {
-                  on: true,
-                },
-                true
-              )
-            }
-            onUp={() => setMemoryState(memory.id, { on: false }, true)}
+            onDown={instantOn}
+            onUp={instantOff}
             title="Instant on/off"
             hotkey="m"
           />

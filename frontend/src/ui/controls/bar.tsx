@@ -98,6 +98,7 @@ export const Bar = memoInProduction(
     className,
   }: BarProps) => {
     const fraction = ensureBetween(valueToFraction(value, min, max), 0, 1)
+
     return (
       <div
         className={cx(bar, className)}

@@ -64,7 +64,8 @@ export function useCompleteApiState(except?: Array<keyof ApiState>): ApiState {
 export function useApiState<TKey extends keyof ApiState>(
   key: TKey
 ): NonNullable<ApiState[TKey]> {
-  const [state, setState] = useState(apiState[key])
+  const [_state, setState] = useState(apiState[key])
+
   useEffect(() => {
     setState(apiState[key])
 
@@ -80,7 +81,8 @@ export function useApiState<TKey extends keyof ApiState>(
   }, [key])
 
   // We assume that someone will display a loading screen further up if not all data is present
-  return state!
+  // We do not return _state here as it may lag behind when the key changes
+  return apiState[key]!
 }
 
 /**
@@ -90,7 +92,7 @@ export function useApiStateEntry<
   TKey extends keyof ApiState,
   TSubKey extends keyof ApiState[TKey]
 >(key: TKey, subKey: TSubKey): ApiState[TKey][TSubKey] {
-  const [state, setState] = useState((apiState as any)[key][subKey])
+  const [_state, setState] = useState((apiState as any)[key][subKey])
   useEffect(() => {
     function eventHandler() {
       setState((apiState as any)[key][subKey])
@@ -103,7 +105,7 @@ export function useApiStateEntry<
     }
   }, [key, subKey])
 
-  return state
+  return (apiState as any)[key][subKey]
 }
 
 /**

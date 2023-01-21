@@ -1,6 +1,7 @@
 import { ValueOrRandom } from '@vlight/types'
 import { isValueRange, valueToFraction } from '@vlight/utils'
 
+import { useEvent } from '../../../hooks/performance'
 import { memoInProduction } from '../../../util/development'
 import { Button } from '../../buttons/button'
 import { centeredText, smallText } from '../../css/basic-styles'
@@ -51,7 +52,7 @@ export const ValueOrRandomFader = memoInProduction(
   }: ValueOrRandomFaderProps) => {
     let fader: JSX.Element
 
-    const openEditor = async () => {
+    const openEditor = useEvent(async () => {
       const result = await showDialogWithReturnValue<ValueOrRandom<number>>(
         onChange => (
           <ValueOrRandomFaderEditor
@@ -67,7 +68,21 @@ export const ValueOrRandomFader = memoInProduction(
       )
       if (result === undefined) return
       onChange(result)
-    }
+    })
+
+    const switchBetweenTypes = useEvent(() =>
+      onChange(
+        convertValueOrRandom(
+          value,
+          typeof value === 'number'
+            ? ValueOrRandomType.Values
+            : isValueRange(value)
+            ? ValueOrRandomType.Value
+            : ValueOrRandomType.Range,
+          0
+        )
+      )
+    )
 
     if (isValueRange(value)) {
       fader = (
@@ -123,19 +138,7 @@ export const ValueOrRandomFader = memoInProduction(
               : 'Value range'
           }
           transparent
-          onClick={() =>
-            onChange(
-              convertValueOrRandom(
-                value,
-                typeof value === 'number'
-                  ? ValueOrRandomType.Values
-                  : isValueRange(value)
-                  ? ValueOrRandomType.Value
-                  : ValueOrRandomType.Range,
-                0
-              )
-            )
-          }
+          onClick={switchBetweenTypes}
         />
       </div>
     )

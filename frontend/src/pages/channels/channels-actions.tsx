@@ -9,6 +9,9 @@ import { memoInProduction } from '../../util/development'
 
 const allChannels = createRangeArray(1, 512)
 
+const turnAllOn = () => setChannels(allChannels, 255)
+const turnAllOff = () => setChannels(allChannels, 0)
+
 /**
  * Corner actions for the channels page:
  * - All on
@@ -30,7 +33,7 @@ export const ChannelsActions = memoInProduction(() => {
     <HotkeyContext.Provider value={true}>
       <Button
         icon={iconLight}
-        onClick={() => setChannels(allChannels, 255)}
+        onClick={turnAllOn}
         disabled={isFullOn}
         title="All on"
         hotkey="o"
@@ -39,7 +42,7 @@ export const ChannelsActions = memoInProduction(() => {
       </Button>
       <Button
         icon={iconLightOff}
-        onClick={() => setChannels(allChannels, 0)}
+        onClick={turnAllOff}
         disabled={!isActive}
         title="All off"
         hotkey="p"

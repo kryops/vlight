@@ -2,6 +2,7 @@ import { css } from '@linaria/core'
 
 import { useEvent } from '../../hooks/performance'
 import { useSettings } from '../../hooks/settings'
+import { memoInProduction } from '../../util/development'
 import { MapWidget } from '../../widgets/map/map-widget'
 import { useBreakpoint } from '../hooks/breakpoint'
 import { iconLight, iconMap } from '../icons'
@@ -35,7 +36,7 @@ const miniMapOverlay = css`
  * - a minimap and its toggle
  * - a light/dark mode toggle
  */
-export function CornerOverlay() {
+export const CornerOverlay = memoInProduction(() => {
   const { lightMode, miniMap, updateSettings } = useSettings()
   const isLarge = useBreakpoint(600)
 
@@ -67,4 +68,4 @@ export function CornerOverlay() {
       {displayMiniMap && <MapWidget className={miniMapOverlay} />}
     </>
   )
-}
+})

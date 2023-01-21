@@ -1,8 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { css } from '@linaria/core'
 
 import { cx } from '../../util/styles'
 import { backgroundColor, textShade, baseline } from '../styles'
+import { memoInProduction } from '../../util/development'
 
 export interface SelectEntry<T> {
   value: T
@@ -35,42 +36,43 @@ const select = css`
  *
  * Works with simple string values, or entries that have a separate label.
  */
-export function Select<T>({
-  entries,
-  value,
-  onChange,
-  className,
-}: SelectProps<T>) {
-  const normalizedEntries = entries.map(entry => {
-    if (entry === undefined) return undefinedSelectEntry
-    if (typeof entry === 'string') return { value: entry, label: entry }
-    return entry
-  })
+export const Select = memoInProduction(
+  <T extends any>({ entries, value, onChange, className }: SelectProps<T>) => {
+    const normalizedEntries = useMemo(
+      () =>
+        entries.map(entry => {
+          if (entry === undefined) return undefinedSelectEntry
+          if (typeof entry === 'string') return { value: entry, label: entry }
+          return entry
+        }),
+      [entries]
+    )
 
-  const activeIndex = normalizedEntries.findIndex(
-    entry => entry.value === value
-  )
+    const activeIndex = normalizedEntries.findIndex(
+      entry => entry.value === value
+    )
 
-  useEffect(() => {
-    if (activeIndex === -1) {
-      onChange(normalizedEntries[0]?.value as T)
-    }
-  })
+    useEffect(() => {
+      if (activeIndex === -1) {
+        onChange(normalizedEntries[0]?.value as T)
+      }
+    })
 
-  return (
-    <select
-      value={String(activeIndex)}
-      onChange={event => {
-        const newIndex = parseInt(event.target.value)
-        onChange(normalizedEntries[newIndex]?.value as T)
-      }}
-      className={cx(select, className)}
-    >
-      {normalizedEntries.map(({ label }, index) => (
-        <option key={index} value={String(index)}>
-          {label ?? ''}
-        </option>
-      ))}
-    </select>
-  )
-}
+    return (
+      <select
+        value={String(activeIndex)}
+        onChange={event => {
+          const newIndex = parseInt(event.target.value)
+          onChange(normalizedEntries[newIndex]?.value as T)
+        }}
+        className={cx(select, className)}
+      >
+        {normalizedEntries.map(({ label }, index) => (
+          <option key={index} value={String(index)}>
+            {label ?? ''}
+          </option>
+        ))}
+      </select>
+    )
+  }
+)

@@ -7,6 +7,17 @@ import { HotkeyContext } from '../../hooks/hotkey'
 import { memoInProduction } from '../../util/development'
 import { apiState } from '../../api/api-state'
 
+function setOnForAllChases(on: boolean) {
+  Object.entries(apiState.liveChases).forEach(([id, liveChase]) => {
+    if (liveChase.on !== on) {
+      setLiveChaseState(id, { on }, true)
+    }
+  })
+}
+
+const turnAllOn = () => setOnForAllChases(true)
+const turnAllOff = () => setOnForAllChases(false)
+
 /**
  * Corner actions for the chases page:
  * - All on
@@ -21,19 +32,11 @@ export const ChasesActions = memoInProduction(() => {
     { event: 'liveChases' }
   )
 
-  function setOnForAllChases(on: boolean) {
-    Object.entries(apiState.liveChases).forEach(([id, liveChase]) => {
-      if (liveChase.on !== on) {
-        setLiveChaseState(id, { on }, true)
-      }
-    })
-  }
-
   return (
     <HotkeyContext.Provider value={true}>
       <Button
         icon={iconLight}
-        onClick={() => setOnForAllChases(true)}
+        onClick={turnAllOn}
         disabled={allOn}
         title="All on"
         hotkey="o"
@@ -42,7 +45,7 @@ export const ChasesActions = memoInProduction(() => {
       </Button>
       <Button
         icon={iconLightOff}
-        onClick={() => setOnForAllChases(false)}
+        onClick={turnAllOff}
         disabled={allOff}
         title="All off"
         hotkey="p"

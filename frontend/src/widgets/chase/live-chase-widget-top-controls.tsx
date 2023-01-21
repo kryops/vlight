@@ -17,6 +17,7 @@ import { memoInProduction } from '../../util/development'
 import { Button } from '../../ui/buttons/button'
 import { apiState } from '../../api/api-state'
 import { useTapSync } from '../../hooks/speed'
+import { useEvent } from '../../hooks/performance'
 
 import { updateLiveChaseSpeed } from './utils'
 import { liveChaseMaxSpeed, liveChaseMinSpeed } from './constants'
@@ -60,7 +61,8 @@ export const LiveChaseWidgetTopControls = memoInProduction(
     const speedBurstBackup = useRef<
       Partial<LiveChase> & { otherChases?: string[] }
     >({})
-    const startSpeedBurst = () => {
+
+    const startSpeedBurst = useEvent(() => {
       // likely hit the button multiple times
       if (!state.burst) {
         // disable other chases temporarily in single mode
@@ -90,9 +92,9 @@ export const LiveChaseWidgetTopControls = memoInProduction(
         on: true,
         burst: true,
       })
-    }
+    })
 
-    const stopSpeedBurst = () => {
+    const stopSpeedBurst = useEvent(() => {
       const { otherChases, ...chaseState } = speedBurstBackup.current
       update({ ...chaseState, burst: false })
       // If the chase was fading before, this will trigger an additional step to start fading again immediately
@@ -100,9 +102,26 @@ export const LiveChaseWidgetTopControls = memoInProduction(
       otherChases?.forEach(chase =>
         setLiveChaseState(chase, { on: true }, true)
       )
-    }
+    })
 
     const tapSync = useTapSync(updateSpeed)
+
+    const step = useEvent(() => setLiveChaseStep(id))
+
+    const doubleSpeed = useEvent(() =>
+      updateSpeed(Math.max(state.speed / 2, liveChaseMaxSpeed))
+    )
+
+    const halfSpeed = useEvent(() =>
+      updateSpeed(Math.min(state.speed * 2, liveChaseMinSpeed))
+    )
+
+    const toggleStartStop = useEvent(() =>
+      update({
+        stopped: !state.stopped,
+        on: state.on || !!state.stopped,
+      })
+    )
 
     return (
       <div className={controls}>
@@ -118,25 +137,21 @@ export const LiveChaseWidgetTopControls = memoInProduction(
           icon={iconStep}
           title="Step"
           transparent
-          onDown={() => setLiveChaseStep(id)}
+          onDown={step}
           hotkey="c"
         />
         <Button
           icon={iconDoubleSpeed}
           title="Double speed"
           transparent
-          onDown={() =>
-            updateSpeed(Math.max(state.speed / 2, liveChaseMaxSpeed))
-          }
+          onDown={doubleSpeed}
           hotkey="v"
         />
         <Button
           icon={iconHalfSpeed}
           title="Half speed"
           transparent
-          onDown={() =>
-            updateSpeed(Math.min(state.speed * 2, liveChaseMinSpeed))
-          }
+          onDown={halfSpeed}
           hotkey="b"
         />
         &nbsp;&nbsp;
@@ -154,12 +169,7 @@ export const LiveChaseWidgetTopControls = memoInProduction(
           iconColor={state.stopped ? errorShade(0) : successShade(0)}
           transparent
           className={state.stopped || !state.on ? undefined : activeButton}
-          onDown={() =>
-            update({
-              stopped: !state.stopped,
-              on: state.on || !!state.stopped,
-            })
-          }
+          onDown={toggleStartStop}
           hotkey="m"
         />
       </div>

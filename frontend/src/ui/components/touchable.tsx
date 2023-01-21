@@ -85,6 +85,7 @@ export const Touchable = forwardRef<
           onDown(normalized)
         }
       })
+
     const upListener: RawTouchEventListener | undefined =
       (onTouch || onUp) &&
       (e => {
@@ -99,6 +100,7 @@ export const Touchable = forwardRef<
           onUp(normalized)
         }
       })
+
     const moveListener: RawTouchEventListener | undefined =
       (onTouch || onMove) &&
       (e => {

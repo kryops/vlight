@@ -4,6 +4,8 @@ import { css } from '@linaria/core'
 import { cx } from '../../util/styles'
 import { baseline } from '../styles'
 import { Button } from '../buttons/button'
+import { memoInProduction } from '../../util/development'
+import { useEvent } from '../../hooks/performance'
 
 export interface MultiToggleInputProps<T> {
   value: Array<T>
@@ -39,33 +41,38 @@ const entryStyle = css`
 /**
  * Input component to toggle multiple entries of the same type.
  */
-export function MultiToggleInput<T>({
-  value,
-  entries,
-  onChange,
-  getDisplayValue,
-  className,
-  entryClassName,
-}: MultiToggleInputProps<T>) {
-  return (
-    <div className={cx(container, className)}>
-      {entries.map((entry, index) => (
-        <Button
-          key={typeof entry === 'string' ? entry : index}
-          className={cx(entryStyle, entryClassName)}
-          active={value.includes(entry)}
-          block
-          onClick={() =>
-            onChange(
-              value.includes(entry)
-                ? value.filter(it => it !== entry)
-                : [...value, entry]
-            )
-          }
-        >
-          {getDisplayValue?.(entry) ?? String(entry)}
-        </Button>
-      ))}
-    </div>
-  )
-}
+export const MultiToggleInput = memoInProduction(
+  <T extends any>({
+    value,
+    entries,
+    onChange,
+    getDisplayValue,
+    className,
+    entryClassName,
+  }: MultiToggleInputProps<T>) => {
+    const onEntryClick = useEvent((_event: any, entry: T) =>
+      onChange(
+        value.includes(entry)
+          ? value.filter(it => it !== entry)
+          : [...value, entry]
+      )
+    )
+
+    return (
+      <div className={cx(container, className)}>
+        {entries.map((entry, index) => (
+          <Button<T>
+            key={typeof entry === 'string' ? entry : index}
+            className={cx(entryStyle, entryClassName)}
+            active={value.includes(entry)}
+            block
+            onClick={onEntryClick}
+            onClickArg={entry}
+          >
+            {getDisplayValue?.(entry) ?? String(entry)}
+          </Button>
+        ))}
+      </div>
+    )
+  }
+)

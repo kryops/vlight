@@ -17,6 +17,7 @@ import { showDialog } from '../../ui/overlays/dialog'
 import { buttonCancel, buttonOk } from '../../ui/overlays/buttons'
 import { Button } from '../../ui/buttons/button'
 import { cx } from '../../util/styles'
+import { useEvent } from '../../hooks/performance'
 
 import { getChasePreviewColor } from './utils'
 import { ChaseColorsEditor } from './chase-colors-editor'
@@ -56,6 +57,10 @@ export const LiveChaseWidgetColorControls = memoInProduction(
 
     const applyDraft = (draft: ChaseColor[]) =>
       update({ colors: draft, colorsDraft: null })
+
+    const applyCurrentDraft = useEvent(() =>
+      applyDraft(state.colorsDraft ?? [])
+    )
 
     const openColorDialog = async ({
       colors,
@@ -119,6 +124,33 @@ export const LiveChaseWidgetColorControls = memoInProduction(
       }
     }
 
+    const removeColor = useEvent(
+      (
+        event: { stopPropagation: () => void } | undefined,
+        color: ChaseColor
+      ) => {
+        event?.stopPropagation()
+        return update({
+          colors: state.colors.filter(it => it !== color),
+        })
+      }
+    )
+
+    const addColor = useEvent(() =>
+      openColorDialog({
+        colors: [
+          ...state.colors,
+          {
+            channels: {
+              [ChannelType.Master]: 255,
+              [ChannelType.Red]: 255,
+            },
+          },
+        ],
+        initialIndex: state.colors.length,
+      })
+    )
+
     return (
       <>
         <div className={colorContainer}>
@@ -137,38 +169,17 @@ export const LiveChaseWidgetColorControls = memoInProduction(
               }
             >
               {state.colors.length > 1 && state.colors.length < 4 && (
-                <Button
+                <Button<ChaseColor>
                   icon={iconDelete}
                   title="Remove Color"
                   transparent
-                  onClick={event => {
-                    event?.stopPropagation()
-                    return update({
-                      colors: state.colors.filter(it => it !== color),
-                    })
-                  }}
+                  onClick={removeColor}
+                  onClickArg={color}
                 />
               )}
             </div>
           ))}
-          <Button
-            icon={iconAdd}
-            transparent
-            onClick={() =>
-              openColorDialog({
-                colors: [
-                  ...state.colors,
-                  {
-                    channels: {
-                      [ChannelType.Master]: 255,
-                      [ChannelType.Red]: 255,
-                    },
-                  },
-                ],
-                initialIndex: state.colors.length,
-              })
-            }
-          />
+          <Button icon={iconAdd} transparent onClick={addColor} />
         </div>
         {state.colorsDraft && (
           <div className={cx(colorContainer, draftContainer)}>
@@ -192,12 +203,7 @@ export const LiveChaseWidgetColorControls = memoInProduction(
               icon={iconOk}
               transparent
               title="Apply draft"
-              onClick={() =>
-                update({
-                  colors: state.colorsDraft ?? [],
-                  colorsDraft: null,
-                })
-              }
+              onClick={applyCurrentDraft}
             />
           </div>
         )}

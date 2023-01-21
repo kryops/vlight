@@ -1,5 +1,7 @@
 import { useRef } from 'react'
 
+import { useEvent } from './performance'
+
 /**
  * Maximum time in ms between taps before a tap is considered the start of a new speed.
  */
@@ -23,7 +25,7 @@ const useMaxTaps = 3
 export function useTapSync(cb: (speed: number) => any): () => void {
   const tapsRef = useRef<number[]>([])
 
-  const registerTap = () => {
+  const registerTap = useEvent(() => {
     const now = Date.now()
 
     // reset after threshold has passed
@@ -63,7 +65,7 @@ export function useTapSync(cb: (speed: number) => any): () => void {
       return currentSpeed + diff / (arr.length - 1)
     }, 0)
     if (speed !== 0) cb(speed)
-  }
+  })
 
   return registerTap
 }

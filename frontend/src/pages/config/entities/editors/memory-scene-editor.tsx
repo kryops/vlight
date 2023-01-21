@@ -1,5 +1,6 @@
 import { css } from '@linaria/core'
 import { MemoryScene, MemorySceneState } from '@vlight/types'
+import { useCallback } from 'react'
 
 import { Label } from '../../../../ui/forms/label'
 import { Icon } from '../../../../ui/icons/icon'
@@ -49,18 +50,67 @@ export interface MemorySceneEditorProps {
 export const MemorySceneEditor = memoInProduction(
   ({ scene, onChange, compact }: MemorySceneEditorProps) => {
     const members = useShallowEqualMemo(scene.members)
+
+    const onChangeWrapper = useEvent((changes: Partial<MemoryScene>) =>
+      onChange({ ...scene, ...changes }, scene)
+    )
+
     const changeMembers = useEvent((newValue: string[]) =>
-      onChange({ ...scene, members: newValue }, scene)
+      onChangeWrapper({ members: newValue })
     )
 
     const addState = useEvent(() =>
-      onChange(
-        {
-          ...scene,
-          states: [...scene.states, newMemoryFactory().scenes[0].states[0]],
-        },
-        scene
-      )
+      onChangeWrapper({
+        states: [...scene.states, newMemoryFactory().scenes[0].states[0]],
+      })
+    )
+
+    const changeStates = useEvent((newValue: MemorySceneState[]) =>
+      onChangeWrapper({ states: newValue })
+    )
+
+    const renderEntryContent = useCallback(
+      (state: MemorySceneState) => (
+        <>
+          <div
+            className={flexAuto}
+            style={{
+              background: getMemorySceneStatePreviewBackground(state),
+            }}
+            onClick={async () => {
+              const result = await showDialogWithReturnValue<MemorySceneState>(
+                onChange => (
+                  <MemorySceneStateEditor
+                    scene={scene}
+                    state={state}
+                    onChange={onChange}
+                  />
+                ),
+                okCancel,
+                { showCloseButton: true }
+              )
+              if (result) {
+                changeStates(
+                  scene.states.map(it => (it === state ? result : it))
+                )
+              }
+            }}
+          />
+          <Icon
+            icon={iconDelete}
+            padding
+            onClick={() =>
+              changeStates(scene.states.filter(it => it !== state))
+            }
+          />
+        </>
+      ),
+      [changeStates, scene]
+    )
+
+    const changePattern = useEvent(
+      (newValue: MemoryScene['pattern'] | undefined): void =>
+        onChange({ ...scene, pattern: newValue }, scene)
     )
 
     return (
@@ -84,9 +134,7 @@ export const MemorySceneEditor = memoInProduction(
                 <Select
                   entries={memoryScenePatternEntries}
                   value={scene.pattern}
-                  onChange={newValue =>
-                    onChange({ ...scene, pattern: newValue }, scene)
-                  }
+                  onChange={changePattern}
                 />
               </>
             )
@@ -94,55 +142,9 @@ export const MemorySceneEditor = memoInProduction(
         />
         <SortableList
           entries={scene.states}
-          onChange={newValue => onChange({ ...scene, states: newValue }, scene)}
+          onChange={changeStates}
           entryClassName={stateStyle}
-          renderEntryContent={state => (
-            <>
-              <div
-                className={flexAuto}
-                style={{
-                  background: getMemorySceneStatePreviewBackground(state),
-                }}
-                onClick={async () => {
-                  const result =
-                    await showDialogWithReturnValue<MemorySceneState>(
-                      onChange => (
-                        <MemorySceneStateEditor
-                          scene={scene}
-                          state={state}
-                          onChange={onChange}
-                        />
-                      ),
-                      okCancel,
-                      { showCloseButton: true }
-                    )
-                  if (result)
-                    onChange(
-                      {
-                        ...scene,
-                        states: scene.states.map(it =>
-                          it === state ? result : it
-                        ),
-                      },
-                      scene
-                    )
-                }}
-              />
-              <Icon
-                icon={iconDelete}
-                padding
-                onClick={() =>
-                  onChange(
-                    {
-                      ...scene,
-                      states: scene.states.filter(it => it !== state),
-                    },
-                    scene
-                  )
-                }
-              />
-            </>
-          )}
+          renderEntryContent={renderEntryContent}
         />
       </>
     )

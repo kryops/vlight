@@ -95,6 +95,38 @@ export function ChaseColorsEditor({
 
   const getCurrentColors = useEvent(() => localState)
 
+  const removeColor = useEvent(
+    (event: { stopPropagation: () => void } | undefined, index: number) => {
+      const color = localState[index]
+      event?.stopPropagation()
+      onChangeWrapper(localState.filter(it => it !== color))
+      if (index < selectedIndex) setSelectedIndex(selectedIndex - 1)
+    }
+  )
+
+  const addColor = useEvent(() => {
+    onChangeWrapper([
+      ...localState,
+      {
+        channels: {
+          [ChannelType.Master]: 255,
+          [ChannelType.Red]: 255,
+        },
+      },
+    ])
+    setSelectedIndex(localState.length)
+  })
+
+  const changeSelectedColor = useEvent((newColor: ChaseColor | null): void =>
+    onChangeWrapper(
+      newColor === null
+        ? localState.filter((_, index) => index !== effectiveIndex)
+        : localState.map((color, index) =>
+            index === effectiveIndex ? newColor : color
+          )
+    )
+  )
+
   return (
     <>
       <h3 className={editorTitle}>
@@ -114,51 +146,25 @@ export function ChaseColorsEditor({
             onClick={() => setSelectedIndex(index)}
           >
             {localState.length > 1 && (
-              <Button
+              <Button<number>
                 icon={iconDelete}
                 title="Remove Color"
                 transparent
                 className={colorRemoveButton}
-                onClick={event => {
-                  event?.stopPropagation()
-                  onChangeWrapper(localState.filter(it => it !== color))
-                  if (index < selectedIndex) setSelectedIndex(selectedIndex - 1)
-                }}
+                onClick={removeColor}
+                onClickArg={index}
               />
             )}
           </Clickable>
         ))}
-        <Button
-          icon={iconAdd}
-          transparent
-          onClick={() => {
-            onChangeWrapper([
-              ...localState,
-              {
-                channels: {
-                  [ChannelType.Master]: 255,
-                  [ChannelType.Red]: 255,
-                },
-              },
-            ])
-            setSelectedIndex(localState.length)
-          }}
-        />
+        <Button icon={iconAdd} transparent onClick={addColor} />
       </div>
 
       {selectedColor && (
         <ChaseColorEditor
           members={members}
           color={selectedColor}
-          onChange={newColor =>
-            onChangeWrapper(
-              newColor === null
-                ? localState.filter((_, index) => index !== effectiveIndex)
-                : localState.map((color, index) =>
-                    index === effectiveIndex ? newColor : color
-                  )
-            )
-          }
+          onChange={changeSelectedColor}
         />
       )}
 

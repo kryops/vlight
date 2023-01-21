@@ -1,4 +1,6 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useMemo } from 'react'
+
+import { useEvent, useShallowEqualMemo } from './performance'
 
 export interface FormState<TValues extends object> {
   values: TValues
@@ -17,12 +19,12 @@ export function useFormState<TValues extends object>(
   { onChange }: FormStateOptions<TValues> = {}
 ): FormState<TValues> {
   const [values, setValues] = useState(initialValues)
-  const onChangeRef = useRef(onChange)
-  onChangeRef.current = onChange
+
+  const change = useEvent((values: TValues) => onChange?.(values))
 
   useEffect(() => {
-    onChangeRef.current?.(values)
-  }, [values])
+    change(values)
+  }, [change, values])
 
   const changeValue = useCallback(
     <TKey extends keyof TValues>(key: TKey, value: TValues[TKey]) => {
@@ -31,10 +33,10 @@ export function useFormState<TValues extends object>(
     []
   )
 
-  return {
+  return useShallowEqualMemo({
     values,
     changeValue,
-  }
+  })
 }
 
 /**
@@ -46,29 +48,33 @@ export function useFormStateArray<
   TValue extends Unpacked<TValues[TName]>
 >(formState: FormState<TValues>, name: TName) {
   const value = formState.values[name]
-  return {
-    value,
-    /** Adds the entry to the end of the array. */
-    add(entry: TValue) {
-      formState.changeValue(name, [...value, entry] as TValues[TName])
-    },
-    /** Removes the entry from the array. */
-    remove(entry: TValue) {
-      formState.changeValue(
-        name,
-        value.filter(it => it !== entry) as TValues[TName]
-      )
-    },
-    /** Replaces the old entry with the new one. */
-    update(oldEntry: TValue, newEntry: TValue) {
-      formState.changeValue(
-        name,
-        value.map(it => (it === oldEntry ? newEntry : it)) as TValues[TName]
-      )
-    },
-    /** Overwrites the complete array, e.g. when changing the order of entries. */
-    overwrite(newValue: TValue[]) {
-      formState.changeValue(name, newValue as TValues[TName])
-    },
-  }
+  const result = useMemo(
+    () => ({
+      value,
+      /** Adds the entry to the end of the array. */
+      add(entry: TValue) {
+        formState.changeValue(name, [...value, entry] as TValues[TName])
+      },
+      /** Removes the entry from the array. */
+      remove(entry: TValue) {
+        formState.changeValue(
+          name,
+          value.filter(it => it !== entry) as TValues[TName]
+        )
+      },
+      /** Replaces the old entry with the new one. */
+      update(oldEntry: TValue, newEntry: TValue) {
+        formState.changeValue(
+          name,
+          value.map(it => (it === oldEntry ? newEntry : it)) as TValues[TName]
+        )
+      },
+      /** Overwrites the complete array, e.g. when changing the order of entries. */
+      overwrite(newValue: TValue[]) {
+        formState.changeValue(name, newValue as TValues[TName])
+      },
+    }),
+    [formState, value, name]
+  )
+  return result
 }

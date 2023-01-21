@@ -12,12 +12,16 @@ import { Label } from '../../../../ui/forms/label'
 import { TextInput } from '../../../../ui/forms/typed-input'
 import { SelectEntry } from '../../../../ui/forms/select'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
-import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget'
+import {
+  AdditionalMapShape,
+  StatelessMapWidget,
+} from '../../../../widgets/map/stateless-map-widget'
 import {
   autoWidthInput,
   editorPreviewColumn,
   editorTitle,
 } from '../../../../ui/css/editor-styles'
+import { useDeepEqualMemo, useEvent } from '../../../../hooks/performance'
 
 const fixtureShapeEntries: SelectEntry<FixtureShape>[] = [
   { value: 'circle', label: 'Circle' },
@@ -44,6 +48,28 @@ export function FixtureTypeEditor({
     formState.values.mapping.join(',')
   )
 
+  const changeMapping = useEvent(
+    (newMappingString: string | undefined): void => {
+      setMappingString(newMappingString)
+      const newMapping = (newMappingString ?? '')
+        .split(',')
+        .map(it => it.trim())
+        .filter(Boolean)
+      formState.changeValue('mapping', newMapping)
+    }
+  )
+
+  const shapePreview: AdditionalMapShape[] = useDeepEqualMemo([
+    {
+      x: 50,
+      y: 50,
+      xSize: formState.values.xSize,
+      ySize: formState.values.ySize,
+      border: formState.values.border,
+      shape: formState.values.shape ?? 'circle',
+    },
+  ])
+
   return (
     <>
       <h2 className={editorTitle}>{entry.id ? 'Edit' : 'Add'} Fixture Type</h2>
@@ -58,17 +84,7 @@ export function FixtureTypeEditor({
               label="Mapping"
               description="Comma-separated - Special values: m, r, g, b, w, uv"
               input={
-                <TextInput
-                  value={mappingString}
-                  onChange={newMappingString => {
-                    setMappingString(newMappingString)
-                    const newMapping = (newMappingString ?? '')
-                      .split(',')
-                      .map(it => it.trim())
-                      .filter(Boolean)
-                    formState.changeValue('mapping', newMapping)
-                  }}
-                />
+                <TextInput value={mappingString} onChange={changeMapping} />
               }
             />
             <Label
@@ -116,20 +132,7 @@ export function FixtureTypeEditor({
             />
           </>
         }
-        right={
-          <StatelessMapWidget
-            additionalShapes={[
-              {
-                x: 50,
-                y: 50,
-                xSize: formState.values.xSize,
-                ySize: formState.values.ySize,
-                border: formState.values.border,
-                shape: formState.values.shape ?? 'circle',
-              },
-            ]}
-          />
-        }
+        right={<StatelessMapWidget additionalShapes={shapePreview} />}
         rightClassName={editorPreviewColumn}
       />
     </>

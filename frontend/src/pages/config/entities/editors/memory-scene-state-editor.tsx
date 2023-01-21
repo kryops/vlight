@@ -26,6 +26,7 @@ import { cx } from '../../../../util/styles'
 import { editorTitle } from '../../../../ui/css/editor-styles'
 import { flexContainer } from '../../../../ui/css/flex'
 import { useDeepEqualMemo, useEvent } from '../../../../hooks/performance'
+import { Button } from '../../../../ui/buttons/button'
 
 const widget = css`
   border: none;
@@ -109,6 +110,8 @@ function computeStopWidths(gradientPositions: number[]): number[] {
   })
 }
 
+const positionModes = Object.values(MemoryScenePositionMode)
+const memorySceneStateTypes = Object.values(MemorySceneStateType)
 /**
  * Dialog content for editing a memory scene state.
  *
@@ -176,6 +179,28 @@ export function MemorySceneStateEditor({
     onChange(newState)
   })
 
+  const changePositionMode = useEvent((value: MemoryScenePositionMode): void =>
+    setGradientEntry(currentStop, {
+      position:
+        value === MemoryScenePositionMode.Auto
+          ? undefined
+          : gradientPositions[currentStop],
+    })
+  )
+
+  const changePosition = useEvent((value: number | undefined): void => {
+    if (value === undefined) return
+    const position = ensureBetween(value, 0, 100)
+    setGradientEntry(currentStop, { position })
+  })
+
+  const removeCurrentStop = useEvent(() => {
+    if (!Array.isArray(localState)) return
+    const newState = localState.filter((_, i) => i !== currentStop)
+    setLocalState(newState)
+    onChange(newState)
+  })
+
   const content = Array.isArray(localState) ? (
     <>
       <div
@@ -217,20 +242,13 @@ export function MemorySceneStateEditor({
           <div className={optionsContainer}>
             <div className={positionContainer}>
               <Select
-                entries={Object.values(MemoryScenePositionMode)}
+                entries={positionModes}
                 value={
                   activeGradientStop.position !== undefined
                     ? MemoryScenePositionMode.Manual
                     : MemoryScenePositionMode.Auto
                 }
-                onChange={value =>
-                  setGradientEntry(currentStop, {
-                    position:
-                      value === MemoryScenePositionMode.Auto
-                        ? undefined
-                        : gradientPositions[currentStop],
-                  })
-                }
+                onChange={changePositionMode}
               />
               &nbsp; &nbsp;
               {activeGradientStop.position === undefined ? (
@@ -239,11 +257,7 @@ export function MemorySceneStateEditor({
                 <NumberInput
                   className={positionInput}
                   value={activeGradientStop.position}
-                  onChange={value => {
-                    if (value === undefined) return
-                    const position = ensureBetween(value, 0, 100)
-                    setGradientEntry(currentStop, { position })
-                  }}
+                  onChange={changePosition}
                   min={0}
                   max={100}
                 />
@@ -251,17 +265,9 @@ export function MemorySceneStateEditor({
               %
             </div>
             {localState.length > 2 && (
-              <a
-                onClick={() => {
-                  const newState = localState.filter(
-                    (_, i) => i !== currentStop
-                  )
-                  setLocalState(newState)
-                  onChange(newState)
-                }}
-              >
-                <Icon icon={iconDelete} inline /> Remove
-              </a>
+              <Button onClick={removeCurrentStop} icon={iconDelete} transparent>
+                Remove
+              </Button>
             )}
           </div>
         </>
@@ -298,33 +304,32 @@ export function MemorySceneStateEditor({
     />
   )
 
+  const changeType = useEvent((value: MemorySceneStateType): void => {
+    let newState = localState
+    if (value === MemorySceneStateType.Gradient && !Array.isArray(localState)) {
+      newState = [
+        { channels: localState.channels },
+        { channels: localState.channels },
+      ]
+    } else if (
+      value === MemorySceneStateType.Color &&
+      Array.isArray(localState)
+    ) {
+      newState = { on: true, channels: localState[0].channels }
+    }
+
+    setLocalState(newState)
+    onChange(newState)
+  })
+
   return (
     <>
       <h2 className={editorTitle}>Edit Memory Scene State</h2>
       <Select
         className={select}
-        entries={Object.values(MemorySceneStateType)}
+        entries={memorySceneStateTypes}
         value={type}
-        onChange={value => {
-          let newState = localState
-          if (
-            value === MemorySceneStateType.Gradient &&
-            !Array.isArray(localState)
-          ) {
-            newState = [
-              { channels: localState.channels },
-              { channels: localState.channels },
-            ]
-          } else if (
-            value === MemorySceneStateType.Color &&
-            Array.isArray(localState)
-          ) {
-            newState = { on: true, channels: localState[0].channels }
-          }
-
-          setLocalState(newState)
-          onChange(newState)
-        }}
+        onChange={changeType}
       />
       {content}
     </>

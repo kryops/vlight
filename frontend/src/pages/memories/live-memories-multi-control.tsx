@@ -1,9 +1,10 @@
+import { IdType } from '@vlight/types'
 import { average } from '@vlight/utils'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { setLiveMemoryState } from '../../api'
 import { useApiState } from '../../hooks/api'
-import { useEvent } from '../../hooks/performance'
+import { useEvent, useShallowEqualMemo } from '../../hooks/performance'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { Widget } from '../../ui/containers/widget'
@@ -35,14 +36,33 @@ function LiveMemoriesMultiControlInner() {
     )
   )
 
+  const liveMemoryIds = useShallowEqualMemo(Object.keys(memoryStates))
+
+  const getDisplayValue = useCallback(
+    (id: IdType) => memoryStates[id].name ?? `Live Memory ${id}`,
+    [memoryStates]
+  )
+
+  const toggleOn = useEvent(() =>
+    selectedMemoryIds.forEach(id =>
+      setLiveMemoryState(
+        id,
+        {
+          on: !on,
+        },
+        true
+      )
+    )
+  )
+
   return (
     <TwoColumDialogContainer
       left={
         <MultiToggleInput
           value={selectedMemoryIds}
-          entries={Object.keys(memoryStates)}
+          entries={liveMemoryIds}
           onChange={setSelectedMemoryIds}
-          getDisplayValue={id => `Live Memory ${id}`}
+          getDisplayValue={getDisplayValue}
         />
       }
       right={
@@ -50,17 +70,7 @@ function LiveMemoriesMultiControlInner() {
           <Widget
             icon={iconLiveMemory}
             title={`${selectedMemoryIds.length} Memories`}
-            onTitleClick={() =>
-              selectedMemoryIds.forEach(id =>
-                setLiveMemoryState(
-                  id,
-                  {
-                    on: !on,
-                  },
-                  true
-                )
-              )
-            }
+            onTitleClick={toggleOn}
             turnedOn={on}
           >
             <div className={faderContainer}>

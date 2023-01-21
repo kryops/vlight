@@ -6,6 +6,7 @@ import {
   IdType,
 } from '@vlight/types'
 import { arrayRange } from '@vlight/utils'
+import { useMemo } from 'react'
 
 import { memoInProduction } from '../../util/development'
 import { backgroundColor, baseline, iconShade } from '../../ui/styles'
@@ -138,8 +139,12 @@ export const StatelessMapWidget = memoInProduction(
     className,
   }: StatelessMapWidgetProps) => {
     const { fixtureTypes } = useMasterDataMaps()
-    const positionedFixtures = (fixtures ?? []).filter(
-      fixture => fixture.x !== undefined && fixture.y !== undefined
+    const positionedFixtures = useMemo(
+      () =>
+        (fixtures ?? []).filter(
+          fixture => fixture.x !== undefined && fixture.y !== undefined
+        ),
+      [fixtures]
     )
 
     return (

@@ -8,6 +8,7 @@ import {
 } from '@vlight/utils'
 
 import { useDelayedState } from '../../../hooks/delayed-state'
+import { useEvent } from '../../../hooks/performance'
 import { memoInProduction } from '../../../util/development'
 import { iconShade } from '../../styles'
 
@@ -89,29 +90,29 @@ export const RangeFader = memoInProduction(
     const getFraction = (coordinate: number) =>
       valueToFraction(coordinate, min, max)
 
+    const onTouch = useEvent((fraction: number): void => {
+      const rawCoordinate = fractionToValue(fraction, min, max)
+
+      const newRawValue =
+        Math.abs(valueToUse.from - rawCoordinate) <
+          Math.abs(valueToUse.to - rawCoordinate) ||
+        Math.abs(valueToUse.from - rawCoordinate) >
+          Math.abs(min - rawCoordinate)
+          ? valueRange(rawCoordinate, valueToUse.to)
+          : valueRange(valueToUse.from, rawCoordinate)
+
+      setLocalValue(newRawValue)
+      const roundedValue = valueRange(
+        roundToStep(newRawValue.from, step),
+        roundToStep(newRawValue.to, step)
+      )
+      onChange(roundedValue)
+    })
+
+    const onUp = useEvent(() => setLocalValue(null, true))
+
     return (
-      <FaderBase
-        {...passThrough}
-        onTouch={fraction => {
-          const rawCoordinate = fractionToValue(fraction, min, max)
-
-          const newRawValue =
-            Math.abs(valueToUse.from - rawCoordinate) <
-              Math.abs(valueToUse.to - rawCoordinate) ||
-            Math.abs(valueToUse.from - rawCoordinate) >
-              Math.abs(min - rawCoordinate)
-              ? valueRange(rawCoordinate, valueToUse.to)
-              : valueRange(valueToUse.from, rawCoordinate)
-
-          setLocalValue(newRawValue)
-          const roundedValue = valueRange(
-            roundToStep(newRawValue.from, step),
-            roundToStep(newRawValue.to, step)
-          )
-          onChange(roundedValue)
-        }}
-        onUp={() => setLocalValue(null, true)}
-      >
+      <FaderBase {...passThrough} onTouch={onTouch} onUp={onUp}>
         <div
           className={track}
           style={{

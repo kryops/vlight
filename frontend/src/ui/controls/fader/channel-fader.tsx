@@ -1,9 +1,10 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 import { css } from '@linaria/core'
 
 import { memoInProduction } from '../../../util/development'
 import { getFixtureAtChannel } from '../../../util/fixtures'
 import { useMasterDataAndMaps } from '../../../hooks/api'
+import { useEvent } from '../../../hooks/performance'
 
 import { Fader } from './fader'
 
@@ -27,13 +28,7 @@ export interface ChannelFaderProps {
  */
 export const ChannelFader = memoInProduction(
   ({ channel, value, onChange }: ChannelFaderProps) => {
-    const onChangeRef = useRef(onChange)
-    onChangeRef.current = onChange
-
-    const changeHandler = useCallback(
-      (value: number) => onChangeRef.current(channel, value),
-      [channel]
-    )
+    const changeHandler = useEvent((value: number) => onChange(channel, value))
 
     const { masterData, masterDataMaps } = useMasterDataAndMaps()
     const fixture = useMemo(
