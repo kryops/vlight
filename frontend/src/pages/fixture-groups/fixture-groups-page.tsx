@@ -3,7 +3,7 @@ import { FixtureGroupWidget } from '../../widgets/fixture-group/fixture-group-wi
 import { pageWithWidgets } from '../../ui/css/page'
 import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
-import { useNumberHotkey } from '../../hooks/hotkey'
+import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
 
 import { FixtureGroupsActions } from './fixture-group-actions'
 import { FixtureGroupMultiControl } from './fixture-group-multi-control'
@@ -29,6 +29,7 @@ const FixtureGroupsPage = memoInProduction(() => {
           <FixtureGroupWidget
             key={group.id}
             group={group}
+            cornerLabel={getHotkeyLabel(index)}
             hotkeysActive={activeHotkeyIndex === index}
           />
         ))}

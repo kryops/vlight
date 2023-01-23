@@ -3,7 +3,7 @@ import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
 import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
 import { useMasterData } from '../../hooks/api'
-import { useNumberHotkey } from '../../hooks/hotkey'
+import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
 
 import { FixturesActions } from './fixtures-actions'
 import { FixturesMultiControl } from './fixtures-multi-control'
@@ -29,6 +29,7 @@ const FixturesPage = memoInProduction(() => {
           <FixtureWidget
             key={fixture.id}
             fixture={fixture}
+            cornerLabel={getHotkeyLabel(index)}
             hotkeysActive={index === activeHotkeyIndex}
           />
         ))}

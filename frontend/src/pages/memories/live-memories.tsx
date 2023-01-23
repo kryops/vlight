@@ -3,6 +3,7 @@ import { css } from '@linaria/core'
 import { setLiveMemoryState } from '../../api'
 import { apiState } from '../../api/api-state'
 import { useApiState } from '../../hooks/api'
+import { getHotkeyLabel } from '../../hooks/hotkey'
 import { Header } from '../../ui/containers/header'
 import { pageWithWidgets } from '../../ui/css/page'
 import { iconAdd } from '../../ui/icons'
@@ -45,6 +46,7 @@ const addLiveMemory = async () => {
 }
 
 export interface LiveMemoriesProps {
+  startHotkeyIndex?: number
   activeHotkeyIndex?: number | null
 }
 
@@ -55,7 +57,7 @@ export interface LiveMemoriesProps {
  * - widgets for all live memory
  */
 export const LiveMemories = memoInProduction(
-  ({ activeHotkeyIndex }: LiveMemoriesProps) => {
+  ({ startHotkeyIndex, activeHotkeyIndex }: LiveMemoriesProps) => {
     const liveMemories = useApiState('liveMemories')
 
     return (
@@ -85,6 +87,11 @@ export const LiveMemories = memoInProduction(
               id={id}
               state={memory}
               hotkeysActive={index === activeHotkeyIndex}
+              cornerLabel={
+                startHotkeyIndex !== undefined
+                  ? getHotkeyLabel(startHotkeyIndex + index)
+                  : undefined
+              }
             />
           ))}
         </div>

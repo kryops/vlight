@@ -21,7 +21,7 @@ const ChasesPage = memoInProduction(() => {
   return (
     <>
       <Header rightContent={<ChasesActions />}>Chases</Header>
-      <LiveChases activeHotkeyIndex={activeHotkeyIndex} />
+      <LiveChases startHotkeyIndex={0} activeHotkeyIndex={activeHotkeyIndex} />
     </>
   )
 })

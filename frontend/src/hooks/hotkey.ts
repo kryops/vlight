@@ -91,3 +91,9 @@ export function useNumberHotkey(itemCount: number): number | null {
   )
   return activeIndex
 }
+
+export function getHotkeyLabel(index: number): string | undefined {
+  if (index > 8) return undefined
+
+  return String(index + 1)
+}

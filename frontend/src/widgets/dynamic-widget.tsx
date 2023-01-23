@@ -3,6 +3,7 @@ import { assertNever, toArray } from '@vlight/utils'
 
 import { useMasterDataMaps } from '../hooks/api'
 import { memoInProduction } from '../util/development'
+import { WidgetPassthrough } from '../ui/containers/widget'
 
 import { UniverseWidget } from './universe/universe-widget'
 import { ChannelsWidget } from './channels/channels-widget'
@@ -15,16 +16,15 @@ import { LiveChaseWidget } from './chase/live-chase-widget'
 import { DmxMasterWidget } from './global/dmx-master-widget'
 import { ControlsWidget } from './global/controls-widget'
 
-export interface DynamicWidgetProps {
+export interface DynamicWidgetProps extends WidgetPassthrough {
   config: WidgetConfig
-  hotkeysActive?: boolean
 }
 
 /**
  * Component that renders a widget based on a dynamic widget configuration.
  */
 export const DynamicWidget = memoInProduction(
-  ({ config, hotkeysActive }: DynamicWidgetProps) => {
+  ({ config, ...passThrough }: DynamicWidgetProps) => {
     const { fixtures, fixtureGroups, memories } = useMasterDataMaps()
 
     // TODO investigate why the keys are needed
@@ -37,6 +37,7 @@ export const DynamicWidget = memoInProduction(
             from={config.from}
             to={config.to}
             title={config.title}
+            {...passThrough}
           />
         )
 
@@ -47,6 +48,7 @@ export const DynamicWidget = memoInProduction(
             from={config.from}
             to={config.to}
             title={config.title}
+            {...passThrough}
           />
         )
 
@@ -59,7 +61,7 @@ export const DynamicWidget = memoInProduction(
                 <FixtureWidget
                   key={`fixture${id}`}
                   fixture={fixture}
-                  hotkeysActive={hotkeysActive}
+                  {...passThrough}
                 />
               ) : null
             })}
@@ -75,7 +77,7 @@ export const DynamicWidget = memoInProduction(
                 <FixtureGroupWidget
                   key={`fixture-group${id}`}
                   group={fixtureGroup}
-                  hotkeysActive={hotkeysActive}
+                  {...passThrough}
                 />
               ) : null
             })}
@@ -91,7 +93,7 @@ export const DynamicWidget = memoInProduction(
                 <MemoryWidget
                   key={`memory${id}`}
                   memory={memory}
-                  hotkeysActive={hotkeysActive}
+                  {...passThrough}
                 />
               ) : null
             })}
@@ -106,7 +108,7 @@ export const DynamicWidget = memoInProduction(
                 <LiveMemoryWidget
                   key={`live-memory${id}`}
                   id={id}
-                  hotkeysActive={hotkeysActive}
+                  {...passThrough}
                 />
               )
             })}
@@ -121,7 +123,7 @@ export const DynamicWidget = memoInProduction(
                 <LiveChaseWidget
                   key={`live-chase${id}`}
                   id={id}
-                  hotkeysActive={hotkeysActive}
+                  {...passThrough}
                 />
               )
             })}
@@ -132,10 +134,10 @@ export const DynamicWidget = memoInProduction(
         return <MapWidget />
 
       case 'dmx-master':
-        return <DmxMasterWidget hotkeysActive={hotkeysActive} />
+        return <DmxMasterWidget {...passThrough} />
 
       case 'controls':
-        return <ControlsWidget hotkeysActive={hotkeysActive} />
+        return <ControlsWidget {...passThrough} />
 
       default:
         assertNever(config)

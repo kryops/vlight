@@ -6,6 +6,7 @@ import { setFixtureState } from '../../api'
 import { memoInProduction } from '../../util/development'
 import { iconLight } from '../../ui/icons'
 import { useEvent } from '../../hooks/performance'
+import { WidgetPassthrough } from '../../ui/containers/widget'
 
 import { FixtureStateWidget } from './fixture-state-widget'
 
@@ -19,16 +20,15 @@ export function getFixtureName(
   return `${fixture.channel} ${fixtureType.name}`
 }
 
-export interface FixtureWidgetProps {
+export interface FixtureWidgetProps extends WidgetPassthrough {
   fixture: Fixture
-  hotkeysActive?: boolean
 }
 
 /**
  * Widget to display a fixture.
  */
 export const FixtureWidget = memoInProduction(
-  ({ fixture, hotkeysActive }: FixtureWidgetProps) => {
+  ({ fixture, ...passThrough }: FixtureWidgetProps) => {
     const { fixtureTypes } = useMasterDataMaps()
     const fixtureType = fixtureTypes.get(fixture.type)
     const fixtureState = useApiStateEntry('fixtures', fixture.id)
@@ -50,7 +50,7 @@ export const FixtureWidget = memoInProduction(
         title={getFixtureName(fixture, fixtureType)}
         fixtureState={fixtureState}
         mapping={fixtureType.mapping}
-        hotkeysActive={hotkeysActive}
+        {...passThrough}
         onChange={onChange}
       />
     )

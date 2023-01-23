@@ -10,17 +10,17 @@ import { iconConfig, iconGroup } from '../../ui/icons'
 import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { memoInProduction } from '../../util/development'
 import { useEvent } from '../../hooks/performance'
+import { WidgetPassthrough } from '../../ui/containers/widget'
 
-export interface FixtureGroupWidgetProps {
+export interface FixtureGroupWidgetProps extends WidgetPassthrough {
   group: FixtureGroup
-  hotkeysActive?: boolean
 }
 
 /**
  * Widget to display a fixture group.
  */
 export const FixtureGroupWidget = memoInProduction(
-  ({ group, hotkeysActive }: FixtureGroupWidgetProps) => {
+  ({ group, ...passThrough }: FixtureGroupWidgetProps) => {
     const groupState = useApiStateEntry('fixtureGroups', group.id)
     const groupMapping = useCommonFixtureMapping(group.fixtures)
 
@@ -54,7 +54,7 @@ export const FixtureGroupWidget = memoInProduction(
         }
         fixtureState={groupState}
         mapping={groupMapping}
-        hotkeysActive={hotkeysActive}
+        {...passThrough}
         onChange={onChange}
       />
     )

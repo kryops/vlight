@@ -3,7 +3,7 @@ import { memoInProduction } from '../../util/development'
 import { pageWithWidgets } from '../../ui/css/page'
 import { MemoryWidget } from '../../widgets/memory/memory-widget'
 import { Header } from '../../ui/containers/header'
-import { useNumberHotkey } from '../../hooks/hotkey'
+import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
 
 import { MemoriesActions } from './memories-actions'
 import { MemoriesMultiControl } from './memories-multi-control'
@@ -35,11 +35,13 @@ const MemoriesPage = memoInProduction(() => {
           <MemoryWidget
             key={memory.id}
             memory={memory}
+            cornerLabel={getHotkeyLabel(index)}
             hotkeysActive={activeHotkeyIndex === index}
           />
         ))}
       </div>
       <LiveMemories
+        startHotkeyIndex={memories.length}
         activeHotkeyIndex={
           activeHotkeyIndex !== null && activeHotkeyIndex >= memories.length
             ? activeHotkeyIndex - memories.length

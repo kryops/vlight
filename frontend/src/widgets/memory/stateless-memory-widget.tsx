@@ -5,7 +5,7 @@ import { setMemoryState } from '../../api'
 import { useEvent } from '../../hooks/performance'
 import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { Button } from '../../ui/buttons/button'
-import { Widget } from '../../ui/containers/widget'
+import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { iconConfig, iconLight, iconMemory } from '../../ui/icons'
@@ -24,17 +24,16 @@ const fader = css`
   margin: 0 ${baseline(2)};
 `
 
-export interface StatelessMemoryWidgetProps {
+export interface StatelessMemoryWidgetProps extends WidgetPassthrough {
   memory: Memory
   state: MemoryState
-  hotkeysActive?: boolean
 }
 
 /**
  * Stateless widget to display a memory.
  */
 export const StatelessMemoryWidget = memoInProduction(
-  ({ memory, state, hotkeysActive }: StatelessMemoryWidgetProps) => {
+  ({ memory, state, ...passThrough }: StatelessMemoryWidgetProps) => {
     const changeValue = useEvent((value: number) =>
       setMemoryState(
         memory.id,
@@ -87,7 +86,7 @@ export const StatelessMemoryWidget = memoInProduction(
         }
         onTitleClick={toggleOn}
         turnedOn={state.on}
-        hotkeysActive={hotkeysActive}
+        {...passThrough}
       >
         <div className={container}>
           <div className={faderContainer}>

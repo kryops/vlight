@@ -3,7 +3,7 @@ import { css } from '@linaria/core'
 import { useEffect, useState } from 'react'
 
 import { setLiveChaseState } from '../../api'
-import { Widget } from '../../ui/containers/widget'
+import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { flexAuto, flexWrap } from '../../ui/css/flex'
@@ -35,18 +35,17 @@ const leftColumn = css`
 
 const rightColumn = flexAuto
 
-export interface StatelessLiveChaseWidgetProps {
+export interface StatelessLiveChaseWidgetProps extends WidgetPassthrough {
   id: IdType
   state: LiveChase
   title?: string
-  hotkeysActive?: boolean
 }
 
 /**
  * Stateless widget to display a live chase.
  */
 export const StatelessLiveChaseWidget = memoInProduction(
-  ({ id, state, title, hotkeysActive }: StatelessLiveChaseWidgetProps) => {
+  ({ id, state, title, ...passThrough }: StatelessLiveChaseWidgetProps) => {
     const update = (newState: Partial<LiveChase>) =>
       setLiveChaseState(id, newState, true)
 
@@ -91,7 +90,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
         turnedOn={state.on}
         contentClassName={flexWrap}
         titleSide={<LiveChaseWidgetTopControls id={id} state={state} />}
-        hotkeysActive={hotkeysActive}
+        {...passThrough}
       >
         <div className={leftColumn}>
           <FixtureListInput

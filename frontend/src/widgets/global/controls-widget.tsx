@@ -22,13 +22,11 @@ import {
   turnAllMemoriesOff,
 } from '../../pages/memories/memories-actions'
 import { Button } from '../../ui/buttons/button'
-import { Widget } from '../../ui/containers/widget'
+import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { iconControl } from '../../ui/icons'
 import { memoInProduction } from '../../util/development'
 
-export interface ControlsWidgetProps {
-  hotkeysActive?: boolean
-}
+export type ControlsWidgetProps = WidgetPassthrough
 
 const allOffMapping: Array<[(apiState: ApiState) => boolean, () => void]> = [
   [isAnyChannelOn, turnAllChannelsOff],
@@ -45,13 +43,13 @@ const turnAllOff = () => {
 }
 
 export const ControlsWidget = memoInProduction(
-  ({ hotkeysActive }: ControlsWidgetProps) => {
+  ({ ...passThrough }: ControlsWidgetProps) => {
     const isAnyOn = useApiStateSelector(apiState =>
       allOffMapping.some(([check]) => check(apiState))
     )
 
     return (
-      <Widget title="Controls" icon={iconControl} hotkeysActive={hotkeysActive}>
+      <Widget title="Controls" icon={iconControl} {...passThrough}>
         <Button
           block
           onDown={turnAllOff}

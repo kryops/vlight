@@ -1,13 +1,13 @@
 import { IdType } from '@vlight/types'
 
 import { useApiStateEntry } from '../../hooks/api'
+import { WidgetPassthrough } from '../../ui/containers/widget'
 
 import { StatelessLiveChaseWidget } from './stateless-live-chase-widget'
 
-export interface LiveChaseWidgetProps {
+export interface LiveChaseWidgetProps extends WidgetPassthrough {
   id: IdType
   title?: string
-  hotkeysActive?: boolean
 }
 
 /**
@@ -16,7 +16,7 @@ export interface LiveChaseWidgetProps {
 export const LiveChaseWidget = ({
   id,
   title,
-  hotkeysActive,
+  ...passThrough
 }: LiveChaseWidgetProps) => {
   const liveChaseState = useApiStateEntry('liveChases', id)
 
@@ -29,7 +29,7 @@ export const LiveChaseWidget = ({
       id={id}
       state={liveChaseState}
       title={title ?? liveChaseState.name ?? `Live Chase ${id}`}
-      hotkeysActive={hotkeysActive}
+      {...passThrough}
     />
   )
 }

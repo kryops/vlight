@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useState } from 'react'
 import { ChannelType } from '@vlight/controls'
 import { css } from '@linaria/core'
 
-import { Widget } from '../../ui/containers/widget'
+import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { ColorPicker } from '../../ui/controls/colorpicker'
 import {
   ColorPickerColor,
@@ -23,7 +23,7 @@ const colorPickerIconStyle = css`
   margin-left: ${baseline(2)};
 `
 
-export interface FixtureStateWidgetProps {
+export interface FixtureStateWidgetProps extends WidgetPassthrough {
   fixtureState: FixtureState
 
   /** Channel type mapping. */
@@ -41,8 +41,6 @@ export interface FixtureStateWidgetProps {
    */
   disableOn?: boolean
 
-  hotkeysActive?: boolean
-
   className?: string
 }
 
@@ -58,8 +56,8 @@ export const FixtureStateWidget = memoInProduction(
     titleSide,
     onChange,
     disableOn = false,
-    hotkeysActive,
     className,
+    ...passThrough
   }: FixtureStateWidgetProps) => {
     const colorPickerCapable = colorPickerColors.every(c => mapping.includes(c))
     const [colorPicker, setColorPicker] = useState(true)
@@ -128,7 +126,7 @@ export const FixtureStateWidget = memoInProduction(
           ) : undefined
         }
         turnedOn={disableOn ? undefined : fixtureState.on}
-        hotkeysActive={hotkeysActive}
+        {...passThrough}
         bottomLineColor={getFixtureStateColor(fixtureState)}
       >
         <div className={faderContainer}>

@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 
 import { deleteLiveMemory, setLiveMemoryState } from '../../api'
 import { MemorySceneEditor } from '../../pages/config/entities/editors/memory-scene-editor'
-import { Widget } from '../../ui/containers/widget'
+import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { flexWrap } from '../../ui/css/flex'
 import { baseline } from '../../ui/styles'
@@ -47,18 +47,17 @@ const preview = css`
   margin: 0;
 `
 
-export interface StatelessLiveMemoryWidgetProps {
+export interface StatelessLiveMemoryWidgetProps extends WidgetPassthrough {
   id: IdType
   state: LiveMemory
   title?: string
-  hotkeysActive?: boolean
 }
 
 /**
  * Stateless widget to display a live memory.
  */
 export const StatelessLiveMemoryWidget = memoInProduction(
-  ({ id, state, title, hotkeysActive }: StatelessLiveMemoryWidgetProps) => {
+  ({ id, state, title, ...passThrough }: StatelessLiveMemoryWidgetProps) => {
     const { on, value, ...rawScene } = state
     const scene = useDeepEqualMemo(rawScene)
     const scenes = useMemo(() => [scene], [scene])
@@ -99,7 +98,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
         onTitleClick={toggleOn}
         turnedOn={state.on}
         contentClassName={flexWrap}
-        hotkeysActive={hotkeysActive}
+        {...passThrough}
         titleSide={
           <div className={controls}>
             <Button

@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { PropsWithChildren, ReactElement } from 'react'
+import { PropsWithChildren, ReactElement, useEffect, useRef } from 'react'
 
 import { Icon } from '../icons/icon'
 import {
@@ -9,6 +9,8 @@ import {
   successShade,
   baselinePx,
   iconShade,
+  textShade,
+  backgroundColor,
 } from '../styles'
 import { cx } from '../../util/styles'
 import { Clickable } from '../components/clickable'
@@ -17,6 +19,7 @@ import { ErrorBoundary } from '../../util/error-boundary'
 import { HotkeyContext, useHotkey } from '../../hooks/hotkey'
 
 const widget = css`
+  position: relative;
   flex: 1 1 auto;
   max-width: calc(100% - ${baselinePx * 2}px);
   border: 1px solid ${primaryShade(2)};
@@ -65,6 +68,18 @@ const bottomLine = css`
   margin-top: ${baseline(-0.75)};
 `
 
+const cornerLabelStyle = css`
+  position: absolute;
+  top: -${baseline()};
+  left: -${baseline()};
+  font-size: 0.8rem;
+  color: ${textShade(1)};
+  opacity: 0.85;
+  background-color: ${backgroundColor};
+  padding-right: ${baseline(0.5)};
+  pointer-events: none;
+`
+
 export interface WidgetProps {
   /** SVG path of the icon to display next to the title. */
   icon?: string
@@ -78,6 +93,11 @@ export interface WidgetProps {
    * Displayed to the right of the {@link title}.
    */
   titleSide?: string | ReactElement
+
+  /**
+   * Short label to display in a corner
+   */
+  cornerLabel?: string | ReactElement
 
   onTitleClick?: () => void
 
@@ -108,6 +128,11 @@ export interface WidgetProps {
   contentClassName?: string
 }
 
+export type WidgetPassthrough = Pick<
+  WidgetProps,
+  'hotkeysActive' | 'cornerLabel'
+>
+
 /**
  * Generic widget component.
  */
@@ -115,6 +140,7 @@ export function Widget({
   icon,
   title,
   titleSide,
+  cornerLabel,
   onTitleClick,
   turnedOn,
   hotkeysActive,
@@ -134,9 +160,18 @@ export function Widget({
     { forceActive: hotkeysActive }
   )
 
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (hotkeysActive) {
+      ref.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    }
+  }, [hotkeysActive])
+
   return (
     <HotkeyContext.Provider value={!!hotkeysActive}>
       <div
+        ref={ref}
         className={cx(
           widget,
           className,
@@ -144,6 +179,7 @@ export function Widget({
           hotkeysActive && widgetWithHotkeys
         )}
       >
+        {cornerLabel && <div className={cornerLabelStyle}>{cornerLabel}</div>}
         {(icon || title || titleSide || turnedOn !== undefined) && (
           <div className={cx(section, widgetTitle)}>
             <div>

@@ -12,7 +12,7 @@ import { DynamicPageEditor } from '../config/entities/editors/dynamic-page-edito
 import { editEntity } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { centeredText } from '../../ui/css/basic-styles'
-import { useNumberHotkey } from '../../hooks/hotkey'
+import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
 import { useEvent } from '../../hooks/performance'
 
 const widgetTypesWithoutHotkeys: Array<WidgetConfig['type']> = [
@@ -106,15 +106,17 @@ const DynamicPage = memoInProduction(() => {
               factor,
               children: (
                 <>
-                  {widgets.map((widget, index) => (
-                    <DynamicWidget
-                      key={index}
-                      config={widget}
-                      hotkeysActive={
-                        flatWidgets.indexOf(widget) === activeHotkeyIndex
-                      }
-                    />
-                  ))}
+                  {widgets.map((widget, index) => {
+                    const hotkeyIndex = flatWidgets.indexOf(widget)
+                    return (
+                      <DynamicWidget
+                        key={index}
+                        config={widget}
+                        hotkeysActive={hotkeyIndex === activeHotkeyIndex}
+                        cornerLabel={getHotkeyLabel(hotkeyIndex)}
+                      />
+                    )
+                  })}
                 </>
               ),
             }))}

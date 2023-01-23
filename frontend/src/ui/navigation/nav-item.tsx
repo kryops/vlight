@@ -80,10 +80,12 @@ export const NavItem = memoInProduction(
 
     useHotkey(hotkey, () => navigate(to), { forceActive: true })
 
+    const title = hotkey ? `${label} (${hotkey.toUpperCase()})` : label
+
     return (
       <NavLink
         to={to}
-        title={label}
+        title={title}
         className={({ isActive }) =>
           cx(
             navItem,

@@ -14,6 +14,7 @@ import { StatelessLiveChaseWidget } from '../../widgets/chase/stateless-live-cha
 import { showPromptDialog } from '../../ui/overlays/dialog'
 import { memoInProduction } from '../../util/development'
 import { apiState } from '../../api/api-state'
+import { getHotkeyLabel } from '../../hooks/hotkey'
 
 const container = css`
   margin-top: ${baseline(4)};
@@ -58,6 +59,7 @@ const addLiveChase = async () => {
 }
 
 export interface LiveChasesProps {
+  startHotkeyIndex?: number
   activeHotkeyIndex?: number | null
 }
 
@@ -65,7 +67,7 @@ export interface LiveChasesProps {
  * Displays widgets for all live chases.
  */
 export const LiveChases = memoInProduction(
-  ({ activeHotkeyIndex }: LiveChasesProps) => {
+  ({ startHotkeyIndex, activeHotkeyIndex }: LiveChasesProps) => {
     const liveChases = useApiState('liveChases')
 
     return (
@@ -92,6 +94,11 @@ export const LiveChases = memoInProduction(
               id={id}
               state={liveChase}
               hotkeysActive={activeHotkeyIndex === index}
+              cornerLabel={
+                startHotkeyIndex !== undefined
+                  ? getHotkeyLabel(startHotkeyIndex + index)
+                  : undefined
+              }
             />
           ))}
         </div>
