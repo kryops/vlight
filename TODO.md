@@ -32,7 +32,6 @@
 - Dynamic Pages
   - Multi-control widgets
 - New Controls
-  - All off (permanently, <> blackout)
   - Programmable buttons
   - Non-live chases
   - Sequences/shows

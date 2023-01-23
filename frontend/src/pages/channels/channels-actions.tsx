@@ -6,11 +6,16 @@ import { iconLight, iconLightOff } from '../../ui/icons'
 import { useApiStateSelector } from '../../hooks/api'
 import { HotkeyContext } from '../../hooks/hotkey'
 import { memoInProduction } from '../../util/development'
+import { ApiState } from '../../api/worker/processing'
 
 const allChannels = createRangeArray(1, 512)
 
-const turnAllOn = () => setChannels(allChannels, 255)
-const turnAllOff = () => setChannels(allChannels, 0)
+export function isAnyChannelOn(apiState: ApiState) {
+  return apiState.channels?.some(value => value !== 0) ?? false
+}
+
+export const turnAllChannelsOn = () => setChannels(allChannels, 255)
+export const turnAllChannelsOff = () => setChannels(allChannels, 0)
 
 /**
  * Corner actions for the channels page:
@@ -19,11 +24,11 @@ const turnAllOff = () => setChannels(allChannels, 0)
  */
 export const ChannelsActions = memoInProduction(() => {
   const { isActive, isFullOn } = useApiStateSelector(
-    ({ channels }) => {
-      const isActive = channels?.some(value => value !== 0)
+    apiState => {
+      const isActive = isAnyChannelOn(apiState)
       return {
         isActive,
-        isFullOn: isActive && channels?.every(value => value === 255),
+        isFullOn: isActive && apiState.channels?.every(value => value === 255),
       }
     },
     { event: 'channels' }
@@ -33,7 +38,7 @@ export const ChannelsActions = memoInProduction(() => {
     <HotkeyContext.Provider value={true}>
       <Button
         icon={iconLight}
-        onClick={turnAllOn}
+        onClick={turnAllChannelsOn}
         disabled={isFullOn}
         title="All on"
         hotkey="o"
@@ -42,7 +47,7 @@ export const ChannelsActions = memoInProduction(() => {
       </Button>
       <Button
         icon={iconLightOff}
-        onClick={turnAllOff}
+        onClick={turnAllChannelsOff}
         disabled={!isActive}
         title="All off"
         hotkey="p"

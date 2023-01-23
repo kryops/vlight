@@ -12,6 +12,9 @@ const dynamicPages = [
                 type: 'dmx-master',
               },
               {
+                type: 'controls',
+              },
+              {
                 type: 'universe',
                 from: 1,
                 to: 8,

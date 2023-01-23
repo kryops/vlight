@@ -9,6 +9,7 @@ import { entitiesPageRoute } from '../routes'
 import { openEntityEditor } from '../config/entities/editors'
 import { HotkeyContext } from '../../hooks/hotkey'
 import { apiState } from '../../api/api-state'
+import { ApiState } from '../../api/worker/processing'
 
 function setOnForAllMemories(on: boolean) {
   setMemoryState(
@@ -23,9 +24,14 @@ function setOnForAllMemories(on: boolean) {
   })
 }
 
+export function isAnyMemoryOn(apiState: ApiState) {
+  return isAnyOn(apiState.memories) || isAllOn(apiState.liveMemories)
+}
+
+export const turnAllMemoriesOn = () => setOnForAllMemories(true)
+export const turnAllMemoriesOff = () => setOnForAllMemories(false)
+
 const addMemory = () => openEntityEditor('memories')
-const turnAllOn = () => setOnForAllMemories(true)
-const turnAllOff = () => setOnForAllMemories(false)
 
 /**
  * Corner actions for the memories page:
@@ -37,7 +43,7 @@ const turnAllOff = () => setOnForAllMemories(false)
 export function MemoriesActions() {
   const { allOn, allOff } = useApiStateSelector(apiState => ({
     allOn: isAllOn(apiState.memories) && isAllOn(apiState.liveMemories),
-    allOff: !isAnyOn(apiState.memories) && !isAnyOn(apiState.liveMemories),
+    allOff: !isAnyMemoryOn(apiState),
   }))
 
   return (
@@ -48,7 +54,7 @@ export function MemoriesActions() {
       </Link>
       <Button
         icon={iconLight}
-        onClick={turnAllOn}
+        onClick={turnAllMemoriesOn}
         disabled={allOn}
         title="All on"
         hotkey="o"
@@ -57,7 +63,7 @@ export function MemoriesActions() {
       </Button>
       <Button
         icon={iconLightOff}
-        onClick={turnAllOff}
+        onClick={turnAllMemoriesOff}
         disabled={allOff}
         title="All off"
         hotkey="p"

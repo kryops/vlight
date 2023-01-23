@@ -3,6 +3,7 @@
 ## December 2022 / January 2023
 
 - New DMX master control for global fading and blackout
+- New control to turn all controls off
 - Added keyboard input
   - Widgets can be focused using the number keys (or tab with 0)
   - Turn a widget on/off using the Space key

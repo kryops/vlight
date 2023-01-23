@@ -8,6 +8,7 @@ import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 import { HotkeyContext } from '../../hooks/hotkey'
 import { apiState } from '../../api/api-state'
+import { ApiState } from '../../api/worker/processing'
 
 function setOnForAllFixtures(on: boolean) {
   setFixtureState(
@@ -17,8 +18,12 @@ function setOnForAllFixtures(on: boolean) {
   )
 }
 
-const turnAllOn = () => setOnForAllFixtures(true)
-const turnAllOff = () => setOnForAllFixtures(false)
+export function isAnyFixtureOn(apiState: ApiState) {
+  return isAnyOn(apiState.fixtures)
+}
+
+export const turnAllFixturesOn = () => setOnForAllFixtures(true)
+export const turnAllFixturesOff = () => setOnForAllFixtures(false)
 
 /**
  * Corner actions for the fixtures page:
@@ -42,7 +47,7 @@ export function FixturesActions() {
       </Link>
       <Button
         icon={iconLight}
-        onClick={turnAllOn}
+        onClick={turnAllFixturesOn}
         disabled={allOn}
         title="All on"
         hotkey="o"
@@ -51,7 +56,7 @@ export function FixturesActions() {
       </Button>
       <Button
         icon={iconLightOff}
-        onClick={turnAllOff}
+        onClick={turnAllFixturesOff}
         disabled={allOff}
         title="All off"
         hotkey="p"

@@ -81,6 +81,13 @@ export interface DmxMasterWidgetConfig {
 }
 
 /**
+ * Widget to display the controls widget (all off).
+ */
+export interface ControlsWidgetConfig {
+  type: 'controls'
+}
+
+/**
  * Configuration for a widget to be displayed on a dynamic page.
  */
 export type WidgetConfig =
@@ -93,6 +100,7 @@ export type WidgetConfig =
   | MapWidgetConfig
   | LiveChaseWidgetConfig
   | DmxMasterWidgetConfig
+  | ControlsWidgetConfig
 
 /** A cell of a {@link DynamicPageRow}. */
 export interface DynamicPageCell {

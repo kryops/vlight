@@ -51,6 +51,7 @@ import {
   mdiRename,
   mdiImageSync,
   mdiEarth,
+  mdiGauge,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -91,6 +92,7 @@ export const iconCheckbox = mdiCheckboxBlankOutline
 export const iconCheckbox_checked = mdiCheckboxOutline
 
 export const iconGlobal = mdiEarth
+export const iconControl = mdiGauge
 export const iconMap = mdiMap
 export const iconUniverse = mdiStarFourPoints
 export const iconFader = mdiTuneVertical

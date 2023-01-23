@@ -13,6 +13,7 @@ import { MapWidget } from './map/map-widget'
 import { LiveMemoryWidget } from './memory/live-memory-widget'
 import { LiveChaseWidget } from './chase/live-chase-widget'
 import { DmxMasterWidget } from './global/dmx-master-widget'
+import { ControlsWidget } from './global/controls-widget'
 
 export interface DynamicWidgetProps {
   config: WidgetConfig
@@ -132,6 +133,9 @@ export const DynamicWidget = memoInProduction(
 
       case 'dmx-master':
         return <DmxMasterWidget hotkeysActive={hotkeysActive} />
+
+      case 'controls':
+        return <ControlsWidget hotkeysActive={hotkeysActive} />
 
       default:
         assertNever(config)

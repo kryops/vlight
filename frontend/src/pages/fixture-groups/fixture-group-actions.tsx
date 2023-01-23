@@ -10,6 +10,7 @@ import { openEntityEditor } from '../config/entities/editors'
 import { HotkeyContext } from '../../hooks/hotkey'
 import { memoInProduction } from '../../util/development'
 import { apiState } from '../../api/api-state'
+import { ApiState } from '../../api/worker/processing'
 
 function setOnForAllFixtureGroups(on: boolean) {
   setFixtureGroupState(
@@ -19,9 +20,14 @@ function setOnForAllFixtureGroups(on: boolean) {
   )
 }
 
+export function isAnyFixtureGroupOn(apiState: ApiState) {
+  return isAnyOn(apiState.fixtureGroups)
+}
+
+export const turnAllFixtureGroupsOn = () => setOnForAllFixtureGroups(true)
+export const turnAllFixtureGroupsOff = () => setOnForAllFixtureGroups(false)
+
 const addFixtureGroup = () => openEntityEditor('fixtureGroups')
-const turnAllOn = () => setOnForAllFixtureGroups(true)
-const turnAllOff = () => setOnForAllFixtureGroups(false)
 
 /**
  * Corner actions for the fixture groups page:
@@ -34,7 +40,7 @@ export const FixtureGroupsActions = memoInProduction(() => {
   const { allOn, allOff } = useApiStateSelector(
     apiState => ({
       allOn: isAllOn(apiState.fixtureGroups),
-      allOff: !isAnyOn(apiState.fixtureGroups),
+      allOff: !isAnyFixtureGroupOn(apiState),
     }),
     { event: 'fixtureGroups' }
   )
@@ -47,7 +53,7 @@ export const FixtureGroupsActions = memoInProduction(() => {
       </Link>
       <Button
         icon={iconLight}
-        onClick={turnAllOn}
+        onClick={turnAllFixtureGroupsOn}
         disabled={allOn}
         title="All on"
         hotkey="o"
@@ -56,7 +62,7 @@ export const FixtureGroupsActions = memoInProduction(() => {
       </Button>
       <Button
         icon={iconLightOff}
-        onClick={turnAllOff}
+        onClick={turnAllFixtureGroupsOff}
         disabled={allOff}
         title="All off"
         hotkey="p"

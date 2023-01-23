@@ -110,6 +110,12 @@ export const widgetTypes: { [type in WidgetType]: WidgetMapping<type> } = {
       type: 'dmx-master',
     }),
   },
+  controls: {
+    name: 'Controls (all off)',
+    defaultValueFactory: () => ({
+      type: 'controls',
+    }),
+  },
 }
 
 const typeSelectEntries: SelectEntry<WidgetType>[] = Object.entries(

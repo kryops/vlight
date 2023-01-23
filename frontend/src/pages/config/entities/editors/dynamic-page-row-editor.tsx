@@ -89,6 +89,9 @@ function getWidgetDisplayString(
     case 'dmx-master':
       return `${titlePrefix}DMX Master`
 
+    case 'controls':
+      return `${titlePrefix}Controls (all off)`
+
     default:
       assertNever(widget)
   }
