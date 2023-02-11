@@ -43,6 +43,7 @@
 
 ## Tech
 
+- React Router scroll restoration
 - Backend restructuring
   - easier masterData extension / new entity process?
 - Simplify / remove frontend API worker?
