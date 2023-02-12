@@ -2,6 +2,7 @@
 
 ## February 2023
 
+- Added fixture dialogs to map page
 - Added button to clone a configuration entity
 - Added corner button to toggle fullscreen mode
 - Added "Stop all" button to global control widget and chases page

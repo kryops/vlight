@@ -22,7 +22,6 @@
   - On tap button (like memories)
   - Search box
 - Map
-  - Select fixture to change state (similar to test mode, but permanent)
   - Change size
   - Turn around by 180°
 - Speed/Fade control

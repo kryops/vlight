@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { MouseEvent, ReactElement } from 'react'
 import { css } from '@linaria/core'
 
 import { Icon } from '../icons/icon'
@@ -118,6 +118,10 @@ const buttonIcon = css`
   padding-right: ${baseline(2)};
 `
 
+function stopClickPropagation(event: MouseEvent<HTMLDivElement>) {
+  event.stopPropagation()
+}
+
 /**
  * Modal dialog component.
  *
@@ -140,6 +144,7 @@ export function Modal<T>({
         button => button.value === null || button.value === false
       )
       if (closeOrNoButton) onClose(closeOrNoButton.value)
+      else if (showCloseButton) onClose(null as any)
     },
     { forceActive: true }
   )
@@ -161,7 +166,7 @@ export function Modal<T>({
       onClick={closeOnBackDrop ? closeModal : undefined}
     >
       <div className={modalContainer}>
-        <div className={modal}>
+        <div className={modal} onClick={stopClickPropagation}>
           {showCloseButton && (
             <Icon
               icon={iconClose}

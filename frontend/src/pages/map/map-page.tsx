@@ -13,10 +13,19 @@ import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 import { setFixtureState } from '../../api'
 import { useEvent } from '../../hooks/performance'
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
+import { showDialog } from '../../ui/overlays/dialog'
+import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
 
 export const page = css`
   margin: -${baseline(1)};
 `
+
+function openFixtureDialog(fixture: Fixture) {
+  showDialog(<FixtureWidget fixture={fixture} />, undefined, {
+    showCloseButton: true,
+    closeOnBackDrop: true,
+  })
+}
 
 /**
  * Map page.
@@ -50,13 +59,13 @@ const MapPage = memoInProduction(() => {
 
   const backupStateRef = useRef<Dictionary<FixtureState>>({})
 
-  const onFixtureDown = useEvent((fixture: Fixture) => {
+  const turnFixtureOn = useEvent((fixture: Fixture) => {
     if (!(fixtureStates[fixture.id] as any)?.__test)
       backupStateRef.current[fixture.id] = fixtureStates[fixture.id]
     return setFixtureState(fixture.id, fixtureTestState)
   })
 
-  const onFixtureUp = useEvent((fixture: Fixture) => {
+  const turnFixtureOff = useEvent((fixture: Fixture) => {
     const backupState = backupStateRef.current[fixture.id] ?? {
       on: false,
       channels: {},
@@ -81,8 +90,8 @@ const MapPage = memoInProduction(() => {
           standalone={true}
           displayChannels={fixtureTestMode}
           key={fixtureTestMode ? '1' : '0'}
-          onFixtureDown={fixtureTestMode ? onFixtureDown : undefined}
-          onFixtureUp={fixtureTestMode ? onFixtureUp : undefined}
+          onFixtureDown={fixtureTestMode ? turnFixtureOn : openFixtureDialog}
+          onFixtureUp={fixtureTestMode ? turnFixtureOff : undefined}
         />
         <div>
           <Button active={fixtureTestMode} onClick={toggleFixtureTestMode}>
