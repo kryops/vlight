@@ -40,6 +40,16 @@ function generateId(entries: EntityArray): string {
   return String(highestNumber + 1)
 }
 
+let cachedPrettierConfig: prettier.Options | null = null
+
+async function getPrettierConfig() {
+  if (!cachedPrettierConfig) {
+    cachedPrettierConfig = await prettier.resolveConfig(__dirname)
+  }
+
+  return cachedPrettierConfig
+}
+
 const cache = new Map<EntityName, EntityArray<any>>()
 
 /**
@@ -84,14 +94,15 @@ export class JsDatabaseBackend implements DatabaseBackend {
 
     const filePath = getModulePath(entity, !!global) + '.js'
 
-    const prettierConfig = await prettier.resolveConfig(filePath)
-
     const fileContent = prettier.format(
       `const ${entity} = ${JSON.stringify(entries, null, 2)}
   
   module.exports = ${entity}
 `,
-      prettierConfig ?? undefined
+      {
+        ...(await getPrettierConfig()),
+        parser: 'typescript',
+      }
     )
 
     // Create project directory if it does not exist

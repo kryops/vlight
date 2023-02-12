@@ -1,5 +1,9 @@
 # Changelog
 
+## February 2023
+
+- Fixed warning when changing the configuration
+
 ## December 2022 / January 2023
 
 - New DMX master control for global fading and blackout
