@@ -1,19 +1,44 @@
 # TODO
 
+## Bugs
+
+- Connection loss/recovery
+- Duplicate keybindings with multi-ID widgets
+- Prettier: "No parser and no filepath given, using 'babel'"
+- Live Memory: navigation not highlighted
+- Fixture Type preview is not centered
+
 ## Roadmap
 
+- Global controls
+  - Stop all
+  - Toggle fullscreen
 - Universe features
   - All on
   - Swop (single chase active, rest blackout)
   - Complete fixture override/reservation (e.g. when controlled by a chase)
 - Fixture types
+  - Opt-in to channel preselection
+  - Clone existing type
+  - Add different mappings to the same fixture type?
   - Control which channels should be tied to the fixture's master
   - Channels with discrete states
   - Fixtures with multiple light sources
   - Moving heads
   - Special colors preview (amber, UV)
+- Fixtures
+  - Limit widget width for widgets with lots of channels?
+  - Clone
+  - Drag&Drop on the map
+  - Show the channels for each fixture
+  - Search box
+- Groups
+  - On tap button (like memories)
+  - Search box
 - Map
+  - Select fixture to change state (similar to test mode, but permanent)
   - Change size
+  - Turn around by 180°
 - Speed/Fade control
   - Global vs local speed
   - Global pause/halt
@@ -22,14 +47,24 @@
   - Chases, Memories, Fixture states...
   - Fade/transition
   - Kick off multiple changes at once
+- Fixture Selection
+  - Hide by default for Live Memories and Chases
+  - Select by mapping (e.g. all color fixtures)
 - Memories
-  - Button instead of fader
+  - Button instead of fader, or fader only
   - In a row: repeat n times
   - Alternating: alternate after n fixtures
   - Apply by map coordinates instead of member order
+  - Preset library
 - Chases
+  - Stop all button
+  - Hide selected fixtures by default
+  - Apply same state to all fixtures
   - Color distribution: random, equal, relative
 - Dynamic Pages
+  - MultiSelect input should be unique for multi-ID widgets
+  - MultiSelect input should be sortable
+  - Fixture / Group widget: Configure displayed mapping/faders
   - Multi-control widgets
 - New Controls
   - Programmable buttons
