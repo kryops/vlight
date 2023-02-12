@@ -1,5 +1,5 @@
 import { useParams } from 'react-router'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { DynamicPage as DynamicPageEntity, WidgetConfig } from '@vlight/types'
 
 import { useMasterData, useRawMasterData } from '../../hooks/api'
@@ -35,7 +35,16 @@ const DynamicPage = memoInProduction(() => {
   const rawPage = rawMasterData.dynamicPages.find(p => p.id === id)
 
   const flatWidgets = (page?.rows ?? [])
-    .flatMap(row => row.cells.flatMap(cell => cell.widgets))
+    .flatMap(row =>
+      row.cells.flatMap(cell =>
+        cell.widgets.flatMap(widget => {
+          // for multi-ID widgets we just place the widget in the array multiple times
+          if ('id' in widget && Array.isArray(widget.id)) {
+            return widget.id.map(() => widget)
+          } else return widget
+        })
+      )
+    )
     .filter(widget => !widgetTypesWithoutHotkeys.includes(widget.type))
   const activeHotkeyIndex = useNumberHotkey(flatWidgets.length)
 
@@ -108,6 +117,29 @@ const DynamicPage = memoInProduction(() => {
                 <>
                   {widgets.map((widget, index) => {
                     const hotkeyIndex = flatWidgets.indexOf(widget)
+
+                    if ('id' in widget && Array.isArray(widget.id)) {
+                      return (
+                        <Fragment key={index}>
+                          {widget.id.map((id, idIndex) => (
+                            <DynamicWidget
+                              key={id}
+                              config={{
+                                ...widget,
+                                id,
+                              }}
+                              hotkeysActive={
+                                hotkeyIndex + idIndex === activeHotkeyIndex
+                              }
+                              cornerLabel={getHotkeyLabel(
+                                hotkeyIndex + idIndex
+                              )}
+                            />
+                          ))}
+                        </Fragment>
+                      )
+                    }
+
                     return (
                       <DynamicWidget
                         key={index}

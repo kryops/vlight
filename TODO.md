@@ -3,7 +3,6 @@
 ## Bugs
 
 - Connection loss/recovery
-- Duplicate keybindings with multi-ID widgets
 
 ## Roadmap
 
