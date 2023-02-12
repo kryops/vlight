@@ -172,6 +172,10 @@ export type ApiInMessage<T extends EntityName = any> =
 
 // Outgoing messages
 
+export interface ApiHeartBeatMessage {
+  type: 'heartbeat'
+}
+
 /**
  * Backend state to be synced to the client.
  * This message is sent automatically after a socket connects.
@@ -242,6 +246,7 @@ export interface ApiUniverseDeltaMessage {
 
 /** Messages that can flow from the server to the client. */
 export type ApiOutMessage =
+  | ApiHeartBeatMessage
   | ApiStateMessage
   | ApiMasterDataMessage
   | ApiUniverseMessage

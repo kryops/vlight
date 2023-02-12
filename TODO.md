@@ -1,9 +1,5 @@
 # TODO
 
-## Bugs
-
-- Connection loss/recovery
-
 ## Roadmap
 
 - Global controls

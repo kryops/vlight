@@ -11,9 +11,14 @@ import {
   MasterData,
   LiveMemory,
   LiveChase,
+  ApiHeartBeatMessage,
 } from '@vlight/types'
 
 import { getUniverseIndex } from '../universe/utils'
+
+export function getApiHeartBeatMessage(): ApiHeartBeatMessage {
+  return { type: 'heartbeat' }
+}
 
 export function getApiStateMessage({
   masterData,

@@ -4,6 +4,7 @@ import { removeFromMutableArray, logger } from '@vlight/utils'
 
 import { getFullState } from '../api/messages'
 import { handleApiMessage } from '../api'
+import { getApiHeartBeatMessage } from '../api/protocol'
 
 import { httpServer } from './express'
 
@@ -55,4 +56,8 @@ export async function initWebSocketServer(): Promise<void> {
 
     sendSocketMessage(socket, getFullState())
   })
+
+  setInterval(() => {
+    broadcastToSockets(getApiHeartBeatMessage())
+  }, 2000)
 }

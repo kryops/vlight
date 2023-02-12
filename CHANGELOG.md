@@ -3,6 +3,7 @@
 ## February 2023
 
 - Fixed warning when changing the configuration
+- Tried to improve connection loss detection by introducing heartbeats
 
 ## December 2022 / January 2023
 

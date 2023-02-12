@@ -36,6 +36,8 @@ let apiState: ApiState | undefined
 let clientApiState: ApiState | undefined
 /** Messages from the backend that have not been processed. */
 let messageQueue: ApiOutMessage[] = []
+/** The last time a heartbeat was received from the server. */
+let lastHeartBeat: number | undefined
 
 /** Sends the complete state to the frontend. */
 function sendState() {
@@ -106,9 +108,14 @@ function connectWebSocket() {
 
   socket.onmessage = event => {
     try {
-      const message = JSON.parse(event.data)
+      const message = JSON.parse(event.data) as ApiOutMessage
       logger.trace('WebSocket message', message)
-      messageQueue.push(message)
+
+      if (message.type === 'heartbeat') {
+        lastHeartBeat = Date.now()
+      } else {
+        messageQueue.push(message)
+      }
     } catch (e) {
       logger.error(
         'WebSocket message parse error',
@@ -119,16 +126,19 @@ function connectWebSocket() {
     }
   }
 
-  socket.onclose = () => {
-    logger.warn('WebSocket connection was closed, reconnecting...')
-    connecting = true
-    apiState = undefined
-    clientApiState = undefined
-    sendState()
-    setTimeout(connectWebSocket, 1000)
-  }
+  socket.onclose = handleClose
 
   socket.onerror = e => logger.error('WebSocket error', e)
+}
+
+function handleClose() {
+  logger.warn('WebSocket connection was closed, reconnecting...')
+  connecting = true
+  apiState = undefined
+  clientApiState = undefined
+  lastHeartBeat = undefined
+  sendState()
+  setTimeout(connectWebSocket, 1000)
 }
 
 function sendApiMessage(message: ApiInMessage) {
@@ -166,6 +176,13 @@ self.addEventListener('message', event => {
 })
 
 connectWebSocket()
+
+setInterval(() => {
+  if (!lastHeartBeat || Date.now() - lastHeartBeat < 5000) return
+
+  logger.error('No heartbeat received, reconnecting...')
+  handleClose()
+}, 5000)
 
 if (useSocketUpdateThrottling) {
   // we process the queue at least 10 times/sec in the background

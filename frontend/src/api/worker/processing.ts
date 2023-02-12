@@ -132,6 +132,9 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
       state.dmxMaster = message.value
       break
 
+    case 'heartbeat':
+      break // handled outside
+
     default:
       assertNever(message)
       logger.error('Invalid API message received:', message)
