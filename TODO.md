@@ -2,8 +2,6 @@
 
 ## Roadmap
 
-- Global controls
-  - Toggle fullscreen
 - Universe features
   - All on
   - Swop (single chase active, rest blackout)

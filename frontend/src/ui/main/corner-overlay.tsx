@@ -5,7 +5,7 @@ import { useSettings } from '../../hooks/settings'
 import { memoInProduction } from '../../util/development'
 import { MapWidget } from '../../widgets/map/map-widget'
 import { useBreakpoint } from '../hooks/breakpoint'
-import { iconLight, iconMap } from '../icons'
+import { iconFullscreen, iconLight, iconMap } from '../icons'
 import { Icon } from '../icons/icon'
 import { zCornerOverlay, baseline } from '../styles'
 
@@ -30,6 +30,14 @@ const miniMapOverlay = css`
   pointer-events: none;
   opacity: 0.85;
 `
+
+function toggleFullScreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen()
+  } else if (document.exitFullscreen) {
+    document.exitFullscreen()
+  }
+}
 
 /**
  * Overlay in the bottom right corner to display
@@ -63,6 +71,12 @@ export const CornerOverlay = memoInProduction(() => {
           icon={iconLight}
           hoverable
           onClick={toggleLightMode}
+        />
+        <Icon
+          className={cornerIcon}
+          icon={iconFullscreen}
+          hoverable
+          onClick={toggleFullScreen}
         />
       </div>
       {displayMiniMap && <MapWidget className={miniMapOverlay} />}

@@ -2,6 +2,7 @@
 
 ## February 2023
 
+- Added corner button to toggle fullscreen mode
 - Added "Stop all" button to global control widget and chases page
 - Fixed warning when changing the configuration
 - Tried to improve connection loss detection by introducing heartbeats

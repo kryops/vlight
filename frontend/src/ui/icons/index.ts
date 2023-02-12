@@ -52,6 +52,7 @@ import {
   mdiImageSync,
   mdiEarth,
   mdiGauge,
+  mdiFullscreen,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -68,6 +69,7 @@ export const iconUp = mdiArrowUp
 export const iconDown = mdiArrowDown
 export const iconExpand = mdiChevronDown
 export const iconCollapse = mdiChevronUp
+export const iconFullscreen = mdiFullscreen
 
 export const iconStart = mdiPlay
 export const iconStop = mdiStop
