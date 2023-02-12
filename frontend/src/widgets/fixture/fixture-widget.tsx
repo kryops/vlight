@@ -52,6 +52,7 @@ export const FixtureWidget = memoInProduction(
         mapping={fixtureType.mapping}
         {...passThrough}
         onChange={onChange}
+        limitedWidth
       />
     )
   }

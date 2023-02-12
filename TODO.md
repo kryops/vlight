@@ -14,7 +14,6 @@
   - Moving heads
   - Special colors preview (amber, UV)
 - Fixtures
-  - Limit widget width for widgets with lots of channels?
   - Opt-in to channel preselection
   - Drag&Drop on the map
   - Search box

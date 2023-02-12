@@ -18,9 +18,16 @@ import { getFixtureStateColor } from '../../util/fixtures'
 import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
 import { baseline } from '../../ui/styles'
 import { useEvent } from '../../hooks/performance'
+import { cx } from '../../util/styles'
 
 const colorPickerIconStyle = css`
   margin-left: ${baseline(2)};
+`
+
+const limitedWidthFaderContainer = css`
+  @media (min-width: 1000px) {
+    max-width: calc(50vw - ${baseline(24)});
+  }
 `
 
 export interface FixtureStateWidgetProps extends WidgetPassthrough {
@@ -41,6 +48,8 @@ export interface FixtureStateWidgetProps extends WidgetPassthrough {
    */
   disableOn?: boolean
 
+  limitedWidth?: boolean
+
   className?: string
 }
 
@@ -56,6 +65,7 @@ export const FixtureStateWidget = memoInProduction(
     titleSide,
     onChange,
     disableOn = false,
+    limitedWidth = false,
     className,
     ...passThrough
   }: FixtureStateWidgetProps) => {
@@ -71,9 +81,10 @@ export const FixtureStateWidget = memoInProduction(
     const { r, g, b } = fixtureStateToColor(fixtureState)
 
     const fadersToRender = mapping.filter(
-      c =>
+      (c, index) =>
         c !== ChannelType.Master &&
-        (!hasColorPicker || !colorPickerColors.includes(c))
+        (!hasColorPicker || !colorPickerColors.includes(c)) &&
+        mapping.indexOf(c) === index
     )
 
     const renderFader = (channelType: ChannelType | string, index = 0) => (
@@ -129,7 +140,12 @@ export const FixtureStateWidget = memoInProduction(
         {...passThrough}
         bottomLineColor={getFixtureStateColor(fixtureState)}
       >
-        <div className={faderContainer}>
+        <div
+          className={cx(
+            faderContainer,
+            limitedWidth && limitedWidthFaderContainer
+          )}
+        >
           {renderFader(ChannelType.Master)}
           {hasColorPicker && (
             <ColorPicker r={r} g={g} b={b} onChange={onColorPickerChange} />

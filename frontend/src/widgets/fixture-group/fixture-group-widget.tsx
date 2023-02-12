@@ -56,6 +56,7 @@ export const FixtureGroupWidget = memoInProduction(
         mapping={groupMapping}
         {...passThrough}
         onChange={onChange}
+        limitedWidth
       />
     )
   }
