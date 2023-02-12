@@ -6,6 +6,7 @@ import { useApiState } from '../../hooks/api'
 import { getHotkeyLabel } from '../../hooks/hotkey'
 import { Header } from '../../ui/containers/header'
 import { pageWithWidgets } from '../../ui/css/page'
+import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
 import { iconAdd } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { showPromptDialog } from '../../ui/overlays/dialog'
@@ -26,9 +27,21 @@ const widgetContainer = css`
 `
 
 const addLiveMemory = async () => {
+  let members: string[] = []
+
   const name = await showPromptDialog({
     title: 'Add Live Memory',
     label: 'Name',
+    additionalContent: (
+      <>
+        <br />
+        <FixtureListEditor
+          value={[]}
+          onChange={newValue => (members = newValue)}
+          ordering
+        />
+      </>
+    ),
   })
   if (name === undefined) return
 
@@ -42,6 +55,7 @@ const addLiveMemory = async () => {
     value: 255,
     on: false,
     name: name || undefined,
+    members,
   })
 }
 

@@ -11,10 +11,11 @@ import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { Button } from '../../ui/buttons/button'
-import { iconDelete, iconLiveMemory, iconRename } from '../../ui/icons'
+import { iconConfig, iconDelete, iconLiveMemory } from '../../ui/icons'
 import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
 import { yesNo } from '../../ui/overlays/buttons'
 import { useDeepEqualMemo, useEvent } from '../../hooks/performance'
+import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
 
 import { MemoryPreview } from './memory-preview'
 
@@ -39,12 +40,6 @@ const rightColumn = css`
 
 const fader = css`
   margin: 0 ${baseline(2)};
-`
-
-const preview = css`
-  min-width: ${baseline(40)};
-  width: ${baseline(40)};
-  margin: 0;
 `
 
 export interface StatelessLiveMemoryWidgetProps extends WidgetPassthrough {
@@ -74,14 +69,26 @@ export const StatelessLiveMemoryWidget = memoInProduction(
       setLiveMemoryState(id, { on: !state.on }, true)
     )
 
-    const rename = useEvent(async () => {
+    const edit = useEvent(async () => {
+      let members: string[] = []
+
       const name = await showPromptDialog({
-        title: 'Rename Live Memory',
+        title: 'Edit Live Memory',
         label: 'Name',
         initialValue: state.name,
+        additionalContent: (
+          <>
+            <br />
+            <FixtureListEditor
+              value={scene.members}
+              onChange={newValue => (members = newValue)}
+              ordering
+            />
+          </>
+        ),
       })
       if (name) {
-        setLiveMemoryState(id, { name }, true)
+        setLiveMemoryState(id, { name, members }, true)
       }
     })
 
@@ -89,6 +96,14 @@ export const StatelessLiveMemoryWidget = memoInProduction(
       if (await showDialog(`Delete Live Memory "${title}"?`, yesNo)) {
         deleteLiveMemory(id)
       }
+    })
+
+    const showPreview = useEvent(() => {
+      showDialog(<MemoryPreview scenes={scenes} />, undefined, {
+        showCloseButton: true,
+        closeOnBackDrop: true,
+        title: `Live Memory ${state.name}`,
+      })
     })
 
     return (
@@ -101,12 +116,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
         {...passThrough}
         titleSide={
           <div className={controls}>
-            <Button
-              icon={iconRename}
-              title="Rename"
-              transparent
-              onClick={rename}
-            />
+            <Button icon={iconConfig} title="Edit" transparent onClick={edit} />
             <Button
               icon={iconDelete}
               title="Delete"
@@ -117,7 +127,15 @@ export const StatelessLiveMemoryWidget = memoInProduction(
         }
       >
         <div className={leftColumn}>
-          <MemorySceneEditor scene={scene} onChange={changeScene} compact />
+          <MemorySceneEditor
+            scene={scene}
+            onChange={changeScene}
+            compact
+            hideFixtureList
+          />
+          <Button block onClick={showPreview}>
+            Preview
+          </Button>
         </div>
         <div className={cx(flexWrap, rightColumn)}>
           <Fader
@@ -127,7 +145,6 @@ export const StatelessLiveMemoryWidget = memoInProduction(
             value={state.value ?? 0}
             onChange={changeValue}
           />
-          <MemoryPreview className={preview} scenes={scenes} />
         </div>
       </Widget>
     )

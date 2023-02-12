@@ -2,6 +2,8 @@
 
 ## February 2023
 
+- Improvements for memories
+  - Made live memory widgets smaller by moving the fixture selection and preview into dialogs
 - Improvements for live chases
   - Made widgets smaller by moving the fixture selection into a dialog
   - Added "Stop all" button to global control widget and chases page

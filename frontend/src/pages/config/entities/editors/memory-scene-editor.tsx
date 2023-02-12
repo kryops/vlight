@@ -2,7 +2,6 @@ import { css } from '@linaria/core'
 import { MemoryScene, MemorySceneState } from '@vlight/types'
 import { useCallback } from 'react'
 
-import { Label } from '../../../../ui/forms/label'
 import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
 import { baseline, iconShade } from '../../../../ui/styles'
@@ -23,6 +22,8 @@ const stateStyle = css`
   display: flex;
   margin-bottom: ${baseline()};
   border: 1px solid ${iconShade(0)};
+  min-width: ${baseline(28)};
+  cursor: pointer;
 `
 
 const memoryScenePatternEntries: SelectEntry<MemoryScene['pattern']>[] = [
@@ -40,6 +41,7 @@ export interface MemorySceneEditorProps {
   scene: MemoryScene
   onChange: (scene: MemoryScene, oldScene: MemoryScene) => void
   compact?: boolean
+  hideFixtureList?: boolean
 }
 
 /**
@@ -48,7 +50,7 @@ export interface MemorySceneEditorProps {
  * Displays a fixture list selection as well as a list of memory states.
  */
 export const MemorySceneEditor = memoInProduction(
-  ({ scene, onChange, compact }: MemorySceneEditorProps) => {
+  ({ scene, onChange, compact, hideFixtureList }: MemorySceneEditorProps) => {
     const members = useShallowEqualMemo(scene.members)
 
     const onChangeWrapper = useEvent((changes: Partial<MemoryScene>) =>
@@ -115,37 +117,30 @@ export const MemorySceneEditor = memoInProduction(
 
     return (
       <>
-        <FixtureListInput
-          value={members}
-          onChange={changeMembers}
-          ordering
-          compact={compact}
-        />
-        <Label
-          label={
-            <>
-              States <Icon icon={iconAdd} hoverable inline onClick={addState} />
-            </>
-          }
-          input={
-            scene.states.length >= 2 && (
-              <>
-                Pattern: &nbsp;
-                <Select
-                  entries={memoryScenePatternEntries}
-                  value={scene.pattern}
-                  onChange={changePattern}
-                />
-              </>
-            )
-          }
-        />
+        {!hideFixtureList && (
+          <FixtureListInput
+            value={members}
+            onChange={changeMembers}
+            ordering
+            compact={compact}
+          />
+        )}
+        States <Icon icon={iconAdd} hoverable inline onClick={addState} />
+        <br />
+        <br />
         <SortableList
           entries={scene.states}
           onChange={changeStates}
           entryClassName={stateStyle}
           renderEntryContent={renderEntryContent}
         />
+        {scene.states.length >= 2 && (
+          <Select
+            entries={memoryScenePatternEntries}
+            value={scene.pattern}
+            onChange={changePattern}
+          />
+        )}
       </>
     )
   }
