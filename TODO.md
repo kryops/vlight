@@ -32,7 +32,6 @@
   - Fade/transition
   - Kick off multiple changes at once
 - Fixture Selection
-  - Hide by default for Live Memories and Chases
   - Select by mapping (e.g. all color fixtures)
 - Memories
   - Button instead of fader, or fader only
@@ -41,7 +40,6 @@
   - Apply by map coordinates instead of member order
   - Preset library
 - Chases
-  - Hide selected fixtures by default
   - Apply same state to all fixtures
   - Color distribution: random, equal, relative
 - Dynamic Pages

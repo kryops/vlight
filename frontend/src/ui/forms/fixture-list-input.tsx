@@ -308,3 +308,16 @@ export const FixtureListInput = memoInProduction(
     )
   }
 )
+
+export const FixtureListEditor = memoInProduction(
+  (props: FixtureListInputProps) => {
+    const [localState, setLocalState] = useState(props.value)
+    const onChange = useEvent((value: string[]) => {
+      setLocalState(value)
+      props.onChange(value)
+    })
+    return (
+      <FixtureListInput {...props} value={localState} onChange={onChange} />
+    )
+  }
+)

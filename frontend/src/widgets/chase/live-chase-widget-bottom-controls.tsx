@@ -4,6 +4,7 @@ import { deleteLiveChase, setLiveChaseState } from '../../api'
 import {
   iconDelete,
   iconFast,
+  iconList,
   iconMultiple,
   iconRename,
   iconSingle,
@@ -11,9 +12,15 @@ import {
 } from '../../ui/icons'
 import { memoInProduction } from '../../util/development'
 import { Button } from '../../ui/buttons/button'
-import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
-import { yesNo } from '../../ui/overlays/buttons'
+import {
+  showDialog,
+  showDialogWithReturnValue,
+  showPromptDialog,
+} from '../../ui/overlays/dialog'
+import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
 import { useEvent } from '../../hooks/performance'
+import { centeredText } from '../../ui/css/basic-styles'
+import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
 
 import { isLiveChaseCurrentlyFast } from './utils'
 
@@ -21,7 +28,7 @@ export interface LiveChaseWidgetBottomControlsProps {
   id: IdType
   state: LiveChase
   title: string | undefined
-  useFastMode: boolean
+  fastModeActive: boolean
   onToggleFastMode: () => void
 }
 
@@ -32,12 +39,30 @@ export const LiveChaseWidgetBottomControls = memoInProduction(
   ({
     id,
     state,
-    useFastMode,
+    fastModeActive,
     title,
     onToggleFastMode,
   }: LiveChaseWidgetBottomControlsProps) => {
     const update = (newState: Partial<LiveChase>) =>
       setLiveChaseState(id, newState, true)
+
+    const editFixtureList = useEvent(async () => {
+      const result = await showDialogWithReturnValue<string[]>(
+        onChange => (
+          <FixtureListEditor
+            value={state.members}
+            onChange={onChange}
+            ordering
+          />
+        ),
+        [buttonOk, buttonCancel],
+        {
+          title: `Members for chase ${state.name}`,
+          showCloseButton: true,
+        }
+      )
+      if (result) update({ members: result })
+    })
 
     const isCurrentlyFast = isLiveChaseCurrentlyFast(state)
 
@@ -66,9 +91,15 @@ export const LiveChaseWidgetBottomControls = memoInProduction(
     })
 
     return (
-      <div>
+      <div className={centeredText}>
         <Button
-          icon={useFastMode ? iconFast : iconSlow}
+          icon={iconList}
+          title="Toggle fixture list"
+          transparent
+          onClick={editFixtureList}
+        />
+        <Button
+          icon={fastModeActive ? iconFast : iconSlow}
           title="Toggle fast mode"
           transparent
           onClick={toggleFastMode}

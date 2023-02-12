@@ -15,6 +15,7 @@ import { showPromptDialog } from '../../ui/overlays/dialog'
 import { memoInProduction } from '../../util/development'
 import { apiState } from '../../api/api-state'
 import { getHotkeyLabel } from '../../hooks/hotkey'
+import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
 
 const container = css`
   margin-top: ${baseline(4)};
@@ -43,9 +44,21 @@ function getNewLiveChase(): LiveChase {
 }
 
 const addLiveChase = async () => {
+  let members: string[] = []
+
   const name = await showPromptDialog({
     title: 'Add Live Chase',
     label: 'Name',
+    additionalContent: (
+      <>
+        <br />
+        <FixtureListEditor
+          value={[]}
+          onChange={newValue => (members = newValue)}
+          ordering
+        />
+      </>
+    ),
   })
   if (name === undefined) return
 
@@ -54,6 +67,7 @@ const addLiveChase = async () => {
   )
   setLiveChaseState(newId, {
     ...getNewLiveChase(),
+    members,
     name: name || undefined,
   })
 }

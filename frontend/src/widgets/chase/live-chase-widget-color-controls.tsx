@@ -40,6 +40,7 @@ const colorStyle = css`
   width: ${baseline(12)};
   margin-bottom: ${baseline()};
   cursor: pointer;
+  border: 1px solid ${primaryShade(1)};
 `
 
 export interface LiveChaseWidgetColorControlsProps {
@@ -124,18 +125,6 @@ export const LiveChaseWidgetColorControls = memoInProduction(
       }
     }
 
-    const removeColor = useEvent(
-      (
-        event: { stopPropagation: () => void } | undefined,
-        color: ChaseColor
-      ) => {
-        event?.stopPropagation()
-        return update({
-          colors: state.colors.filter(it => it !== color),
-        })
-      }
-    )
-
     const addColor = useEvent(() =>
       openColorDialog({
         colors: [
@@ -167,17 +156,7 @@ export const LiveChaseWidgetColorControls = memoInProduction(
                   initialIndex: index,
                 })
               }
-            >
-              {state.colors.length > 1 && state.colors.length < 4 && (
-                <Button<ChaseColor>
-                  icon={iconDelete}
-                  title="Remove Color"
-                  transparent
-                  onClick={removeColor}
-                  onClickArg={color}
-                />
-              )}
-            </div>
+            />
           ))}
           <Button icon={iconAdd} transparent onClick={addColor} />
         </div>

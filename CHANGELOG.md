@@ -2,10 +2,12 @@
 
 ## February 2023
 
+- Improvements for live chases
+  - Made widgets smaller by moving the fixture selection into a dialog
+  - Added "Stop all" button to global control widget and chases page
 - Added fixture dialogs to map page
 - Added button to clone a configuration entity
 - Added corner button to toggle fullscreen mode
-- Added "Stop all" button to global control widget and chases page
 - Fixed warning when changing the configuration
 - Tried to improve connection loss detection by introducing heartbeats
 

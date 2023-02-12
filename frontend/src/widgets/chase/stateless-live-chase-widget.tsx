@@ -1,5 +1,4 @@
 import { IdType, LiveChase, ValueOrRandom } from '@vlight/types'
-import { css } from '@linaria/core'
 import { useEffect, useState } from 'react'
 
 import { setLiveChaseState } from '../../api'
@@ -7,13 +6,11 @@ import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { flexAuto, flexWrap } from '../../ui/css/flex'
-import { FixtureListInput } from '../../ui/forms/fixture-list-input'
 import { iconChase, iconPercentage, iconTime } from '../../ui/icons'
-import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
-import { useEvent, useShallowEqualMemo } from '../../hooks/performance'
+import { useEvent } from '../../hooks/performance'
 
 import { LiveChaseWidgetColorControls } from './live-chase-widget-color-controls'
 import { isLiveChaseCurrentlyFast, updateLiveChaseSpeed } from './utils'
@@ -24,16 +21,6 @@ import {
 } from './constants'
 import { LiveChaseWidgetTopControls } from './live-chase-widget-top-controls'
 import { LiveChaseWidgetBottomControls } from './live-chase-widget-bottom-controls'
-
-const leftColumn = css`
-  flex: 1 1 auto;
-  display: flex;
-  flex-direction: column;
-  padding-right: ${baseline(2)};
-  margin-bottom: ${baseline(2)};
-`
-
-const rightColumn = flexAuto
 
 export interface StatelessLiveChaseWidgetProps extends WidgetPassthrough {
   id: IdType
@@ -57,14 +44,11 @@ export const StatelessLiveChaseWidget = memoInProduction(
 
     const isCurrentlyFast = isLiveChaseCurrentlyFast(state)
     const [fastMode, setFastMode] = useState(isCurrentlyFast)
-    const useFastMode = fastMode && isCurrentlyFast
+    const fastModeActive = fastMode && isCurrentlyFast
 
     useEffect(() => {
       if (!isCurrentlyFast) setFastMode(false)
     }, [isCurrentlyFast])
-
-    const members = useShallowEqualMemo(state.members)
-    const changeMembers = useEvent((members: string[]) => update({ members }))
 
     const changeFadeTime = useEvent((value: number) =>
       update({
@@ -92,15 +76,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
         titleSide={<LiveChaseWidgetTopControls id={id} state={state} />}
         {...passThrough}
       >
-        <div className={leftColumn}>
-          <FixtureListInput
-            value={members}
-            onChange={changeMembers}
-            ordering
-            compact
-          />
-        </div>
-        <div className={rightColumn}>
+        <div className={flexAuto}>
           <div className={faderContainer}>
             <LiveChaseWidgetColorControls id={id} state={state} />
 
@@ -112,7 +88,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
               label="Value"
             />
             <Fader
-              min={useFastMode ? liveChaseFastMinSpeed : liveChaseMinSpeed}
+              min={fastModeActive ? liveChaseFastMinSpeed : liveChaseMinSpeed}
               max={liveChaseMaxSpeed}
               value={state.speed}
               onChange={changeSpeed}
@@ -123,7 +99,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
               min={
                 state.fadeLockedToSpeed
                   ? 100
-                  : useFastMode
+                  : fastModeActive
                   ? liveChaseFastMinSpeed
                   : liveChaseMinSpeed
               }
@@ -152,8 +128,8 @@ export const StatelessLiveChaseWidget = memoInProduction(
             id={id}
             state={state}
             title={title}
+            fastModeActive={fastModeActive}
             onToggleFastMode={toggleFastMode}
-            useFastMode={useFastMode}
           />
         </div>
       </Widget>

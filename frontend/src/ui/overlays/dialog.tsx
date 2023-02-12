@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react'
+import { ReactElement, ReactNode, useState } from 'react'
 
 import { Label } from '../forms/label'
 import { TextInput } from '../forms/typed-input'
@@ -59,6 +59,7 @@ interface PromptDialogArgs {
   title?: string
   label: string
   initialValue?: string
+  additionalContent?: ReactNode
 }
 
 /**
@@ -70,6 +71,7 @@ export async function showPromptDialog({
   title,
   label,
   initialValue,
+  additionalContent,
 }: PromptDialogArgs): Promise<string | undefined> {
   const FormComponent = ({
     onChange,
@@ -80,22 +82,25 @@ export async function showPromptDialog({
   }) => {
     const [value, setValue] = useState<string | undefined>(initialValue)
     return (
-      <Label
-        label={label}
-        input={
-          <TextInput
-            value={value}
-            onChange={newValue => {
-              setValue(newValue)
-              onChange({ value: newValue })
-            }}
-            autoFocus
-            onKeyDown={event => {
-              if (event.key === 'Enter') close(true)
-            }}
-          />
-        }
-      />
+      <>
+        <Label
+          label={label}
+          input={
+            <TextInput
+              value={value}
+              onChange={newValue => {
+                setValue(newValue)
+                onChange({ value: newValue })
+              }}
+              autoFocus
+              onKeyDown={event => {
+                if (event.key === 'Enter') close(true)
+              }}
+            />
+          }
+        />
+        {additionalContent}
+      </>
     )
   }
 
