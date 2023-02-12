@@ -4,7 +4,6 @@
 
 - Connection loss/recovery
 - Duplicate keybindings with multi-ID widgets
-- Live Memory: navigation not highlighted
 - Fixture Type preview is not centered
 
 ## Roadmap

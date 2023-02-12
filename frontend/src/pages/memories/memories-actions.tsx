@@ -25,7 +25,7 @@ function setOnForAllMemories(on: boolean) {
 }
 
 export function isAnyMemoryOn(apiState: ApiState) {
-  return isAnyOn(apiState.memories) || isAllOn(apiState.liveMemories)
+  return isAnyOn(apiState.memories) || isAnyOn(apiState.liveMemories)
 }
 
 export const turnAllMemoriesOn = () => setOnForAllMemories(true)
