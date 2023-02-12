@@ -7,7 +7,7 @@ import { removeEntity, setEntities } from '../../../api'
 import { apiStateEmitter, apiState } from '../../../api/api-state'
 import { baseline, primaryShade } from '../../../ui/styles'
 import { Icon } from '../../../ui/icons/icon'
-import { iconDelete, iconDrag } from '../../../ui/icons'
+import { iconCopy, iconDelete, iconDrag } from '../../../ui/icons'
 import { showDialog } from '../../../ui/overlays/dialog'
 import { yesNo } from '../../../ui/overlays/buttons'
 import { SortableList } from '../../../ui/containers/sortable-list'
@@ -78,6 +78,18 @@ export function EntityList<T extends EntityName>({
             entry.name ??
             entry.id}
         </div>
+        <Icon
+          icon={iconCopy}
+          className={entryIcon}
+          hoverable
+          onClick={() =>
+            openEntityEditor(type, {
+              ...entry,
+              id: '',
+              name: entry.name ? `${entry.name} (copy)` : entry.name,
+            })
+          }
+        />
         <Icon
           icon={iconDelete}
           className={entryIcon}

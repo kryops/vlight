@@ -7,8 +7,6 @@
   - Swop (single chase active, rest blackout)
   - Complete fixture override/reservation (e.g. when controlled by a chase)
 - Fixture types
-  - Opt-in to channel preselection
-  - Clone existing type
   - Add different mappings to the same fixture type?
   - Control which channels should be tied to the fixture's master
   - Channels with discrete states
@@ -17,7 +15,7 @@
   - Special colors preview (amber, UV)
 - Fixtures
   - Limit widget width for widgets with lots of channels?
-  - Clone
+  - Opt-in to channel preselection
   - Drag&Drop on the map
   - Search box
 - Groups
