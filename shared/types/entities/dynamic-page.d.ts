@@ -32,6 +32,7 @@ export interface ChannelsWidgetConfig {
 export interface FixtureWidgetConfig {
   type: 'fixture'
   id: string | string[]
+  mapping?: string[]
 }
 
 /**
@@ -40,6 +41,7 @@ export interface FixtureWidgetConfig {
 export interface FixtureGroupWidgetConfig {
   type: 'fixture-group'
   id: string | string[]
+  mapping?: string[]
 }
 
 /**

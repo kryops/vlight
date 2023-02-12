@@ -45,7 +45,6 @@
 - Dynamic Pages
   - MultiSelect input should be unique for multi-ID widgets
   - MultiSelect input should be sortable
-  - Fixture / Group widget: Configure displayed mapping/faders
   - Multi-control widgets
 - New Controls
   - Programmable buttons

@@ -14,15 +14,16 @@ import { WidgetPassthrough } from '../../ui/containers/widget'
 
 export interface FixtureGroupWidgetProps extends WidgetPassthrough {
   group: FixtureGroup
+  mapping?: string[]
 }
 
 /**
  * Widget to display a fixture group.
  */
 export const FixtureGroupWidget = memoInProduction(
-  ({ group, ...passThrough }: FixtureGroupWidgetProps) => {
+  ({ group, mapping, ...passThrough }: FixtureGroupWidgetProps) => {
     const groupState = useApiStateEntry('fixtureGroups', group.id)
-    const groupMapping = useCommonFixtureMapping(group.fixtures)
+    const groupMapping = useCommonFixtureMapping(group.fixtures, mapping)
 
     const onChange = useEvent((partialState: Partial<FixtureState>) =>
       setFixtureGroupState(

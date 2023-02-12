@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { FixtureBorderStyle, FixtureShape } from '@vlight/types'
+import { commaStringToArray } from '@vlight/utils'
 
 import { useFormState } from '../../../../hooks/form'
 import {
@@ -51,11 +52,7 @@ export function FixtureTypeEditor({
   const changeMapping = useEvent(
     (newMappingString: string | undefined): void => {
       setMappingString(newMappingString)
-      const newMapping = (newMappingString ?? '')
-        .split(',')
-        .map(it => it.trim())
-        .filter(Boolean)
-      formState.changeValue('mapping', newMapping)
+      formState.changeValue('mapping', commaStringToArray(newMappingString))
     }
   )
 

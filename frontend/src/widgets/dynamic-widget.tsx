@@ -61,6 +61,7 @@ export const DynamicWidget = memoInProduction(
                 <FixtureWidget
                   key={`fixture${id}`}
                   fixture={fixture}
+                  mapping={config.mapping}
                   {...passThrough}
                 />
               ) : null
@@ -77,6 +78,7 @@ export const DynamicWidget = memoInProduction(
                 <FixtureGroupWidget
                   key={`fixture-group${id}`}
                   group={fixtureGroup}
+                  mapping={config.mapping}
                   {...passThrough}
                 />
               ) : null

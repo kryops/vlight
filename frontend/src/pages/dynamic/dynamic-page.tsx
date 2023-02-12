@@ -1,5 +1,5 @@
 import { useParams } from 'react-router'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { DynamicPage as DynamicPageEntity, WidgetConfig } from '@vlight/types'
 
 import { useMasterData, useRawMasterData } from '../../hooks/api'
@@ -56,6 +56,11 @@ const DynamicPage = memoInProduction(() => {
     setEditing(false)
     setEditedPage(null)
   })
+
+  useEffect(() => {
+    cancelEditing()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   const save = useEvent(() => {
     if (editedPage !== null) {

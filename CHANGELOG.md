@@ -7,6 +7,8 @@
 - Improvements for live chases
   - Made widgets smaller by moving the fixture selection into a dialog
   - Added "Stop all" button to global control widget and chases page
+- Improvements for dynamic pages
+  - Added mapping filter for fixture and group widgets
 - Added fixture dialogs to map page
 - Added button to clone a configuration entity
 - Added corner button to toggle fullscreen mode

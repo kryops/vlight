@@ -11,8 +11,8 @@ import {
   WidgetConfig,
 } from '@vlight/types'
 import { css } from '@linaria/core'
-import { ensureBetween } from '@vlight/utils'
-import { useCallback } from 'react'
+import { commaStringToArray, ensureBetween } from '@vlight/utils'
+import { useCallback, useEffect, useState } from 'react'
 
 import { baseline, primaryShade } from '../styles'
 import { cx } from '../../util/styles'
@@ -190,6 +190,17 @@ function StaticEntitiesWidgetInput({
 }: WidgetTypeInputProps<
   FixtureWidgetConfig | FixtureGroupWidgetConfig | MemoryWidgetConfig
 >) {
+  const initialMappingString =
+    value.type === 'fixture' || value.type === 'fixture-group'
+      ? value.mapping?.join(',')
+      : ''
+
+  const [mappingString, setMappingString] = useState(initialMappingString)
+
+  useEffect(() => {
+    setMappingString(initialMappingString)
+  }, [initialMappingString])
+
   const changeEntities = useEvent((newValue: IdType[]): void =>
     onChange({
       ...value,
@@ -197,24 +208,43 @@ function StaticEntitiesWidgetInput({
     })
   )
 
+  const changeMapping = useEvent((newValue: string | undefined): void => {
+    setMappingString(newValue)
+    if (value.type === 'fixture' || value.type === 'fixture-group') {
+      onChange({
+        ...value,
+        mapping: commaStringToArray(newValue),
+      })
+    }
+  })
+
   return (
-    <Label
-      label="Entities"
-      input={
-        <ArrayInput
-          value={value.id}
-          onChange={changeEntities}
-          renderInput={inputProps => (
-            <EntityReferenceSelect
-              entity={widgetTypes[value.type].entityReference!}
-              addUndefinedOption
-              {...inputProps}
-            />
-          )}
-          displayRemoveButtons
+    <>
+      <Label
+        label="Entities"
+        input={
+          <ArrayInput
+            value={value.id}
+            onChange={changeEntities}
+            renderInput={inputProps => (
+              <EntityReferenceSelect
+                entity={widgetTypes[value.type].entityReference!}
+                addUndefinedOption
+                {...inputProps}
+              />
+            )}
+            displayRemoveButtons
+          />
+        }
+      />
+      {(value.type === 'fixture' || value.type === 'fixture-group') && (
+        <Label
+          label="Only channels"
+          description="Comma-separated"
+          input={<TextInput value={mappingString} onChange={changeMapping} />}
         />
-      }
-    />
+      )}
+    </>
   )
 }
 

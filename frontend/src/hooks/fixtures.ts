@@ -7,13 +7,20 @@ import { useShallowEqualMemo } from './performance'
 /**
  * React Hook that returns the common channel mapping of the given fixture list strings.
  */
-export const useCommonFixtureMapping = (fixtureStrings: string[]): string[] => {
+export const useCommonFixtureMapping = (
+  fixtureStrings: string[],
+  limitedTo?: string[]
+): string[] => {
   const masterDataAndMaps = useMasterDataAndMaps()
   const commonFixtureMapping = getCommonFixtureMapping(
     fixtureStrings,
     masterDataAndMaps
   )
-  return useShallowEqualMemo(commonFixtureMapping)
+  return useShallowEqualMemo(
+    limitedTo
+      ? commonFixtureMapping.filter(channel => limitedTo.includes(channel))
+      : commonFixtureMapping
+  )
 }
 
 /**

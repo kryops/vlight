@@ -131,3 +131,10 @@ export function toArray<T>(value: T | T[]): T[] {
 export function arrayShallowEqual<T>(a: T[], b: T[]): boolean {
   return a.length === b.length && a.every((value, index) => b[index] === value)
 }
+
+export function commaStringToArray(input: string | undefined): string[] {
+  return (input ?? '')
+    .split(',')
+    .map(it => it.trim())
+    .filter(Boolean)
+}
