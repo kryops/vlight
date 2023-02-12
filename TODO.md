@@ -3,7 +3,6 @@
 ## Roadmap
 
 - Global controls
-  - Stop all
   - Toggle fullscreen
 - Universe features
   - All on
@@ -49,7 +48,6 @@
   - Apply by map coordinates instead of member order
   - Preset library
 - Chases
-  - Stop all button
   - Hide selected fixtures by default
   - Apply same state to all fixtures
   - Color distribution: random, equal, relative

@@ -1,6 +1,6 @@
 import { setLiveChaseState } from '../../api'
 import { Button } from '../../ui/buttons/button'
-import { iconLight, iconLightOff } from '../../ui/icons'
+import { iconLight, iconLightOff, iconStop } from '../../ui/icons'
 import { useApiStateSelector } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { HotkeyContext } from '../../hooks/hotkey'
@@ -16,8 +16,22 @@ function setOnForAllChases(on: boolean) {
   })
 }
 
+export function stopAllChases() {
+  Object.entries(apiState.liveChases).forEach(([id, liveChase]) => {
+    if (!liveChase.stopped) {
+      setLiveChaseState(id, { stopped: true }, true)
+    }
+  })
+}
+
 export function isAnyChaseOn(apiState: ApiState) {
   return isAnyOn(apiState.liveChases)
+}
+
+export function isAnyChaseRunning(apiState: ApiState) {
+  return Object.values(apiState.liveChases).some(
+    liveChase => !liveChase.stopped
+  )
 }
 
 export const turnAllChasesOn = () => setOnForAllChases(true)
@@ -29,16 +43,26 @@ export const turnAllChasesOff = () => setOnForAllChases(false)
  * - All off
  */
 export const ChasesActions = memoInProduction(() => {
-  const { allOn, allOff } = useApiStateSelector(
+  const { allOn, allOff, allStopped } = useApiStateSelector(
     apiState => ({
       allOn: isAllOn(apiState.liveChases),
       allOff: !isAnyChaseOn(apiState),
+      allStopped: !isAnyChaseRunning(apiState),
     }),
     { event: 'liveChases' }
   )
 
   return (
     <HotkeyContext.Provider value={true}>
+      <Button
+        icon={iconStop}
+        onClick={stopAllChases}
+        disabled={allStopped}
+        title="Stop"
+        hotkey="i"
+      >
+        STOP
+      </Button>
       <Button
         icon={iconLight}
         onClick={turnAllChasesOn}
