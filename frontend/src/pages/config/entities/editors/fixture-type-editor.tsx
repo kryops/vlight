@@ -61,8 +61,8 @@ export function FixtureTypeEditor({
 
   const shapePreview: AdditionalMapShape[] = useDeepEqualMemo([
     {
-      x: 50,
-      y: 50,
+      x: Math.round(51 - (formState.values.xSize ?? 5) / 2),
+      y: Math.round(51 - (formState.values.ySize ?? 5) / 2),
       xSize: formState.values.xSize,
       ySize: formState.values.ySize,
       border: formState.values.border,
