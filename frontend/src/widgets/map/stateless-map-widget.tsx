@@ -114,7 +114,7 @@ export interface StatelessMapWidgetProps {
    *
    * Defaults to `false`.
    */
-  displayChannels?: boolean
+  displayChannels?: boolean | 'highlighted'
 
   onFixtureDown?: (fixture: Fixture) => void
   onFixtureUp?: (fixture: Fixture) => void
@@ -194,8 +194,11 @@ export const StatelessMapWidget = memoInProduction(
                   {highlighted &&
                     highlightedFixtures?.length !== undefined &&
                     highlightedFixtures?.length > 1 &&
+                    displayChannels !== 'highlighted' &&
                     highlightedIndex + 1}
-                  {displayChannels && fixture.channel}
+                  {(displayChannels === true ||
+                    (displayChannels === 'highlighted' && highlighted)) &&
+                    fixture.channel}
                 </FixtureTypeMapShape>
               )
             })

@@ -80,8 +80,20 @@ export function FixtureEditor({
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
   const [sharing, setSharing] = useState(!!entry.fixturesSharingChannel)
 
-  const { x, y, xOffset, yOffset, count, fixturesSharingChannel } =
-    formState.values
+  const {
+    type,
+    x,
+    y,
+    channel,
+    channelOffset,
+    xOffset,
+    yOffset,
+    count,
+    fixturesSharingChannel,
+  } = formState.values
+
+  const channelsPerFixture =
+    masterDataMaps.fixtureTypes.get(type)?.mapping.length ?? 1
 
   const idSuffixes = createRangeArray(1, count ?? 1)
   const positionedFixtureEntries =
@@ -90,6 +102,7 @@ export function FixtureEditor({
     idSuffixes.map<Fixture>((count, index) => ({
       ...formState.values,
       id: `${id}_${count}`,
+      channel: channel + index * (channelsPerFixture + (channelOffset ?? 0)),
       x: x + index * (xOffset ?? 8),
       y: y + index * (yOffset ?? 0),
       originalId: id,
@@ -144,7 +157,13 @@ export function FixtureEditor({
             />
             <Label
               label="Channel"
-              input={<FormNumberInput formState={formState} name="channel" />}
+              input={
+                <FormNumberInput
+                  formState={formState}
+                  name="channel"
+                  fallbackValue={1}
+                />
+              }
             />
             <Label
               label="Position"
@@ -256,6 +275,7 @@ export function FixtureEditor({
                 ? positionedFixtureEntries.map(it => it.id)
                 : undefined
             }
+            displayChannels="highlighted"
           />
         }
         rightClassName={editorPreviewColumn}

@@ -78,7 +78,13 @@ export function FixtureTypeEditor({
           <>
             <Label
               label="Name"
-              input={<FormTextInput formState={formState} name="name" />}
+              input={
+                <FormTextInput
+                  formState={formState}
+                  name="name"
+                  fallbackValue=""
+                />
+              }
             />
             <Label
               label="Mapping"

@@ -19,7 +19,6 @@
   - Limit widget width for widgets with lots of channels?
   - Clone
   - Drag&Drop on the map
-  - Show the channels for each fixture
   - Search box
 - Groups
   - On tap button (like memories)

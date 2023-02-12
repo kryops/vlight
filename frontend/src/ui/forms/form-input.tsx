@@ -22,6 +22,7 @@ export interface FormInputProps<
 > {
   name: TName
   formState: FormState<TValues>
+  fallbackValue?: TValue
 }
 
 function wrapTypedInput<TValue, TAdditionalProps extends object>(
@@ -33,12 +34,13 @@ function wrapTypedInput<TValue, TAdditionalProps extends object>(
   >({
     formState,
     name,
+    fallbackValue,
     ...rest
   }: FormInputProps<TValue, TValues, TName> &
     Omit<TypedInputProps<TValue>, 'value' | 'onChange'> &
     Omit<TAdditionalProps, 'value' | 'onChange'>) {
     const onChange = useEvent((value: TValue | undefined): void =>
-      formState.changeValue(name, value as any)
+      formState.changeValue(name, value ?? (fallbackValue as any))
     )
 
     return (
