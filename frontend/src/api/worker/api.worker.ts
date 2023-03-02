@@ -182,7 +182,7 @@ setInterval(() => {
 
   logger.error('No heartbeat received, reconnecting...')
   handleClose()
-}, 5000)
+}, 2000)
 
 if (useSocketUpdateThrottling) {
   // we process the queue at least 10 times/sec in the background
