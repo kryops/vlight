@@ -1,6 +1,6 @@
 # Changelog
 
-## February 2023
+## February / March 2023
 
 - Improvements for memories
   - Made live memory widgets smaller by moving the fixture selection and preview into dialogs
@@ -9,8 +9,10 @@
   - Added "Stop all" button to global control widget and chases page
 - Improvements for dynamic pages
   - Added mapping filter for fixture and group widgets
+- Improvements to the configuration
+  - Added button to clone a configuration entry
+  - Added ability to position fixtures on the map via mouse and touch
 - Added fixture dialogs to map page
-- Added button to clone a configuration entity
 - Added corner button to toggle fullscreen mode
 - Fixed warning when changing the configuration
 - Tried to improve connection loss detection by introducing heartbeats

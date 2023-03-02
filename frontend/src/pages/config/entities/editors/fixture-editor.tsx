@@ -1,6 +1,6 @@
 import { Fixture } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { css } from '@linaria/core'
 
 import { useFormState } from '../../../../hooks/form'
@@ -22,6 +22,11 @@ import {
 import { Select } from '../../../../ui/forms/select'
 import { baseline, errorShade } from '../../../../ui/styles'
 import { getOccupiedFixtureChannels } from '../../../../util/fixtures'
+import { Touchable } from '../../../../ui/components/touchable'
+import {
+  getFractionWithMargin,
+  getTouchEventOffset,
+} from '../../../../util/touch'
 
 const errorMessage = css`
   margin-top: ${baseline(4)};
@@ -79,6 +84,7 @@ export function FixtureEditor({
   const formState = useFormState(entry, { onChange })
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
   const [sharing, setSharing] = useState(!!entry.fixturesSharingChannel)
+  const touchRef = useRef<HTMLDivElement>(null)
 
   const {
     type,
@@ -268,15 +274,32 @@ export function FixtureEditor({
           </>
         }
         right={
-          <StatelessMapWidget
-            fixtures={previewFixtures}
-            highlightedFixtures={
-              positionedFixtureEntries
-                ? positionedFixtureEntries.map(it => it.id)
-                : undefined
-            }
-            displayChannels="highlighted"
-          />
+          <Touchable
+            onTouch={event => {
+              const offset = getTouchEventOffset(event, touchRef)
+              if (!offset) {
+                return
+              }
+              const { x, y } = getFractionWithMargin(offset, 4)
+
+              const roundTo100 = (value: number) => Math.round(value * 100)
+
+              formState.changeValue('x', roundTo100(x))
+              formState.changeValue('y', roundTo100(y))
+            }}
+            preventScroll
+          >
+            <StatelessMapWidget
+              ref={touchRef}
+              fixtures={previewFixtures}
+              highlightedFixtures={
+                positionedFixtureEntries
+                  ? positionedFixtureEntries.map(it => it.id)
+                  : undefined
+              }
+              displayChannels="highlighted"
+            />
+          </Touchable>
         }
         rightClassName={editorPreviewColumn}
       />

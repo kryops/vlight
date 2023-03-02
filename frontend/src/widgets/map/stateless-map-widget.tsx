@@ -6,7 +6,7 @@ import {
   IdType,
 } from '@vlight/types'
 import { arrayRange } from '@vlight/utils'
-import { useMemo } from 'react'
+import { forwardRef, useMemo } from 'react'
 
 import { memoInProduction } from '../../util/development'
 import { backgroundColor, baseline, iconShade } from '../../ui/styles'
@@ -126,93 +126,101 @@ export interface StatelessMapWidgetProps {
  * Stateless widget to display a map of fixtures or shapes, optionally with a DMX universe state.
  */
 export const StatelessMapWidget = memoInProduction(
-  ({
-    universe,
-    fixtures,
-    highlightedFixtures,
-    additionalShapes,
-    standalone = false,
-    displayChannels = false,
-    enableDmxUniverse = false,
-    onFixtureDown,
-    onFixtureUp,
-    className,
-  }: StatelessMapWidgetProps) => {
-    const { fixtureTypes } = useMasterDataMaps()
-    const positionedFixtures = useMemo(
-      () =>
-        (fixtures ?? []).filter(
-          fixture => fixture.x !== undefined && fixture.y !== undefined
-        ),
-      [fixtures]
-    )
+  forwardRef<HTMLDivElement, StatelessMapWidgetProps>(
+    (
+      {
+        universe,
+        fixtures,
+        highlightedFixtures,
+        additionalShapes,
+        standalone = false,
+        displayChannels = false,
+        enableDmxUniverse = false,
+        onFixtureDown,
+        onFixtureUp,
+        className,
+      },
+      ref
+    ) => {
+      const { fixtureTypes } = useMasterDataMaps()
+      const positionedFixtures = useMemo(
+        () =>
+          (fixtures ?? []).filter(
+            fixture => fixture.x !== undefined && fixture.y !== undefined
+          ),
+        [fixtures]
+      )
 
-    return (
-      <div className={cx(widget, standalone && widget_standalone, className)}>
-        <div className={container}>
-          {positionedFixtures.flatMap(fixture => {
-            const fixtureType = fixtureTypes.get(fixture.type)
-            if (!fixtureType) return null
+      return (
+        <div
+          className={cx(widget, standalone && widget_standalone, className)}
+          ref={ref}
+        >
+          <div className={container}>
+            {positionedFixtures.flatMap(fixture => {
+              const fixtureType = fixtureTypes.get(fixture.type)
+              if (!fixtureType) return null
 
-            const highlightedIndex =
-              highlightedFixtures?.indexOf(fixture.id) ?? -1
-            const highlighted = highlightedIndex !== -1
+              const highlightedIndex =
+                highlightedFixtures?.indexOf(fixture.id) ?? -1
+              const highlighted = highlightedIndex !== -1
 
-            return arrayRange(
-              1,
-              fixture.fixturesSharingChannel ?? 1,
-              it => it - 1
-            ).map(offset => {
-              return (
-                <FixtureTypeMapShape
-                  key={fixture.id + '_' + offset}
-                  fixtureType={fixtureType}
-                  x={
-                    fixture.x !== undefined
-                      ? fixture.x + offset * (fixture.xOffset ?? 8)
-                      : undefined
-                  }
-                  y={
-                    fixture.y !== undefined
-                      ? fixture.y + offset * (fixture.yOffset ?? 0)
-                      : undefined
-                  }
-                  color={
-                    universe &&
-                    getEffectiveFixtureColor(fixture, fixtureType, universe)
-                  }
-                  channel={enableDmxUniverse ? fixture.channel : undefined}
-                  highlighted={highlighted}
-                  title={fixture.name}
-                  className={fixtureStyle}
-                  percentages
-                  onDown={
-                    onFixtureDown ? () => onFixtureDown(fixture) : undefined
-                  }
-                  onUp={onFixtureUp ? () => onFixtureUp(fixture) : undefined}
-                >
-                  {highlighted &&
-                    highlightedFixtures?.length !== undefined &&
-                    highlightedFixtures?.length > 1 &&
-                    displayChannels !== 'highlighted' &&
-                    highlightedIndex + 1}
-                  {(displayChannels === true ||
-                    (displayChannels === 'highlighted' && highlighted)) &&
-                    fixture.channel}
-                </FixtureTypeMapShape>
-              )
-            })
-          })}
-          {additionalShapes?.map((shape, index) => (
-            <MapShape
-              key={index}
-              {...shape}
-              className={fixtureStyle}
-              percentages
-            />
-          ))}
+              return arrayRange(
+                1,
+                fixture.fixturesSharingChannel ?? 1,
+                it => it - 1
+              ).map(offset => {
+                return (
+                  <FixtureTypeMapShape
+                    key={fixture.id + '_' + offset}
+                    fixtureType={fixtureType}
+                    x={
+                      fixture.x !== undefined
+                        ? fixture.x + offset * (fixture.xOffset ?? 8)
+                        : undefined
+                    }
+                    y={
+                      fixture.y !== undefined
+                        ? fixture.y + offset * (fixture.yOffset ?? 0)
+                        : undefined
+                    }
+                    color={
+                      universe &&
+                      getEffectiveFixtureColor(fixture, fixtureType, universe)
+                    }
+                    channel={enableDmxUniverse ? fixture.channel : undefined}
+                    highlighted={highlighted}
+                    title={fixture.name}
+                    className={fixtureStyle}
+                    percentages
+                    onDown={
+                      onFixtureDown ? () => onFixtureDown(fixture) : undefined
+                    }
+                    onUp={onFixtureUp ? () => onFixtureUp(fixture) : undefined}
+                  >
+                    {highlighted &&
+                      highlightedFixtures?.length !== undefined &&
+                      highlightedFixtures?.length > 1 &&
+                      displayChannels !== 'highlighted' &&
+                      highlightedIndex + 1}
+                    {(displayChannels === true ||
+                      (displayChannels === 'highlighted' && highlighted)) &&
+                      fixture.channel}
+                  </FixtureTypeMapShape>
+                )
+              })
+            })}
+            {additionalShapes?.map((shape, index) => (
+              <MapShape
+                key={index}
+                {...shape}
+                className={fixtureStyle}
+                percentages
+              />
+            ))}
+          </div>
         </div>
-      </div>
-    )
-  }
+      )
+    }
+  )
 )

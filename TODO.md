@@ -15,7 +15,6 @@
   - Special colors preview (amber, UV)
 - Fixtures
   - Opt-in to channel preselection
-  - Drag&Drop on the map
   - Search box
 - Groups
   - When deleting a group, replace it by its fixtures e.g. in memories and chases
