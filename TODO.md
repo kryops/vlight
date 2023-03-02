@@ -17,7 +17,6 @@
   - Opt-in to channel preselection
   - Search box
 - Groups
-  - When deleting a group, replace it by its fixtures e.g. in memories and chases
   - On tap button (like memories)
   - Search box
 - Map

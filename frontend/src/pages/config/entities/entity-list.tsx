@@ -102,6 +102,7 @@ export function EntityList<T extends EntityName>({
             )
             if (result) {
               removeEntity(type, entry.id)
+              entityUiMapping[type]?.onDelete?.(entry)
             }
           }}
         />
