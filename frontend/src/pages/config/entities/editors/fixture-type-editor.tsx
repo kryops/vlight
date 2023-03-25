@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { FixtureBorderStyle, FixtureShape } from '@vlight/types'
 import { commaStringToArray } from '@vlight/utils'
+import { ChannelType } from '@vlight/controls'
 
 import { useFormState } from '../../../../hooks/form'
 import {
@@ -85,7 +86,9 @@ export function FixtureTypeEditor({
             />
             <Label
               label="Mapping"
-              description="Comma-separated - Special values: m, r, g, b, w, uv"
+              description={`Comma-separated - Special values: ${Object.values(
+                ChannelType
+              ).join(', ')}`}
               input={
                 <TextInput value={mappingString} onChange={changeMapping} />
               }

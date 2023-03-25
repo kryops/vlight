@@ -13,6 +13,7 @@
   - Added button to clone a configuration entry
   - Added ability to position fixtures on the map via mouse and touch
   - When deleting a group, members chases and memories are changed to contain the group's members instead
+- Added position picker control for controlling pan/tilt of moving heads
 - Added fixture dialogs to map page
 - Added corner button to toggle fullscreen mode
 - Fixed warning when changing the configuration

@@ -1,5 +1,5 @@
 import { FixtureState } from '@vlight/types'
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useReducer } from 'react'
 import { ChannelType } from '@vlight/controls'
 import { css } from '@linaria/core'
 
@@ -11,7 +11,7 @@ import {
   fixtureStateToColor,
 } from '../../ui/controls/colorpicker/util'
 import { memoInProduction } from '../../util/development'
-import { iconColorPicker } from '../../ui/icons'
+import { iconColorPicker, iconPositionPicker } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { faderContainer } from '../../ui/css/fader-container'
 import { getFixtureStateColor } from '../../util/fixtures'
@@ -19,6 +19,11 @@ import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
 import { baseline } from '../../ui/styles'
 import { useEvent } from '../../hooks/performance'
 import { cx } from '../../util/styles'
+import { PositionPicker } from '../../ui/controls/position-picker'
+import {
+  Position,
+  positionChannels,
+} from '../../ui/controls/position-picker/utils'
 
 const colorPickerIconStyle = css`
   margin-left: ${baseline(2)};
@@ -53,6 +58,8 @@ export interface FixtureStateWidgetProps extends WidgetPassthrough {
   className?: string
 }
 
+const toggleFn: (x: boolean) => boolean = prev => !prev
+
 /**
  * Stateless low-level widget to display a fixture state.
  */
@@ -70,13 +77,13 @@ export const FixtureStateWidget = memoInProduction(
     ...passThrough
   }: FixtureStateWidgetProps) => {
     const colorPickerCapable = colorPickerColors.every(c => mapping.includes(c))
-    const [colorPicker, setColorPicker] = useState(true)
-    const toggleColorPicker = useCallback(
-      () => setColorPicker(prev => !prev),
-      []
-    )
-
+    const [colorPicker, toggleColorPicker] = useReducer(toggleFn, true)
     const hasColorPicker = colorPicker && colorPickerCapable
+
+    const positionPickerCapable =
+      mapping.includes(ChannelType.Pan) && mapping.includes(ChannelType.Tilt)
+    const [positionPicker, togglePositionPicker] = useReducer(toggleFn, true)
+    const hasPositionPicker = positionPicker && positionPickerCapable
 
     const { r, g, b } = fixtureStateToColor(fixtureState)
 
@@ -84,6 +91,7 @@ export const FixtureStateWidget = memoInProduction(
       (c, index) =>
         c !== ChannelType.Master &&
         (!hasColorPicker || !colorPickerColors.includes(c)) &&
+        (!hasPositionPicker || !positionChannels.includes(c)) &&
         mapping.indexOf(c) === index
     )
 
@@ -101,7 +109,7 @@ export const FixtureStateWidget = memoInProduction(
       />
     )
 
-    const onColorPickerChange = useEvent((color: ColorPickerColor) =>
+    const onPickerChange = useEvent((color: ColorPickerColor | Position) =>
       onChange({
         channels: { ...color },
       })
@@ -121,7 +129,7 @@ export const FixtureStateWidget = memoInProduction(
                 })
         }
         titleSide={
-          titleSide || colorPickerCapable ? (
+          titleSide || colorPickerCapable || positionPickerCapable ? (
             <>
               {titleSide}
               {colorPickerCapable && (
@@ -129,6 +137,15 @@ export const FixtureStateWidget = memoInProduction(
                   icon={iconColorPicker}
                   onClick={toggleColorPicker}
                   shade={colorPicker ? 1 : 2}
+                  inline
+                  className={colorPickerIconStyle}
+                />
+              )}
+              {positionPickerCapable && (
+                <Icon
+                  icon={iconPositionPicker}
+                  onClick={togglePositionPicker}
+                  shade={positionPicker ? 1 : 2}
                   inline
                   className={colorPickerIconStyle}
                 />
@@ -148,7 +165,14 @@ export const FixtureStateWidget = memoInProduction(
         >
           {renderFader(ChannelType.Master)}
           {hasColorPicker && (
-            <ColorPicker r={r} g={g} b={b} onChange={onColorPickerChange} />
+            <ColorPicker r={r} g={g} b={b} onChange={onPickerChange} />
+          )}
+          {hasPositionPicker && (
+            <PositionPicker
+              pan={fixtureState.channels[ChannelType.Pan]}
+              tilt={fixtureState.channels[ChannelType.Tilt]}
+              onChange={onPickerChange}
+            />
           )}
           {fadersToRender.map(renderFader)}
         </div>

@@ -54,6 +54,7 @@ import {
   mdiGauge,
   mdiFullscreen,
   mdiContentCopy,
+  mdiCursorMove,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -110,6 +111,7 @@ export const iconLiveMemory = mdiImageSync
 export const iconChase = mdiAnimationPlay
 export const iconExperiment = mdiFlaskOutline
 export const iconColorPicker = mdiPaletteOutline
+export const iconPositionPicker = mdiCursorMove
 export const iconDynamicPage = mdiFileAccount
 export const iconConfig = mdiCog
 export const iconList = mdiFormatListNumbered

@@ -56,7 +56,7 @@ export interface TouchableProps {
  */
 export const Touchable = forwardRef<
   HTMLDivElement,
-  TouchableProps & { children: any }
+  TouchableProps & { children?: any }
 >(
   (
     {

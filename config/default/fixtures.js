@@ -55,6 +55,16 @@ const fixtures = [
     type: 'hazer',
     channel: 163,
   },
+  {
+    id: 'movings',
+    name: 'Movings',
+    type: 'movingspot',
+    channel: 165,
+    count: 4,
+    x: 8,
+    y: 54,
+    xOffset: 27,
+  },
 ]
 
 module.exports = fixtures

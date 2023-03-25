@@ -47,6 +47,26 @@ export enum ChannelType {
    * - Depends on the fixture's master channel
    */
   UV = 'uv',
+
+  /**
+   * Moving head pan channel
+   */
+  Pan = 'pan',
+
+  /**
+   * Moving head pan fine channel
+   */
+  PanFine = 'panf',
+
+  /**
+   * Moving head tilt channel
+   */
+  Tilt = 'tilt',
+
+  /**
+   * Moving head tilt fine channel
+   */
+  TiltFine = 'tiltf',
 }
 
 /**
