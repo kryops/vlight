@@ -14,7 +14,12 @@ const dynamicPages = [
               },
               {
                 type: 'fixture-group',
-                id: ['1', '2'],
+                id: ['1', '3'],
+                mapping: [],
+              },
+              {
+                type: 'memory',
+                id: '1',
               },
             ],
           },
@@ -24,6 +29,11 @@ const dynamicPages = [
         cells: [
           {
             widgets: [
+              {
+                type: 'fixture-group',
+                id: ['2'],
+                mapping: ['m', 'r', 'g', 'b', 'w'],
+              },
               {
                 type: 'live-memory',
                 id: ['1', '2'],
