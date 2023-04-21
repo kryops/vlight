@@ -12,12 +12,17 @@ const fixtureGroups = [
   {
     id: '2',
     name: 'Bunt',
-    fixtures: ['all:3'],
+    fixtures: ['all:6', 'all:3', 'all:5', 'all:7'],
   },
   {
-    id: '3',
-    name: 'Band',
-    fixtures: ['all:5'],
+    id: '5',
+    name: 'Hinten',
+    fixtures: ['all:3', 'all:5'],
+  },
+  {
+    id: '6',
+    name: 'Vorne',
+    fixtures: ['all:6', 'all:7'],
   },
 ]
 

@@ -10,16 +10,22 @@ const dynamicPages = [
                 type: 'dmx-master',
               },
               {
-                type: 'controls',
-              },
-              {
                 type: 'fixture-group',
-                id: ['1', '3'],
+                id: ['1'],
                 mapping: [],
               },
               {
                 type: 'memory',
                 id: '1',
+              },
+              {
+                type: 'fixture-group',
+                id: ['2'],
+                mapping: ['m', 'r', 'g', 'b', 'w'],
+              },
+              {
+                type: 'live-memory',
+                id: ['2'],
               },
             ],
           },
@@ -30,13 +36,13 @@ const dynamicPages = [
           {
             widgets: [
               {
-                type: 'fixture-group',
-                id: ['2'],
-                mapping: ['m', 'r', 'g', 'b', 'w'],
+                type: 'live-memory',
+                id: ['1'],
               },
               {
-                type: 'live-memory',
-                id: ['1', '2'],
+                type: 'fixture-group',
+                id: ['5', '6'],
+                mapping: ['m', 'r', 'g', 'b', 'w'],
               },
               {
                 type: 'live-chase',
