@@ -39,6 +39,7 @@ function getColor(
   const w = values[3]
 
   const highestRgbValue = Math.max(
+    0,
     ...(rgb.filter(value => value !== undefined) as number[])
   )
 
