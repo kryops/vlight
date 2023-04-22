@@ -23,7 +23,7 @@ export const page = css`
 function openFixtureDialog(fixture: Fixture) {
   showDialog(<FixtureWidget fixture={fixture} />, undefined, {
     showCloseButton: true,
-    closeOnBackDrop: true,
+    // cannot close on backdrop as it would close immediately on touch devices
   })
 }
 
