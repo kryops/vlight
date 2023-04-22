@@ -43,7 +43,7 @@ export const FixtureGroupWidget = memoInProduction(
     return (
       <FixtureStateWidget
         icon={iconGroup}
-        title={`${group.name ?? group.id} (${group.fixtures.length})`}
+        title={`${group.name ?? group.id}`}
         titleSide={
           <Icon
             icon={iconConfig}
