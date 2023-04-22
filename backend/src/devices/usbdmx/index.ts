@@ -102,7 +102,7 @@ function broadcastUniverseChannel(channel: number) {
     return
   }
 
-  const block = Math.floor(channel / blockSize)
+  const block = Math.floor((channel - 1) / blockSize)
   changedBlocks.add(block)
 }
 
