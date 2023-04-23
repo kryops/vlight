@@ -2,6 +2,8 @@
 
 ## Roadmap
 
+- Control improvements
+  - Mousewheel for faders?
 - Universe features
   - All on
   - Swop (single chase active, rest blackout)
@@ -15,10 +17,12 @@
   - Special colors preview (amber, UV)
 - Fixtures
   - Opt-in to channel preselection
+  - Rearrange channels to fix overlaps / display overlaps in overview
   - Search box
 - Groups
   - On tap button (like memories)
   - Search box
+  - Click on fixture in map to toggle membership
 - Map
   - Change size
   - Turn around by 180°
