@@ -11,8 +11,8 @@ const dynamicPages = [
               },
               {
                 type: 'fixture-group',
-                id: ['1'],
-                mapping: [],
+                id: ['1', '9', '13', '11'],
+                mapping: ['m'],
               },
               {
                 type: 'memory',
@@ -20,12 +20,8 @@ const dynamicPages = [
               },
               {
                 type: 'fixture-group',
-                id: ['2'],
-                mapping: ['m', 'r', 'g', 'b', 'w'],
-              },
-              {
-                type: 'live-memory',
-                id: ['2'],
+                id: ['5'],
+                mapping: ['m', 'r', 'g', 'b'],
               },
             ],
           },
@@ -36,13 +32,31 @@ const dynamicPages = [
           {
             widgets: [
               {
-                type: 'live-memory',
-                id: ['1'],
+                type: 'fixture-group',
+                id: ['6', '7', '8'],
+                mapping: ['m', 'r', 'g', 'b'],
               },
               {
                 type: 'fixture-group',
-                id: ['5', '6'],
-                mapping: ['m', 'r', 'g', 'b', 'w'],
+                id: ['12', '10'],
+                mapping: ['m'],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        cells: [
+          {
+            widgets: [
+              {
+                type: 'fixture-group',
+                id: ['2'],
+                mapping: ['m', 'r', 'g', 'b'],
+              },
+              {
+                type: 'live-memory',
+                id: ['2', '1'],
               },
               {
                 type: 'live-chase',

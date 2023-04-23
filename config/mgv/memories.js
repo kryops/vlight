@@ -1,7 +1,7 @@
 const memories = [
   {
     id: '1',
-    name: 'CW/WW',
+    name: 'Noten',
     scenes: [
       {
         members: ['group:4'],
@@ -13,7 +13,7 @@ const memories = [
               r: 255,
               g: 255,
               b: 255,
-              w: 127,
+              w: 161,
               ww: 255,
             },
           },
