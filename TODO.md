@@ -3,6 +3,7 @@
 ## Roadmap
 
 - Control improvements
+  - Array/comma input (mapping) sometimes changes during typing
   - Mousewheel for faders?
 - Universe features
   - All on
@@ -19,6 +20,7 @@
   - Opt-in to channel preselection
   - Rearrange channels to fix overlaps / display overlaps in overview
   - Search box
+  - Delete fixture and all: mapping when deleting fixture
 - Groups
   - On tap button (like memories)
   - Search box
