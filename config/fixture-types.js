@@ -115,6 +115,15 @@ const fixtureTypes = [
     mapping: ['r', 'g', 'b', 'w', 'a', 'uv'],
   },
   {
+    id: '1',
+    name: 'Bar 4x30W RGB 5ch',
+    mapping: ['r', 'g', 'b', 'm', 'str'],
+    shape: 'square',
+    border: 'solid',
+    xSize: 10,
+    ySize: 3,
+  },
+  {
     id: 'bar15',
     name: 'Bar 4x30W RGB 15ch',
     mapping: [
@@ -313,7 +322,7 @@ const fixtureTypes = [
     border: 'dotted',
     xSize: 9,
     ySize: 9,
-  }
+  },
 ]
 
 module.exports = fixtureTypes

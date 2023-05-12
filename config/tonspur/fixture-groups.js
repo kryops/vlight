@@ -12,12 +12,35 @@ const fixtureGroups = [
   {
     id: '2',
     name: 'Bunt',
-    fixtures: ['3_1', 'all:2', '3_2'],
+    fixtures: [
+      '3_1',
+      '2_1',
+      '2_2',
+      '4_1',
+      '5_1',
+      '5_2',
+      '5_3',
+      '5_4',
+      '4_2',
+      '6_1',
+      '6_2',
+      '3_2',
+    ],
   },
   {
     id: '3',
     name: 'Movings',
     fixtures: ['all:3'],
+  },
+  {
+    id: '5',
+    name: 'Bunt Bühne',
+    fixtures: ['4_1', 'all:2', '4_2'],
+  },
+  {
+    id: '6',
+    name: 'Bunt Traverse',
+    fixtures: ['3_1', 'all:5', '3_2'],
   },
 ]
 

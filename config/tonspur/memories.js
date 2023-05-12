@@ -13,7 +13,7 @@ const memories = [
               r: 0,
               g: 0,
               b: 0,
-              pan: 148,
+              pan: 103,
               tilt: 227,
               w: 0,
             },
