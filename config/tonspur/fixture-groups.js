@@ -7,7 +7,27 @@ const fixtureGroups = [
   {
     id: '4',
     name: 'F',
-    fixtures: ['1_4', '1_5'],
+    fixtures: ['1_4'],
+  },
+  {
+    id: '7',
+    name: 'Gruppe',
+    fixtures: ['1_1', '1_3', '1_5'],
+  },
+  {
+    id: '10',
+    name: 'Sax',
+    fixtures: ['1_5'],
+  },
+  {
+    id: '8',
+    name: 'Band',
+    fixtures: ['1_6', '1_8'],
+  },
+  {
+    id: '9',
+    name: 'Chor',
+    fixtures: ['1_1', '1_2', '1_3', '1_5', '1_7'],
   },
   {
     id: '2',

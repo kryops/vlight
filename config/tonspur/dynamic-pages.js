@@ -11,7 +11,7 @@ const dynamicPages = [
               },
               {
                 type: 'fixture-group',
-                id: ['1', '4'],
+                id: ['1', '9', '4', '7', '10', '8'],
                 mapping: ['m'],
               },
               {
@@ -69,6 +69,10 @@ const dynamicPages = [
               {
                 type: 'live-chase',
                 id: ['3'],
+              },
+              {
+                type: 'memory',
+                id: ['2'],
               },
               {
                 type: 'fixture-group',

@@ -39,6 +39,8 @@
 - Fixture Selection
   - Select by mapping (e.g. all color fixtures)
 - Memories
+  - Real-world preview during editing
+  - Symmetrical gradient
   - Button instead of fader, or fader only
   - In a row: repeat n times
   - Alternating: alternate after n fixtures
