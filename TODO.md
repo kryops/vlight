@@ -3,7 +3,6 @@
 ## Roadmap
 
 - Control improvements
-  - Array/comma input (mapping) sometimes changes during typing
   - Mousewheel for faders?
 - Universe features
   - Swop (single chase active, rest blackout)

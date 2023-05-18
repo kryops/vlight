@@ -3,6 +3,7 @@
 ## May 2023
 
 - The DMX master no longer affects non-color channels for fixtures with a master channel
+- Fixed widget mapping input changing during typing
 
 ## February / March 2023
 

@@ -11,7 +11,7 @@ import {
   WidgetConfig,
 } from '@vlight/types'
 import { css } from '@linaria/core'
-import { commaStringToArray, ensureBetween } from '@vlight/utils'
+import { commaStringToArray, ensureBetween, shallowEqual } from '@vlight/utils'
 import { useCallback, useEffect, useState } from 'react'
 
 import { baseline, primaryShade } from '../styles'
@@ -197,8 +197,17 @@ function StaticEntitiesWidgetInput({
 
   const [mappingString, setMappingString] = useState(initialMappingString)
 
+  // Needed e.g. for reordering widgets
   useEffect(() => {
-    setMappingString(initialMappingString)
+    if (
+      !shallowEqual(
+        commaStringToArray(initialMappingString),
+        commaStringToArray(mappingString)
+      )
+    ) {
+      setMappingString(initialMappingString)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialMappingString])
 
   const changeEntities = useEvent((newValue: IdType[]): void =>
