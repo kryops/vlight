@@ -6,7 +6,6 @@
   - Array/comma input (mapping) sometimes changes during typing
   - Mousewheel for faders?
 - Universe features
-  - All on
   - Swop (single chase active, rest blackout)
   - Complete fixture override/reservation (e.g. when controlled by a chase)
 - Fixture types

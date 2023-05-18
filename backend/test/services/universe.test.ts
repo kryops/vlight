@@ -84,22 +84,23 @@ const fullChannels: FixtureChannels = {
 const fadedChannels: FixtureChannels = {
   ...fullChannels,
   m: 127,
-  x: 127,
 }
 
 const doubleFadedChannels: FixtureChannels = {
   ...fullChannels,
   m: 63,
-  x: 63,
 }
 
 const emptyUniverse = createUniverse()
 const fullUniverse = universeWithFixtures(fullChannels, fullChannels)
-const fadedUniverse = universeWithFixtures(fadedChannels, fadedChannels)
-const doubleFadedUniverse = universeWithFixtures(
-  doubleFadedChannels,
-  doubleFadedChannels
-)
+const fadedUniverse = universeWithFixtures(fadedChannels, {
+  ...fadedChannels,
+  x: 127,
+})
+const doubleFadedUniverse = universeWithFixtures(doubleFadedChannels, {
+  ...doubleFadedChannels,
+  x: 63,
+})
 
 function mockDmxMaster(value: number) {
   handleDmxMasterApiMessage({ type: 'dmx-master', value })

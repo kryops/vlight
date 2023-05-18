@@ -1,5 +1,9 @@
 # Changelog
 
+## May 2023
+
+- The DMX master no longer affects non-color channels for fixtures with a master channel
+
 ## February / March 2023
 
 - Improvements for memories

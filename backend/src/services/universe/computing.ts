@@ -128,19 +128,15 @@ export function initUniverseComputingData(isReload = false): void {
     }
 
     const masterChannel = fixture.channel + masterIndex
+    fadedChannels.add(masterChannel)
+
     const affectedChannels = createRangeArray(
       fixture.channel,
       fixture.channel + fixtureType.mapping.length - 1
     ).filter(channel => {
       const index = channel - fixture.channel
       const mapping = fixtureType.mapping[index]
-      if (channelMappingsAffectedByMaster.has(mapping)) {
-        return true
-      } else {
-        // The fixture's master does not affect this channel -> faded by the universe's master
-        fadedChannels.add(channel)
-        return false
-      }
+      return channelMappingsAffectedByMaster.has(mapping)
     })
 
     affectedChannelsByMasterChannel.set(masterChannel, affectedChannels)
