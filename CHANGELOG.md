@@ -2,6 +2,7 @@
 
 ## May 2023
 
+- Added global DMX universe fading
 - The DMX master no longer affects non-color channels for fixtures with a master channel
 - Fixed widget mapping input changing during typing
 

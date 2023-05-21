@@ -117,7 +117,17 @@ export interface ApiDmxMasterMessage {
   /**
    * DMX master value from 0-255.
    */
-  value: number
+  value?: number
+
+  /**
+   * Fade speed in seconds.
+   *
+   * To support fading constantly changing universes, this value is converted into
+   * into a speed of moving the fader that matches the fade time for a complete off-on fade.
+   *
+   * Defaults to 0.
+   */
+  fade?: number
 }
 
 // Incoming messages
@@ -212,6 +222,9 @@ export interface ApiStateMessage {
 
   /** Global DMX master value. */
   dmxMaster: number
+
+  /** Global DMX master fade time in seconds. */
+  dmxMasterFade: number
 }
 
 /**

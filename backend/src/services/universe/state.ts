@@ -7,7 +7,12 @@ import { createUniverse } from './universe-functions'
 export const rawDmxUniverse = createUniverse()
 
 /**
- * The outgoing DMX universe (global DMX master applied).
+ * The outgoing DMX universe with the global DMX master applied.
+ */
+export const dmxUniverseAfterMaster = createUniverse()
+
+/**
+ * The outgoing DMX universe (global DMX master and fading applied).
  */
 export const dmxUniverse = createUniverse()
 

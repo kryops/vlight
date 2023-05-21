@@ -29,7 +29,6 @@
 - Speed/Fade control
   - Global vs local speed
   - Global pause/halt
-  - Global fading (outgoing universe)
 - Prepare changes before applying
   - Chases, Memories, Fixture states...
   - Fade/transition

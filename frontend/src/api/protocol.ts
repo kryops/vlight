@@ -147,9 +147,18 @@ export function getApiLiveChaseStepMessage(
   }
 }
 
-export function getApiDmxMasterMessage(value: number): ApiDmxMasterMessage {
+export interface DmxMasterMessageArgs {
+  value?: number
+  fade?: number
+}
+
+export function getApiDmxMasterMessage({
+  value,
+  fade,
+}: DmxMasterMessageArgs): ApiDmxMasterMessage {
   return {
     type: 'dmx-master',
     value,
+    fade,
   }
 }

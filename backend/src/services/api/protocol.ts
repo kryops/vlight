@@ -31,6 +31,7 @@ export function getApiStateMessage({
   liveMemories,
   liveChases,
   dmxMaster,
+  dmxMasterFade,
 }: {
   masterData: MasterData
   rawMasterData: MasterData
@@ -42,6 +43,7 @@ export function getApiStateMessage({
   liveMemories: Dictionary<LiveMemory>
   liveChases: Dictionary<LiveChase>
   dmxMaster: number
+  dmxMasterFade: number
 }): ApiStateMessage {
   return {
     type: 'state',
@@ -55,6 +57,7 @@ export function getApiStateMessage({
     liveMemories,
     liveChases,
     dmxMaster,
+    dmxMasterFade,
   }
 }
 

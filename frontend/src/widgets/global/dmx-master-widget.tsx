@@ -15,16 +15,19 @@ const buttonContainer = css`
 
 export type DmxMasterWidgetProps = WidgetPassthrough
 
-const setToFull = () => setDmxMaster(255)
-const setToZero = () => setDmxMaster(0)
+const setMasterValue = (value: number) => setDmxMaster({ value })
+const setToFull = () => setDmxMaster({ value: 255 })
+const setToZero = () => setDmxMaster({ value: 0 })
+const setMasterFade = (fade: number) => setDmxMaster({ fade })
 
 export const DmxMasterWidget = memoInProduction(
   ({ ...passThrough }: DmxMasterWidgetProps) => {
     const dmxMaster = useApiState('dmxMaster')
+    const dmxMasterFade = useApiState('dmxMasterFade')
 
     return (
       <Widget title="DMX Master" icon={iconGlobal} {...passThrough}>
-        <Fader max={255} step={1} value={dmxMaster} onChange={setDmxMaster} />
+        <Fader max={255} step={1} value={dmxMaster} onChange={setMasterValue} />
         <div className={buttonContainer}>
           <Button block onDown={setToFull} title="Set to full" hotkey="n">
             ON
@@ -33,6 +36,16 @@ export const DmxMasterWidget = memoInProduction(
             OFF
           </Button>
         </div>
+        <Fader
+          min={10}
+          max={0}
+          value={dmxMasterFade}
+          onChange={setMasterFade}
+          label="Fade"
+          subLabel={
+            dmxMasterFade === 0 ? 'Instant' : `${dmxMasterFade.toFixed(2)}s`
+          }
+        />
       </Widget>
     )
   }

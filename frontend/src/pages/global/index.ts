@@ -9,5 +9,6 @@ export const globalPageNavItem: NavItemEntry = {
   icon: iconGlobal,
   label: 'Global Controls',
   page: GlobalPage,
-  highlighted: apiState => apiState.dmxMaster !== 255,
+  highlighted: apiState =>
+    apiState.dmxMaster !== 255 || apiState.dmxMasterFade !== 0,
 }

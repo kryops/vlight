@@ -8,13 +8,21 @@ import { registerApiMessageHandler } from '../api/registry'
 import { masterData, masterDataMaps } from '../masterdata'
 import { getPersistedState } from '../state'
 
-import { universeStates, rawDmxUniverse, universes, dmxUniverse } from './state'
+import {
+  universeStates,
+  rawDmxUniverse,
+  universes,
+  dmxUniverse,
+  dmxUniverseAfterMaster,
+} from './state'
 import { Universe } from './types'
 import {
   getUniverseIndex,
   applyMasterValue,
   writeUniverseChannel,
 } from './utils'
+import { fadeIntervalTime } from './fading'
+import { getDifferentChannels } from './universe-functions'
 
 /**
  * A list of channels for each master channel that are affected by it.
@@ -37,8 +45,94 @@ const fadedChannels = new Set<number>()
 /** Global DMX master value. */
 let dmxMaster = 255
 
+/** DMX master fade time in seconds. */
+let dmxMasterFade = 0
+
 export function getDmxMaster() {
   return dmxMaster
+}
+
+export function getDmxMasterFade() {
+  return dmxMasterFade
+}
+
+/**
+ * Interval for fading the DMX master.
+ */
+let dmxMasterFadeInterval: any = null
+
+/**
+ * Counter for the DMX master fade steps to compute the correct offset for each step.
+ */
+let dmxMasterFadeStepRun = 0
+
+/**
+ * Starts or stops the DMX master fade interval if necessary
+ */
+function refreshDmxMasterFadeInterval() {
+  if (dmxMasterFadeInterval === null && dmxMasterFade) {
+    dmxMasterFadeInterval = setInterval(dmxMasterFadeStep, fadeIntervalTime)
+  } else if (dmxMasterFadeInterval !== null && !dmxMasterFade) {
+    // in case fading was turned off mid-fade, we need to run the step once more
+    dmxMasterFadeStep()
+    clearInterval(dmxMasterFadeInterval)
+    dmxMasterFadeInterval = null
+  }
+}
+
+/**
+ * Computes a step for fading the DMX master.
+ *
+ * We convert the configured fade time into a speed with which to move faders.
+ * This supports reacting to changes during the fade, but may change colors
+ * when fading them in/out, as channels with lower values will settle first.
+ *
+ * TODO find a better algorithm that keeps the colors when fading in/out.
+ */
+function dmxMasterFadeStep() {
+  const affectedChannels = getDifferentChannels(
+    dmxUniverseAfterMaster,
+    dmxUniverse
+  )
+
+  if (!affectedChannels.size) return
+
+  dmxMasterFadeStepRun++
+
+  const fadeOffset = (255 * (fadeIntervalTime / 1000)) / dmxMasterFade
+
+  // The base offset is applied at every step (may be 0)
+  const baseOffset = Math.floor(fadeOffset)
+
+  // On some runs, we apply an additional offset to match the fade time
+  const runWithAdditionalOffset = Math.round(1 / (fadeOffset - baseOffset))
+  const offset =
+    dmxMasterFadeStepRun >= runWithAdditionalOffset
+      ? baseOffset + 1
+      : baseOffset
+
+  if (dmxMasterFadeStepRun >= runWithAdditionalOffset) {
+    dmxMasterFadeStepRun = 0
+  }
+
+  if (offset === 0) return
+
+  for (const channel of affectedChannels) {
+    const index = getUniverseIndex(channel)
+    const startValue = dmxUniverse[index]
+    const targetValue = dmxUniverseAfterMaster[index]
+    const difference = Math.abs(targetValue - startValue)
+
+    if (difference <= offset) {
+      writeUniverseChannel(dmxUniverse, channel, targetValue)
+    } else if (targetValue < startValue) {
+      writeUniverseChannel(dmxUniverse, channel, startValue - offset)
+    } else {
+      writeUniverseChannel(dmxUniverse, channel, startValue + offset)
+    }
+
+    broadcastUniverseChannel(channel)
+  }
 }
 
 /**
@@ -53,7 +147,20 @@ function applyDmxMaster(channel: number): boolean {
     ? applyMasterValue(rawValue, dmxMaster)
     : rawValue
 
-  return writeUniverseChannel(dmxUniverse, channel, newValue)
+  const valueChanged = writeUniverseChannel(
+    dmxUniverseAfterMaster,
+    channel,
+    newValue
+  )
+
+  if (!valueChanged) return false
+
+  // if the outgoing universe is faded, we don't change anything here
+  if (dmxMasterFade) {
+    return false
+  } else {
+    return writeUniverseChannel(dmxUniverse, channel, newValue)
+  }
 }
 
 /**
@@ -89,18 +196,29 @@ function setRawDmxValue(channel: number, value: number): boolean {
 export function handleDmxMasterApiMessage(
   message: ApiDmxMasterMessage
 ): boolean {
-  const { value } = message
-  if (dmxMaster === value) return false
+  const { value, fade } = message
+  let changed = false
 
-  dmxMaster = value
+  if (fade !== undefined && dmxMasterFade !== fade) {
+    dmxMasterFade = fade
+    changed = true
 
-  fadedChannels.forEach(channel => {
-    if (applyDmxMaster(channel)) {
-      broadcastUniverseChannel(channel)
-    }
-  })
+    refreshDmxMasterFadeInterval()
+  }
 
-  return true
+  if (value !== undefined && dmxMaster !== value) {
+    dmxMaster = value
+
+    fadedChannels.forEach(channel => {
+      if (applyDmxMaster(channel)) {
+        broadcastUniverseChannel(channel)
+      }
+    })
+
+    changed = true
+  }
+
+  return changed
 }
 
 /**
@@ -112,6 +230,7 @@ export function initUniverseComputingData(isReload = false): void {
   masterChannelByChannel.clear()
   fadedChannels.clear()
   dmxMaster = getPersistedState().dmxMaster
+  dmxMasterFade = getPersistedState().dmxMasterFade
 
   for (const fixture of masterData.fixtures) {
     const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
@@ -144,6 +263,8 @@ export function initUniverseComputingData(isReload = false): void {
       masterChannelByChannel.set(channel, masterChannel)
     )
   }
+
+  refreshDmxMasterFadeInterval()
 
   if (!isReload) {
     registerApiMessageHandler('dmx-master', handleDmxMasterApiMessage)

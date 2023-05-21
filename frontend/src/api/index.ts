@@ -25,6 +25,7 @@ import {
   getApiLiveChaseMessage,
   getApiLiveChaseStepMessage,
   getApiDmxMasterMessage,
+  DmxMasterMessageArgs,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
 
@@ -182,8 +183,8 @@ export function resetState(): void {
 /**
  * Changes the DMX master value.
  */
-export function setDmxMaster(value: number): void {
-  sendApiMessage(getApiDmxMasterMessage(value))
+export function setDmxMaster(args: DmxMasterMessageArgs): void {
+  sendApiMessage(getApiDmxMasterMessage(args))
 }
 
 /**

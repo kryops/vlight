@@ -14,7 +14,7 @@ import { getUniverseIndex } from './utils'
  *
  * 20ms = 50fps
  */
-const fadeIntervalTime = 20
+export const fadeIntervalTime = 20
 
 /**
  * The interval that processes all fade handlers.

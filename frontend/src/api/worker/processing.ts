@@ -129,7 +129,8 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
       break
 
     case 'dmx-master':
-      state.dmxMaster = message.value
+      if (message.value !== undefined) state.dmxMaster = message.value
+      if (message.fade !== undefined) state.dmxMasterFade = message.fade
       break
 
     case 'heartbeat':

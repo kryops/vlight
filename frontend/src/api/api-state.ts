@@ -19,6 +19,7 @@ function getEmptyState(): ApiState {
     liveMemories: {},
     liveChases: {},
     dmxMaster: 255,
+    dmxMasterFade: 0,
   }
 }
 

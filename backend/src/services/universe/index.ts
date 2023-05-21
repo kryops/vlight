@@ -38,7 +38,7 @@ export {
   setUniverseState,
   isUniverseEmpty,
 } from './universe-functions'
-export { getDmxMaster } from './computing'
+export { getDmxMaster, getDmxMasterFade } from './computing'
 export { fadeUniverse, stopFading } from './fading'
 
 export type { Universe, UniverseState } from './types'
