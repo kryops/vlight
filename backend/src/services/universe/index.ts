@@ -5,13 +5,21 @@ import {
   initUniverseComputingData,
   recomputeAndBroadcastDmxChannel,
 } from './computing'
-import { dmxUniverse } from './state'
+import { dmxUniverse, dmxMasterState } from './state'
 /**
  * Exported as function instead of the variable directly
  * so we can add swop features later
  */
 export function getDmxUniverse() {
   return dmxUniverse
+}
+
+export function getDmxMaster() {
+  return dmxMasterState.value
+}
+
+export function getDmxMasterFade() {
+  return dmxMasterState.fade
 }
 
 export function reloadUniverseService(): void {
@@ -38,7 +46,6 @@ export {
   setUniverseState,
   isUniverseEmpty,
 } from './universe-functions'
-export { getDmxMaster, getDmxMasterFade } from './computing'
 export { fadeUniverse, stopFading } from './fading'
 
 export type { Universe, UniverseState } from './types'

@@ -1,6 +1,14 @@
 import { Universe, UniverseState } from './types'
 import { createUniverse } from './universe-functions'
 
+export const dmxMasterState = {
+  /** Global DMX master value. */
+  value: 255,
+
+  /** DMX master fade time in seconds. */
+  fade: 0,
+}
+
 /**
  * The raw outgoing DMX universe (global DMX master not applied).
  */

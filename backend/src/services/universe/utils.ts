@@ -1,5 +1,8 @@
+import { broadcastUniverseChannelToDevices } from '../../devices'
+import { broadcastUniverseChannelToApiClients } from '../api'
 import { universeSize } from '../config'
 
+import { dmxUniverse } from './state'
 import { Universe } from './types'
 
 /**
@@ -55,4 +58,17 @@ export function writeUniverseChannel(
 
   universe[index] = value
   return true
+}
+
+/**
+ * Broadcasts the given channel to all
+ * - DMX devices
+ * - API clients
+ */
+export function broadcastUniverseChannel(channel: number) {
+  broadcastUniverseChannelToDevices(
+    channel,
+    dmxUniverse[getUniverseIndex(channel)]
+  )
+  broadcastUniverseChannelToApiClients(channel)
 }
