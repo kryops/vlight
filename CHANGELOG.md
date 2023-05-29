@@ -5,6 +5,7 @@
 - Added global DMX universe fading
 - The DMX master no longer affects non-color channels for fixtures with a master channel
 - Fixed widget mapping input changing during typing
+- Fixed errors when starting with a non-existent project directory
 
 ## February / March 2023
 

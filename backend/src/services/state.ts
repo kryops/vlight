@@ -1,4 +1,4 @@
-import { writeFile } from 'fs/promises'
+import { mkdir, stat, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 import {
@@ -106,10 +106,15 @@ async function checkAndPersistCurrentState() {
 
   logger.debug('Persisting application state')
 
-  await writeFile(
-    join(configDirectoryPath, project, 'state.js'),
-    currentStateString
-  )
+  const projectDirectory = join(configDirectoryPath, project)
+
+  try {
+    await stat(projectDirectory)
+  } catch {
+    await mkdir(projectDirectory)
+  }
+
+  await writeFile(join(projectDirectory, 'state.js'), currentStateString)
 
   persistedStateString = currentStateString
 }
