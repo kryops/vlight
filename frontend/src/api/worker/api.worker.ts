@@ -63,7 +63,14 @@ function sendClientUpdate() {
   // We only send the changed state up to save cost on serializing.
   // On the other side the references will always change, so only here we know what did not change
   // without doing a deep compare
-  const changedState: Partial<ApiState> = {}
+  const changedState: Partial<ApiState> = apiState
+    ? // we always send the plain values, as they will get overridden
+      // if they do not change even after a full state flush otherwise
+      {
+        dmxMaster: apiState.dmxMaster,
+        dmxMasterFade: apiState.dmxMasterFade,
+      }
+    : {}
   Object.entries(apiState ?? {}).forEach(([key, value]) => {
     const k = key as keyof ApiState
     if (!clientApiState || clientApiState[k] !== value) {

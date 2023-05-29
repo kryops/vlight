@@ -122,8 +122,11 @@ export function initUniverseComputingData(isReload = false): void {
   affectedChannelsByMasterChannel.clear()
   masterChannelByChannel.clear()
   fadedChannels.clear()
-  dmxMasterState.value = getPersistedState().dmxMaster
-  dmxMasterState.fade = getPersistedState().dmxMasterFade
+
+  if (!isReload) {
+    dmxMasterState.value = getPersistedState().dmxMaster
+    dmxMasterState.fade = getPersistedState().dmxMasterFade
+  }
 
   for (const fixture of masterData.fixtures) {
     const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
