@@ -164,6 +164,15 @@ const fixtureTypes = [
     ySize: 7,
   },
   {
+    id: 'waterproof7',
+    name: 'Waterproof 7ch',
+    mapping: ['m', 'r', 'g', 'b', 'a', 'w', 'uv'],
+    shape: 'square',
+    xSize: 6,
+    ySize: 4,
+    border: 'solid',
+  },
+  {
     id: 'waterproof9',
     name: 'Waterproof 9ch',
     mapping: ['m', 'r', 'g', 'b', 'a', 'w', 'uv', 'str', 'cur'],
