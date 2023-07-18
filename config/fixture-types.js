@@ -332,6 +332,29 @@ const fixtureTypes = [
     xSize: 9,
     ySize: 9,
   },
+  {
+    id: '1',
+    name: 'Waibstadt bunt',
+    mapping: ['r', 'g', 'b', 'w', 'a', 'uv', 'm', 'str', 'pre', 'eff'],
+    shape: 'square',
+    border: 'solid',
+  },
+  {
+    id: '2',
+    name: 'Waibstadt 2ch',
+    mapping: ['m', 'str'],
+    shape: 'circle',
+    border: 'solid',
+  },
+  {
+    id: '3',
+    name: 'Waibstadt 4ch',
+    mapping: ['m', 'cur', 'str', 'eff'],
+    shape: 'circle',
+    border: 'solid',
+    xSize: 8,
+    ySize: 8,
+  },
 ]
 
 module.exports = fixtureTypes
