@@ -17,12 +17,12 @@ const fixtureGroups = [
   {
     id: '4',
     name: 'Front',
-    fixtures: ['all:13'],
+    fixtures: ['13_2', '13_3', '13_4'],
   },
   {
     id: '5',
     name: 'Bühne',
-    fixtures: ['6_1', '6_2', '7_1', '8', '9', '7_2', '5', '10'],
+    fixtures: ['12_1', '6_1', '6_2', '7_1', '9', '7_2', '5', '10'],
   },
   {
     id: '6',
@@ -33,6 +33,11 @@ const fixtureGroups = [
     id: '7',
     name: 'Bunt',
     fixtures: [
+      '14_5',
+      '14_4',
+      '14_3',
+      '14_2',
+      '14_1',
       '1_1',
       '3_1',
       '4_1',
@@ -49,6 +54,21 @@ const fixtureGroups = [
       '2_2',
       '2_3',
     ],
+  },
+  {
+    id: '8',
+    name: 'Pult',
+    fixtures: ['8', '13_1'],
+  },
+  {
+    id: '9',
+    name: 'Bunt links',
+    fixtures: ['all:14'],
+  },
+  {
+    id: '10',
+    name: 'Hilgenfeldt',
+    fixtures: ['13_2'],
   },
 ]
 
