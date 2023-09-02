@@ -201,7 +201,7 @@ describe('getFixtureStateFor', () => {
         string,
         number,
         Array<FixtureState | FixtureStateGradient[]>,
-        Dictionary<number>[]
+        Dictionary<number>[],
       ]
     >([
       // linear

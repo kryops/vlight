@@ -18,7 +18,7 @@ import { FixtureListInput, FixtureListInputProps } from './fixture-list-input'
 export interface FormInputProps<
   TValue,
   TValues extends { [key in TName]?: TValue | undefined },
-  TName extends keyof TValues
+  TName extends keyof TValues,
 > {
   name: TName
   formState: FormState<TValues>
@@ -30,7 +30,7 @@ function wrapTypedInput<TValue, TAdditionalProps extends object>(
 ) {
   return memoInProduction(function FormInput<
     TValues extends { [key in TName]?: TValue | undefined },
-    TName extends keyof TValues
+    TName extends keyof TValues,
   >({
     formState,
     name,
@@ -75,7 +75,7 @@ export const FormSelect = memoInProduction(
   <
     TValue,
     TValues extends { [key in TName]?: TValue | undefined },
-    TName extends keyof TValues
+    TName extends keyof TValues,
   >({
     formState,
     name,
@@ -131,7 +131,7 @@ export const FormArrayInput = memoInProduction(
   <
     TValue,
     TValues extends { [key in TName]: TValue[] },
-    TName extends keyof TValues
+    TName extends keyof TValues,
   >({
     formState,
     name,
@@ -159,7 +159,7 @@ export const FormFixtureListInput = memoInProduction(
   <
     TValue,
     TValues extends { [key in TName]: TValue[] },
-    TName extends keyof TValues
+    TName extends keyof TValues,
   >({
     formState,
     name,

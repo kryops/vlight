@@ -45,7 +45,7 @@ export function useFormState<TValues extends object>(
 export function useFormStateArray<
   TValues extends { [key in TName]: any[] },
   TName extends keyof TValues,
-  TValue extends Unpacked<TValues[TName]>
+  TValue extends Unpacked<TValues[TName]>,
 >(formState: FormState<TValues>, name: TName) {
   const value = formState.values[name]
   const result = useMemo(

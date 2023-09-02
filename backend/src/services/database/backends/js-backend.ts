@@ -94,7 +94,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
 
     const filePath = getModulePath(entity, !!global) + '.js'
 
-    const fileContent = prettier.format(
+    const fileContent = await prettier.format(
       `const ${entity} = ${JSON.stringify(entries, null, 2)}
   
   module.exports = ${entity}

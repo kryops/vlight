@@ -33,14 +33,6 @@ module.exports = function (api) {
 
       // optimization
       '@babel/plugin-transform-react-constant-elements',
-
-      // development
-      isDevelopment && [
-        'react-refresh/babel',
-        {
-          skipEnvCheck: true,
-        },
-      ],
     ].filter(Boolean),
   }
 }

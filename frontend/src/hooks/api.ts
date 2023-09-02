@@ -90,7 +90,7 @@ export function useApiState<TKey extends keyof ApiState>(
  */
 export function useApiStateEntry<
   TKey extends keyof ApiState,
-  TSubKey extends keyof ApiState[TKey]
+  TSubKey extends keyof ApiState[TKey],
 >(key: TKey, subKey: TSubKey): ApiState[TKey][TSubKey] {
   const [_state, setState] = useState((apiState as any)[key][subKey])
   useEffect(() => {
