@@ -32,8 +32,13 @@ const miniMapOverlay = css`
 `
 
 function toggleFullScreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen()
+  // iOS has the fullscreen API behind a vendor prefix
+  if (
+    !document.fullscreenElement &&
+    !(document as any).webkitFullscreenElement
+  ) {
+    document.documentElement.requestFullscreen?.() ??
+      (document.documentElement as any).webkitRequestFullscreen?.()
   } else if (document.exitFullscreen) {
     document.exitFullscreen()
   }

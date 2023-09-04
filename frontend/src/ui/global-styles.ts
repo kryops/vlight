@@ -24,6 +24,7 @@ export const globalStyles = css`
 
     html,
     body {
+      overscroll-behavior: none;
       height: 100%;
       background: ${backgroundColor};
       color: ${textShade(0)};
