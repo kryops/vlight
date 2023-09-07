@@ -137,4 +137,10 @@ export interface FixtureStateGradient {
 
   /** The channels that define the state for this gradient stop. */
   channels: FixtureChannels
+
+  /**
+   * Controls whether the gradient should be mirrored on the right side,
+   * i.e. repeated once in the alternate direction.
+   */
+  mirrored?: boolean
 }

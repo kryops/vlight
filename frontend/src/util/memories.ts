@@ -1,5 +1,8 @@
 import { MemorySceneState } from '@vlight/types'
-import { interpolateGradientPositions } from '@vlight/controls'
+import {
+  getFinalGradient,
+  interpolateGradientPositions,
+} from '@vlight/controls'
 
 import { getFixtureStateColor } from './fixtures'
 
@@ -10,10 +13,11 @@ export function getMemorySceneStatePreviewBackground(
   state: MemorySceneState
 ): string {
   if (Array.isArray(state)) {
+    const gradient = getFinalGradient(state)
     const positions = interpolateGradientPositions(
-      state.map(entry => entry.position)
+      gradient.map(entry => entry.position)
     )
-    const gradientStops = state.map((entry, index) => {
+    const gradientStops = gradient.map((entry, index) => {
       const color =
         getFixtureStateColor({
           on: true,

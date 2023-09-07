@@ -98,9 +98,11 @@ function mergeChannels(
  * Computes the fixture state at a certain position (= fraction) of the given gradient.
  */
 export function getFixtureStateForGradientFraction(
-  gradient: FixtureStateGradient[],
+  givenGradient: FixtureStateGradient[],
   fraction: number
 ): FixtureState {
+  const gradient = getFinalGradient(givenGradient)
+
   const firstState = stateFromChannels(gradient[0].channels)
   const lastState = stateFromChannels(gradient[gradient.length - 1].channels)
 
@@ -158,4 +160,31 @@ export function getFixtureStateForMemoryScene(
   } else {
     return stateOrGradient
   }
+}
+
+/**
+ * If the given gradient is mirrored, returns a new gradient with the mirroring applied.
+ */
+export function getFinalGradient(
+  gradient: FixtureStateGradient[]
+): FixtureStateGradient[] {
+  const mirrored = gradient.some(it => it.mirrored)
+  if (!mirrored) return gradient
+
+  return [
+    ...gradient.map(it => ({
+      ...it,
+      mirrored: false,
+      position: it.position !== undefined ? it.position / 2 : undefined,
+    })),
+    ...gradient
+      .slice(0, -1)
+      .reverse()
+      .map(it => ({
+        ...it,
+        mirrored: false,
+        position:
+          it.position !== undefined ? 50 + (100 - it.position) / 2 : undefined,
+      })),
+  ]
 }

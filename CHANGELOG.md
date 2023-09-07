@@ -6,6 +6,7 @@
   - Group members can now be toggled on the map
 - Improvements for memories
   - Added new display modes: Fader, flash button or toggle button
+  - Added mirroring mode for gradients
 - Improvements for dynamic pages
   - Filter out already selected entities when selecting more
   - Selected entities can be reordered via drag & drop

@@ -27,6 +27,7 @@ import { editorTitle } from '../../../../ui/css/editor-styles'
 import { flexContainer } from '../../../../ui/css/flex'
 import { useDeepEqualMemo, useEvent } from '../../../../hooks/performance'
 import { Button } from '../../../../ui/buttons/button'
+import { Checkbox } from '../../../../ui/forms/checkbox'
 
 const widget = css`
   border: none;
@@ -72,7 +73,11 @@ const positionInput = css`
   width: ${baseline(12)};
 `
 
-const addLink = css`
+const bottomContainer = css`
+  justify-content: space-between;
+`
+
+const bottomLink = css`
   display: block;
   margin-top: ${baseline(4)};
 `
@@ -201,6 +206,14 @@ export function MemorySceneStateEditor({
     onChange(newState)
   })
 
+  const toggleMirrored = useEvent(() => {
+    if (!Array.isArray(localState)) return
+    const mirrored = localState.some(it => it.mirrored)
+    const newState = localState.map(it => ({ ...it, mirrored: !mirrored }))
+    setLocalState(newState)
+    onChange(newState)
+  })
+
   const content = Array.isArray(localState) ? (
     <>
       <div
@@ -272,27 +285,37 @@ export function MemorySceneStateEditor({
           </div>
         </>
       )}
-      <a
-        className={addLink}
-        onClick={() => {
-          const newState = [
-            ...localState,
-            {
-              channels: {
-                m: 255,
-                r: 255,
-                g: 255,
-                b: 255,
+      <div className={cx(flexContainer, bottomContainer)}>
+        <a
+          className={bottomLink}
+          onClick={() => {
+            const newState = [
+              ...localState,
+              {
+                channels: {
+                  m: 255,
+                  r: 255,
+                  g: 255,
+                  b: 255,
+                },
               },
-            },
-          ]
-          setLocalState(newState)
-          onChange(newState)
-          setCurrentStop(newState.length - 1)
-        }}
-      >
-        <Icon icon={iconAdd} inline /> Add stop
-      </a>
+            ]
+            setLocalState(newState)
+            onChange(newState)
+            setCurrentStop(newState.length - 1)
+          }}
+        >
+          <Icon icon={iconAdd} inline /> Add stop
+        </a>
+        <a className={bottomLink} onClick={toggleMirrored}>
+          <Checkbox
+            value={localState.some(it => it.mirrored)}
+            onChange={toggleMirrored}
+            inline
+          />{' '}
+          Mirrored
+        </a>
+      </div>
     </>
   ) : (
     <FixtureStateWidget

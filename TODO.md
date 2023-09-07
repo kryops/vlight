@@ -36,7 +36,6 @@
   - Select by mapping (e.g. all color fixtures)
 - Memories
   - Real-world preview during editing
-  - Symmetrical gradient (repeat alternated)
   - Fade in/out buttons
   - In a row: repeat n times
   - Alternating: alternate after n fixtures

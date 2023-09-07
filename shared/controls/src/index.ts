@@ -13,5 +13,6 @@ export {
   ScenePattern,
   getFixtureStateForMemoryScene,
   mergeMemoryStates,
+  getFinalGradient,
 } from './memories'
 export { getLiveChaseFixtureStates } from './chases'
