@@ -16,7 +16,9 @@ export interface ArrayInputProps<T> {
   onChange: (value: Array<T>) => void
 
   /** Renders the input component for a single item. */
-  renderInput: (props: TypedInputProps<T>) => JSX.Element
+  renderInput: (
+    props: TypedInputProps<T> & { excludeValues?: T[] }
+  ) => JSX.Element
 
   /**
    * Controls whether to allow removing array entries.
@@ -105,7 +107,11 @@ export const ArrayInput = memoInProduction(
 
           return (
             <div key={index} className={cx(entry, entryClassName)}>
-              {renderInput({ value: singleValue, onChange: changeSingleValue })}
+              {renderInput({
+                value: singleValue,
+                onChange: changeSingleValue,
+                excludeValues: valueToUse as T[],
+              })}
               {displayRemoveButtons && singleValue !== undefined && (
                 <Button
                   icon={iconDelete}

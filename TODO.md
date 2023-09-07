@@ -48,7 +48,6 @@
   - Apply same state to all fixtures
   - Color distribution: random, equal, relative
 - Dynamic Pages
-  - MultiSelect input should be unique for multi-ID widgets
   - MultiSelect input should be sortable
   - Multi-control widgets
 - New Controls

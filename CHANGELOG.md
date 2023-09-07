@@ -4,6 +4,8 @@
 
 - Improvements for fixture groups
   - Group members can now be toggled on the map
+- Improvements for dynamic pages
+  - Filter out already selected entities when selecting more
 - Fixed live memory members getting lost after changing its name
 
 ## May 2023
