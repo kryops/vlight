@@ -42,6 +42,41 @@ const fader = css`
   margin: 0 ${baseline(2)};
 `
 
+export interface EditLiveMemoryArgs {
+  name?: string
+  members?: string[]
+}
+
+export interface EditLiveMemoryResult {
+  name: string
+  members: string[]
+}
+
+export async function editLiveMemory(
+  args?: EditLiveMemoryArgs
+): Promise<EditLiveMemoryResult | null> {
+  let members: string[] = args?.members ?? []
+
+  const name = await showPromptDialog({
+    title: args ? 'Edit Live Memory' : 'Add Live Memory',
+    label: 'Name',
+    initialValue: args?.name,
+    additionalContent: (
+      <>
+        <br />
+        <FixtureListEditor
+          value={members}
+          onChange={newValue => (members = newValue)}
+          ordering
+          compact
+        />
+      </>
+    ),
+  })
+
+  return name !== undefined ? { name, members } : null
+}
+
 export interface StatelessLiveMemoryWidgetProps extends WidgetPassthrough {
   id: IdType
   state: LiveMemory
@@ -70,25 +105,12 @@ export const StatelessLiveMemoryWidget = memoInProduction(
     )
 
     const edit = useEvent(async () => {
-      let members: string[] = []
-
-      const name = await showPromptDialog({
-        title: 'Edit Live Memory',
-        label: 'Name',
-        initialValue: state.name,
-        additionalContent: (
-          <>
-            <br />
-            <FixtureListEditor
-              value={scene.members}
-              onChange={newValue => (members = newValue)}
-              ordering
-            />
-          </>
-        ),
+      const result = await editLiveMemory({
+        name: state.name,
+        members: scene.members,
       })
-      if (name) {
-        setLiveMemoryState(id, { name, members }, true)
+      if (result) {
+        setLiveMemoryState(id, result, true)
       }
     })
 
@@ -130,7 +152,6 @@ export const StatelessLiveMemoryWidget = memoInProduction(
           <MemorySceneEditor
             scene={scene}
             onChange={changeScene}
-            compact
             hideFixtureList
           />
           <Button block onClick={showPreview}>

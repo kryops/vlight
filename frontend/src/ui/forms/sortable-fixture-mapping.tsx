@@ -19,7 +19,7 @@ const container = css`
 `
 
 const container_compact = css`
-  min-height: min(${baseline(64)}, 80vh);
+  min-height: ${baseline(48)};
 `
 
 const entryStyle = css`

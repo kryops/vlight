@@ -40,7 +40,6 @@ const memoryScenePatternEntries: SelectEntry<MemoryScene['pattern']>[] = [
 export interface MemorySceneEditorProps {
   scene: MemoryScene
   onChange: (scene: MemoryScene, oldScene: MemoryScene) => void
-  compact?: boolean
   hideFixtureList?: boolean
 }
 
@@ -50,7 +49,7 @@ export interface MemorySceneEditorProps {
  * Displays a fixture list selection as well as a list of memory states.
  */
 export const MemorySceneEditor = memoInProduction(
-  ({ scene, onChange, compact, hideFixtureList }: MemorySceneEditorProps) => {
+  ({ scene, onChange, hideFixtureList }: MemorySceneEditorProps) => {
     const members = useShallowEqualMemo(scene.members)
 
     const onChangeWrapper = useEvent((changes: Partial<MemoryScene>) =>
@@ -122,7 +121,7 @@ export const MemorySceneEditor = memoInProduction(
             value={members}
             onChange={changeMembers}
             ordering
-            compact={compact}
+            compact
           />
         )}
         States <Icon icon={iconAdd} hoverable inline onClick={addState} />

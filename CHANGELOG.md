@@ -4,6 +4,7 @@
 
 - Improvements for fixture groups
   - Group members can now be toggled on the map
+- Fixed live memory members getting lost after changing its name
 
 ## May 2023
 

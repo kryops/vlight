@@ -45,7 +45,7 @@ const scrollContainer = css`
 `
 
 const scrollContainer_compact = css`
-  height: ${baseline(64)};
+  height: ${baseline(48)};
 `
 
 const listEntry = css`

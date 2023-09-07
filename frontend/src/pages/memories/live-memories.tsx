@@ -6,14 +6,15 @@ import { useApiState } from '../../hooks/api'
 import { getHotkeyLabel } from '../../hooks/hotkey'
 import { Header } from '../../ui/containers/header'
 import { pageWithWidgets } from '../../ui/css/page'
-import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
 import { iconAdd } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
-import { showPromptDialog } from '../../ui/overlays/dialog'
 import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
-import { StatelessLiveMemoryWidget } from '../../widgets/memory/stateless-live-memory-widget'
+import {
+  StatelessLiveMemoryWidget,
+  editLiveMemory,
+} from '../../widgets/memory/stateless-live-memory-widget'
 import { entityUiMapping } from '../config/entities/entity-ui-mapping'
 
 import { LiveMemoriesMultiControl } from './live-memories-multi-control'
@@ -27,23 +28,8 @@ const widgetContainer = css`
 `
 
 const addLiveMemory = async () => {
-  let members: string[] = []
-
-  const name = await showPromptDialog({
-    title: 'Add Live Memory',
-    label: 'Name',
-    additionalContent: (
-      <>
-        <br />
-        <FixtureListEditor
-          value={[]}
-          onChange={newValue => (members = newValue)}
-          ordering
-        />
-      </>
-    ),
-  })
-  if (name === undefined) return
+  const result = await editLiveMemory()
+  if (result === null) return
 
   const newId = String(
     Math.max(0, ...Object.keys(apiState.liveMemories).map(it => parseInt(it))) +
@@ -54,8 +40,8 @@ const addLiveMemory = async () => {
     ...entityUiMapping.memories!.newEntityFactory!().scenes[0],
     value: 255,
     on: false,
-    name: name || undefined,
-    members,
+    name: result.name || undefined,
+    members: result.members,
   })
 }
 
