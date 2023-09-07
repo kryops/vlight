@@ -153,6 +153,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
             scene={scene}
             onChange={changeScene}
             hideFixtureList
+            compact
           />
           <Button block onClick={showPreview}>
             Preview

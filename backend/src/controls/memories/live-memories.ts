@@ -31,11 +31,13 @@ function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe {
 
   mapFixtureList(liveMemory.members, { masterData, masterDataMaps }).forEach(
     (member, memberIndex, members) => {
-      fixtureStates[member] = getFixtureStateForMemoryScene(
-        liveMemory,
+      fixtureStates[member] = getFixtureStateForMemoryScene({
+        scene: liveMemory,
         memberIndex,
-        members
-      )
+        memberFixtures: members.map(
+          member => masterDataMaps.fixtures.get(member)!
+        ),
+      })
     }
   )
 

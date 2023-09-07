@@ -39,7 +39,6 @@
   - Fade in/out buttons
   - In a row: repeat n times
   - Alternating: alternate after n fixtures
-  - Apply by map coordinates instead of member order
   - Preset library
 - Chases
   - Apply same state to all fixtures

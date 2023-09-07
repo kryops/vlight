@@ -11,12 +11,23 @@ import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
 import { okCancel } from '../../../../ui/overlays/buttons'
 import { FixtureListInput } from '../../../../ui/forms/fixture-list-input'
 import { SortableList } from '../../../../ui/containers/sortable-list'
-import { flexAuto } from '../../../../ui/css/flex'
+import { flexAuto, flexContainer } from '../../../../ui/css/flex'
 import { newMemoryFactory } from '../new-entity-factories'
 import { useEvent, useShallowEqualMemo } from '../../../../hooks/performance'
 import { memoInProduction } from '../../../../util/development'
+import { cx } from '../../../../util/styles'
 
 import { MemorySceneStateEditor } from './memory-scene-state-editor'
+
+const statesControls = css`
+  justify-content: space-between;
+  margin-bottom: ${baseline()};
+  flex-wrap: wrap;
+`
+
+const statesControls__compact = css`
+  flex-direction: column;
+`
 
 const stateStyle = css`
   display: flex;
@@ -37,10 +48,26 @@ const memoryScenePatternEntries: SelectEntry<MemoryScene['pattern']>[] = [
   },
 ]
 
+const memorySceneOrderEntries: SelectEntry<MemoryScene['order']>[] = [
+  {
+    value: 'members',
+    label: 'Index',
+  },
+  {
+    value: 'xcoord',
+    label: 'X coord',
+  },
+  {
+    value: 'ycoord',
+    label: 'Y coord',
+  },
+]
+
 export interface MemorySceneEditorProps {
   scene: MemoryScene
   onChange: (scene: MemoryScene, oldScene: MemoryScene) => void
   hideFixtureList?: boolean
+  compact?: boolean
 }
 
 /**
@@ -49,7 +76,7 @@ export interface MemorySceneEditorProps {
  * Displays a fixture list selection as well as a list of memory states.
  */
 export const MemorySceneEditor = memoInProduction(
-  ({ scene, onChange, hideFixtureList }: MemorySceneEditorProps) => {
+  ({ scene, onChange, hideFixtureList, compact }: MemorySceneEditorProps) => {
     const members = useShallowEqualMemo(scene.members)
 
     const onChangeWrapper = useEvent((changes: Partial<MemoryScene>) =>
@@ -114,6 +141,11 @@ export const MemorySceneEditor = memoInProduction(
         onChange({ ...scene, pattern: newValue }, scene)
     )
 
+    const changeOrder = useEvent(
+      (newValue: MemoryScene['order'] | undefined): void =>
+        onChange({ ...scene, order: newValue }, scene)
+    )
+
     return (
       <>
         {!hideFixtureList && (
@@ -124,22 +156,40 @@ export const MemorySceneEditor = memoInProduction(
             compact
           />
         )}
-        States <Icon icon={iconAdd} hoverable inline onClick={addState} />
-        <br />
-        <br />
+        <div
+          className={cx(
+            flexContainer,
+            statesControls,
+            compact && statesControls__compact
+          )}
+        >
+          <div>
+            States <Icon icon={iconAdd} hoverable inline onClick={addState} />
+          </div>
+          {scene.states.length >= 2 && (
+            <div>
+              <Select
+                entries={memoryScenePatternEntries}
+                value={scene.pattern}
+                onChange={changePattern}
+              />
+            </div>
+          )}
+          <div>
+            Order:{' '}
+            <Select
+              entries={memorySceneOrderEntries}
+              value={scene.order}
+              onChange={changeOrder}
+            />
+          </div>
+        </div>
         <SortableList
           entries={scene.states}
           onChange={changeStates}
           entryClassName={stateStyle}
           renderEntryContent={renderEntryContent}
         />
-        {scene.states.length >= 2 && (
-          <Select
-            entries={memoryScenePatternEntries}
-            value={scene.pattern}
-            onChange={changePattern}
-          />
-        )}
       </>
     )
   }

@@ -4,6 +4,7 @@ import {
   FixtureState,
   FixtureStateGradient,
   FixtureChannels,
+  Fixture,
 } from '@vlight/types'
 import { ensureBetween, valueToFraction, fractionToValue } from '@vlight/utils'
 
@@ -28,6 +29,12 @@ export function mergeMemoryStates(
   }
 }
 
+interface MemoryFractionArgs {
+  scene: MemoryScene
+  memberIndex: number
+  memberFixtures: Fixture[]
+}
+
 /**
  * Returns a tuple containing
  * - the index of the scene state to apply for the member with the given index
@@ -35,41 +42,105 @@ export function mergeMemoryStates(
  *
  * Applies the scene's pattern.
  */
-export function getStateIndexAndFractionFor(
-  scene: MemoryScene,
-  memberIndex: number,
-  members?: string[]
-): [number, number] {
-  const numMembers = members?.length ?? scene.members.length
+export function getStateIndexAndFractionFor({
+  scene,
+  memberIndex,
+  memberFixtures,
+}: MemoryFractionArgs): [number, number] {
+  const fixture = memberFixtures[memberIndex] ?? {}
+  const numMembers = memberFixtures.length
   const numStates = scene.states.length
-  switch (scene.pattern) {
-    case ScenePattern.Alternate: {
-      const stateIndex = memberIndex % numStates
-      const firstForState = stateIndex
-      const membersPerState = Math.ceil(numMembers / numStates)
-      // can be higher than numMembers
-      const lastForState = (membersPerState - 1) * numStates + stateIndex
-      return [
-        stateIndex,
-        valueToFraction(memberIndex, firstForState, lastForState),
-      ]
-    }
-    case ScenePattern.Row:
-    default: {
-      const fixturesPerState = Math.ceil(numMembers / numStates)
-      const stateIndex = Math.floor(memberIndex / fixturesPerState)
-      const firstForState = stateIndex * fixturesPerState
-      const lastForState = ensureBetween(
-        firstForState + fixturesPerState - 1,
-        0,
-        numMembers - 1
-      )
-      return [
-        stateIndex,
-        valueToFraction(memberIndex, firstForState, lastForState),
-      ]
-    }
-  }
+
+  const isOrderedByCoords = scene.order === 'xcoord' || scene.order === 'ycoord'
+
+  const orderedFixtures = !isOrderedByCoords
+    ? memberFixtures
+    : [...memberFixtures].sort((a, b) => {
+        if (scene.order === 'xcoord' && a.x !== b.x) {
+          return (a.x ?? 0) < (b.x ?? 0) ? -1 : 1
+        }
+        if (scene.order === 'ycoord' && a.y !== b.y) {
+          return (a.y ?? 0) < (b.y ?? 0) ? -1 : 1
+        }
+        return 0
+      })
+
+  const finalIndex = !isOrderedByCoords
+    ? memberIndex
+    : orderedFixtures.indexOf(fixture)
+
+  const membersPerState = Math.ceil(numMembers / numStates)
+
+  const getMinCoord = (fixtures: Fixture[]) =>
+    isOrderedByCoords
+      ? Math.min(
+          ...fixtures.map(it => (scene.order === 'xcoord' ? it.x : it.y) ?? 0)
+        )
+      : 0
+
+  const getMaxCoord = (fixtures: Fixture[]) =>
+    isOrderedByCoords
+      ? Math.max(
+          ...fixtures.map(it => (scene.order === 'xcoord' ? it.x : it.y) ?? 0)
+        )
+      : 100
+
+  const stateInfo = new Array(numStates)
+    .fill(undefined)
+    .map((_, stateIndex) => {
+      switch (scene.pattern) {
+        case ScenePattern.Alternate: {
+          const firstForState = stateIndex
+          // can be higher than numMembers
+          const lastForState = (membersPerState - 1) * numStates + stateIndex
+          const stateFixtures = orderedFixtures.filter(
+            (_, index) => index % numStates === stateIndex
+          )
+          return {
+            min: getMinCoord(stateFixtures),
+            max: getMaxCoord(stateFixtures),
+            firstForState,
+            lastForState,
+          }
+        }
+        case ScenePattern.Row:
+        default: {
+          const firstForState = stateIndex * membersPerState
+          const lastForState = ensureBetween(
+            firstForState + membersPerState - 1,
+            0,
+            numMembers - 1
+          )
+          const stateFixtures = orderedFixtures.slice(
+            firstForState,
+            lastForState
+          )
+          return {
+            min: getMinCoord(stateFixtures),
+            max: getMaxCoord(stateFixtures),
+            firstForState,
+            lastForState,
+          }
+        }
+      }
+    })
+
+  const stateIndex =
+    scene.pattern === ScenePattern.Alternate
+      ? finalIndex % numStates
+      : Math.floor(finalIndex / membersPerState)
+
+  const { min, max, firstForState, lastForState } = stateInfo[stateIndex]
+  return [
+    stateIndex,
+    isOrderedByCoords
+      ? valueToFraction(
+          (scene.order === 'xcoord' ? fixture.x : fixture.y) ?? 0,
+          min,
+          max
+        )
+      : valueToFraction(finalIndex, firstForState, lastForState),
+  ]
 }
 
 function stateFromChannels(channels: FixtureChannels): FixtureState {
@@ -141,16 +212,10 @@ export function getFixtureStateForGradientFraction(
  * Returns the fixture state for the memory scene member with the given index.
  */
 export function getFixtureStateForMemoryScene(
-  scene: MemoryScene,
-  memberIndex: number,
-  members?: string[]
+  args: MemoryFractionArgs
 ): FixtureState {
-  const [stateIndex, fraction] = getStateIndexAndFractionFor(
-    scene,
-    memberIndex,
-    members
-  )
-  const stateOrGradient = scene.states[stateIndex] ?? {
+  const [stateIndex, fraction] = getStateIndexAndFractionFor(args)
+  const stateOrGradient = args.scene.states[stateIndex] ?? {
     channels: {},
     on: false,
   }

@@ -23,6 +23,13 @@ export interface MemoryScene {
    */
   pattern?: 'row' | 'alternate'
 
+  /**
+   * Controls the order in which states and gradients are applied to the scene's members.
+   *
+   * Defaults to `members`.
+   */
+  order?: 'members' | 'xcoord' | 'ycoord'
+
   /** The states of the scene. */
   states: Array<MemorySceneState>
 }

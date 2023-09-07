@@ -104,7 +104,11 @@ describe('getStateIndexAndFractionFor', () => {
       const stateIndexes = []
       const positions = []
       for (let i = 0; i < numMembers; i++) {
-        const [stateIndex, position] = getStateIndexAndFractionFor(scene, i)
+        const [stateIndex, position] = getStateIndexAndFractionFor({
+          scene,
+          memberIndex: i,
+          memberFixtures: new Array(numMembers).fill({}),
+        })
         stateIndexes.push(stateIndex)
         positions.push(position)
       }
@@ -187,7 +191,11 @@ describe('getFixtureStateFor', () => {
           states,
         }
         const membersStates = arrayRange(0, numMembers - 1, i => i).map(index =>
-          getFixtureStateForMemoryScene(scene, index)
+          getFixtureStateForMemoryScene({
+            scene,
+            memberIndex: index,
+            memberFixtures: new Array(numMembers).fill({}),
+          })
         )
         expect(membersStates).toEqual(expectedMemberStates)
       }
@@ -289,7 +297,11 @@ describe('getFixtureStateFor', () => {
           states,
         }
         const membersStates = arrayRange(0, numMembers - 1, i => i).map(index =>
-          getFixtureStateForMemoryScene(scene, index)
+          getFixtureStateForMemoryScene({
+            scene,
+            memberIndex: index,
+            memberFixtures: new Array(numMembers).fill({}),
+          })
         )
         expect(membersStates).toEqual(
           expectedMemberChannels.map(channels => ({ on: true, channels }))

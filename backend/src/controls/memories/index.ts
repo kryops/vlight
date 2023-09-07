@@ -59,7 +59,13 @@ function createMemoryUniverse(memory: Memory): Universe {
   const fixtureStates: Dictionary<FixtureState> = {}
   for (const scene of memory.scenes) {
     scene.members.forEach((member, memberIndex) => {
-      const state = getFixtureStateForMemoryScene(scene, memberIndex)
+      const state = getFixtureStateForMemoryScene({
+        scene,
+        memberIndex,
+        memberFixtures: scene.members.map(
+          member => masterDataMaps.fixtures.get(member)!
+        ),
+      })
       if (state) fixtureStates[member] = state
     })
   }

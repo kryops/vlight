@@ -41,10 +41,13 @@ function getMemoryUniverse(
       const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
       if (!fixtureType) return
 
-      const state = getFixtureStateForMemoryScene(
-        { ...scene, members },
-        memberIndex
-      )
+      const state = getFixtureStateForMemoryScene({
+        scene: { ...scene, members },
+        memberIndex,
+        memberFixtures: members.map(
+          member => masterDataMaps.fixtures.get(member)!
+        ),
+      })
 
       mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
         const universeIndex = fixture.channel - 1 + offset
