@@ -6,6 +6,7 @@
   - Group members can now be toggled on the map
 - Improvements for dynamic pages
   - Filter out already selected entities when selecting more
+  - Selected entities can be reordered via drag & drop
 - Fixed live memory members getting lost after changing its name
 
 ## May 2023

@@ -8,6 +8,7 @@ import { baseline } from '../styles'
 import { flexAuto } from '../css/flex'
 import { Button } from '../buttons/button'
 import { memoInProduction } from '../../util/development'
+import { SortableList } from '../containers/sortable-list'
 
 import { TypedInputProps } from './typed-input'
 
@@ -26,6 +27,13 @@ export interface ArrayInputProps<T> {
    * Defaults to `false`.
    */
   displayRemoveButtons?: boolean
+
+  /**
+   * Controls whether the items can be sorted via drag & drop.
+   *
+   * Defaults to `false`.
+   */
+  sortable?: boolean
 
   className?: string
 
@@ -66,6 +74,7 @@ export const ArrayInput = memoInProduction(
     onChange,
     renderInput,
     displayRemoveButtons = false,
+    sortable = false,
     className,
     entryClassName,
   }: ArrayInputProps<T>) => {
@@ -91,6 +100,51 @@ export const ArrayInput = memoInProduction(
     }
 
     const toRender = useMemo(() => [...valueToUse, undefined], [valueToUse])
+
+    if (sortable) {
+      return (
+        <SortableList<T | undefined>
+          entries={toRender}
+          getKey={it => {
+            if (typeof it === 'string') return it
+            if (typeof it === 'object' && it && 'id' in it) return String(it.id)
+            return JSON.stringify(it)
+          }}
+          onChange={onChangeInternal}
+          containerClassName={cx(flexAuto, className)}
+          entryClassName={cx(entry, entryClassName)}
+          renderEntryContent={singleValue => {
+            const index = toRender.indexOf(singleValue)
+            const changeSingleValue = (newSingleValue: T | undefined) => {
+              if (newSingleValue !== undefined && index === valueToUse.length) {
+                onChangeInternal([...sanitizedValue, newSingleValue])
+              } else {
+                const newValue = [...valueToUse]
+                newValue[index] = newSingleValue
+                onChangeInternal(newValue)
+              }
+            }
+
+            return (
+              <>
+                {renderInput({
+                  value: singleValue,
+                  onChange: changeSingleValue,
+                  excludeValues: valueToUse as T[],
+                })}
+                {displayRemoveButtons && singleValue !== undefined && (
+                  <Button
+                    icon={iconDelete}
+                    onClick={() => changeSingleValue(undefined)}
+                    transparent
+                  />
+                )}
+              </>
+            )
+          }}
+        />
+      )
+    }
 
     return (
       <div className={cx(flexAuto, className)}>

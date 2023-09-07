@@ -243,6 +243,7 @@ function StaticEntitiesWidgetInput({
               />
             )}
             displayRemoveButtons
+            sortable
           />
         }
       />
@@ -303,6 +304,7 @@ function LiveEntitiesWidgetInput({
           onChange={changeEntities}
           renderInput={renderInput}
           displayRemoveButtons
+          sortable
         />
       }
     />
