@@ -38,8 +38,6 @@
   - Real-world preview during editing
   - Symmetrical gradient (repeat alternated)
   - Fade in/out buttons
-  - Title on fader instead of widget
-  - Button instead of fader, or fader only
   - In a row: repeat n times
   - Alternating: alternate after n fixtures
   - Apply by map coordinates instead of member order

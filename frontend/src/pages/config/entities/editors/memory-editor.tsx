@@ -2,7 +2,7 @@ import { css } from '@linaria/core'
 import { MemoryScene } from '@vlight/types'
 
 import { useFormState, useFormStateArray } from '../../../../hooks/form'
-import { FormTextInput } from '../../../../ui/forms/form-input'
+import { FormSelect, FormTextInput } from '../../../../ui/forms/form-input'
 import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
@@ -58,6 +58,21 @@ export function MemoryEditor({
             <Label
               label="Name"
               input={<FormTextInput formState={formState} name="name" />}
+            />
+            <Label
+              label="Display as"
+              input={
+                <FormSelect
+                  formState={formState}
+                  name="display"
+                  entries={[
+                    { value: 'both', label: 'Fader and button' },
+                    { value: 'fader', label: 'Fader' },
+                    { value: 'flash', label: 'Flash button' },
+                    { value: 'toggle', label: 'Toggle button' },
+                  ]}
+                />
+              }
             />
             {scenes.value.map((scene, sceneIndex) => (
               <div key={sceneIndex} className={sceneStyle}>

@@ -54,6 +54,7 @@ export function newFixtureGroupFactory(): WithoutId<FixtureGroup> {
 export function newMemoryFactory(): WithoutId<Memory> {
   return {
     name: 'New Memory',
+    display: 'both',
     scenes: [
       {
         members: [],

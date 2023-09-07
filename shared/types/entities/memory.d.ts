@@ -37,6 +37,14 @@ export interface Memory extends DbEntity {
   /** The name of the memory. */
   name?: string
 
+  /**
+   * Controls whether the memory is displayed as a fader, as a flash or toggle button,
+   * or both a fader and a flash button.
+   *
+   * Defaults to `both`.
+   */
+  display?: 'fader' | 'flash' | 'toggle' | 'both'
+
   /** The scenes that make up this memory. */
   scenes: MemoryScene[]
 }

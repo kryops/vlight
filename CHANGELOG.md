@@ -4,6 +4,8 @@
 
 - Improvements for fixture groups
   - Group members can now be toggled on the map
+- Improvements for memories
+  - Added new display modes: Fader, flash button or toggle button
 - Improvements for dynamic pages
   - Filter out already selected entities when selecting more
   - Selected entities can be reordered via drag & drop

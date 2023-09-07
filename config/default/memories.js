@@ -54,6 +54,70 @@ const memories = [
         pattern: 'alternate',
       },
     ],
+    display: 'both',
+  },
+  {
+    id: '1',
+    name: 'Fader',
+    display: 'fader',
+    scenes: [
+      {
+        members: ['stufe_2'],
+        states: [
+          {
+            on: true,
+            channels: {
+              m: 255,
+              r: 255,
+              g: 255,
+              b: 255,
+            },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: '2',
+    name: 'Flash',
+    display: 'flash',
+    scenes: [
+      {
+        members: ['stufe_3'],
+        states: [
+          {
+            on: true,
+            channels: {
+              m: 255,
+              r: 255,
+              g: 255,
+              b: 255,
+            },
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: '3',
+    name: 'Toggle',
+    display: 'toggle',
+    scenes: [
+      {
+        members: ['stufe_4'],
+        states: [
+          {
+            on: true,
+            channels: {
+              m: 255,
+              r: 255,
+              g: 255,
+              b: 255,
+            },
+          },
+        ],
+      },
+    ],
   },
 ]
 
