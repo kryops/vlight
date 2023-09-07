@@ -1,5 +1,10 @@
 # Changelog
 
+## September 2023
+
+- Improvements for fixture groups
+  - Group members can now be toggled on the map
+
 ## May 2023
 
 - Added global DMX universe fading

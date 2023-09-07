@@ -22,7 +22,6 @@
 - Groups
   - On tap button (like memories)
   - Search box
-  - Click on fixture in map to toggle membership
 - Map
   - Change size
   - Turn around by 180°

@@ -1,3 +1,5 @@
+import { Fixture } from '@vlight/types/entities'
+
 import { useFormState } from '../../../../hooks/form'
 import {
   FormTextInput,
@@ -10,6 +12,7 @@ import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 import { editorPreviewColumn } from '../../../../ui/css/editor-styles'
 import { useFixtureList } from '../../../../hooks/fixtures'
+import { useEvent } from '../../../../hooks/performance'
 
 /**
  * Dialog content to edit a fixture group.
@@ -24,6 +27,22 @@ export function FixtureGroupEditor({
   const masterData = useMasterData()
 
   const fixtureIds = useFixtureList(formState.values.fixtures)
+
+  const toggleFixture = useEvent((fixture: Fixture) => {
+    const isActive = formState.values.fixtures.includes(fixture.id)
+
+    // fixture active, but through a mapping
+    if (!isActive && fixtureIds.includes(fixture.id)) {
+      return
+    }
+
+    formState.changeValue(
+      'fixtures',
+      isActive
+        ? formState.values.fixtures.filter(it => it !== fixture.id)
+        : [...formState.values.fixtures, fixture.id]
+    )
+  })
 
   return (
     <>
@@ -48,6 +67,7 @@ export function FixtureGroupEditor({
           <StatelessMapWidget
             fixtures={masterData.fixtures}
             highlightedFixtures={fixtureIds}
+            onFixtureDown={toggleFixture}
           />
         }
         rightClassName={editorPreviewColumn}
