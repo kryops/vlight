@@ -33,23 +33,21 @@ const widget = css`
   border: none;
 `
 
-const select = css`
-  width: 100%;
-`
-
 const gradientPreview = css`
-  height: ${baseline(8)};
-  margin: ${baseline(2)} 0;
+  height: ${baseline(6)};
+  margin-top: ${baseline(2)};
+  margin-bottom: ${baseline()};
   border: 1px solid ${iconShade(0)};
 `
 
 const stopSelectionContainer = css`
   display: flex;
   align-items: center;
-  margin: ${baseline(4)} ${baseline(-0.5)};
+  margin: 0 ${baseline(-0.5)};
 `
 
 const stopSelectionEntry = css`
+  box-sizing: border-box;
   height: ${baseline(8)};
   flex: 1 1 0;
   margin: 0 ${baseline(0.5)};
@@ -58,9 +56,10 @@ const stopSelectionEntry = css`
 `
 
 const stopSelectionEntry_active = css`
-  height: ${baseline(12)};
+  height: ${baseline(10)};
   margin-top: 0;
   margin-bottom: 0;
+  border-width: 2px;
 `
 
 const optionsContainer = flexContainer
@@ -73,24 +72,14 @@ const positionInput = css`
   width: ${baseline(12)};
 `
 
-const bottomContainer = css`
+const linkContainer = css`
   justify-content: space-between;
-`
-
-const bottomLink = css`
-  display: block;
-  margin-top: ${baseline(4)};
 `
 
 export interface MemorySceneStateEditorProps {
   scene: MemoryScene
   state: MemorySceneState
   onChange: (newValue: MemorySceneState) => void
-}
-
-enum MemorySceneStateType {
-  Color = 'Single Color',
-  Gradient = 'Gradient',
 }
 
 enum MemoryScenePositionMode {
@@ -116,7 +105,7 @@ function computeStopWidths(gradientPositions: number[]): number[] {
 }
 
 const positionModes = Object.values(MemoryScenePositionMode)
-const memorySceneStateTypes = Object.values(MemorySceneStateType)
+
 /**
  * Dialog content for editing a memory scene state.
  *
@@ -136,9 +125,7 @@ export function MemorySceneStateEditor({
       setCurrentStop(localState.length - 1)
   }, [currentStop, localState])
 
-  const type = Array.isArray(localState)
-    ? MemorySceneStateType.Gradient
-    : MemorySceneStateType.Color
+  const isGradient = Array.isArray(localState)
 
   const gradientPositions = Array.isArray(localState)
     ? interpolateGradientPositions(localState.map(entry => entry.position))
@@ -285,37 +272,6 @@ export function MemorySceneStateEditor({
           </div>
         </>
       )}
-      <div className={cx(flexContainer, bottomContainer)}>
-        <a
-          className={bottomLink}
-          onClick={() => {
-            const newState = [
-              ...localState,
-              {
-                channels: {
-                  m: 255,
-                  r: 255,
-                  g: 255,
-                  b: 255,
-                },
-              },
-            ]
-            setLocalState(newState)
-            onChange(newState)
-            setCurrentStop(newState.length - 1)
-          }}
-        >
-          <Icon icon={iconAdd} inline /> Add stop
-        </a>
-        <a className={bottomLink} onClick={toggleMirrored}>
-          <Checkbox
-            value={localState.some(it => it.mirrored)}
-            onChange={toggleMirrored}
-            inline
-          />{' '}
-          Mirrored
-        </a>
-      </div>
     </>
   ) : (
     <FixtureStateWidget
@@ -327,17 +283,15 @@ export function MemorySceneStateEditor({
     />
   )
 
-  const changeType = useEvent((value: MemorySceneStateType): void => {
+  const changeType = useEvent((toGradient: boolean): void => {
     let newState = localState
-    if (value === MemorySceneStateType.Gradient && !Array.isArray(localState)) {
+    if (toGradient && !Array.isArray(localState)) {
       newState = [
         { channels: localState.channels },
         { channels: localState.channels },
       ]
-    } else if (
-      value === MemorySceneStateType.Color &&
-      Array.isArray(localState)
-    ) {
+      setCurrentStop(1)
+    } else if (!toGradient && Array.isArray(localState)) {
       newState = { on: true, channels: localState[0].channels }
     }
 
@@ -345,15 +299,48 @@ export function MemorySceneStateEditor({
     onChange(newState)
   })
 
+  const toggleGradient = useEvent(() => changeType(!isGradient))
+
   return (
     <>
       <h2 className={editorTitle}>Edit Memory Scene State</h2>
-      <Select
-        className={select}
-        entries={memorySceneStateTypes}
-        value={type}
-        onChange={changeType}
-      />
+      <div className={cx(flexContainer, linkContainer)}>
+        <a onClick={toggleGradient}>
+          <Checkbox value={isGradient} onChange={changeType} inline /> Gradient
+        </a>
+        {Array.isArray(localState) && (
+          <>
+            <a onClick={toggleMirrored}>
+              <Checkbox
+                value={localState.some(it => it.mirrored)}
+                onChange={toggleMirrored}
+                inline
+              />{' '}
+              Mirrored
+            </a>
+            <a
+              onClick={() => {
+                const newState = [
+                  ...localState,
+                  {
+                    channels: {
+                      m: 255,
+                      r: 255,
+                      g: 255,
+                      b: 255,
+                    },
+                  },
+                ]
+                setLocalState(newState)
+                onChange(newState)
+                setCurrentStop(newState.length - 1)
+              }}
+            >
+              <Icon icon={iconAdd} inline /> Add stop
+            </a>
+          </>
+        )}
+      </div>
       {content}
     </>
   )
