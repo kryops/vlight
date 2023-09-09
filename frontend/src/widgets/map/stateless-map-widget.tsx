@@ -42,10 +42,10 @@ const widget_standalone = css`
 
 const container = css`
   position: absolute;
-  top: 1%;
-  left: 1%;
-  right: 5%;
-  bottom: 5%;
+  top: 3%;
+  left: 3%;
+  right: 3%;
+  bottom: 3%;
 `
 
 const fixtureStyle = css`
@@ -116,6 +116,13 @@ export interface StatelessMapWidgetProps {
    */
   displayChannels?: boolean | 'highlighted'
 
+  /**
+   * Controls whether to rotate the map by 180 degrees.
+   *
+   * Defaults to `false`.
+   */
+  rotate180?: boolean
+
   onFixtureDown?: (fixture: Fixture) => void
   onFixtureUp?: (fixture: Fixture) => void
 
@@ -136,6 +143,7 @@ export const StatelessMapWidget = memoInProduction(
         standalone = false,
         displayChannels = false,
         enableDmxUniverse = false,
+        rotate180,
         onFixtureDown,
         onFixtureUp,
         className,
@@ -150,6 +158,8 @@ export const StatelessMapWidget = memoInProduction(
           ),
         [fixtures]
       )
+
+      const adjustCoord = (coord: number) => (rotate180 ? 100 - coord : coord)
 
       return (
         <div
@@ -176,12 +186,16 @@ export const StatelessMapWidget = memoInProduction(
                     fixtureType={fixtureType}
                     x={
                       fixture.x !== undefined
-                        ? fixture.x + offset * (fixture.xOffset ?? 8)
+                        ? adjustCoord(
+                            fixture.x + offset * (fixture.xOffset ?? 8)
+                          )
                         : undefined
                     }
                     y={
                       fixture.y !== undefined
-                        ? fixture.y + offset * (fixture.yOffset ?? 0)
+                        ? adjustCoord(
+                            fixture.y + offset * (fixture.yOffset ?? 0)
+                          )
                         : undefined
                     }
                     color={
@@ -214,6 +228,8 @@ export const StatelessMapWidget = memoInProduction(
               <MapShape
                 key={index}
                 {...shape}
+                x={adjustCoord(shape.x)}
+                y={adjustCoord(shape.y)}
                 className={fixtureStyle}
                 percentages
               />

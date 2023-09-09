@@ -54,6 +54,8 @@ const MapPage = memoInProduction(() => {
     },
     __test: true,
   })
+  const [mapRotated, toggleMapRotated] = useReducer(it => !it, false)
+
   const masterDataAndMaps = useMasterDataAndMaps()
   const fixtureStates = useApiState('fixtures')
 
@@ -92,10 +94,15 @@ const MapPage = memoInProduction(() => {
           key={fixtureTestMode ? '1' : '0'}
           onFixtureDown={fixtureTestMode ? turnFixtureOn : openFixtureDialog}
           onFixtureUp={fixtureTestMode ? turnFixtureOff : undefined}
+          rotate180={mapRotated}
         />
         <div>
           <Button active={fixtureTestMode} onClick={toggleFixtureTestMode}>
             Fixture Test Mode
+          </Button>
+
+          <Button active={mapRotated} onClick={toggleMapRotated}>
+            Rotate
           </Button>
         </div>
         {fixtureTestMode && (

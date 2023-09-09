@@ -24,7 +24,6 @@
   - Search box
 - Map
   - Change size
-  - Turn around by 180°
 - Speed/Fade control
   - Global vs local speed
   - Global pause/halt

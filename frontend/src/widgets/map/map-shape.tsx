@@ -17,6 +17,7 @@ const shapeStyle = css`
   align-items: center;
   justify-content: center;
   white-space: nowrap;
+  transform: translate(-50%, -50%);
 `
 
 const shapeStyle_circle = css`

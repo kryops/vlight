@@ -2,6 +2,8 @@
 
 ## September 2023
 
+- Improvements for the map page
+  - The map can now be rotated by 180 degrees
 - Improvements for fixture groups
   - Group members can now be toggled on the map
 - Improvements for memories
