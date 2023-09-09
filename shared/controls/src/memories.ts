@@ -236,6 +236,8 @@ export function getFinalGradient(
   const mirrored = gradient.some(it => it.mirrored)
   if (!mirrored) return gradient
 
+  const lastPosition = gradient[gradient.length - 1].position
+
   return [
     ...gradient.map(it => ({
       ...it,
@@ -243,7 +245,11 @@ export function getFinalGradient(
       position: it.position !== undefined ? it.position / 2 : undefined,
     })),
     ...gradient
-      .slice(0, -1)
+      .slice(
+        0,
+        // we can take the last stop off if it is at the end
+        lastPosition === undefined || lastPosition === 100 ? -1 : undefined
+      )
       .reverse()
       .map(it => ({
         ...it,
