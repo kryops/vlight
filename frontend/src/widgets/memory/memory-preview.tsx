@@ -2,6 +2,7 @@ import {
   mapFixtureList,
   getFixtureStateForMemoryScene,
   mapFixtureStateToChannels,
+  getMemorySceneStateInfo,
 } from '@vlight/controls'
 import { MasterData, MasterDataMaps, MemoryScene } from '@vlight/types'
 
@@ -35,6 +36,12 @@ function getMemoryUniverse(
       masterDataMaps,
     })
 
+    const memberFixtures = members.map(
+      member => masterDataMaps.fixtures.get(member)!
+    )
+
+    const stateInfo = getMemorySceneStateInfo(scene, memberFixtures)
+
     members.forEach((member, memberIndex) => {
       const fixture = masterDataMaps.fixtures.get(member)
       if (!fixture) return
@@ -44,9 +51,8 @@ function getMemoryUniverse(
       const state = getFixtureStateForMemoryScene({
         scene: { ...scene, members },
         memberIndex,
-        memberFixtures: members.map(
-          member => masterDataMaps.fixtures.get(member)!
-        ),
+        memberFixtures,
+        stateInfo,
       })
 
       mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {

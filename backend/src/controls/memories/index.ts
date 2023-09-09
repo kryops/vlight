@@ -11,6 +11,7 @@ import {
   ChannelType,
   getFixtureStateForMemoryScene,
   mergeMemoryStates,
+  getMemorySceneStateInfo,
 } from '@vlight/controls'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
@@ -58,13 +59,17 @@ function getInitialMemoryState(memory: Memory): MemoryState {
 function createMemoryUniverse(memory: Memory): Universe {
   const fixtureStates: Dictionary<FixtureState> = {}
   for (const scene of memory.scenes) {
+    const memberFixtures = scene.members.map(
+      member => masterDataMaps.fixtures.get(member)!
+    )
+    const stateInfo = getMemorySceneStateInfo(scene, memberFixtures)
+
     scene.members.forEach((member, memberIndex) => {
       const state = getFixtureStateForMemoryScene({
         scene,
         memberIndex,
-        memberFixtures: scene.members.map(
-          member => masterDataMaps.fixtures.get(member)!
-        ),
+        memberFixtures,
+        stateInfo,
       })
       if (state) fixtureStates[member] = state
     })

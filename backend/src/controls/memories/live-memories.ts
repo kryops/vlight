@@ -1,4 +1,8 @@
-import { getFixtureStateForMemoryScene, mapFixtureList } from '@vlight/controls'
+import {
+  getFixtureStateForMemoryScene,
+  mapFixtureList,
+  getMemorySceneStateInfo,
+} from '@vlight/controls'
 import {
   ApiLiveMemoryMessage,
   Dictionary,
@@ -29,17 +33,23 @@ const outgoingUniverses: Map<IdType, Universe> = new Map()
 function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe {
   const fixtureStates: Dictionary<FixtureState> = {}
 
-  mapFixtureList(liveMemory.members, { masterData, masterDataMaps }).forEach(
-    (member, memberIndex, members) => {
-      fixtureStates[member] = getFixtureStateForMemoryScene({
-        scene: liveMemory,
-        memberIndex,
-        memberFixtures: members.map(
-          member => masterDataMaps.fixtures.get(member)!
-        ),
-      })
-    }
+  const members = mapFixtureList(liveMemory.members, {
+    masterData,
+    masterDataMaps,
+  })
+  const memberFixtures = members.map(
+    member => masterDataMaps.fixtures.get(member)!
   )
+  const stateInfo = getMemorySceneStateInfo(liveMemory, memberFixtures)
+
+  members.forEach((member, memberIndex) => {
+    fixtureStates[member] = getFixtureStateForMemoryScene({
+      scene: liveMemory,
+      memberIndex,
+      memberFixtures,
+      stateInfo,
+    })
+  })
 
   return createUniverse(fixtureStates)
 }

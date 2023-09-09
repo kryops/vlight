@@ -11,6 +11,7 @@ import {
   getFixtureStateForGradientFraction,
   getStateIndexAndFractionFor,
   getFixtureStateForMemoryScene,
+  getMemorySceneStateInfo,
 } from '../src/memories'
 
 const channels1 = { r: 255 }
@@ -103,11 +104,13 @@ describe('getStateIndexAndFractionFor', () => {
       }
       const stateIndexes = []
       const positions = []
+      const memberFixtures = new Array(numMembers).fill({})
       for (let i = 0; i < numMembers; i++) {
         const [stateIndex, position] = getStateIndexAndFractionFor({
           scene,
           memberIndex: i,
-          memberFixtures: new Array(numMembers).fill({}),
+          memberFixtures,
+          stateInfo: getMemorySceneStateInfo(scene, memberFixtures),
         })
         stateIndexes.push(stateIndex)
         positions.push(position)
@@ -190,11 +193,13 @@ describe('getFixtureStateFor', () => {
           members: new Array(numMembers) as any,
           states,
         }
+        const memberFixtures = new Array(numMembers).fill({})
         const membersStates = arrayRange(0, numMembers - 1, i => i).map(index =>
           getFixtureStateForMemoryScene({
             scene,
             memberIndex: index,
-            memberFixtures: new Array(numMembers).fill({}),
+            memberFixtures,
+            stateInfo: getMemorySceneStateInfo(scene, memberFixtures),
           })
         )
         expect(membersStates).toEqual(expectedMemberStates)
@@ -296,11 +301,13 @@ describe('getFixtureStateFor', () => {
           members: new Array(numMembers) as any,
           states,
         }
+        const memberFixtures = new Array(numMembers).fill({})
         const membersStates = arrayRange(0, numMembers - 1, i => i).map(index =>
           getFixtureStateForMemoryScene({
             scene,
             memberIndex: index,
             memberFixtures: new Array(numMembers).fill({}),
+            stateInfo: getMemorySceneStateInfo(scene, memberFixtures),
           })
         )
         expect(membersStates).toEqual(
