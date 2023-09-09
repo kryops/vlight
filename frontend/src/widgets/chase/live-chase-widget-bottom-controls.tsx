@@ -57,7 +57,7 @@ export const LiveChaseWidgetBottomControls = memoInProduction(
         ),
         [buttonOk, buttonCancel],
         {
-          title: `Members for chase ${state.name}`,
+          title: `Members for chase ${state.name ?? id}`,
           showCloseButton: true,
         }
       )
