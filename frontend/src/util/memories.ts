@@ -25,7 +25,9 @@ export function getMemorySceneStatePreviewBackground(
         }) ?? 'transparent'
       return `${color} ${positions[index]}%`
     })
-    return `linear-gradient(to right, ${gradientStops.join(', ')})`
+    return `linear-gradient(to right in srgb-linear, ${gradientStops.join(
+      ', '
+    )})`
   } else {
     return getFixtureStateColor(state) ?? 'transparent'
   }
