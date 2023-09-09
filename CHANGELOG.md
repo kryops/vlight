@@ -10,6 +10,8 @@
   - Added new display modes: Fader, flash button or toggle button
   - Added mirroring mode for gradients
   - Added state and gradient ordering by map coordinates
+- Improvements for live chases
+  - Added "same color" and "same state" modes for all active members
 - Improvements for dynamic pages
   - Filter out already selected entities when selecting more
   - Selected entities can be reordered via drag & drop

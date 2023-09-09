@@ -41,7 +41,7 @@ export function getChasePreviewColor(color: ChaseColor): string {
     }) ?? 'black'
 
   if (high === low) return high
-  return `linear-gradient(to top, ${low}, ${high})`
+  return `linear-gradient(to top in srgb-linear, ${low}, ${high})`
 }
 
 export function isLiveChaseCurrentlyFast(state: LiveChase): boolean {

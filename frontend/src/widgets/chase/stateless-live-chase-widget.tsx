@@ -1,5 +1,6 @@
 import { IdType, LiveChase, ValueOrRandom } from '@vlight/types'
 import { useEffect, useState } from 'react'
+import { css } from '@linaria/core'
 
 import { setLiveChaseState } from '../../api'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
@@ -11,6 +12,7 @@ import { memoInProduction } from '../../util/development'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
 import { useEvent } from '../../hooks/performance'
+import { cx } from '../../util/styles'
 
 import { LiveChaseWidgetColorControls } from './live-chase-widget-color-controls'
 import { isLiveChaseCurrentlyFast, updateLiveChaseSpeed } from './utils'
@@ -21,6 +23,10 @@ import {
 } from './constants'
 import { LiveChaseWidgetTopControls } from './live-chase-widget-top-controls'
 import { LiveChaseWidgetBottomControls } from './live-chase-widget-bottom-controls'
+
+const container = css`
+  padding-bottom: 0;
+`
 
 export interface StatelessLiveChaseWidgetProps extends WidgetPassthrough {
   id: IdType
@@ -77,7 +83,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
         {...passThrough}
       >
         <div className={flexAuto}>
-          <div className={faderContainer}>
+          <div className={cx(faderContainer, container)}>
             <LiveChaseWidgetColorControls id={id} state={state} />
 
             <Fader

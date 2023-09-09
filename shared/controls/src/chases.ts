@@ -32,13 +32,21 @@ export function getLiveChaseFixtureStates(
   const light = computeRandomValue(liveChase.light)
   const activeMembers = filterArrayRandomly(members, light)
 
+  const defaultColor = liveChase.colors[randomArrayIndex(liveChase.colors)]
+  const defaultState = computeRandomChannels(defaultColor.channels)
+
   activeMembers.forEach(member => {
-    // TODO color distribution (random, equal, relative) - now just equal
-    const color = liveChase.colors[randomArrayIndex(liveChase.colors)]
+    const color =
+      liveChase.colorMode === 'same-color'
+        ? defaultColor
+        : liveChase.colors[randomArrayIndex(liveChase.colors)]
 
     fixtureStates[member] = {
       on: true,
-      channels: computeRandomChannels(color.channels),
+      channels:
+        liveChase.colorMode === 'same-state'
+          ? defaultState
+          : computeRandomChannels(color.channels),
     }
   })
 

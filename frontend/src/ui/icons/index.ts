@@ -55,6 +55,9 @@ import {
   mdiFullscreen,
   mdiContentCopy,
   mdiCursorMove,
+  mdiEqualBox,
+  mdiCodeEqual,
+  mdiArrowDecision,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -92,6 +95,9 @@ export const iconUnlocked = mdiLockOpenVariantOutline
 export const iconStep = mdiStepForward
 export const iconPercentage = mdiPercent
 export const iconTime = mdiClockOutline
+export const iconRandom = mdiArrowDecision
+export const iconSameColor = mdiEqualBox
+export const iconSameState = mdiCodeEqual
 
 export const iconCheckbox = mdiCheckboxBlankOutline
 export const iconCheckbox_checked = mdiCheckboxOutline

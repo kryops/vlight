@@ -123,4 +123,11 @@ export interface LiveChase {
    * turned off.
    */
   burst?: boolean
+
+  /**
+   * Controls how the colors are applied to the active members for each step.
+   *
+   * Defaults to `random`.
+   */
+  colorMode?: 'random' | 'same-color' | 'same-state'
 }

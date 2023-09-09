@@ -40,8 +40,7 @@
   - Alternating: alternate after n fixtures
   - Preset library
 - Chases
-  - Apply same state to all fixtures
-  - Color distribution: random, equal, relative
+  - Color distribution: equal, relative
 - Dynamic Pages
   - Multi-control widgets
 - New Controls

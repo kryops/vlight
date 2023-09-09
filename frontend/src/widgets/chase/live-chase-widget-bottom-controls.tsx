@@ -6,7 +6,10 @@ import {
   iconFast,
   iconList,
   iconMultiple,
+  iconRandom,
   iconRename,
+  iconSameColor,
+  iconSameState,
   iconSingle,
   iconSlow,
 } from '../../ui/icons'
@@ -23,6 +26,31 @@ import { centeredText } from '../../ui/css/basic-styles'
 import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
 
 import { isLiveChaseCurrentlyFast } from './utils'
+
+interface ColorModeDescriptor {
+  mode: LiveChase['colorMode']
+  description: string
+  icon: string
+}
+
+const colorModes: ColorModeDescriptor[] = [
+  {
+    mode: 'random',
+    description: 'Colors are applied randomly',
+    icon: iconRandom,
+  },
+  {
+    mode: 'same-color',
+    description:
+      'The same color (but not state) is applied to all active members',
+    icon: iconSameColor,
+  },
+  {
+    mode: 'same-state',
+    description: 'The same state is applied to all active members',
+    icon: iconSameState,
+  },
+]
 
 export interface LiveChaseWidgetBottomControlsProps {
   id: IdType
@@ -71,6 +99,17 @@ export const LiveChaseWidgetBottomControls = memoInProduction(
       onToggleFastMode()
     })
 
+    const colorMode =
+      colorModes.find(it => it.mode === state.colorMode) ?? colorModes[0]
+
+    const switchColorMode = useEvent(() => {
+      const index = colorModes.indexOf(colorMode)
+      const nextMode =
+        colorModes[index === colorModes.length - 1 ? 0 : index + 1]
+
+      update({ colorMode: nextMode.mode })
+    })
+
     const toggleSingle = useEvent(() => update({ single: !state.single }))
 
     const rename = useEvent(async () => {
@@ -114,6 +153,12 @@ export const LiveChaseWidgetBottomControls = memoInProduction(
           }
           transparent
           onClick={toggleSingle}
+        />
+        <Button
+          icon={colorMode.icon}
+          title={colorMode.description}
+          transparent
+          onClick={switchColorMode}
         />
         <Button icon={iconRename} title="Rename" transparent onClick={rename} />
         <Button
