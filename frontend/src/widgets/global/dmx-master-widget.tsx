@@ -10,7 +10,7 @@ import { baseline } from '../../ui/styles'
 import { memoInProduction } from '../../util/development'
 
 const buttonContainer = css`
-  margin-left: ${baseline(4)};
+  margin: 0 ${baseline()};
 `
 
 export type DmxMasterWidgetProps = WidgetPassthrough
