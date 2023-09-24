@@ -272,22 +272,30 @@ function LiveEntitiesWidgetInput({
   )
 
   const renderInput = useCallback(
-    (inputProps: TypedInputProps<string>): JSX.Element => (
+    (
+      inputProps: TypedInputProps<string> & { excludeValues?: IdType[] }
+    ): JSX.Element => (
       <Select
         entries={[
           undefined,
-          ...Object.keys(state ?? {}).map(id => {
-            const stateReference = state
-            return {
-              value: id,
-              label:
-                typeof stateReference === 'object' &&
-                (stateReference as any)[id] &&
-                (stateReference as any)[id].name
-                  ? (stateReference as any)[id].name
-                  : id,
-            }
-          }),
+          ...Object.keys(state ?? {})
+            .filter(
+              id =>
+                !inputProps.excludeValues?.includes(id) ||
+                id === inputProps.value
+            )
+            .map(id => {
+              const stateReference = state
+              return {
+                value: id,
+                label:
+                  typeof stateReference === 'object' &&
+                  (stateReference as any)[id] &&
+                  (stateReference as any)[id].name
+                    ? (stateReference as any)[id].name
+                    : id,
+              }
+            }),
         ]}
         {...inputProps}
       />
