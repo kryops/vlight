@@ -37,43 +37,6 @@ const chaseColorPresets = [
     ],
   },
   {
-    id: '3',
-    name: 'r',
-    colors: [
-      {
-        channels: {
-          m: 255,
-          r: 255,
-          g: 0,
-          b: 0,
-        },
-      },
-    ],
-  },
-  {
-    id: '4',
-    name: 'r/w',
-    colors: [
-      {
-        channels: {
-          m: 255,
-          r: 255,
-          g: 0,
-          b: 0,
-        },
-      },
-      {
-        channels: {
-          m: 255,
-          r: 0,
-          g: 0,
-          b: 0,
-          w: 255,
-        },
-      },
-    ],
-  },
-  {
     id: '5',
     name: '(all w)',
     colors: [
@@ -138,6 +101,202 @@ const chaseColorPresets = [
           g: 255,
           b: 0,
           w: 0,
+        },
+      },
+    ],
+  },
+  {
+    id: '8',
+    name: '',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: 0,
+          b: 255,
+        },
+      },
+      {
+        channels: {
+          m: 255,
+          r: 255,
+          g: 255,
+          b: 0,
+          w: 0,
+        },
+      },
+    ],
+  },
+  {
+    id: '9',
+    name: '',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: 255,
+          g: {
+            from: 0,
+            to: 255,
+          },
+          b: 0,
+        },
+      },
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: {
+            from: 0,
+            to: 255,
+          },
+          b: 255,
+          w: 0,
+        },
+      },
+    ],
+  },
+  {
+    id: '10',
+    name: '',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: [0, 255],
+          g: [0, 255],
+          b: 0,
+        },
+      },
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: [0, 255],
+          b: [0, 255],
+        },
+      },
+      {
+        channels: {
+          m: 255,
+          r: [0, 255],
+          b: [0, 255],
+        },
+      },
+    ],
+  },
+  {
+    id: '11',
+    name: '',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: 255,
+          b: {
+            from: 0,
+            to: 255,
+          },
+        },
+      },
+      {
+        channels: {
+          m: 255,
+          r: 255,
+          b: 0,
+          g: {
+            from: 0,
+            to: 255,
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: '12',
+    name: '',
+    colors: [
+      {
+        channels: {
+          m: 0,
+          r: 0,
+          g: 0,
+          b: 0,
+        },
+      },
+    ],
+  },
+  {
+    id: '13',
+    name: 'm',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: 0,
+          b: 0,
+          col: 0,
+        },
+      },
+    ],
+  },
+  {
+    id: '14',
+    name: 'col',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: 0,
+          b: 0,
+          col: {
+            from: 0,
+            to: 255,
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: '15',
+    name: 'g/p',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: 0,
+          b: 0,
+          col: 0,
+          gobo: {
+            from: 0,
+            to: 255,
+          },
+          prism: {
+            from: 0,
+            to: 255,
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: '16',
+    name: '',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: {
+            from: 0,
+            to: 255,
+          },
+          b: 255,
         },
       },
     ],

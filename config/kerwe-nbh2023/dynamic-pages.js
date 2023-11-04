@@ -11,15 +11,16 @@ const dynamicPages = [
               },
               {
                 type: 'memory',
-                id: ['2', '3', '6'],
-              },
-              {
-                type: 'live-memory',
-                id: '1',
+                id: ['2', '3', '10', '14'],
               },
               {
                 type: 'live-chase',
                 id: '1',
+              },
+              {
+                type: 'fixture-group',
+                id: ['8'],
+                mapping: ['m', 'rot', 'eff', 'effspeed'],
               },
             ],
           },
@@ -34,7 +35,7 @@ const dynamicPages = [
               },
               {
                 type: 'memory',
-                id: ['4', '5', '1'],
+                id: ['4', '13', '5', '7', '12', '11', '1', '8'],
               },
             ],
           },
@@ -46,7 +47,7 @@ const dynamicPages = [
             widgets: [
               {
                 type: 'live-chase',
-                id: ['2', '3'],
+                id: ['2', '3', '4'],
               },
             ],
           },
@@ -56,6 +57,54 @@ const dynamicPages = [
     name: 'Kerwe NBH 2023',
     icon: 'mdiCastle',
     headline: 'Kerwe NBH 2023',
+  },
+  {
+    id: '2',
+    rows: [
+      {
+        cells: [
+          {
+            widgets: [
+              {
+                type: 'dmx-master',
+              },
+              {
+                type: 'controls',
+              },
+              {
+                type: 'memory',
+                id: ['10'],
+              },
+              {
+                type: 'fixture-group',
+                id: ['7'],
+                mapping: ['col', 'gobo', 'prism', 'macro'],
+              },
+              {
+                type: 'fixture-group',
+                id: ['8'],
+                mapping: ['rot', 'eff', 'effspeed'],
+              },
+            ],
+          },
+        ],
+      },
+      {
+        cells: [
+          {
+            widgets: [
+              {
+                type: 'live-chase',
+                id: ['3', '4'],
+              },
+            ],
+          },
+        ],
+      },
+    ],
+    name: 'Movings',
+    icon: 'mdiCat',
+    headline: 'Movings',
   },
 ]
 
