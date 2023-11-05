@@ -2,7 +2,7 @@ const fixtures = [
   {
     id: '1',
     name: 'Stufe #',
-    type: '7',
+    type: 'white3chfocus',
     channel: 1,
     count: 2,
     xOffset: 30,
@@ -13,7 +13,7 @@ const fixtures = [
   {
     id: '2',
     name: 'Bar front #',
-    type: '3',
+    type: 'barh',
     channel: 10,
     count: 2,
     xOffset: 28,
@@ -23,7 +23,7 @@ const fixtures = [
   {
     id: '3',
     name: 'Bar side #',
-    type: '4',
+    type: 'barv',
     channel: 20,
     count: 2,
     xOffset: 67,
@@ -33,7 +33,7 @@ const fixtures = [
   {
     id: '5',
     name: 'Drums #',
-    type: '2',
+    type: 'rgbw4',
     channel: 30,
     count: 2,
     xOffset: 12,
@@ -63,7 +63,7 @@ const fixtures = [
   {
     id: '8',
     name: 'Spot #',
-    type: '5',
+    type: 'minispot',
     channel: 200,
     count: 4,
     x: 10,
@@ -73,7 +73,7 @@ const fixtures = [
   {
     id: '9',
     name: 'MBar #',
-    type: '6',
+    type: 'movingbar',
     channel: 300,
     x: 24,
     y: 0,

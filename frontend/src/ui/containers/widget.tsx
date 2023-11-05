@@ -27,15 +27,20 @@ const widget = css`
 `
 const section = css`
   display: flex;
-  padding: ${baseline(2)};
+  padding: ${baseline()};
 `
 
 const widgetTitle = css`
   display: flex;
+  font-size: 0.85rem;
 
   & > :first-child {
     flex-grow: 1;
   }
+`
+
+const titleLink = css`
+  padding: ${baseline(2)} 0;
 `
 
 const titleSideContainer = css`
@@ -183,7 +188,7 @@ export function Widget({
         {(icon || title || titleSide || turnedOn !== undefined) && (
           <div className={cx(section, widgetTitle)}>
             <div>
-              <Clickable onClick={onTitleClick}>
+              <Clickable onClick={onTitleClick} className={titleLink}>
                 {icon && (
                   <Icon
                     icon={icon}

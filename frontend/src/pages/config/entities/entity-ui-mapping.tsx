@@ -40,6 +40,7 @@ const smallInfo = css`
 const fixtureTypeStyle = css`
   display: inline-block;
   margin-right: ${baseline(2)};
+  transform: none;
 `
 
 export interface EntityEntry<T extends EntityName> {

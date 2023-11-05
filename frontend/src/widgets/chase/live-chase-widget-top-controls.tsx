@@ -24,6 +24,11 @@ import { liveChaseMaxSpeed, liveChaseMinSpeed } from './constants'
 
 const controls = css`
   margin: ${baseline(-1.5)};
+
+  > * {
+    padding-left: ${baseline(2)};
+    padding-right: ${baseline(2)};
+  }
 `
 
 const activeButton = css`
@@ -31,11 +36,11 @@ const activeButton = css`
 
   &:after {
     position: absolute;
-    top: ${baseline(0.5)};
-    left: ${baseline(1.5)};
+    top: ${baseline(1)};
+    left: ${baseline(1)};
     content: '';
-    width: ${baseline(7.5)};
-    height: ${baseline(7.5)};
+    width: ${baseline(6.5)};
+    height: ${baseline(6.5)};
     border-radius: 100%;
     border: 2px solid ${successShade(0)};
     pointer-events: none;

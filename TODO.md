@@ -1,9 +1,13 @@
 # TODO
 
+## Bugs
+
+- Nested drag&drop when editing dynamic pages does not work well with touch
+
 ## Roadmap
 
 - Control improvements
-  - Mousewheel for faders?
+  - Mousewheel / keyboard input for faders?
 - Universe features
   - Swop (single chase active, rest blackout)
   - Complete fixture override/reservation (e.g. when controlled by a chase)
@@ -23,6 +27,8 @@
   - On tap button (like memories)
   - Search box
 - Map
+  - Add legend
+  - Display all fixture names
   - Change size
 - Speed/Fade control
   - Global vs local speed
@@ -41,9 +47,14 @@
   - Preset library
 - Chases
   - Color distribution: equal, relative
+  - Fixture selection mode: by index, by coordinates
+  - State selection mode by index
+  - Persist as entities, not state?
+  - Compact view: burst button only
 - Dynamic Pages
   - Multi-control widgets
 - New Controls
+  - Movement control: Patterns, play/stop, offset per fixture, mirroring
   - Programmable buttons
   - Non-live chases
   - Sequences/shows

@@ -14,7 +14,16 @@ const fixtureTypes = [
     border: 'dashed',
   },
   {
-    id: '1',
+    id: 'white3chfocus',
+    name: 'White 3ch focus',
+    mapping: ['m', 'str', 'foc'],
+    shape: 'circle',
+    border: 'solid',
+    xSize: 12,
+    ySize: 12,
+  },
+  {
+    id: 'white4ch',
     name: 'White 4ch',
     mapping: ['m', 'cur', 'str', 'foc'],
     shape: 'circle',
@@ -23,7 +32,7 @@ const fixtureTypes = [
     ySize: 8,
   },
   {
-    id: '3',
+    id: 'barh',
     name: 'Bar horizontal',
     mapping: ['m'],
     shape: 'square',
@@ -32,7 +41,7 @@ const fixtureTypes = [
     ySize: 4,
   },
   {
-    id: '4',
+    id: 'barv',
     name: 'Bar vertical',
     mapping: ['m'],
     shape: 'square',
@@ -113,7 +122,7 @@ const fixtureTypes = [
     ySize: 6,
   },
   {
-    id: '2',
+    id: 'rgbw4',
     name: 'RGBW 4ch',
     mapping: ['r', 'g', 'b', 'w'],
     shape: 'square',
@@ -368,8 +377,8 @@ const fixtureTypes = [
     ySize: 9,
   },
   {
-    id: '5',
-    name: 'Nico Moving 12ch',
+    id: 'minispot',
+    name: 'Mini Spot',
     mapping: [
       'pan',
       'panf',
@@ -388,22 +397,13 @@ const fixtureTypes = [
     border: 'dotted',
   },
   {
-    id: '6',
-    name: 'Nico Moving Bar 9ch',
-    mapping: ['rot', 'mvspeed', 'eff', 'effspeed', 'm', 'r', 'g', 'b', 'w'],
+    id: 'movingbar',
+    name: 'Moving Bar 9ch',
+    mapping: ['tilt', 'mvspeed', 'eff', 'effspeed', 'm', 'r', 'g', 'b', 'w'],
     shape: 'square',
     border: 'dotted',
-    xSize: 15,
+    xSize: 16,
     ySize: 4,
-  },
-  {
-    id: '7',
-    name: 'Focus',
-    mapping: ['m', 'str', 'foc'],
-    shape: 'circle',
-    border: 'solid',
-    xSize: 12,
-    ySize: 12,
   },
 ]
 
