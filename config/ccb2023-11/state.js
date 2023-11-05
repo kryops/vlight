@@ -15,65 +15,6 @@ module.exports = {
         "str": 0
       }
     },
-    "2_1": {
-      "on": false,
-      "channels": {
-        "m": 255
-      }
-    },
-    "2_2": {
-      "on": false,
-      "channels": {
-        "m": 255
-      }
-    },
-    "3_1": {
-      "on": false,
-      "channels": {
-        "m": 255
-      }
-    },
-    "3_2": {
-      "on": false,
-      "channels": {
-        "m": 255
-      }
-    },
-    "5_1": {
-      "on": false,
-      "channels": {
-        "r": 255,
-        "g": 255,
-        "b": 255
-      }
-    },
-    "5_2": {
-      "on": false,
-      "channels": {
-        "r": 255,
-        "g": 255,
-        "b": 255,
-        "w": 0
-      }
-    },
-    "6_1": {
-      "on": false,
-      "channels": {
-        "m": 255,
-        "r": 255,
-        "g": 255,
-        "b": 255
-      }
-    },
-    "6_2": {
-      "on": false,
-      "channels": {
-        "m": 255,
-        "r": 255,
-        "g": 255,
-        "b": 255
-      }
-    },
     "4_1": {
       "on": false,
       "channels": {
@@ -133,42 +74,6 @@ module.exports = {
       "channels": {
         "m": 255
       }
-    },
-    "9_1": {
-      "on": false,
-      "channels": {
-        "m": 255,
-        "r": 255,
-        "g": 255,
-        "b": 255
-      }
-    },
-    "9_2": {
-      "on": false,
-      "channels": {
-        "m": 255,
-        "r": 255,
-        "g": 255,
-        "b": 255
-      }
-    },
-    "7_1": {
-      "on": false,
-      "channels": {
-        "m": 255,
-        "r": 255,
-        "g": 255,
-        "b": 255
-      }
-    },
-    "7_2": {
-      "on": false,
-      "channels": {
-        "m": 255,
-        "r": 255,
-        "g": 255,
-        "b": 255
-      }
     }
   },
   "fixtureGroups": {
@@ -191,43 +96,15 @@ module.exports = {
         "tiltf": 0,
         "macro": 233
       }
-    },
-    "8": {
-      "on": false,
-      "channels": {
-        "m": 0,
-        "r": 0,
-        "g": 0,
-        "b": 0,
-        "rot": 11,
-        "mvspeed": 0,
-        "eff": 58,
-        "effspeed": 189
-      }
     }
   },
   "memories": {
-    "1": {
-      "on": false,
-      "value": 255,
-      "forceMaster": false
-    },
     "2": {
       "on": false,
-      "value": 92,
-      "forceMaster": false
-    },
-    "3": {
-      "on": true,
-      "value": 41,
+      "value": 123,
       "forceMaster": false
     },
     "4": {
-      "on": false,
-      "value": 255,
-      "forceMaster": false
-    },
-    "5": {
       "on": false,
       "value": 255,
       "forceMaster": false
@@ -247,14 +124,9 @@ module.exports = {
       "value": 255,
       "forceMaster": true
     },
-    "9": {
-      "on": false,
-      "value": 255,
-      "forceMaster": true
-    },
     "10": {
       "on": true,
-      "value": 67,
+      "value": 133,
       "forceMaster": true
     },
     "11": {
@@ -301,30 +173,80 @@ module.exports = {
               "m": 255,
               "r": 255,
               "g": 255,
-              "b": 0
+              "b": 0,
+              "pan": 0,
+              "tilt": 0
             },
             "mirrored": true
           }
         ]
       ],
-      "value": 197,
+      "value": 255,
       "on": false,
       "name": "Bunt",
       "order": "xcoord",
+      "pattern": "alternate"
+    },
+    "2": {
+      "members": [
+        "group:6"
+      ],
+      "states": [
+        [
+          {
+            "channels": {
+              "m": 255,
+              "r": 255,
+              "g": 0,
+              "b": 0
+            }
+          },
+          {
+            "channels": {
+              "m": 255,
+              "r": 255,
+              "g": 255,
+              "b": 0
+            }
+          }
+        ],
+        [
+          {
+            "channels": {
+              "m": 255,
+              "r": 0,
+              "g": 0,
+              "b": 255
+            }
+          },
+          {
+            "channels": {
+              "m": 255,
+              "r": 0,
+              "g": 255,
+              "b": 0
+            }
+          }
+        ]
+      ],
+      "value": 255,
+      "on": false,
+      "name": "Bunt2",
+      "order": "members",
       "pattern": "alternate"
     }
   },
   "liveChases": {
     "1": {
-      "on": true,
+      "on": false,
       "stopped": true,
-      "value": 93,
+      "value": 255,
       "members": [
         "group:6"
       ],
       "light": {
-        "from": 0.24999992052714026,
-        "to": 0.5972222487131755
+        "from": 0.4293154875437418,
+        "to": 0.6959822177886963
       },
       "speed": 0.4485,
       "colors": [
@@ -356,14 +278,10 @@ module.exports = {
     "2": {
       "on": false,
       "stopped": true,
-      "value": 150,
+      "value": 255,
       "members": [
         "group:6",
-        "group:3",
-        "group:5",
-        "group:7",
-        "group:8",
-        "group:2"
+        "group:7"
       ],
       "light": {
         "from": 0.125,
@@ -393,7 +311,6 @@ module.exports = {
       "stopped": true,
       "value": 255,
       "members": [
-        "group:2",
         "group:7"
       ],
       "light": 1,
@@ -418,7 +335,7 @@ module.exports = {
       "single": false,
       "burst": false,
       "fadeLockedToSpeed": true,
-      "name": "MV",
+      "name": "MP",
       "colorMode": "random",
       "fade": 0
     },
@@ -446,10 +363,10 @@ module.exports = {
       "single": false,
       "burst": true,
       "fadeLockedToSpeed": true,
-      "name": "SP",
+      "name": "Sp",
       "fade": 0
     }
   },
   "dmxMaster": 255,
-  "dmxMasterFade": 2.604166666666668
+  "dmxMasterFade": 0
 };

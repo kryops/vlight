@@ -11,16 +11,15 @@ const dynamicPages = [
               },
               {
                 type: 'memory',
-                id: ['2', '3', '10', '14'],
+                id: ['2', '6'],
               },
               {
                 type: 'live-chase',
                 id: '1',
               },
               {
-                type: 'fixture-group',
-                id: ['8'],
-                mapping: ['m', 'rot', 'eff', 'effspeed'],
+                type: 'memory',
+                id: ['10', '14'],
               },
             ],
           },
@@ -35,7 +34,7 @@ const dynamicPages = [
               },
               {
                 type: 'memory',
-                id: ['4', '13', '5', '7', '12', '11', '1', '8'],
+                id: ['4', '13', '7', '12', '11', '8'],
               },
             ],
           },
@@ -47,16 +46,16 @@ const dynamicPages = [
             widgets: [
               {
                 type: 'live-chase',
-                id: ['2', '3', '4'],
+                id: ['3', '4', '2'],
               },
             ],
           },
         ],
       },
     ],
-    name: 'Kerwe NBH 2023',
-    icon: 'mdiCastle',
-    headline: 'Kerwe NBH 2023',
+    name: 'CCB Jubiläum',
+    icon: 'mdiPartyPopper',
+    headline: 'CCB Jubiläum',
   },
   {
     id: '2',
@@ -69,21 +68,12 @@ const dynamicPages = [
                 type: 'dmx-master',
               },
               {
-                type: 'controls',
-              },
-              {
                 type: 'memory',
-                id: ['10'],
+                id: ['2', '6'],
               },
               {
-                type: 'fixture-group',
-                id: ['7'],
-                mapping: ['col', 'gobo', 'prism', 'macro'],
-              },
-              {
-                type: 'fixture-group',
-                id: ['8'],
-                mapping: ['rot', 'eff', 'effspeed'],
+                type: 'live-memory',
+                id: ['1', '2'],
               },
             ],
           },
@@ -95,16 +85,16 @@ const dynamicPages = [
             widgets: [
               {
                 type: 'live-chase',
-                id: ['3', '4'],
+                id: '1',
               },
             ],
           },
         ],
       },
     ],
-    name: 'Movings',
-    icon: 'mdiCat',
-    headline: 'Movings',
+    name: 'Buntes Programm',
+    icon: 'mdiLooks',
+    headline: 'Buntes Programm',
   },
 ]
 
