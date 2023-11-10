@@ -11,7 +11,7 @@ const dynamicPages = [
               },
               {
                 type: 'memory',
-                id: ['2', '6'],
+                id: ['2', '16', '6'],
               },
               {
                 type: 'live-chase',
@@ -20,6 +20,10 @@ const dynamicPages = [
               {
                 type: 'memory',
                 id: ['10', '14'],
+              },
+              {
+                type: 'live-memory',
+                id: '1',
               },
             ],
           },
@@ -34,7 +38,7 @@ const dynamicPages = [
               },
               {
                 type: 'memory',
-                id: ['4', '13', '7', '12', '11', '8'],
+                id: ['4', '13', '7', '15', '12', '11', '8'],
               },
             ],
           },

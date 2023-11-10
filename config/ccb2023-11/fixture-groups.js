@@ -7,7 +7,7 @@ const fixtureGroups = [
   {
     id: '1',
     name: 'Floor',
-    fixtures: ['all:4'],
+    fixtures: ['all:4', 'all:11', 'all:12'],
   },
   {
     id: '7',
@@ -17,7 +17,7 @@ const fixtureGroups = [
   {
     id: '6',
     name: 'Bunt',
-    fixtures: ['all:4'],
+    fixtures: ['all:4', 'all:11', 'all:12', 'all:13'],
   },
   {
     id: '10',
@@ -27,7 +27,7 @@ const fixtureGroups = [
   {
     id: '9',
     name: 'Strobo',
-    fixtures: ['all:8', 'all:4'],
+    fixtures: ['all:8', 'all:4', 'all:11', 'all:12', 'all:13'],
   },
 ]
 

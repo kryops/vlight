@@ -301,6 +301,43 @@ const chaseColorPresets = [
       },
     ],
   },
+  {
+    id: '17',
+    name: 'pos',
+    colors: [
+      {
+        channels: {
+          m: 0,
+          r: 0,
+          pan: {
+            from: 45,
+            to: 155,
+          },
+          tilt: {
+            from: 10,
+            to: 111,
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: '18',
+    name: 'tilt',
+    colors: [
+      {
+        channels: {
+          m: 0,
+          r: 0,
+          pan: 0,
+          tilt: {
+            from: 130,
+            to: 255,
+          },
+        },
+      },
+    ],
+  },
 ]
 
 module.exports = chaseColorPresets

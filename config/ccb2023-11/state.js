@@ -1,10 +1,18 @@
 module.exports = {
   "channels": {},
   "fixtures": {
+    "10": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "fan": 255
+      }
+    },
     "1_1": {
       "on": false,
       "channels": {
-        "m": 255
+        "m": 255,
+        "foc": 0
       }
     },
     "1_2": {
@@ -12,6 +20,21 @@ module.exports = {
       "channels": {
         "m": 255,
         "foc": 0,
+        "str": 0
+      }
+    },
+    "1_3": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "foc": 0,
+        "str": 0
+      }
+    },
+    "1_4": {
+      "on": false,
+      "channels": {
+        "m": 255,
         "str": 0
       }
     },
@@ -33,7 +56,7 @@ module.exports = {
         "b": 255
       }
     },
-    "4_3": {
+    "11_1": {
       "on": false,
       "channels": {
         "m": 255,
@@ -42,7 +65,43 @@ module.exports = {
         "b": 255
       }
     },
-    "4_4": {
+    "11_2": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "11_3": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "11_4": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "12_1": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "12_2": {
       "on": false,
       "channels": {
         "m": 255,
@@ -66,7 +125,9 @@ module.exports = {
     "8_3": {
       "on": false,
       "channels": {
-        "m": 255
+        "m": 255,
+        "pan": 0,
+        "tilt": 0
       }
     },
     "8_4": {
@@ -74,34 +135,124 @@ module.exports = {
       "channels": {
         "m": 255
       }
+    },
+    "13_1": {
+      "on": false,
+      "channels": {
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "m": 255
+      }
+    },
+    "13_2": {
+      "on": false,
+      "channels": {
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "m": 255
+      }
+    },
+    "13_3": {
+      "on": false,
+      "channels": {
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "m": 255
+      }
+    },
+    "13_4": {
+      "on": false,
+      "channels": {
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "m": 255
+      }
+    },
+    "13_5": {
+      "on": false,
+      "channels": {
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "m": 255
+      }
+    },
+    "13_6": {
+      "on": false,
+      "channels": {
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "m": 255
+      }
     }
   },
   "fixtureGroups": {
+    "1": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
     "4": {
-      "on": true,
+      "on": false,
       "channels": {
         "m": 0,
-        "foc": 81
+        "foc": 112
+      }
+    },
+    "6": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "r": 255,
+        "g": 255,
+        "b": 255
       }
     },
     "7": {
       "on": false,
       "channels": {
-        "m": 52,
+        "m": 255,
         "col": 0,
         "gobo": 0,
         "prism": 0,
-        "pan": 83,
-        "tilt": 186,
+        "pan": 200,
+        "tilt": 192,
         "tiltf": 0,
-        "macro": 233
+        "macro": 0,
+        "panf": 0
+      }
+    },
+    "9": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "r": 255,
+        "g": 255,
+        "b": 255
+      }
+    },
+    "10": {
+      "on": false,
+      "channels": {
+        "m": 255,
+        "pan": 0,
+        "tilt": 0
       }
     }
   },
   "memories": {
     "2": {
       "on": false,
-      "value": 123,
+      "value": 54,
       "forceMaster": false
     },
     "4": {
@@ -111,7 +262,7 @@ module.exports = {
     },
     "6": {
       "on": false,
-      "value": 255,
+      "value": 112,
       "forceMaster": false
     },
     "7": {
@@ -126,7 +277,7 @@ module.exports = {
     },
     "10": {
       "on": true,
-      "value": 133,
+      "value": 190,
       "forceMaster": true
     },
     "11": {
@@ -140,14 +291,24 @@ module.exports = {
       "forceMaster": false
     },
     "13": {
-      "on": true,
+      "on": false,
       "value": 255,
       "forceMaster": true
     },
     "14": {
       "on": false,
-      "value": 213,
+      "value": 83,
       "forceMaster": true
+    },
+    "15": {
+      "on": false,
+      "value": 255,
+      "forceMaster": false
+    },
+    "16": {
+      "on": false,
+      "value": 58,
+      "forceMaster": false
     }
   },
   "liveMemories": {
@@ -181,7 +342,7 @@ module.exports = {
           }
         ]
       ],
-      "value": 255,
+      "value": 0,
       "on": false,
       "name": "Bunt",
       "order": "xcoord",
@@ -232,7 +393,7 @@ module.exports = {
       "value": 255,
       "on": false,
       "name": "Bunt2",
-      "order": "members",
+      "order": "xcoord",
       "pattern": "alternate"
     }
   },
@@ -240,31 +401,31 @@ module.exports = {
     "1": {
       "on": false,
       "stopped": true,
-      "value": 255,
+      "value": 131,
       "members": [
         "group:6"
       ],
       "light": {
-        "from": 0.4293154875437418,
-        "to": 0.6959822177886963
+        "from": 0.31249992052714026,
+        "to": 0.6458333333333333
       },
-      "speed": 0.4485,
+      "speed": 0.812,
       "colors": [
         {
           "channels": {
             "m": 255,
-            "r": 255,
-            "g": 0,
-            "b": 0
-          }
-        },
-        {
-          "channels": {
-            "m": 255,
-            "r": 255,
-            "g": 255,
-            "b": 255,
-            "w": 255
+            "r": [
+              0,
+              255
+            ],
+            "g": [
+              0,
+              255
+            ],
+            "b": [
+              0,
+              255
+            ]
           }
         }
       ],
@@ -273,7 +434,7 @@ module.exports = {
       "burst": false,
       "fadeLockedToSpeed": true,
       "name": "Bunt",
-      "fade": 0
+      "fade": 0.7386944659550984
     },
     "2": {
       "on": false,
@@ -314,19 +475,19 @@ module.exports = {
         "group:7"
       ],
       "light": 1,
-      "speed": 0.4425,
+      "speed": 1.028,
       "colors": [
         {
           "channels": {
             "m": 0,
             "r": 0,
             "pan": {
-              "from": 48,
-              "to": 136
+              "from": 45,
+              "to": 155
             },
             "tilt": {
-              "from": 90,
-              "to": 239
+              "from": 10,
+              "to": 111
             }
           }
         }
@@ -346,8 +507,8 @@ module.exports = {
       "members": [
         "group:7"
       ],
-      "light": 0.28776041666666663,
-      "speed": 0.04,
+      "light": 0.4958333969116211,
+      "speed": 0.768,
       "colors": [
         {
           "channels": {
