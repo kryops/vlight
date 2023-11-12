@@ -3,9 +3,13 @@
 ## Bugs
 
 - Nested drag&drop when editing dynamic pages does not work well with touch
+- Entity reference select behaves strangely when deselecting entries in the middle
+- Fading only works for one live chase at a time
+- Missing hotkey for flash memory
 
 ## Roadmap
 
+- Display URL / IP / QR Code for mobile clients
 - Control improvements
   - Mousewheel / keyboard input for faders?
 - Universe features
@@ -41,6 +45,7 @@
   - Select by mapping (e.g. all color fixtures)
 - Memories
   - Real-world preview during editing
+  - Save fixture/group state as memory / add to existing one
   - Fade in/out buttons
   - In a row: repeat n times
   - Alternating: alternate after n fixtures
