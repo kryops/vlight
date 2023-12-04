@@ -27,7 +27,7 @@
     "node-hid": "^2.1.2",
     "prettier": "^3.0.3",
     "source-map-support": "^0.5.21",
-    "usb-detection": "^4.14.2",
+    "usb": "^2.11.0",
     "ws": "^8.13.0"
   },
   "devDependencies": {

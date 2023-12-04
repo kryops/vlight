@@ -2,6 +2,7 @@
 
 ## December 2023
 
+- Fixed Node 21 compatibility by replacing `usb-detection` with `usb`
 - Fixed fading for multiple live chases at the same time
 
 ## September 2023

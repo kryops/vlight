@@ -5,8 +5,6 @@ import {
   devicesFlushInterval,
   enableUsbDmxDevices,
   universeSize,
-  usbDmxPid,
-  usbDmxVid,
   logLevel,
 } from '../../services/config'
 import { onWindows } from '../../services/env'
@@ -111,15 +109,14 @@ export async function init(): Promise<void> {
     return
   }
   const start = Date.now()
-  const usbDetection: typeof import('usb-detection') = require('usb-detection') // eslint-disable-line
+  const { usb }: typeof import('usb') = require('usb') // eslint-disable-line
 
-  usbDetection.on(`add:${usbDmxVid}:${usbDmxPid}`, async () => {
+  usb.on('attach', async () => {
     // linux seems to need a bit of time here
     await delay(100)
     connectUsbDmxDevices(initDevice)
   })
-  usbDetection.on(`remove:${usbDmxVid}:${usbDmxPid}`, disconnectUsbDmxDevices)
-  usbDetection.startMonitoring()
+  usb.on('detach', disconnectUsbDmxDevices)
 
   setInterval(flushUsbDmxDevices, devicesFlushInterval)
   setInterval(clearBannedDevices, 30000)
@@ -134,8 +131,8 @@ export async function init(): Promise<void> {
 process.on('exit', () => {
   if (!enableUsbDmxDevices) return
   try {
-    const usbDetection: typeof import('usb-detection') = require('usb-detection') // eslint-disable-line
-    usbDetection.stopMonitoring()
+    const { usb }: typeof import('usb') = require('usb') // eslint-disable-line
+    usb.unrefHotplugEvents()
   } catch {
     // do nothing
   }
