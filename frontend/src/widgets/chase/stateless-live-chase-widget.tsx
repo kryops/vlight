@@ -106,8 +106,8 @@ export const StatelessLiveChaseWidget = memoInProduction(
                 state.fadeLockedToSpeed
                   ? 100
                   : fastModeActive
-                  ? liveChaseFastMinSpeed
-                  : liveChaseMinSpeed
+                    ? liveChaseFastMinSpeed
+                    : liveChaseMinSpeed
               }
               max={0}
               value={

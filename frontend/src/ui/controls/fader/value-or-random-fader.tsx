@@ -77,8 +77,8 @@ export const ValueOrRandomFader = memoInProduction(
           typeof value === 'number'
             ? ValueOrRandomType.Values
             : isValueRange(value)
-            ? ValueOrRandomType.Value
-            : ValueOrRandomType.Range,
+              ? ValueOrRandomType.Value
+              : ValueOrRandomType.Range,
           0
         )
       )
@@ -127,15 +127,15 @@ export const ValueOrRandomFader = memoInProduction(
             typeof value === 'number'
               ? iconSingle
               : Array.isArray(value)
-              ? iconMultiple
-              : iconRange
+                ? iconMultiple
+                : iconRange
           }
           title={
             typeof value === 'number'
               ? 'Single value'
               : Array.isArray(value)
-              ? 'Multiple discrete values. Click on the fader to configure'
-              : 'Value range'
+                ? 'Multiple discrete values. Click on the fader to configure'
+                : 'Value range'
           }
           transparent
           onClick={switchBetweenTypes}

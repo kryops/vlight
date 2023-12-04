@@ -7,7 +7,6 @@ import { join } from 'path'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import ExtractCssPlugin from 'mini-css-extract-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
-import stylis from 'stylis'
 import TerserPlugin from 'terser-webpack-plugin'
 import type { JsMinifyOptions as SwcOptions } from '@swc/core'
 import {
@@ -25,9 +24,6 @@ interface Env {
   profile?: any
   profileReact?: any
 }
-
-// linaria CSS options
-stylis.set({ prefix: false })
 
 export const webpackConfiguration = (env: Env = {}): Configuration => {
   const isProduction = !!env.production || !!env.profileReact

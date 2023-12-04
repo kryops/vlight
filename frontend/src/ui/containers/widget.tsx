@@ -196,8 +196,8 @@ export function Widget({
                       turnedOn
                         ? successShade(0)
                         : turnedOn === false
-                        ? errorShade(0)
-                        : iconShade(1)
+                          ? errorShade(0)
+                          : iconShade(1)
                     }
                     inline
                   />
