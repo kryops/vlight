@@ -1,5 +1,9 @@
 # Changelog
 
+## December 2023
+
+- Fixed fading for multiple live chases at the same time
+
 ## September 2023
 
 - Improvements for the map page

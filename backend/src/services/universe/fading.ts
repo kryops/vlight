@@ -65,7 +65,7 @@ export function fadeUniverse(
   const start = Date.now()
   // We make sure that the fading should be finished 1 interval early
   // to improve situations like fade speed = step speed
-  const end = start + durationMs - fadeInterval * 1.5
+  const end = start + durationMs - fadeIntervalTime * 1.5
 
   const startState = cloneUniverse(universe)
   const affectedChannels = getDifferentChannels(startState, targetState)

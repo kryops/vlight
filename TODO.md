@@ -4,7 +4,6 @@
 
 - Nested drag&drop when editing dynamic pages does not work well with touch
 - Entity reference select behaves strangely when deselecting entries in the middle
-- Fading only works for one live chase at a time
 - Missing hotkey for flash memory
 
 ## Roadmap
