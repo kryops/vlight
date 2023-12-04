@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo } from 'react'
 import { css } from '@linaria/core'
 import { toArray } from '@vlight/utils'
 
@@ -43,20 +43,9 @@ export interface ArrayInputProps<T> {
 
 const entry = css`
   display: flex;
-  margin: ${baseline(2)} 0;
+  padding: ${baseline(2)} 0;
   align-items: center;
 `
-
-function removeTrailingUndefined<T extends any[]>(arr: T): T {
-  if (!arr.length || arr[arr.length - 1] !== undefined) return arr
-
-  const newArr = arr.slice(0, -1) as T
-  while (newArr.length && newArr[newArr.length - 1] === undefined) {
-    newArr.pop()
-  }
-
-  return newArr
-}
 
 function removeUndefined<T>(arr: (T | undefined)[]): T[] {
   return arr.filter(it => it !== undefined) as T[]
@@ -82,81 +71,77 @@ export const ArrayInput = memoInProduction(
       () => (value === undefined ? [] : toArray(value)),
       [value]
     )
-    const outgoingValueRef = useRef(sanitizedValue)
-    const [valueToUse, setValueToUse] = useState(
-      removeTrailingUndefined(sanitizedValue)
-    )
-
-    if (outgoingValueRef.current !== sanitizedValue) {
-      outgoingValueRef.current = sanitizedValue
-      setValueToUse(sanitizedValue)
-    }
 
     function onChangeInternal(value: (T | undefined)[]) {
       const valueToSend = removeUndefined(value)
-      outgoingValueRef.current = valueToSend
       onChange(valueToSend)
-      setValueToUse(removeTrailingUndefined(value))
     }
 
-    const toRender = useMemo(() => [...valueToUse, undefined], [valueToUse])
+    const addValueSelect = (
+      <div className={cx(entry, entryClassName)}>
+        {renderInput({
+          value: undefined,
+          onChange: value => {
+            if (value !== undefined) {
+              onChangeInternal([...sanitizedValue, value])
+            }
+          },
+          excludeValues: sanitizedValue as T[],
+        })}
+      </div>
+    )
 
     if (sortable) {
       return (
-        <SortableList<T | undefined>
-          entries={toRender}
-          getKey={it => {
-            if (typeof it === 'string') return it
-            if (typeof it === 'object' && it && 'id' in it) return String(it.id)
-            return JSON.stringify(it)
-          }}
-          onChange={onChangeInternal}
-          containerClassName={cx(flexAuto, className)}
-          entryClassName={cx(entry, entryClassName)}
-          renderEntryContent={singleValue => {
-            const index = toRender.indexOf(singleValue)
-            const changeSingleValue = (newSingleValue: T | undefined) => {
-              if (newSingleValue !== undefined && index === valueToUse.length) {
-                onChangeInternal([...sanitizedValue, newSingleValue])
-              } else {
-                const newValue = [...valueToUse]
+        <div className={cx(flexAuto, className)}>
+          <SortableList<T | undefined>
+            entries={sanitizedValue}
+            getKey={it => {
+              if (typeof it === 'string') return it
+              if (typeof it === 'object' && it && 'id' in it)
+                return String(it.id)
+              return JSON.stringify(it)
+            }}
+            onChange={onChangeInternal}
+            entryClassName={cx(entry, entryClassName)}
+            renderEntryContent={singleValue => {
+              const index = sanitizedValue.indexOf(singleValue)
+              const changeSingleValue = (newSingleValue: T | undefined) => {
+                const newValue = [...sanitizedValue]
                 newValue[index] = newSingleValue
                 onChangeInternal(newValue)
               }
-            }
 
-            return (
-              <>
-                {renderInput({
-                  value: singleValue,
-                  onChange: changeSingleValue,
-                  excludeValues: valueToUse as T[],
-                })}
-                {displayRemoveButtons && singleValue !== undefined && (
-                  <Button
-                    icon={iconDelete}
-                    onClick={() => changeSingleValue(undefined)}
-                    transparent
-                  />
-                )}
-              </>
-            )
-          }}
-        />
+              return (
+                <>
+                  {renderInput({
+                    value: singleValue,
+                    onChange: changeSingleValue,
+                    excludeValues: sanitizedValue as T[],
+                  })}
+                  {displayRemoveButtons && singleValue !== undefined && (
+                    <Button
+                      icon={iconDelete}
+                      onClick={() => changeSingleValue(undefined)}
+                      transparent
+                    />
+                  )}
+                </>
+              )
+            }}
+          />
+          {addValueSelect}
+        </div>
       )
     }
 
     return (
       <div className={cx(flexAuto, className)}>
-        {toRender.map((singleValue, index) => {
+        {sanitizedValue.map((singleValue, index) => {
           const changeSingleValue = (newSingleValue: T | undefined) => {
-            if (newSingleValue !== undefined && index === valueToUse.length) {
-              onChangeInternal([...sanitizedValue, newSingleValue])
-            } else {
-              const newValue = [...valueToUse]
-              newValue[index] = newSingleValue
-              onChangeInternal(newValue)
-            }
+            const newValue = [...sanitizedValue]
+            newValue[index] = newSingleValue
+            onChangeInternal(newValue)
           }
 
           return (
@@ -164,7 +149,7 @@ export const ArrayInput = memoInProduction(
               {renderInput({
                 value: singleValue,
                 onChange: changeSingleValue,
-                excludeValues: valueToUse as T[],
+                excludeValues: sanitizedValue as T[],
               })}
               {displayRemoveButtons && singleValue !== undefined && (
                 <Button
@@ -176,6 +161,7 @@ export const ArrayInput = memoInProduction(
             </div>
           )
         })}
+        {addValueSelect}
       </div>
     )
   }

@@ -2,6 +2,8 @@
 
 ## December 2023
 
+- Improvements for dynamic pages
+  - Improved behavior when selecting and deselecting entities
 - Fixed Node 21 compatibility by replacing `usb-detection` with `usb`
 - Fixed fading for multiple live chases at the same time
 

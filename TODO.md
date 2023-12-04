@@ -1,11 +1,5 @@
 # TODO
 
-## Bugs
-
-- Nested drag&drop when editing dynamic pages does not work well with touch
-- Entity reference select behaves strangely when deselecting entries in the middle
-- Missing hotkey for flash memory
-
 ## Roadmap
 
 - Display URL / IP / QR Code for mobile clients
