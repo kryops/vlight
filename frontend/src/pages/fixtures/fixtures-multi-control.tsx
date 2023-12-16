@@ -21,6 +21,7 @@ import { FixtureListInput } from '../../ui/forms/fixture-list-input'
 import { iconLights } from '../../ui/icons'
 import { memoInProduction } from '../../util/development'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
+import { addMemoryFromFixtureState } from '../memories/memories-actions'
 
 /**
  * Collapsible widget to control multiple fixtures together.
@@ -70,6 +71,13 @@ function FixturesMultiControlInner() {
     }
   })
 
+  const onSave = useEvent(async () => {
+    await addMemoryFromFixtureState({
+      fixtureState: commonFixtureState,
+      members: fixtureStrings,
+    })
+  })
+
   return (
     <TwoColumDialogContainer
       left={
@@ -83,6 +91,7 @@ function FixturesMultiControlInner() {
             mapping={mapping}
             fixtureState={commonFixtureState}
             onChange={changeFixtureState}
+            onSave={onSave}
           />
         )
       }

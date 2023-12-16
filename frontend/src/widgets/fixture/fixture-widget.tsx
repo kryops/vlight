@@ -7,6 +7,7 @@ import { memoInProduction } from '../../util/development'
 import { iconLight } from '../../ui/icons'
 import { useEvent, useShallowEqualMemo } from '../../hooks/performance'
 import { WidgetPassthrough } from '../../ui/containers/widget'
+import { addMemoryFromFixtureState } from '../../pages/memories/memories-actions'
 
 import { FixtureStateWidget } from './fixture-state-widget'
 
@@ -41,6 +42,14 @@ export const FixtureWidget = memoInProduction(
       )
     )
 
+    const onSave = useEvent(async () => {
+      await addMemoryFromFixtureState({
+        fixtureState,
+        members: [fixture.id],
+        initialName: fixture.name,
+      })
+    })
+
     if (!fixtureState || !fixtureType) {
       return null
     }
@@ -59,6 +68,7 @@ export const FixtureWidget = memoInProduction(
         mapping={activeMapping}
         {...passThrough}
         onChange={onChange}
+        onSave={onSave}
         limitedWidth
       />
     )

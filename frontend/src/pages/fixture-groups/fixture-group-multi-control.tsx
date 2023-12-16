@@ -2,6 +2,7 @@ import {
   getCommonFixtureState,
   mergeFixtureStates,
   getCommonFixtureMapping,
+  FixtureMappingPrefix,
 } from '@vlight/controls'
 import { FixtureState, IdType } from '@vlight/types'
 import { isTruthy, isUnique } from '@vlight/utils'
@@ -25,6 +26,7 @@ import { MultiToggleInput } from '../../ui/forms/multi-toggle-input'
 import { iconGroup } from '../../ui/icons'
 import { memoInProduction } from '../../util/development'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
+import { addMemoryFromFixtureState } from '../memories/memories-actions'
 
 function FixtureGroupMultiControlInner() {
   const [selectedGroupIds, setSelectedGroupIds] = useState<string[]>([])
@@ -78,6 +80,13 @@ function FixtureGroupMultiControlInner() {
     }
   )
 
+  const onSave = useEvent(async () => {
+    await addMemoryFromFixtureState({
+      fixtureState: commonState,
+      members: selectedGroupIds.map(id => FixtureMappingPrefix.Group + id),
+    })
+  })
+
   return (
     <TwoColumDialogContainer
       left={
@@ -96,6 +105,7 @@ function FixtureGroupMultiControlInner() {
             mapping={mapping}
             fixtureState={commonState}
             onChange={changeFixtureGroupState}
+            onSave={onSave}
           />
         )
       }

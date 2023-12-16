@@ -11,7 +11,7 @@ import {
   fixtureStateToColor,
 } from '../../ui/controls/colorpicker/util'
 import { memoInProduction } from '../../util/development'
-import { iconColorPicker, iconPositionPicker } from '../../ui/icons'
+import { iconColorPicker, iconMemory, iconPositionPicker } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { faderContainer } from '../../ui/css/fader-container'
 import { getFixtureStateColor } from '../../util/fixtures'
@@ -45,6 +45,7 @@ export interface FixtureStateWidgetProps extends WidgetPassthrough {
   title?: string
   titleSide?: ReactNode
   onChange: (newState: Partial<FixtureState>) => void
+  onSave?: () => void
 
   /**
    * Controls whether to disable the on button in the widget.
@@ -71,6 +72,7 @@ export const FixtureStateWidget = memoInProduction(
     title,
     titleSide,
     onChange,
+    onSave,
     disableOn = false,
     limitedWidth = false,
     className,
@@ -129,7 +131,10 @@ export const FixtureStateWidget = memoInProduction(
                 })
         }
         titleSide={
-          titleSide || colorPickerCapable || positionPickerCapable ? (
+          titleSide ||
+          colorPickerCapable ||
+          positionPickerCapable ||
+          (onSave && !fixtureState.initial) ? (
             <>
               {titleSide}
               {colorPickerCapable && (
@@ -146,6 +151,16 @@ export const FixtureStateWidget = memoInProduction(
                   icon={iconPositionPicker}
                   onClick={togglePositionPicker}
                   shade={positionPicker ? 1 : 2}
+                  inline
+                  className={colorPickerIconStyle}
+                />
+              )}
+              {onSave && !fixtureState.initial && (
+                <Icon
+                  icon={iconMemory}
+                  onClick={onSave}
+                  shade={1}
+                  hoverable
                   inline
                   className={colorPickerIconStyle}
                 />

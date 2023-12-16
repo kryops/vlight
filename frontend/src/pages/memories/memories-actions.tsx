@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
+import { FixtureState } from '@vlight/types/entities'
 
-import { setLiveMemoryState, setMemoryState } from '../../api'
+import { editEntity, setLiveMemoryState, setMemoryState } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconAdd, iconConfig, iconLight, iconLightOff } from '../../ui/icons'
 import { useApiStateSelector } from '../../hooks/api'
@@ -10,6 +11,8 @@ import { openEntityEditor } from '../config/entities/editors'
 import { HotkeyContext } from '../../hooks/hotkey'
 import { apiState } from '../../api/api-state'
 import { ApiState } from '../../api/worker/processing'
+import { showPromptDialog } from '../../ui/overlays/dialog'
+import { entityUiMapping } from '../config/entities/entity-ui-mapping'
 
 function setOnForAllMemories(on: boolean) {
   setMemoryState(
@@ -32,6 +35,41 @@ export const turnAllMemoriesOn = () => setOnForAllMemories(true)
 export const turnAllMemoriesOff = () => setOnForAllMemories(false)
 
 const addMemory = () => openEntityEditor('memories')
+
+export const addMemoryFromFixtureState = async ({
+  fixtureState,
+  members,
+  initialName,
+}: {
+  fixtureState: FixtureState
+  members: string[]
+  initialName?: string
+}) => {
+  const name = await showPromptDialog({
+    title: 'Save as Memory',
+    label: 'Name',
+    initialValue: initialName,
+  })
+
+  if (!name) return
+
+  editEntity('memories', {
+    id: '',
+    ...entityUiMapping.memories?.newEntityFactory?.(),
+    name,
+    scenes: [
+      {
+        members,
+        states: [
+          {
+            ...fixtureState,
+            on: true,
+          },
+        ],
+      },
+    ],
+  })
+}
 
 /**
  * Corner actions for the memories page:

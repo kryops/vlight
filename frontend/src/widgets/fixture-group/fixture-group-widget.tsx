@@ -1,5 +1,5 @@
 import { FixtureGroup, FixtureState } from '@vlight/types'
-import { mergeFixtureStates } from '@vlight/controls'
+import { FixtureMappingPrefix, mergeFixtureStates } from '@vlight/controls'
 
 import { setFixtureGroupState } from '../../api'
 import { useApiStateEntry } from '../../hooks/api'
@@ -11,6 +11,7 @@ import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { memoInProduction } from '../../util/development'
 import { useEvent } from '../../hooks/performance'
 import { WidgetPassthrough } from '../../ui/containers/widget'
+import { addMemoryFromFixtureState } from '../../pages/memories/memories-actions'
 
 export interface FixtureGroupWidgetProps extends WidgetPassthrough {
   group: FixtureGroup
@@ -31,6 +32,14 @@ export const FixtureGroupWidget = memoInProduction(
         mergeFixtureStates(groupState, partialState)
       )
     )
+
+    const onSave = useEvent(async () => {
+      await addMemoryFromFixtureState({
+        fixtureState: groupState,
+        members: [FixtureMappingPrefix.Group + group.id],
+        initialName: group.name,
+      })
+    })
 
     const openEditor = useEvent(() =>
       openEntityEditorForId('fixtureGroups', group.id)
@@ -57,6 +66,7 @@ export const FixtureGroupWidget = memoInProduction(
         mapping={groupMapping}
         {...passThrough}
         onChange={onChange}
+        onSave={onSave}
         limitedWidth
       />
     )
