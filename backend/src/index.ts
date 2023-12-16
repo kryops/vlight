@@ -1,5 +1,6 @@
 const startTime = Date.now()
 
+import qrcode from 'qrcode-terminal'
 import sourceMapSupport from 'source-map-support'
 import { setLogLevel, logger, LogLevel } from '@vlight/utils'
 
@@ -14,6 +15,7 @@ import { initHttpServer } from './services/http'
 import { initMasterData } from './services/masterdata'
 import { initPersistedState } from './services/state'
 import { initUniverse } from './services/universe'
+import { getLocalNetworkIp } from './util/network'
 
 sourceMapSupport.install()
 
@@ -60,6 +62,16 @@ async function init() {
   logger.info(
     `vLight started on http://127.0.0.1:${httpPort} (took ${startDuration}s)`
   )
+
+  const networkIp = getLocalNetworkIp()
+  if (networkIp) {
+    const networkAddress = `http://${networkIp}:${httpPort}`
+    logger.info(`Network address: ${networkAddress}`)
+
+    qrcode.generate(networkAddress, { small: true }, url => {
+      console.log(url)
+    })
+  }
 }
 
 init()

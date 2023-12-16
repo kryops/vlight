@@ -2,7 +2,6 @@
 
 ## Roadmap
 
-- Display URL / IP / QR Code for mobile clients
 - Control improvements
   - Mousewheel / keyboard input for faders?
 - Universe features

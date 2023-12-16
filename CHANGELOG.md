@@ -2,6 +2,7 @@
 
 ## December 2023
 
+- Added printing of local network address and QR code when starting
 - Improvements for dynamic pages
   - Improved behavior when selecting and deselecting entities
 - Fixed Node 21 compatibility by replacing `usb-detection` with `usb`
