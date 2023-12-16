@@ -2,6 +2,7 @@
 
 ## December 2023
 
+- Added map legend in fixture test mode
 - Added printing of local network address and QR code when starting
 - Improvements for dynamic pages
   - Improved behavior when selecting and deselecting entities

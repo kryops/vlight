@@ -15,9 +15,21 @@ import { useEvent } from '../../hooks/performance'
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
 import { showDialog } from '../../ui/overlays/dialog'
 import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
+import { FixtureTypeMapShape } from '../../widgets/map/map-shape'
+import { flexWrap } from '../../ui/css/flex'
 
-export const page = css`
+const page = css`
   margin: -${baseline(1)};
+`
+
+const legendEntry = css`
+  padding: ${baseline()};
+`
+const fixtureTypeStyle = css`
+  display: inline-block;
+  margin-right: ${baseline(2)};
+  transform: none;
+  vertical-align: middle;
 `
 
 function openFixtureDialog(fixture: Fixture) {
@@ -84,18 +96,43 @@ const MapPage = memoInProduction(() => {
     masterDataAndMaps.masterData.fixtures.map(fixture => fixture.id)
   )
 
+  const fixtureTypeIds = new Set(
+    masterDataAndMaps.masterData.fixtures.map(fixture => fixture.type)
+  )
+
   return (
     <>
       <Header>Map</Header>
       <div className={page}>
-        <MapWidget
-          standalone={true}
-          displayChannels={fixtureTestMode}
-          key={fixtureTestMode ? '1' : '0'}
-          onFixtureDown={fixtureTestMode ? turnFixtureOn : openFixtureDialog}
-          onFixtureUp={fixtureTestMode ? turnFixtureOff : undefined}
-          rotate180={mapRotated}
-        />
+        <div className={flexWrap}>
+          <MapWidget
+            standalone={true}
+            displayChannels={fixtureTestMode}
+            key={fixtureTestMode ? '1' : '0'}
+            onFixtureDown={fixtureTestMode ? turnFixtureOn : openFixtureDialog}
+            onFixtureUp={fixtureTestMode ? turnFixtureOff : undefined}
+            rotate180={mapRotated}
+          />
+          {fixtureTestMode && (
+            <div>
+              {[...fixtureTypeIds].map(id => {
+                const fixtureType =
+                  masterDataAndMaps.masterDataMaps.fixtureTypes.get(id)
+                if (!fixtureType) return null
+
+                return (
+                  <div key={id} className={legendEntry}>
+                    <FixtureTypeMapShape
+                      fixtureType={fixtureType}
+                      className={fixtureTypeStyle}
+                    />
+                    {fixtureType.name}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
         <div>
           <Button active={fixtureTestMode} onClick={toggleFixtureTestMode}>
             Fixture Test Mode

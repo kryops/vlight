@@ -23,7 +23,6 @@
   - On tap button (like memories)
   - Search box
 - Map
-  - Add legend
   - Display all fixture names
   - Change size
 - Speed/Fade control
