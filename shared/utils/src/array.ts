@@ -39,7 +39,7 @@ export function arrayRange<T>(
   const length = Math.floor(max - min + 1)
   if (length <= 0) return []
 
-  const entries: T[] = new Array(length)
+  const entries: T[] = Array.from({ length })
   for (let current = min; current <= max; current++) {
     entries[current - min] = cb(current)
   }
@@ -54,7 +54,7 @@ export function createRangeArray(min: number, max: number): number[] {
   const length = Math.floor(max - min + 1)
   if (length <= 0) return []
 
-  const arr: number[] = new Array(length)
+  const arr: number[] = Array.from({ length })
   for (let i = min; i <= max; i++) {
     arr[i - min] = i
   }
@@ -137,4 +137,11 @@ export function commaStringToArray(input: string | undefined): string[] {
     .split(',')
     .map(it => it.trim())
     .filter(Boolean)
+}
+
+/**
+ * Creates an array with the given length, filled with zeros.
+ */
+export function createZeroArray(length: number): number[] {
+  return Array.from<number>({ length }).fill(0)
 }

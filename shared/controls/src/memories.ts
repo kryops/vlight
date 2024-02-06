@@ -82,42 +82,47 @@ export function getMemorySceneStateInfo(
         )
       : 100
 
-  return new Array(numStates).fill(undefined).map((_, stateIndex) => {
-    switch (scene.pattern) {
-      case ScenePattern.Alternate: {
-        const firstForState = stateIndex
-        // can be higher than numMembers
-        const lastForState = (membersPerState - 1) * numStates + stateIndex
-        const stateFixtures = orderedFixtures.filter(
-          (_, index) => index % numStates === stateIndex
-        )
-        return {
-          min: getMinCoord(stateFixtures),
-          max: getMaxCoord(stateFixtures),
-          firstForState,
-          lastForState,
-          orderedFixtures,
+  return Array.from({ length: numStates })
+    .fill(undefined)
+    .map((_, stateIndex) => {
+      switch (scene.pattern) {
+        case ScenePattern.Alternate: {
+          const firstForState = stateIndex
+          // can be higher than numMembers
+          const lastForState = (membersPerState - 1) * numStates + stateIndex
+          const stateFixtures = orderedFixtures.filter(
+            (_, index) => index % numStates === stateIndex
+          )
+          return {
+            min: getMinCoord(stateFixtures),
+            max: getMaxCoord(stateFixtures),
+            firstForState,
+            lastForState,
+            orderedFixtures,
+          }
+        }
+        case ScenePattern.Row:
+        default: {
+          const firstForState = stateIndex * membersPerState
+          const lastForState = ensureBetween(
+            firstForState + membersPerState - 1,
+            0,
+            numMembers - 1
+          )
+          const stateFixtures = orderedFixtures.slice(
+            firstForState,
+            lastForState
+          )
+          return {
+            min: getMinCoord(stateFixtures),
+            max: getMaxCoord(stateFixtures),
+            firstForState,
+            lastForState,
+            orderedFixtures,
+          }
         }
       }
-      case ScenePattern.Row:
-      default: {
-        const firstForState = stateIndex * membersPerState
-        const lastForState = ensureBetween(
-          firstForState + membersPerState - 1,
-          0,
-          numMembers - 1
-        )
-        const stateFixtures = orderedFixtures.slice(firstForState, lastForState)
-        return {
-          min: getMinCoord(stateFixtures),
-          max: getMaxCoord(stateFixtures),
-          firstForState,
-          lastForState,
-          orderedFixtures,
-        }
-      }
-    }
-  })
+    })
 }
 
 interface MemoryFractionArgs {

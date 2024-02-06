@@ -99,12 +99,12 @@ describe('getStateIndexAndFractionFor', () => {
     ) => {
       const scene: MemoryScene = {
         pattern,
-        members: new Array(numMembers) as any,
-        states: new Array(numStates) as any,
+        members: Array.from({ length: numMembers }) as any,
+        states: Array.from({ length: numStates }) as any,
       }
       const stateIndexes = []
       const positions = []
-      const memberFixtures = new Array(numMembers).fill({})
+      const memberFixtures = Array.from<any>({ length: numMembers }).fill({})
       for (let i = 0; i < numMembers; i++) {
         const [stateIndex, position] = getStateIndexAndFractionFor({
           scene,
@@ -190,10 +190,10 @@ describe('getFixtureStateFor', () => {
       (pattern, _, numMembers, states, expectedMemberStates) => {
         const scene: MemoryScene = {
           pattern,
-          members: new Array(numMembers) as any,
+          members: Array.from({ length: numMembers }) as any,
           states,
         }
-        const memberFixtures = new Array(numMembers).fill({})
+        const memberFixtures = Array.from<any>({ length: numMembers }).fill({})
         const membersStates = arrayRange(0, numMembers - 1, i => i).map(index =>
           getFixtureStateForMemoryScene({
             scene,
@@ -298,15 +298,15 @@ describe('getFixtureStateFor', () => {
       (pattern, _, numMembers, states, expectedMemberChannels) => {
         const scene: MemoryScene = {
           pattern,
-          members: new Array(numMembers) as any,
+          members: Array.from({ length: numMembers }) as any,
           states,
         }
-        const memberFixtures = new Array(numMembers).fill({})
+        const memberFixtures = Array.from<any>({ length: numMembers }).fill({})
         const membersStates = arrayRange(0, numMembers - 1, i => i).map(index =>
           getFixtureStateForMemoryScene({
             scene,
             memberIndex: index,
-            memberFixtures: new Array(numMembers).fill({}),
+            memberFixtures: Array.from<any>({ length: numMembers }).fill({}),
             stateInfo: getMemorySceneStateInfo(scene, memberFixtures),
           })
         )

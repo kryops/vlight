@@ -102,8 +102,8 @@ const categories: FixtureListCategory[] = [
 ]
 
 function getCountByCategory(value: string[]): Map<FixtureListCategory, number> {
-  return new Map([
-    ...categories
+  return new Map(
+    categories
       .map(category => {
         if (category.prefix === '') {
           return value.filter(entry =>
@@ -117,8 +117,8 @@ function getCountByCategory(value: string[]): Map<FixtureListCategory, number> {
       .map<[FixtureListCategory, number]>((count, index) => [
         categories[index],
         count,
-      ]),
-  ])
+      ])
+  )
 }
 
 export interface FixtureListInputProps {
@@ -182,8 +182,8 @@ export const FixtureListInput = memoInProduction(
         >)
       : []
 
-    const fixtureCountByEntity = new Map<ListEntityType, number>([
-      ...allEntities
+    const fixtureCountByEntity = new Map<ListEntityType, number>(
+      allEntities
         .map<number>(entity => {
           if (activeCategory === allFixturesCategory)
             return (entity as Fixture).count ?? 1
@@ -198,8 +198,8 @@ export const FixtureListInput = memoInProduction(
         .map<[ListEntityType, number]>((count, index) => [
           allEntities[index],
           count,
-        ]),
-    ])
+        ])
+    )
 
     const countByCategory = getCountByCategory(valueToDisplay)
 

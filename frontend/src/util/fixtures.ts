@@ -6,7 +6,7 @@ import {
   MasterDataMaps,
 } from '@vlight/types'
 import { ChannelType } from '@vlight/controls'
-import { createRangeArray } from '@vlight/utils'
+import { createRangeArray, createZeroArray } from '@vlight/utils'
 
 import { masterDataMaps } from '../api/masterdata'
 
@@ -146,7 +146,7 @@ export function getOccupiedFixtureChannels(
 
   const count = Math.floor(isRaw ? fixture.count ?? 1 : 1)
 
-  return new Array(count).fill(0).flatMap((_, index) => {
+  return createZeroArray(count).flatMap((_, index) => {
     const startChannel =
       fixture.channel + index * (channelsPerFixture + channelOffset)
 

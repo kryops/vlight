@@ -5,6 +5,7 @@ import {
   getMemorySceneStateInfo,
 } from '@vlight/controls'
 import { MasterData, MasterDataMaps, MemoryScene } from '@vlight/types'
+import { createZeroArray } from '@vlight/utils'
 
 import { useMasterDataAndMaps } from '../../hooks/api'
 import { memoInProduction } from '../../util/development'
@@ -28,7 +29,7 @@ function getMemoryUniverse(
   masterData: MasterData,
   masterDataMaps: MasterDataMaps
 ): number[] {
-  const universe = new Array(512).fill(0)
+  const universe = createZeroArray(512)
 
   for (const scene of scenes) {
     const members = mapFixtureList(scene.members, {

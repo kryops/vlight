@@ -1,3 +1,5 @@
+import { createZeroArray } from '@vlight/utils'
+
 import { Universe } from '../../services/universe'
 
 /**
@@ -9,7 +11,7 @@ export const blockSize = 32
  * Message that sets the correct mode "PC Out -> DMX Out"
  */
 export function getModeMessage(): number[] {
-  const message = new Array(34).fill(0)
+  const message = createZeroArray(34)
   message[0] = 16
   // Modes:
   // 0: Do nothing - Standby
@@ -44,6 +46,6 @@ export function getChannelBlockMessage(
     0,
     block,
     ...universeBlock,
-    ...new Array(blockSize - universeBlock.length).fill(0),
+    ...createZeroArray(blockSize - universeBlock.length),
   ]
 }

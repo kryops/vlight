@@ -29,7 +29,7 @@ export function valueToFraction(
 ): number {
   if (min === max) return 0
   const fraction = (value - min) / (max - min)
-  if (fraction === -0) return 0
+  if (Object.is(fraction, -0)) return 0
   return fraction
 }
 
@@ -42,7 +42,7 @@ export function fractionToValue(
   max: number
 ): number {
   const value = min + fraction * (max - min)
-  if (value === -0) return 0
+  if (Object.is(value, -0)) return 0
   return value
 }
 
