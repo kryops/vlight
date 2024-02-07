@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FixtureState } from '@vlight/types/entities'
 
-import { editEntity, setLiveMemoryState, setMemoryState } from '../../api'
+import { setLiveMemoryState, setMemoryState } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconAdd, iconConfig, iconLight, iconLightOff } from '../../ui/icons'
 import { useApiStateSelector } from '../../hooks/api'
@@ -12,7 +12,10 @@ import { HotkeyContext } from '../../hooks/hotkey'
 import { apiState } from '../../api/api-state'
 import { ApiState } from '../../api/worker/processing'
 import { showPromptDialog } from '../../ui/overlays/dialog'
-import { entityUiMapping } from '../config/entities/entity-ui-mapping'
+import {
+  editEntityWithCustomLogic,
+  entityUiMapping,
+} from '../config/entities/entity-ui-mapping'
 
 function setOnForAllMemories(on: boolean) {
   setMemoryState(
@@ -53,7 +56,7 @@ export const addMemoryFromFixtureState = async ({
 
   if (!name) return
 
-  editEntity('memories', {
+  editEntityWithCustomLogic('memories', {
     id: '',
     ...entityUiMapping.memories?.newEntityFactory?.(),
     name,

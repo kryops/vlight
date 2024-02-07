@@ -6,7 +6,6 @@ import { Button } from '../../ui/buttons/button'
 import { Clickable } from '../../ui/components/clickable'
 import { iconAdd, iconConfig, iconDelete } from '../../ui/icons'
 import { baseline, primaryShade } from '../../ui/styles'
-import { editEntity, removeEntity } from '../../api'
 import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
 import { useMasterData } from '../../hooks/api'
 import { Icon } from '../../ui/icons/icon'
@@ -14,6 +13,10 @@ import { yesNo } from '../../ui/overlays/buttons'
 import { flexContainer } from '../../ui/css/flex'
 import { memoInProduction } from '../../util/development'
 import { useEvent } from '../../hooks/performance'
+import {
+  editEntityWithCustomLogic,
+  removeEntityWithCustomLogic,
+} from '../../pages/config/entities/entity-ui-mapping'
 
 import { getChasePreviewColor } from './utils'
 
@@ -67,7 +70,7 @@ const ChaseColorPresetContainer = memoInProduction(
           initialValue: preset.name,
         })
         if (!name) return
-        editEntity('chaseColorPresets', {
+        editEntityWithCustomLogic('chaseColorPresets', {
           ...preset,
           name,
         })
@@ -84,7 +87,7 @@ const ChaseColorPresetContainer = memoInProduction(
           yesNo
         )
         if (result) {
-          return removeEntity('chaseColorPresets', preset.id)
+          return removeEntityWithCustomLogic('chaseColorPresets', preset)
         }
       }
     )
@@ -148,7 +151,7 @@ export const ChaseColorPresets = memoInProduction(
       })
       if (name === undefined) return
 
-      editEntity('chaseColorPresets', {
+      editEntityWithCustomLogic('chaseColorPresets', {
         id: '',
         name,
         colors: getCurrentColors(),

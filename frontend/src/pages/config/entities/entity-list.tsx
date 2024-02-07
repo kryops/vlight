@@ -3,7 +3,7 @@ import { EntityType, EntityName, MasterData } from '@vlight/types'
 import { getId } from '@vlight/utils'
 import { useCallback } from 'react'
 
-import { removeEntity, setEntities } from '../../../api'
+import { setEntities } from '../../../api'
 import { apiStateEmitter, apiState } from '../../../api/api-state'
 import { baseline, primaryShade } from '../../../ui/styles'
 import { Icon } from '../../../ui/icons/icon'
@@ -15,7 +15,10 @@ import { useMasterDataMaps } from '../../../hooks/api'
 import { useEvent } from '../../../hooks/performance'
 
 import { openEntityEditor } from './editors'
-import { entityUiMapping } from './entity-ui-mapping'
+import {
+  entityUiMapping,
+  removeEntityWithCustomLogic,
+} from './entity-ui-mapping'
 
 const padding = 3
 
@@ -101,9 +104,7 @@ export function EntityList<T extends EntityName>({
               { closeOnBackDrop: true }
             )
             if (result) {
-              const onDelete = entityUiMapping[type]?.onDelete
-              if (onDelete) onDelete(entry)
-              else removeEntity(type, entry.id)
+              removeEntityWithCustomLogic(type, entry)
             }
           }}
         />

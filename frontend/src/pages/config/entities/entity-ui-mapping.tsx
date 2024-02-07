@@ -158,6 +158,17 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
         }
       }
     },
+    onDelete: fixture => {
+      removeEntity('fixtures', fixture.id)
+
+      replaceMappingInEntities([
+        fixture.id,
+        FixtureMappingPrefix.All + fixture.id,
+        ...(apiState.masterData?.fixtures
+          .filter(it => it.originalId === fixture.id)
+          .map(it => it.id) ?? []),
+      ])
+    },
   },
   fixtureGroups: {
     name: 'Fixture Groups',
@@ -181,52 +192,9 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
     onDelete: group => {
       removeEntity('fixtureGroups', group.id)
 
-      // replace group mapping string with fixture strings in chases and memories
-
       const { fixtures } = group
       const groupMappingString = FixtureMappingPrefix.Group + group.id
-      const replaceGroupInMapping = (mapping: string[]) =>
-        mapping.includes(groupMappingString)
-          ? mapping.flatMap(mappingString =>
-              mappingString === groupMappingString ? fixtures : mappingString
-            )
-          : mapping
-
-      const { memories } = apiState.rawMasterData!
-
-      for (const memory of memories) {
-        if (
-          memory.scenes.some(
-            scene => replaceGroupInMapping(scene.members) !== scene.members
-          )
-        ) {
-          editEntity('memories', {
-            ...memory,
-            scenes: memory.scenes.map(scene => ({
-              ...scene,
-              members: replaceGroupInMapping(scene.members),
-            })),
-          })
-        }
-      }
-
-      const { liveChases, liveMemories } = apiState
-
-      const liveEntityUpdates = [
-        [liveMemories, setLiveMemoryState],
-        [liveChases, setLiveChaseState],
-      ] as const
-      for (const [entries, updateFn] of liveEntityUpdates) {
-        for (const [id, entry] of Object.entries(entries)) {
-          if (entry.members.includes(groupMappingString)) {
-            updateFn(
-              id,
-              { members: replaceGroupInMapping(entry.members) },
-              true
-            )
-          }
-        }
-      }
+      replaceMappingInEntities([groupMappingString], fixtures)
     },
   },
   memories: {
@@ -241,4 +209,94 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
     editor: DynamicPageEditor,
     newEntityFactory: newDynamicPageFactory,
   },
+}
+
+export function editEntityWithCustomLogic<T extends EntityName>(
+  type: T,
+  entry: EntityType<T>
+) {
+  const onEdit = entityUiMapping[type]?.onEdit
+  if (onEdit) onEdit(entry)
+  else editEntity(type, entry)
+}
+
+export function removeEntityWithCustomLogic<T extends EntityName>(
+  type: T,
+  entry: EntityType<T>
+) {
+  const onDelete = entityUiMapping[type]?.onDelete
+  if (onDelete) onDelete(entry)
+  else removeEntity(type, entry.id)
+}
+
+function replaceMappingInEntities(
+  mappingsToReplace: string[],
+  newMappings: string[] = []
+): void {
+  const overlaps = (originalMappings: string[]) =>
+    originalMappings.some(it => mappingsToReplace.includes(it))
+
+  const replaceMappings = (originalMappings: string[]) =>
+    overlaps(originalMappings)
+      ? originalMappings.flatMap(mappingString =>
+          mappingsToReplace.includes(mappingString)
+            ? newMappings
+            : [mappingString]
+        )
+      : originalMappings
+
+  const { fixtureGroups, memories } = apiState.rawMasterData!
+
+  for (const group of fixtureGroups) {
+    if (overlaps(group.fixtures)) {
+      const newFixtures = replaceMappings(group.fixtures)
+      if (newFixtures.length) {
+        editEntity('fixtureGroups', {
+          ...group,
+          fixtures: newFixtures,
+        })
+      } else {
+        // If a group has no members left, we delete it, and remove its mappings from entities further down
+        removeEntity('fixtureGroups', group.id)
+        mappingsToReplace.push(FixtureMappingPrefix.Group + group.id)
+      }
+    }
+  }
+
+  for (const memory of memories) {
+    if (memory.scenes.some(scene => overlaps(scene.members))) {
+      const newScenes = memory.scenes
+        .map(scene => ({
+          ...scene,
+          members: replaceMappings(scene.members),
+        }))
+        .filter(scene => scene.members.length)
+
+      if (newScenes.length) {
+        editEntity('memories', {
+          ...memory,
+          scenes: memory.scenes.map(scene => ({
+            ...scene,
+            members: replaceMappings(scene.members),
+          })),
+        })
+      } else {
+        removeEntity('memories', memory.id)
+      }
+    }
+  }
+
+  const { liveChases, liveMemories } = apiState
+
+  const liveEntityUpdates = [
+    [liveMemories, setLiveMemoryState],
+    [liveChases, setLiveChaseState],
+  ] as const
+  for (const [entries, updateFn] of liveEntityUpdates) {
+    for (const [id, entry] of Object.entries(entries)) {
+      if (overlaps(entry.members)) {
+        updateFn(id, { members: replaceMappings(entry.members) }, true)
+      }
+    }
+  }
 }

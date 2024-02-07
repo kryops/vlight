@@ -2,7 +2,10 @@
 
 ## February 2024
 
-- Added quick creation of a group when creating a fixture definition
+- Improvements for fixtures and groups
+  - Added quick creation of a group when creating a fixture definition
+  - When a fixture definition is deleted, its members are removed from any groups
+  - After deleting a fixture or a group, groups and memories that are now empty are deleted automatically
 
 ## December 2023
 

@@ -2,9 +2,11 @@ import { DbEntity, EntityName, EntityType, IdType } from '@vlight/types'
 import { ComponentType } from 'react'
 
 import { showDialog } from '../../../../ui/overlays/dialog'
-import { editEntity } from '../../../../api'
 import { okCancel } from '../../../../ui/overlays/buttons'
-import { entityUiMapping } from '../entity-ui-mapping'
+import {
+  editEntityWithCustomLogic,
+  entityUiMapping,
+} from '../entity-ui-mapping'
 import { EntityEditorProps } from '../types'
 import { apiState } from '../../../../api/api-state'
 
@@ -58,8 +60,6 @@ export async function openEntityEditor<T extends EntityName>(
     { showCloseButton: true }
   )
   if (result) {
-    const onEdit = entityUiMapping[type]?.onEdit
-    if (onEdit) onEdit(newEntry)
-    else editEntity(type, newEntry)
+    editEntityWithCustomLogic(type, newEntry)
   }
 }

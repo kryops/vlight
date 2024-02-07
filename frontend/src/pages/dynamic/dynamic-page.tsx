@@ -9,11 +9,11 @@ import { DynamicWidget } from '../../widgets/dynamic-widget'
 import { Header } from '../../ui/containers/header'
 import { iconClose, iconConfig, iconOk } from '../../ui/icons'
 import { DynamicPageEditor } from '../config/entities/editors/dynamic-page-editor'
-import { editEntity } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { centeredText } from '../../ui/css/basic-styles'
 import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
 import { useEvent } from '../../hooks/performance'
+import { editEntityWithCustomLogic } from '../config/entities/entity-ui-mapping'
 
 const widgetTypesWithoutHotkeys: Array<WidgetConfig['type']> = [
   'universe',
@@ -64,7 +64,7 @@ const DynamicPage = memoInProduction(() => {
 
   const save = useEvent(() => {
     if (editedPage !== null) {
-      editEntity('dynamicPages', editedPage)
+      editEntityWithCustomLogic('dynamicPages', editedPage)
     }
     cancelEditing()
   })
