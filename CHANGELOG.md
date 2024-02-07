@@ -1,5 +1,9 @@
 # Changelog
 
+## February 2024
+
+- Added quick creation of a group when creating a fixture definition
+
 ## December 2023
 
 - Added "Save as Memory" button for fixture and fixture group states

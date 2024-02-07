@@ -58,6 +58,8 @@ export async function openEntityEditor<T extends EntityName>(
     { showCloseButton: true }
   )
   if (result) {
-    editEntity(type, newEntry)
+    const onEdit = entityUiMapping[type]?.onEdit
+    if (onEdit) onEdit(newEntry)
+    else editEntity(type, newEntry)
   }
 }

@@ -90,6 +90,13 @@ export interface Fixture extends DbEntity {
    * are defined via {@link count}.
    */
   originalId?: IdType
+
+  /**
+   * If set, a group is created in addition to the fixture definition.
+   *
+   * Only used during fixture creation.
+   */
+  createGroup?: boolean
 }
 
 /**

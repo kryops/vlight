@@ -15,7 +15,12 @@ import { FixtureTypeMapShape } from '../../../widgets/map/map-shape'
 import { masterDataMaps } from '../../../api/masterdata'
 import { apiState } from '../../../api/api-state'
 import { getOccupiedFixtureChannels } from '../../../util/fixtures'
-import { editEntity, setLiveChaseState, setLiveMemoryState } from '../../../api'
+import {
+  editEntity,
+  removeEntity,
+  setLiveChaseState,
+  setLiveMemoryState,
+} from '../../../api'
 
 import { FixtureTypeEditor } from './editors/fixture-type-editor'
 import { FixtureEditor } from './editors/fixture-editor'
@@ -62,7 +67,16 @@ export interface EntityEntry<T extends EntityName> {
   /** Function to create a new entry with default values. */
   newEntityFactory?: () => Omit<EntityType<T>, 'id'>
 
-  /** Callback when an entry is deleted. */
+  /**
+   * Callback when an entry is deleted.
+   * Executed instead of the default action (`editEntity`).
+   */
+  onEdit?: (entry: EntityType<T>) => void
+
+  /**
+   * Callback when an entry is deleted.
+   * Executed instead of the default action (`removeEntity`).
+   */
   onDelete?: (entry: EntityType<T>) => void
 }
 
@@ -114,6 +128,36 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
         </>
       )
     },
+    onEdit: async newEntry => {
+      const { createGroup, ...fixture } = newEntry
+      editEntity('fixtures', fixture)
+
+      if (createGroup) {
+        const fixtureIds = new Set(
+          apiState.rawMasterData?.fixtures.map(it => it.id)
+        )
+        const now = Date.now()
+
+        while (
+          apiState.rawMasterData?.fixtures.length === fixtureIds.size &&
+          Date.now() - now < 2000
+        ) {
+          await new Promise(resolve => setTimeout(resolve, 200))
+        }
+
+        const newFixtureDefinition = apiState.rawMasterData!.fixtures.find(
+          it => !fixtureIds.has(it.id)
+        )
+        if (newFixtureDefinition) {
+          editEntity('fixtureGroups', {
+            id: '',
+            ...entityUiMapping.fixtureGroups?.newEntityFactory?.(),
+            name: newFixtureDefinition.name,
+            fixtures: [FixtureMappingPrefix.All + newFixtureDefinition.id],
+          })
+        }
+      }
+    },
   },
   fixtureGroups: {
     name: 'Fixture Groups',
@@ -135,6 +179,8 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
       </>
     ),
     onDelete: group => {
+      removeEntity('fixtureGroups', group.id)
+
       // replace group mapping string with fixture strings in chases and memories
 
       const { fixtures } = group

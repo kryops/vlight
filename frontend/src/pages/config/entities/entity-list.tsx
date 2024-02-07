@@ -101,8 +101,9 @@ export function EntityList<T extends EntityName>({
               { closeOnBackDrop: true }
             )
             if (result) {
-              removeEntity(type, entry.id)
-              entityUiMapping[type]?.onDelete?.(entry)
+              const onDelete = entityUiMapping[type]?.onDelete
+              if (onDelete) onDelete(entry)
+              else removeEntity(type, entry.id)
             }
           }}
         />
