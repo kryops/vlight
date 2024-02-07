@@ -44,6 +44,15 @@ async function loadMasterDataEntity<T extends EntityName>(entity: T) {
   fillMasterDataEntity(entity, entries, rawEntries)
 }
 
+async function reloadAfterUpdate(changedEntities: EntityName[]) {
+  for (const entityToReload of getAffectedEntities(changedEntities)) {
+    await loadMasterDataEntity(entityToReload)
+  }
+  reloadUniverseService()
+  await reloadControls()
+  broadcastApplicationStateToApiClients()
+}
+
 async function updateMasterDataEntity<T extends EntityName>(
   entity: T,
   operation: (options: DatabaseEntityOptions) => Promise<void>
@@ -53,13 +62,44 @@ async function updateMasterDataEntity<T extends EntityName>(
   const global = !!definition?.global
 
   await operation({ global })
+}
 
-  for (const entityToReload of getAffectedEntities(entity)) {
-    await loadMasterDataEntity(entityToReload)
+const pendingOperations: Array<
+  [EntityName, (options: DatabaseEntityOptions) => Promise<void>]
+> = []
+let running = false
+
+async function updateMasterDataEntityWithLocking<T extends EntityName>(
+  entity: T,
+  operation: (options: DatabaseEntityOptions) => Promise<void>
+) {
+  pendingOperations.push([entity, operation])
+  if (running) {
+    return
   }
-  reloadUniverseService()
-  reloadControls()
-  broadcastApplicationStateToApiClients()
+
+  const changedEntities = new Set<EntityName>()
+
+  try {
+    running = true
+
+    while (pendingOperations.length) {
+      const entry = pendingOperations.shift()
+      if (entry) {
+        const [entity, operation] = entry
+        changedEntities.add(entity)
+        await updateMasterDataEntity(entity, operation)
+      }
+
+      if (!pendingOperations.length) {
+        const entitiesToReload = [...changedEntities]
+        changedEntities.clear()
+        await reloadAfterUpdate(entitiesToReload)
+      }
+    }
+  } finally {
+    running = false
+  }
 }
 
 /**
@@ -87,7 +127,7 @@ function registerApiMessageHandlers() {
   // will flush the complete application state including the master data to all connected clients
 
   registerApiMessageHandler('entity', (message: ApiEntityMessage<any>) => {
-    updateMasterDataEntity(message.entity, options =>
+    updateMasterDataEntityWithLocking(message.entity, options =>
       writeDatabaseEntity(message.entity, message.entries, options)
     )
     return false
@@ -96,7 +136,7 @@ function registerApiMessageHandlers() {
   registerApiMessageHandler(
     'add-entity',
     (message: ApiAddEntityMessage<any>) => {
-      updateMasterDataEntity(message.entity, options =>
+      updateMasterDataEntityWithLocking(message.entity, options =>
         addDatabaseEntry(message.entity, message.entry, options)
       )
       return false
@@ -106,7 +146,7 @@ function registerApiMessageHandlers() {
   registerApiMessageHandler(
     'update-entity',
     (message: ApiUpdateEntityMessage<any>) => {
-      updateMasterDataEntity(message.entity, options =>
+      updateMasterDataEntityWithLocking(message.entity, options =>
         updateDatabaseEntry(message.entity, message.entry, options)
       )
       return false
@@ -116,7 +156,7 @@ function registerApiMessageHandlers() {
   registerApiMessageHandler(
     'remove-entity',
     (message: ApiRemoveEntityMessage<any>) => {
-      updateMasterDataEntity(message.entity, options =>
+      updateMasterDataEntityWithLocking(message.entity, options =>
         removeDatabaseEntry(message.entity, message.id, options)
       )
       return false

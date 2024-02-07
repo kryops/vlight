@@ -42,10 +42,12 @@ export function getEntitiesInDependencyOrder(): EntityName[] {
  *
  * The names are returned in the correct order respecting their dependencies.
  */
-export function getAffectedEntities(changedEntity: EntityName): EntityName[] {
+export function getAffectedEntities(
+  changedEntities: EntityName[]
+): EntityName[] {
   const entityNamesInOrder = getEntitiesInDependencyOrder()
 
-  const affected: EntityName[] = [changedEntity]
+  const affected: EntityName[] = [...changedEntities]
   while (true) {
     const currentCount = affected.length
     for (const entity of entityNamesInOrder) {
@@ -60,5 +62,5 @@ export function getAffectedEntities(changedEntity: EntityName): EntityName[] {
     }
   }
 
-  return affected
+  return entityNamesInOrder.filter(it => affected.includes(it))
 }
