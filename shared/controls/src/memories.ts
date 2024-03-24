@@ -64,6 +64,8 @@ export function getMemorySceneStateInfo(
   const numMembers = orderedFixtures.length
   const numStates = scene.states.length
 
+  if (!numStates) return []
+
   const isOrderedByCoords = scene.order === 'xcoord' || scene.order === 'ycoord'
 
   const membersPerState = Math.ceil(numMembers / numStates)
@@ -149,6 +151,8 @@ export function getStateIndexAndFractionFor({
   const numMembers = memberFixtures.length
   const numStates = scene.states.length
 
+  if (numStates === 0) return [0, 0]
+
   const isOrderedByCoords = scene.order === 'xcoord' || scene.order === 'ycoord'
 
   const finalIndex = !isOrderedByCoords
@@ -161,6 +165,8 @@ export function getStateIndexAndFractionFor({
     scene.pattern === ScenePattern.Alternate
       ? finalIndex % numStates
       : Math.floor(finalIndex / membersPerState)
+
+  if (!stateInfo[stateIndex]) return [stateIndex, 0]
 
   const { min, max, firstForState, lastForState } = stateInfo[stateIndex]
   return [

@@ -33,6 +33,7 @@ const stateStyle = css`
   display: flex;
   margin-bottom: ${baseline()};
   border: 1px solid ${iconShade(0)};
+  height: ${baseline(10)};
   min-width: ${baseline(28)};
   cursor: pointer;
 `
@@ -124,13 +125,15 @@ export const MemorySceneEditor = memoInProduction(
               }
             }}
           />
-          <Icon
-            icon={iconDelete}
-            padding
-            onClick={() =>
-              changeStates(scene.states.filter(it => it !== state))
-            }
-          />
+          {scene.states.length > 1 && (
+            <Icon
+              icon={iconDelete}
+              padding
+              onClick={() =>
+                changeStates(scene.states.filter(it => it !== state))
+              }
+            />
+          )}
         </>
       ),
       [changeStates, scene]

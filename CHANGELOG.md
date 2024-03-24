@@ -1,5 +1,9 @@
 # Changelog
 
+## March 2024
+
+- Fixed crash when deleting the last memory scene state
+
 ## February 2024
 
 - Improvements for fixtures and groups
