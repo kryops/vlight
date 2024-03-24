@@ -2,6 +2,7 @@
 
 ## March 2024
 
+- Added real-world memory preview during editing
 - Fixed crash when deleting the last memory scene state
 
 ## February 2024

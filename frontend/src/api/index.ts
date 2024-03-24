@@ -158,9 +158,10 @@ export function removeEntity(entity: EntityName, id: IdType): void {
  */
 export function editEntity<T extends EntityName>(
   entity: T,
-  entry: EntityType<T>
+  entry: EntityType<T>,
+  forceAdd?: boolean
 ): void {
-  sendApiMessage(getApiEditEntityMessage(entity, entry))
+  sendApiMessage(getApiEditEntityMessage(entity, entry, forceAdd))
 }
 
 /**

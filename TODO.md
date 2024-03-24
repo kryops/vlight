@@ -34,7 +34,6 @@
 - Fixture Selection
   - Select by mapping (e.g. all color fixtures)
 - Memories
-  - Real-world preview during editing
   - Add fixture/group state to existing memory
   - Fade in/out buttons
   - In a row: repeat n times

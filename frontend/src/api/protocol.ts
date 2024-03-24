@@ -73,10 +73,11 @@ export function getApiMemoryStateMessage(
 
 export function getApiEditEntityMessage<T extends EntityName>(
   entity: T,
-  entry: EntityType<T>
+  entry: EntityType<T>,
+  forceAdd?: boolean
 ): ApiAddEntityMessage<T> | ApiUpdateEntityMessage<T> {
   return {
-    type: entry.id ? 'update-entity' : 'add-entity',
+    type: entry.id && !forceAdd ? 'update-entity' : 'add-entity',
     entity,
     entry,
   }

@@ -1,11 +1,12 @@
 import { css } from '@linaria/core'
 import { MemoryScene } from '@vlight/types'
+import { useState } from 'react'
 
 import { useFormState, useFormStateArray } from '../../../../hooks/form'
 import { FormSelect, FormTextInput } from '../../../../ui/forms/form-input'
 import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
-import { iconAdd, iconDelete } from '../../../../ui/icons'
+import { iconAdd, iconDelete, iconLight } from '../../../../ui/icons'
 import { primaryShade, baseline } from '../../../../ui/styles'
 import { MemoryPreview } from '../../../../widgets/memory/memory-preview'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
@@ -16,8 +17,13 @@ import {
 import { newMemoryFactory } from '../new-entity-factories'
 import { useEvent } from '../../../../hooks/performance'
 import { Button } from '../../../../ui/buttons/button'
+import { editEntity, removeEntity, setMemoryState } from '../../../../api'
+import { apiState } from '../../../../api/api-state'
+import { masterDataMaps } from '../../../../api/masterdata'
 
 import { MemorySceneEditor } from './memory-scene-editor'
+
+const previewId = '__preview'
 
 const sceneStyle = css`
   padding: ${baseline(2)};
@@ -36,6 +42,7 @@ export function MemoryEditor({
 }: EntityEditorProps<'memories'>) {
   const formState = useFormState(entry, { onChange })
   const scenes = useFormStateArray(formState, 'scenes')
+  const [onBeforePreview, setOnBeforePreview] = useState(false)
 
   const changeScene = useEvent(
     (newScene: MemoryScene, oldScene: MemoryScene) => {
@@ -93,7 +100,49 @@ export function MemoryEditor({
             </Button>
           </>
         }
-        right={<MemoryPreview scenes={scenes.value} displayFixtureOrder />}
+        right={
+          <>
+            <MemoryPreview scenes={scenes.value} displayFixtureOrder />
+            <Button
+              icon={iconLight}
+              onDown={async () => {
+                const on = apiState.memories[entry.id]?.on ?? false
+                const memory =
+                  apiState.rawMasterData?.memories.find(
+                    it => it.id === entry.id
+                  ) ?? entry
+
+                setOnBeforePreview(on)
+                editEntity(
+                  'memories',
+                  {
+                    ...memory,
+                    scenes: scenes.value,
+                    id: previewId,
+                    name: '(Preview)',
+                  },
+                  true
+                )
+
+                let i = 0
+                while (!masterDataMaps.memories.get(previewId) && i++ < 100) {
+                  await new Promise(resolve => setTimeout(resolve, 10))
+                }
+
+                setMemoryState(previewId, { on: true }, true)
+                if (on) setMemoryState(entry.id, { on: false }, true)
+              }}
+              onUp={() => {
+                removeEntity('memories', previewId)
+                if (onBeforePreview) {
+                  setMemoryState(entry.id, { on: true }, true)
+                }
+              }}
+            >
+              Preview
+            </Button>
+          </>
+        }
         rightClassName={editorPreviewColumn}
         fixed
       />

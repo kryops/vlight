@@ -122,7 +122,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
     options?: DatabaseEntityOptions
   ): Promise<EntityArray<T>> {
     const oldEntries = await this.loadEntities(entity, options)
-    const newEntry = { ...entry, id: generateId(oldEntries) }
+    const newEntry = { ...entry, id: entry.id || generateId(oldEntries) }
     const entries = [...oldEntries, newEntry]
     await this.writeEntities(entity, entries, options)
     return entries
