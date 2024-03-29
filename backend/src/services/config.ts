@@ -122,6 +122,13 @@ export interface VLightConfiguration {
   artnetHost: string
 
   /**
+   * The ArtNet universe.
+   *
+   * Defaults to `0`.
+   */
+  artnetUniverse: number
+
+  /**
    * Controls whether USB DMX devices are enabled.
    *
    * Defaults to `true`.
@@ -197,6 +204,7 @@ export const udpUniverseInterval = c('udpUniverseInterval', 1000)
 
 export const enableArtNetDevices = c('enableArtNetDevices', true)
 export const artnetHost = c('artnetHost', '255.255.255.255')
+export const artnetUniverse = c('artnetUniverse', 0)
 
 export const enableUsbDmxDevices = c('enableUsbDmxDevices', true)
 export const usbDmxVid = c('usbDmxVid', 1204)
