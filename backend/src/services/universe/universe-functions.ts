@@ -135,10 +135,10 @@ export function overwriteUniverse(
 ): boolean {
   let changed = false
 
-  universe1.forEach((_, index) => {
+  universe2.forEach((value, index) => {
     const channel = getChannelFromUniverseIndex(index)
 
-    if (setUniverseChannel(universe1, channel, universe2[index])) {
+    if (setUniverseChannel(universe1, channel, value)) {
       changed = true
     }
   })
