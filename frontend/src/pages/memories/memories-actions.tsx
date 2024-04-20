@@ -3,7 +3,13 @@ import { FixtureState } from '@vlight/types/entities'
 
 import { setLiveMemoryState, setMemoryState } from '../../api'
 import { Button } from '../../ui/buttons/button'
-import { iconAdd, iconConfig, iconLight, iconLightOff } from '../../ui/icons'
+import {
+  iconAdd,
+  iconConfig,
+  iconLight,
+  iconLightOff,
+  iconStop,
+} from '../../ui/icons'
 import { useApiStateSelector } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
@@ -30,8 +36,22 @@ function setOnForAllMemories(on: boolean) {
   })
 }
 
+export function stopAllMemories() {
+  Object.entries(apiState.liveMemories).forEach(([id, liveMemory]) => {
+    if (liveMemory.gradientMovement) {
+      setLiveMemoryState(id, { gradientMovement: false }, true)
+    }
+  })
+}
+
 export function isAnyMemoryOn(apiState: ApiState) {
   return isAnyOn(apiState.memories) || isAnyOn(apiState.liveMemories)
+}
+
+export function isAnyMemoryRunning(apiState: ApiState) {
+  return Object.values(apiState.liveMemories).some(
+    liveMemory => liveMemory.gradientMovement
+  )
 }
 
 export const turnAllMemoriesOn = () => setOnForAllMemories(true)
@@ -82,9 +102,10 @@ export const addMemoryFromFixtureState = async ({
  * - All off
  */
 export function MemoriesActions() {
-  const { allOn, allOff } = useApiStateSelector(apiState => ({
+  const { allOn, allOff, allStopped } = useApiStateSelector(apiState => ({
     allOn: isAllOn(apiState.memories) && isAllOn(apiState.liveMemories),
     allOff: !isAnyMemoryOn(apiState),
+    allStopped: !isAnyMemoryRunning(apiState),
   }))
 
   return (
@@ -93,6 +114,15 @@ export function MemoriesActions() {
       <Link to={entitiesPageRoute('memories')}>
         <Button icon={iconConfig} transparent />
       </Link>
+      <Button
+        icon={iconStop}
+        onClick={stopAllMemories}
+        disabled={allStopped}
+        title="Stop"
+        hotkey="i"
+      >
+        STOP
+      </Button>
       <Button
         icon={iconLight}
         onClick={turnAllMemoriesOn}

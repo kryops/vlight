@@ -38,7 +38,6 @@
   - Fade in/out buttons
   - In a row: repeat n times
   - Alternating: alternate after n fixtures
-  - Preset library
 - Chases
   - Color distribution: equal, relative
   - Fixture selection mode: by index, by coordinates

@@ -8,6 +8,17 @@ import { DbEntity, EntityMembers } from './util'
 export type MemorySceneState = FixtureState | FixtureStateGradient[]
 
 /**
+ * Preset for memory scene states.
+ */
+export interface MemorySceneStatePreset extends DbEntity {
+  /** The name of the preset. */
+  name: string
+
+  /** The persisted state. */
+  state: MemorySceneState
+}
+
+/**
  * A scene of a {@link Memory}.
  */
 export interface MemoryScene {
@@ -111,4 +122,26 @@ export interface LiveMemory extends MemoryScene {
    * master channel.
    */
   value: number
+
+  /**
+   * Controls whether the gradient movement is active.
+   */
+  gradientMovement?: boolean
+
+  /**
+   * The speed the memory's gradient moves (in seconds).
+   */
+  gradientSpeed?: number
+
+  /**
+   * Controls whether the gradient movement is inverted.
+   */
+  gradientMovementInverted?: boolean
+
+  /**
+   * Controls whether gradients only apply the offset of the movement instead
+   * of adding the offset of the members within the scene
+   * (i.e. applies the same state to all members)
+   */
+  gradientIgnoreFixtureOffset?: boolean
 }

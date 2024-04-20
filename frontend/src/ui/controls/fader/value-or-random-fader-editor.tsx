@@ -81,6 +81,12 @@ export interface ValueOrRandomFaderEditorProps {
 
   /** Step size. If set, rounds the value accordingly. */
   step?: number
+
+  /**
+   * If set, the fader uses a quadratic scale with the given exponent
+   * instead of a linear scale.
+   */
+  quadraticScale?: number
 }
 
 /**

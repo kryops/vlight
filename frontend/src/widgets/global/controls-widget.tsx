@@ -21,6 +21,8 @@ import {
 } from '../../pages/fixtures/fixtures-actions'
 import {
   isAnyMemoryOn,
+  isAnyMemoryRunning,
+  stopAllMemories,
   turnAllMemoriesOff,
 } from '../../pages/memories/memories-actions'
 import { Button } from '../../ui/buttons/button'
@@ -46,13 +48,14 @@ const turnAllOff = () => {
 
 const stopAll = () => {
   stopAllChases()
+  stopAllMemories()
 }
 
 export const ControlsWidget = memoInProduction(
   ({ ...passThrough }: ControlsWidgetProps) => {
     const [isAnyOn, isAnyRunning] = useApiStateSelector(apiState => [
       allOffMapping.some(([check]) => check(apiState)),
-      isAnyChaseRunning(apiState),
+      isAnyChaseRunning(apiState) || isAnyMemoryRunning(apiState),
     ])
 
     return (

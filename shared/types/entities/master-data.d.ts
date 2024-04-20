@@ -3,7 +3,7 @@ import { DynamicPage } from './dynamic-page'
 import { Fixture } from './fixture'
 import { FixtureGroup } from './fixture-group'
 import { FixtureType } from './fixture-type'
-import { Memory } from './memory'
+import { Memory, MemorySceneStatePreset } from './memory'
 import { IdType } from './util'
 
 /** Mapping of entity keys to their type. */
@@ -14,6 +14,7 @@ interface MasterDataMapping {
   memories: Memory
   dynamicPages: DynamicPage
   chaseColorPresets: ChaseColorPreset
+  memorySceneStatePresets: MemorySceneStatePreset
 }
 
 /**

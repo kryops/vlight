@@ -31,6 +31,12 @@ export interface ValueOrRandomFaderProps {
   /** Step size. If set, rounds the value accordingly. */
   step?: number
 
+  /**
+   * If set, the fader uses a quadratic scale with the given exponent
+   * instead of a linear scale.
+   */
+  quadraticScale?: number
+
   label?: string
   onChange: (value: ValueOrRandom<number>) => void
 }
@@ -47,6 +53,7 @@ export const ValueOrRandomFader = memoInProduction(
     min = 0,
     max = 100,
     step,
+    quadraticScale = 1,
     label,
     onChange,
   }: ValueOrRandomFaderProps) => {
@@ -62,6 +69,7 @@ export const ValueOrRandomFader = memoInProduction(
             min={min}
             max={max}
             step={step}
+            quadraticScale={quadraticScale}
           />
         ),
         okCancel
@@ -91,6 +99,7 @@ export const ValueOrRandomFader = memoInProduction(
           min={min}
           max={max}
           step={step}
+          quadraticScale={quadraticScale}
           onChange={onChange}
         />
       )
@@ -101,7 +110,7 @@ export const ValueOrRandomFader = memoInProduction(
             <FaderButton
               key={index}
               height={2}
-              fraction={valueToFraction(it, min, max)}
+              fraction={valueToFraction(it, min, max, quadraticScale)}
             />
           ))}
         </FaderBase>
@@ -113,6 +122,7 @@ export const ValueOrRandomFader = memoInProduction(
           min={min}
           max={max}
           step={step}
+          quadraticScale={quadraticScale}
           onChange={onChange}
         />
       )

@@ -18,6 +18,7 @@ const masterData: MasterData = {
   dynamicPages: [],
   memories: [],
   chaseColorPresets: [],
+  memorySceneStatePresets: [],
 }
 
 const masterDataMaps: MasterDataMaps = {
@@ -27,6 +28,7 @@ const masterDataMaps: MasterDataMaps = {
   dynamicPages: new Map(),
   memories: new Map(),
   chaseColorPresets: new Map(),
+  memorySceneStatePresets: new Map(),
 }
 
 describe('mapFixtureList', () => {

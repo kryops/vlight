@@ -2,6 +2,7 @@ import {
   getFixtureStateForMemoryScene,
   mapFixtureList,
   getMemorySceneStateInfo,
+  defaultLiveMemoryGradientSpeed,
 } from '@vlight/controls'
 import {
   ApiLiveMemoryMessage,
@@ -10,7 +11,7 @@ import {
   IdType,
   LiveMemory,
 } from '@vlight/types'
-import { dictionaryToMap, mergeObjects } from '@vlight/utils'
+import { dictionaryToMap, mergeObjects, overflowBetween } from '@vlight/utils'
 
 import { registerApiMessageHandler } from '../../services/api/registry'
 import { masterData, masterDataMaps } from '../../services/masterdata'
@@ -25,12 +26,70 @@ import {
 import { controlRegistry } from '../registry'
 
 /** A map containing all live memories. */
-export const liveMemories: Map<IdType, LiveMemory> = new Map()
+export const liveMemories = new Map<IdType, LiveMemory>()
 
 /** The outgoing DMX universes for all live memories. */
-const outgoingUniverses: Map<IdType, Universe> = new Map()
+const outgoingUniverses = new Map<IdType, Universe>()
 
-function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe {
+/** Current gradient movement offsets (0-1) per live memory. */
+const gradientMovementOffsets = new Map<IdType, number>()
+
+/** Interval time (ms) for the gradient movement */
+const gradientIntervalTime = 20
+
+/**
+ * The interval that processes all movements.
+ * Only running if there are movements active.
+ */
+let gradientInterval: any = null
+
+function hasMovingGradient(liveMemory: LiveMemory) {
+  return (
+    liveMemory.on &&
+    !!liveMemory.gradientMovement &&
+    !!liveMemory.gradientSpeed &&
+    liveMemory.states.some(state => Array.isArray(state))
+  )
+}
+
+function processMovingGradients() {
+  for (const [id, liveMemory] of liveMemories) {
+    if (!hasMovingGradient(liveMemory)) continue
+
+    const oldOffset = gradientMovementOffsets.get(id) ?? 0
+    const diff =
+      1 /
+      (liveMemory.gradientSpeed ?? defaultLiveMemoryGradientSpeed) /
+      (1000 / gradientIntervalTime)
+    const newOffset = overflowBetween(
+      oldOffset + (liveMemory.gradientMovementInverted ? diff * -1 : diff),
+      0,
+      1
+    )
+    gradientMovementOffsets.set(id, newOffset)
+
+    const universe = outgoingUniverses.get(id)
+    if (universe) {
+      overwriteUniverse(universe, getUniverseForLiveMemory(id, liveMemory))
+    }
+  }
+}
+
+function refreshGradientInterval() {
+  const hasMovingGradients = [...liveMemories.values()].some(hasMovingGradient)
+
+  if (hasMovingGradients && !gradientInterval) {
+    gradientInterval = setInterval(processMovingGradients, gradientIntervalTime)
+  } else if (!hasMovingGradients && gradientInterval) {
+    clearInterval(gradientInterval)
+    gradientInterval = null
+  }
+}
+
+function getUniverseForLiveMemory(
+  id: IdType,
+  liveMemory: LiveMemory
+): Universe {
   const fixtureStates: Dictionary<FixtureState> = {}
 
   const members = mapFixtureList(liveMemory.members, {
@@ -41,6 +100,7 @@ function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe {
     member => masterDataMaps.fixtures.get(member)!
   )
   const stateInfo = getMemorySceneStateInfo(liveMemory, memberFixtures)
+  const gradientOffset = gradientMovementOffsets.get(id)
 
   members.forEach((member, memberIndex) => {
     fixtureStates[member] = getFixtureStateForMemoryScene({
@@ -48,6 +108,8 @@ function getUniverseForLiveMemory(liveMemory: LiveMemory): Universe {
       memberIndex,
       memberFixtures,
       stateInfo,
+      gradientOffset,
+      gradientIgnoreFixtureOffset: liveMemory.gradientIgnoreFixtureOffset,
     })
   })
 
@@ -59,6 +121,8 @@ function deleteLiveMemory(id: IdType) {
   const universe = outgoingUniverses.get(id)
   if (universe) removeUniverse(universe)
   outgoingUniverses.delete(id)
+  gradientMovementOffsets.delete(id)
+  refreshGradientInterval()
 }
 
 function handleApiMessage(message: ApiLiveMemoryMessage): boolean {
@@ -77,7 +141,22 @@ function handleApiMessage(message: ApiLiveMemoryMessage): boolean {
 
   liveMemories.set(id, liveMemory)
 
-  if (!existing) outgoingUniverses.set(id, getUniverseForLiveMemory(liveMemory))
+  refreshGradientInterval()
+
+  const updatingBaseState =
+    message.state.members ||
+    message.state.pattern ||
+    message.state.states ||
+    message.state.order ||
+    message.state.gradientIgnoreFixtureOffset !== undefined
+
+  if (updatingBaseState) {
+    gradientMovementOffsets.delete(id)
+  }
+
+  if (!existing) {
+    outgoingUniverses.set(id, getUniverseForLiveMemory(id, liveMemory))
+  }
   const universe = outgoingUniverses.get(id)!
 
   if (!liveMemory.on) {
@@ -85,14 +164,8 @@ function handleApiMessage(message: ApiLiveMemoryMessage): boolean {
     return true
   }
 
-  if (
-    existing &&
-    (!existing.on ||
-      message.state.members ||
-      message.state.pattern ||
-      message.state.states)
-  ) {
-    overwriteUniverse(universe, getUniverseForLiveMemory(liveMemory)!)
+  if (existing && (!existing.on || updatingBaseState)) {
+    overwriteUniverse(universe, getUniverseForLiveMemory(id, liveMemory)!)
   }
 
   addUniverse(universe, { masterValue: liveMemory.value })
@@ -106,6 +179,8 @@ function reload(reloadState?: boolean) {
   liveMemories.clear()
   ;[...outgoingUniverses.values()].forEach(removeUniverse)
   outgoingUniverses.clear()
+
+  refreshGradientInterval()
 }
 
 export function initLiveMemories(): void {

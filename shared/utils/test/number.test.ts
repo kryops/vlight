@@ -1,4 +1,9 @@
-import { ensureBetween, valueToFraction, fractionToValue } from '../src/number'
+import {
+  ensureBetween,
+  valueToFraction,
+  fractionToValue,
+  overflowBetween,
+} from '../src/number'
 
 describe('util/number', () => {
   describe('ensureBetween', () => {
@@ -28,14 +33,20 @@ describe('util/number', () => {
       expect(valueToFraction(2, 0, 2)).toBe(1)
       expect(valueToFraction(0.4, 0, 1)).toBe(0.4)
     })
+
     it('should return fraction greater than 1', () => {
       expect(valueToFraction(3, 0, 2)).toBe(1.5)
       expect(valueToFraction(3, 1, 2)).toBe(2)
     })
+
     it('should return fraction smaller than 0', () => {
       expect(valueToFraction(-1, 0, 2)).toBe(-0.5)
       expect(valueToFraction(0.5, 1, 2)).toBe(-0.5)
       expect(valueToFraction(-1, 1, 2)).toBe(-2)
+    })
+
+    it('should apply the given quadratic scale', () => {
+      expect(valueToFraction(1.5, 1, 2, 1 / 2)).toBe(0.25)
     })
   })
 
@@ -55,6 +66,26 @@ describe('util/number', () => {
     it('should add the fraction to the min value', () => {
       expect(fractionToValue(0.5, 1, 2)).toBe(1.5)
       expect(fractionToValue(0.5, 2, 1)).toBe(1.5)
+    })
+
+    it('should apply the given quadratic scale', () => {
+      expect(fractionToValue(0.25, 1, 2, 1 / 2)).toBe(1.5)
+    })
+  })
+
+  describe('overflowBetween', () => {
+    it.each([
+      [0, 0, 1, 0],
+      [0.5, 0, 1, 0.5],
+      [1, 0, 1, 1],
+      [1.5, 0, 1, 0.5],
+      [2, 0, 1, 1],
+      [-1, 0, 1, 0],
+
+      [12.5, 5, 10, 7.5],
+      [2.5, 5, 10, 7.5],
+    ])('%p / %p - %p => %p', (value, min, max, expected) => {
+      expect(overflowBetween(value, min, max)).toBe(expected)
     })
   })
 })

@@ -8,6 +8,7 @@ const allEntities: { [key in EntityName]: true } = {
   fixtures: true,
   memories: true,
   chaseColorPresets: true,
+  memorySceneStatePresets: true,
 }
 
 /**

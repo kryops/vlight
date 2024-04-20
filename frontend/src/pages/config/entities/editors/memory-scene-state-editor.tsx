@@ -28,6 +28,7 @@ import { flexContainer } from '../../../../ui/css/flex'
 import { useDeepEqualMemo, useEvent } from '../../../../hooks/performance'
 import { Button } from '../../../../ui/buttons/button'
 import { Checkbox } from '../../../../ui/forms/checkbox'
+import { MemorySceneStatePresets } from '../../../../widgets/memory/memory-scene-state-presets'
 
 const widget = css`
   border: none;
@@ -62,7 +63,9 @@ const stopSelectionEntry_active = css`
   border-width: 2px;
 `
 
-const optionsContainer = flexContainer
+const optionsContainer = css`
+  margin-bottom: ${baseline(2)};
+`
 
 const positionContainer = css`
   flex: 1 0 auto;
@@ -120,6 +123,11 @@ export function MemorySceneStateEditor({
   const [currentStop, setCurrentStop] = useState(0)
   const mapping = useCommonFixtureMapping(scene.members)
 
+  const updateState = useEvent((state: MemorySceneState) => {
+    setLocalState(state)
+    onChange(state)
+  })
+
   useEffect(() => {
     if (Array.isArray(localState) && currentStop >= localState.length)
       setCurrentStop(localState.length - 1)
@@ -148,8 +156,7 @@ export function MemorySceneStateEditor({
         ...entry.channels,
       },
     }
-    setLocalState(newState)
-    onChange(newState)
+    updateState(newState)
   }
 
   const activeGradientStop =
@@ -167,8 +174,7 @@ export function MemorySceneStateEditor({
   const changeFixtureState = useEvent((partialState: Partial<FixtureState>) => {
     if (Array.isArray(localState)) return
     const newState = mergeFixtureStates(localState, partialState)
-    setLocalState(newState)
-    onChange(newState)
+    updateState(newState)
   })
 
   const changePositionMode = useEvent((value: MemoryScenePositionMode): void =>
@@ -189,16 +195,14 @@ export function MemorySceneStateEditor({
   const removeCurrentStop = useEvent(() => {
     if (!Array.isArray(localState)) return
     const newState = localState.filter((_, i) => i !== currentStop)
-    setLocalState(newState)
-    onChange(newState)
+    updateState(newState)
   })
 
   const toggleMirrored = useEvent(() => {
     if (!Array.isArray(localState)) return
     const mirrored = localState.some(it => it.mirrored)
     const newState = localState.map(it => ({ ...it, mirrored: !mirrored }))
-    setLocalState(newState)
-    onChange(newState)
+    updateState(newState)
   })
 
   const content = Array.isArray(localState) ? (
@@ -239,7 +243,7 @@ export function MemorySceneStateEditor({
             disableOn
             className={widget}
           />
-          <div className={optionsContainer}>
+          <div className={cx(flexContainer, optionsContainer)}>
             <div className={positionContainer}>
               <Select
                 entries={positionModes}
@@ -295,11 +299,11 @@ export function MemorySceneStateEditor({
       newState = { on: true, channels: localState[0].channels }
     }
 
-    setLocalState(newState)
-    onChange(newState)
+    updateState(newState)
   })
 
   const toggleGradient = useEvent(() => changeType(!isGradient))
+  const getCurrentState = useEvent(() => localState)
 
   return (
     <>
@@ -323,7 +327,7 @@ export function MemorySceneStateEditor({
                 const newState = [
                   ...localState,
                   {
-                    channels: {
+                    channels: localState.at(-1)?.channels ?? {
                       m: 255,
                       r: 255,
                       g: 255,
@@ -331,8 +335,7 @@ export function MemorySceneStateEditor({
                     },
                   },
                 ]
-                setLocalState(newState)
-                onChange(newState)
+                updateState(newState)
                 setCurrentStop(newState.length - 1)
               }}
             >
@@ -342,6 +345,10 @@ export function MemorySceneStateEditor({
         )}
       </div>
       {content}
+      <MemorySceneStatePresets
+        getCurrentState={getCurrentState}
+        onChange={updateState}
+      />
     </>
   )
 }

@@ -16,5 +16,6 @@ export {
   getFinalGradient,
   type MemorySceneStateInfo,
   getMemorySceneStateInfo,
+  defaultLiveMemoryGradientSpeed,
 } from './memories'
 export { getLiveChaseFixtureStates } from './chases'

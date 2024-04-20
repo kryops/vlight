@@ -20,6 +20,12 @@ export interface FaderProps {
   /** Step size. If set, rounds the value accordingly. */
   step?: number
 
+  /**
+   * If set, the fader uses a quadratic scale with the given exponent
+   * instead of a linear scale.
+   */
+  quadraticScale?: number
+
   /** Primary label. */
   label?: string
 
@@ -63,6 +69,7 @@ export const Fader = memoInProduction(
     value,
     min = 0,
     max = 100,
+    quadraticScale = 1,
     step,
     label,
     subLabel,
@@ -73,7 +80,7 @@ export const Fader = memoInProduction(
     const valueToUse = localValue ?? value
 
     const onTouch = useEvent((fraction: number): void => {
-      const newRawValue = fractionToValue(fraction, min, max)
+      const newRawValue = fractionToValue(fraction, min, max, quadraticScale)
       if (newRawValue === valueToUse) {
         return
       }
@@ -87,7 +94,7 @@ export const Fader = memoInProduction(
     return (
       <FaderBase {...passThrough} onTouch={onTouch} onUp={onUp}>
         <FaderButton
-          fraction={valueToFraction(valueToUse, min, max)}
+          fraction={valueToFraction(valueToUse, min, max, quadraticScale)}
           label={label}
           subLabel={subLabel}
         />

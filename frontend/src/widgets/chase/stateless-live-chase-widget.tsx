@@ -1,5 +1,4 @@
 import { IdType, LiveChase, ValueOrRandom } from '@vlight/types'
-import { useEffect, useState } from 'react'
 import { css } from '@linaria/core'
 
 import { setLiveChaseState } from '../../api'
@@ -15,9 +14,9 @@ import { useEvent } from '../../hooks/performance'
 import { cx } from '../../util/styles'
 
 import { LiveChaseWidgetColorControls } from './live-chase-widget-color-controls'
-import { isLiveChaseCurrentlyFast, updateLiveChaseSpeed } from './utils'
+import { updateLiveChaseSpeed } from './utils'
 import {
-  liveChaseFastMinSpeed,
+  liveChaseFaderQuadraticScale,
   liveChaseMaxSpeed,
   liveChaseMinSpeed,
 } from './constants'
@@ -48,14 +47,6 @@ export const StatelessLiveChaseWidget = memoInProduction(
 
     const changeValue = useEvent((value: number) => update({ value }))
 
-    const isCurrentlyFast = isLiveChaseCurrentlyFast(state)
-    const [fastMode, setFastMode] = useState(isCurrentlyFast)
-    const fastModeActive = fastMode && isCurrentlyFast
-
-    useEffect(() => {
-      if (!isCurrentlyFast) setFastMode(false)
-    }, [isCurrentlyFast])
-
     const changeFadeTime = useEvent((value: number) =>
       update({
         fade: state.fadeLockedToSpeed ? (value / 100) * state.speed : value,
@@ -69,8 +60,6 @@ export const StatelessLiveChaseWidget = memoInProduction(
     const changeLight = useEvent((light: ValueOrRandom<number>) =>
       update({ light })
     )
-
-    const toggleFastMode = useEvent(() => setFastMode(!fastMode))
 
     return (
       <Widget
@@ -94,22 +83,18 @@ export const StatelessLiveChaseWidget = memoInProduction(
               label="Value"
             />
             <Fader
-              min={fastModeActive ? liveChaseFastMinSpeed : liveChaseMinSpeed}
+              min={liveChaseMinSpeed}
               max={liveChaseMaxSpeed}
+              quadraticScale={liveChaseFaderQuadraticScale}
               value={state.speed}
               onChange={changeSpeed}
               label="Speed"
               subLabel={`${state.speed.toFixed(2)}s`}
             />
             <FaderWithContainer
-              min={
-                state.fadeLockedToSpeed
-                  ? 100
-                  : fastModeActive
-                    ? liveChaseFastMinSpeed
-                    : liveChaseMinSpeed
-              }
+              min={state.fadeLockedToSpeed ? 100 : liveChaseMinSpeed}
               max={0}
+              quadraticScale={liveChaseFaderQuadraticScale}
               value={
                 state.fadeLockedToSpeed
                   ? ((state.fade ?? 0) / state.speed) * 100
@@ -130,13 +115,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
             />
           </div>
 
-          <LiveChaseWidgetBottomControls
-            id={id}
-            state={state}
-            title={title}
-            fastModeActive={fastModeActive}
-            onToggleFastMode={toggleFastMode}
-          />
+          <LiveChaseWidgetBottomControls id={id} state={state} title={title} />
         </div>
       </Widget>
     )

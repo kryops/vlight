@@ -44,6 +44,12 @@ export interface RangeFaderProps {
   step?: number
 
   /**
+   * If set, the fader uses a quadratic scale with the given exponent
+   * instead of a linear scale.
+   */
+  quadraticScale?: number
+
+  /**
    * Label to display in the top-left corner.
    *
    * The display of long labels can be controlled via {@link cornerLabelOverflow}.
@@ -79,6 +85,7 @@ export const RangeFader = memoInProduction(
     value,
     min = 0,
     max = 100,
+    quadraticScale = 1,
     step,
     onChange,
     ...passThrough
@@ -88,10 +95,10 @@ export const RangeFader = memoInProduction(
     const valueToUse = localValue ?? value
 
     const getFraction = (coordinate: number) =>
-      valueToFraction(coordinate, min, max)
+      valueToFraction(coordinate, min, max, quadraticScale)
 
     const onTouch = useEvent((fraction: number): void => {
-      const rawCoordinate = fractionToValue(fraction, min, max)
+      const rawCoordinate = fractionToValue(fraction, min, max, quadraticScale)
 
       const newRawValue =
         Math.abs(valueToUse.from - rawCoordinate) <

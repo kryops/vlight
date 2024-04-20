@@ -6,7 +6,12 @@ import {
   FixtureChannels,
   Fixture,
 } from '@vlight/types'
-import { ensureBetween, valueToFraction, fractionToValue } from '@vlight/utils'
+import {
+  ensureBetween,
+  valueToFraction,
+  fractionToValue,
+  overflowBetween,
+} from '@vlight/utils'
 
 import { interpolateGradientPositions } from './gradient'
 
@@ -132,6 +137,8 @@ interface MemoryFractionArgs {
   memberIndex: number
   memberFixtures: Fixture[]
   stateInfo: MemorySceneStateInfo[]
+  gradientOffset?: number
+  gradientIgnoreFixtureOffset?: boolean
 }
 
 /**
@@ -146,6 +153,8 @@ export function getStateIndexAndFractionFor({
   memberIndex,
   memberFixtures,
   stateInfo,
+  gradientOffset = 0,
+  gradientIgnoreFixtureOffset = false,
 }: MemoryFractionArgs): [number, number] {
   const fixture = memberFixtures[memberIndex] ?? {}
   const numMembers = memberFixtures.length
@@ -169,16 +178,17 @@ export function getStateIndexAndFractionFor({
   if (!stateInfo[stateIndex]) return [stateIndex, 0]
 
   const { min, max, firstForState, lastForState } = stateInfo[stateIndex]
-  return [
-    stateIndex,
-    isOrderedByCoords
+  const fraction = gradientIgnoreFixtureOffset
+    ? 0
+    : isOrderedByCoords
       ? valueToFraction(
           (scene.order === 'xcoord' ? fixture.x : fixture.y) ?? 0,
           min,
           max
         )
-      : valueToFraction(finalIndex, firstForState, lastForState),
-  ]
+      : valueToFraction(finalIndex, firstForState, lastForState)
+
+  return [stateIndex, overflowBetween(fraction + gradientOffset, 0, 1)]
 }
 
 function stateFromChannels(channels: FixtureChannels): FixtureState {
@@ -297,3 +307,8 @@ export function getFinalGradient(
       })),
   ]
 }
+
+/**
+ * Default live memory gradient speed (in seconds).
+ */
+export const defaultLiveMemoryGradientSpeed = 30

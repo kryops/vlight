@@ -25,10 +25,11 @@ export function roundToStep(value: number, step?: number): number {
 export function valueToFraction(
   value: number,
   min: number,
-  max: number
+  max: number,
+  quadraticScale = 1
 ): number {
   if (min === max) return 0
-  const fraction = (value - min) / (max - min)
+  const fraction = Math.pow((value - min) / (max - min), 1 / quadraticScale)
   if (Object.is(fraction, -0)) return 0
   return fraction
 }
@@ -39,9 +40,10 @@ export function valueToFraction(
 export function fractionToValue(
   fraction: number,
   min: number,
-  max: number
+  max: number,
+  quadraticScale = 1
 ): number {
-  const value = min + fraction * (max - min)
+  const value = min + Math.pow(fraction, quadraticScale) * (max - min)
   if (Object.is(value, -0)) return 0
   return value
 }
@@ -51,4 +53,21 @@ export function fractionToValue(
  */
 export function average(numbers: number[]): number {
   return numbers.reduce((a, b) => a + b, 0) / numbers.length
+}
+
+/**
+ * Overflows numbers within the given boundaries.
+ */
+export function overflowBetween(value: number, min: number, max: number) {
+  const diff = max - min
+  let newValue = value
+
+  while (newValue < min) {
+    newValue += diff
+  }
+  while (newValue > max) {
+    newValue -= diff
+  }
+
+  return newValue
 }

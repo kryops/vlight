@@ -24,6 +24,7 @@ function getMasterDataMock(): MasterData {
     fixtures: [],
     memories: [],
     chaseColorPresets: [],
+    memorySceneStatePresets: [],
   }
 }
 

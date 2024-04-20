@@ -8,11 +8,7 @@ import {
 import { setLiveChaseState } from '../../api'
 import { getFixtureStateColor } from '../../util/fixtures'
 
-import {
-  liveChaseFastMinSpeed,
-  liveChaseMaxSpeed,
-  liveChaseMinSpeed,
-} from './constants'
+import { liveChaseMaxSpeed, liveChaseMinSpeed } from './constants'
 
 /**
  * Maps a chase color to a CSS color string or gradient
@@ -42,13 +38,6 @@ export function getChasePreviewColor(color: ChaseColor): string {
 
   if (high === low) return high
   return `linear-gradient(to top in srgb-linear, ${low}, ${high})`
-}
-
-export function isLiveChaseCurrentlyFast(state: LiveChase): boolean {
-  return (
-    state.speed <= liveChaseFastMinSpeed &&
-    (!state.fade || state.fade <= liveChaseFastMinSpeed)
-  )
 }
 
 export function updateLiveChaseSpeed(

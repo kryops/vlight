@@ -1,5 +1,11 @@
 # Changelog
 
+## April 2024
+
+- Added gradient movement for live memories
+- Added memory scene state presets
+- Removed live chase fast mode in favor of quadratic fader scales
+
 ## March 2024
 
 - Added real-world memory preview during editing

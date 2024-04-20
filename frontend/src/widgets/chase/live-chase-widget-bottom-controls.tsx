@@ -3,7 +3,6 @@ import { IdType, LiveChase } from '@vlight/types'
 import { deleteLiveChase, setLiveChaseState } from '../../api'
 import {
   iconDelete,
-  iconFast,
   iconList,
   iconMultiple,
   iconRandom,
@@ -11,7 +10,6 @@ import {
   iconSameColor,
   iconSameState,
   iconSingle,
-  iconSlow,
 } from '../../ui/icons'
 import { memoInProduction } from '../../util/development'
 import { Button } from '../../ui/buttons/button'
@@ -24,8 +22,6 @@ import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
 import { useEvent } from '../../hooks/performance'
 import { centeredText } from '../../ui/css/basic-styles'
 import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
-
-import { isLiveChaseCurrentlyFast } from './utils'
 
 interface ColorModeDescriptor {
   mode: LiveChase['colorMode']
@@ -56,21 +52,13 @@ export interface LiveChaseWidgetBottomControlsProps {
   id: IdType
   state: LiveChase
   title: string | undefined
-  fastModeActive: boolean
-  onToggleFastMode: () => void
 }
 
 /**
  * Component to render the bottom control buttons for a live chase
  */
 export const LiveChaseWidgetBottomControls = memoInProduction(
-  ({
-    id,
-    state,
-    fastModeActive,
-    title,
-    onToggleFastMode,
-  }: LiveChaseWidgetBottomControlsProps) => {
+  ({ id, state, title }: LiveChaseWidgetBottomControlsProps) => {
     const update = (newState: Partial<LiveChase>) =>
       setLiveChaseState(id, newState, true)
 
@@ -90,13 +78,6 @@ export const LiveChaseWidgetBottomControls = memoInProduction(
         }
       )
       if (result) update({ members: result })
-    })
-
-    const isCurrentlyFast = isLiveChaseCurrentlyFast(state)
-
-    const toggleFastMode = useEvent(() => {
-      if (!isCurrentlyFast) return
-      onToggleFastMode()
     })
 
     const colorMode =
@@ -136,13 +117,6 @@ export const LiveChaseWidgetBottomControls = memoInProduction(
           title="Toggle fixture list"
           transparent
           onClick={editFixtureList}
-        />
-        <Button
-          icon={fastModeActive ? iconFast : iconSlow}
-          title="Toggle fast mode"
-          transparent
-          onClick={toggleFastMode}
-          disabled={!isCurrentlyFast}
         />
         <Button
           icon={state.single ? iconSingle : iconMultiple}
