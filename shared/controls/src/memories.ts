@@ -130,7 +130,7 @@ export function getMemorySceneStateInfo(
           )
           const stateFixtures = orderedFixtures.slice(
             firstForState,
-            lastForState
+            lastForState + 1
           )
           return {
             min: getMinCoord(stateFixtures),
