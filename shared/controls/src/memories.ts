@@ -11,6 +11,7 @@ import {
   valueToFraction,
   fractionToValue,
   overflowBetween,
+  assertNever,
 } from '@vlight/utils'
 
 import { interpolateGradientPositions } from './gradient'
@@ -34,23 +35,38 @@ export function mergeMemoryStates(
   }
 }
 
+function getIsOrderedByCoords(scene: MemoryScene) {
+  return scene.order !== undefined && scene.order !== 'members'
+}
+
+function getOrderValue(fixture: Fixture, order: MemoryScene['order']) {
+  switch (order) {
+    case undefined:
+    case 'members':
+      return 0 // this should mostly be irrelevant
+    case 'xcoord':
+      return fixture.x ?? 0
+    case 'ycoord':
+      return fixture.y ?? 0
+    case 'x+y':
+      return (fixture.x ?? 0) + (fixture.y ?? 0)
+    case 'x-y':
+      return (fixture.x ?? 0) - (fixture.y ?? 0)
+    default:
+      assertNever(order)
+      return 0
+  }
+}
+
 function getMemorySceneFixtureOrder(
   scene: MemoryScene,
   memberFixtures: Fixture[]
 ): Fixture[] {
-  const isOrderedByCoords = scene.order === 'xcoord' || scene.order === 'ycoord'
-
-  return !isOrderedByCoords
+  return !getIsOrderedByCoords(scene)
     ? memberFixtures
-    : [...memberFixtures].sort((a, b) => {
-        if (scene.order === 'xcoord' && a.x !== b.x) {
-          return (a.x ?? 0) < (b.x ?? 0) ? -1 : 1
-        }
-        if (scene.order === 'ycoord' && a.y !== b.y) {
-          return (a.y ?? 0) < (b.y ?? 0) ? -1 : 1
-        }
-        return 0
-      })
+    : [...memberFixtures].sort(
+        (a, b) => getOrderValue(a, scene.order) - getOrderValue(b, scene.order)
+      )
 }
 
 export interface MemorySceneStateInfo {
@@ -71,22 +87,18 @@ export function getMemorySceneStateInfo(
 
   if (!numStates) return []
 
-  const isOrderedByCoords = scene.order === 'xcoord' || scene.order === 'ycoord'
+  const isOrderedByCoords = getIsOrderedByCoords(scene)
 
   const membersPerState = Math.ceil(numMembers / numStates)
 
   const getMinCoord = (fixtures: Fixture[]) =>
     isOrderedByCoords
-      ? Math.min(
-          ...fixtures.map(it => (scene.order === 'xcoord' ? it.x : it.y) ?? 0)
-        )
+      ? Math.min(...fixtures.map(it => getOrderValue(it, scene.order)))
       : 0
 
   const getMaxCoord = (fixtures: Fixture[]) =>
     isOrderedByCoords
-      ? Math.max(
-          ...fixtures.map(it => (scene.order === 'xcoord' ? it.x : it.y) ?? 0)
-        )
+      ? Math.max(...fixtures.map(it => getOrderValue(it, scene.order)))
       : 100
 
   return Array.from({ length: numStates })
@@ -162,7 +174,7 @@ export function getStateIndexAndFractionFor({
 
   if (numStates === 0) return [0, 0]
 
-  const isOrderedByCoords = scene.order === 'xcoord' || scene.order === 'ycoord'
+  const isOrderedByCoords = getIsOrderedByCoords(scene)
 
   const finalIndex = !isOrderedByCoords
     ? memberIndex
@@ -181,11 +193,7 @@ export function getStateIndexAndFractionFor({
   const fraction = gradientIgnoreFixtureOffset
     ? 0
     : isOrderedByCoords
-      ? valueToFraction(
-          (scene.order === 'xcoord' ? fixture.x : fixture.y) ?? 0,
-          min,
-          max
-        )
+      ? valueToFraction(getOrderValue(fixture, scene.order), min, max)
       : valueToFraction(finalIndex, firstForState, lastForState)
 
   return [stateIndex, overflowBetween(fraction + gradientOffset, 0, 1)]

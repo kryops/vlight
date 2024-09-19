@@ -1,5 +1,9 @@
 # Changelog
 
+## September 2024
+
+- Memories: Added X+Y and X-Y ordering for states and gradients
+
 ## April 2024
 
 - Added gradient movement for live memories

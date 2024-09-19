@@ -39,7 +39,7 @@ export interface MemoryScene {
    *
    * Defaults to `members`.
    */
-  order?: 'members' | 'xcoord' | 'ycoord'
+  order?: 'members' | 'xcoord' | 'ycoord' | 'x+y' | 'x-y'
 
   /** The states of the scene. */
   states: Array<MemorySceneState>

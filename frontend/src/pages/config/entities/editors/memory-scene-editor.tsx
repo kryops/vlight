@@ -62,6 +62,14 @@ const memorySceneOrderEntries: SelectEntry<MemoryScene['order']>[] = [
     value: 'ycoord',
     label: 'Y coord',
   },
+  {
+    value: 'x+y',
+    label: 'X+Y',
+  },
+  {
+    value: 'x-y',
+    label: 'X-Y',
+  },
 ]
 
 export interface MemorySceneEditorProps {
