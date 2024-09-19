@@ -15,6 +15,7 @@
   - Moving heads
   - Special colors preview (amber, UV)
 - Fixtures
+  - Rotate fixture shape on map
   - Opt-in to channel preselection
   - Rearrange channels to fix overlaps / display overlaps in overview
   - Search box
