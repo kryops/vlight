@@ -21,7 +21,7 @@ export const ChannelsWidget = memoInProduction(
       currentApiState =>
         currentApiState.channels?.slice(
           getUniverseIndex(from),
-          getUniverseIndex(to)
+          getUniverseIndex(to) + 1
         ),
       { event: 'channels' }
     )

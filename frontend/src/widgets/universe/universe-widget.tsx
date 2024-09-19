@@ -23,7 +23,7 @@ export const UniverseWidget = memoInProduction(
       currentApiState =>
         currentApiState.universe?.slice(
           getUniverseIndex(from),
-          getUniverseIndex(to)
+          getUniverseIndex(to) + 1
         ),
       { includeUniverse: true, event: 'universe' }
     )
