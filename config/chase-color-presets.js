@@ -142,6 +142,40 @@ const chaseColorPresets = [
       },
     ],
   },
+  {
+    id: '8',
+    name: 'b',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: {
+            from: 0,
+            to: 255,
+          },
+          b: 255,
+        },
+      },
+    ],
+  },
+  {
+    id: '9',
+    name: 'o',
+    colors: [
+      {
+        channels: {
+          m: 255,
+          r: 255,
+          g: {
+            from: 0,
+            to: 255,
+          },
+          b: 0,
+        },
+      },
+    ],
+  },
 ]
 
 module.exports = chaseColorPresets

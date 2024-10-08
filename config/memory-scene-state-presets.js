@@ -205,6 +205,52 @@ const memorySceneStatePresets = [
       },
     ],
   },
+  {
+    id: '8',
+    name: 'r/y',
+    state: [
+      {
+        channels: {
+          m: 255,
+          r: 255,
+          g: 0,
+          b: 0,
+        },
+        mirrored: false,
+      },
+      {
+        channels: {
+          m: 255,
+          r: 255,
+          g: 255,
+          b: 0,
+        },
+        mirrored: false,
+      },
+    ],
+  },
+  {
+    id: '9',
+    name: 'g/b',
+    state: [
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: 255,
+          b: 0,
+        },
+      },
+      {
+        channels: {
+          m: 255,
+          r: 0,
+          g: 0,
+          b: 255,
+        },
+      },
+    ],
+  },
 ]
 
 module.exports = memorySceneStatePresets
