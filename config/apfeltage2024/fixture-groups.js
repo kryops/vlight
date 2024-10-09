@@ -2,12 +2,12 @@ const fixtureGroups = [
   {
     id: '1',
     name: 'Bars',
-    fixtures: ['all:1', 'all:2'],
+    fixtures: ['all:1', 'all:5', 'all:2'],
   },
   {
     id: '2',
     name: 'RGB',
-    fixtures: ['all:3', 'all:4'],
+    fixtures: ['all:4', 'all:3'],
   },
 ]
 
