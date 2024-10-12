@@ -4,7 +4,7 @@
 // @ts-check
 /** @type {Partial<import('../backend/src/services/config').VLightConfiguration>} */
 const userConfig = {
-  project: 'ccb2023-11',
+  project: 'eval',
   enableUsbDmxDevices: true,
   enableVLightDevices: false,
   enableArtNetDevices: false,

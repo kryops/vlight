@@ -56,8 +56,8 @@ const fixtures = [
     name: 'Hazer',
     type: 'hazer',
     channel: 500,
-    x: 51,
-    y: 19,
+    x: 50,
+    y: 23,
   },
   {
     id: '13',

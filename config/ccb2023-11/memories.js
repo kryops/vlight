@@ -1,5 +1,27 @@
 const memories = [
   {
+    id: '19',
+    name: 'Redner',
+    display: 'fader',
+    scenes: [
+      {
+        members: ['1_2'],
+        states: [
+          {
+            on: true,
+            channels: {
+              m: 255,
+              r: 255,
+              g: 255,
+              b: 255,
+            },
+          },
+        ],
+        order: 'members',
+      },
+    ],
+  },
+  {
     id: '2',
     name: 'Stufen i',
     display: 'fader',
@@ -232,8 +254,8 @@ const memories = [
               r: 255,
               g: 255,
               b: 255,
-              gobo: 58,
-              prism: 163,
+              gobo: 87,
+              prism: 152,
             },
           },
         ],
@@ -265,6 +287,29 @@ const memories = [
     ],
   },
   {
+    id: '11',
+    name: 'Hazer',
+    display: 'toggle',
+    scenes: [
+      {
+        members: ['10'],
+        states: [
+          {
+            on: true,
+            channels: {
+              m: 130,
+              r: 255,
+              g: 255,
+              b: 255,
+              fan: 255,
+            },
+          },
+        ],
+        order: 'members',
+      },
+    ],
+  },
+  {
     id: '8',
     name: 'Strobo',
     display: 'flash',
@@ -288,21 +333,44 @@ const memories = [
     ],
   },
   {
-    id: '11',
-    name: 'Hazer',
-    display: 'toggle',
+    id: '17',
+    name: 'SC',
+    display: 'fader',
     scenes: [
       {
-        members: ['10'],
+        members: ['group:7'],
         states: [
           {
             on: true,
             channels: {
-              m: 54,
+              m: 0,
               r: 255,
               g: 255,
               b: 255,
-              fan: 48,
+              col: 255,
+            },
+          },
+        ],
+        order: 'members',
+        pattern: 'row',
+      },
+    ],
+  },
+  {
+    id: '18',
+    name: 'w',
+    display: 'flash',
+    scenes: [
+      {
+        members: ['group:6'],
+        states: [
+          {
+            on: true,
+            channels: {
+              m: 255,
+              r: 255,
+              g: 255,
+              b: 255,
             },
           },
         ],

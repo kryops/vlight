@@ -195,14 +195,14 @@ module.exports = {
     "1": {
       "on": false,
       "channels": {
-        "m": 255,
+        "m": 70,
         "r": 255,
         "g": 255,
         "b": 255
       }
     },
     "4": {
-      "on": false,
+      "on": true,
       "channels": {
         "m": 0,
         "foc": 112
@@ -221,11 +221,11 @@ module.exports = {
       "on": false,
       "channels": {
         "m": 255,
-        "col": 0,
+        "col": 105,
         "gobo": 0,
         "prism": 0,
-        "pan": 200,
-        "tilt": 192,
+        "pan": 0,
+        "tilt": 0,
         "tiltf": 0,
         "macro": 0,
         "panf": 0
@@ -252,7 +252,7 @@ module.exports = {
   "memories": {
     "2": {
       "on": false,
-      "value": 54,
+      "value": 55,
       "forceMaster": false
     },
     "4": {
@@ -262,7 +262,7 @@ module.exports = {
     },
     "6": {
       "on": false,
-      "value": 112,
+      "value": 93,
       "forceMaster": false
     },
     "7": {
@@ -276,8 +276,8 @@ module.exports = {
       "forceMaster": true
     },
     "10": {
-      "on": true,
-      "value": 190,
+      "on": false,
+      "value": 146,
       "forceMaster": true
     },
     "11": {
@@ -297,7 +297,7 @@ module.exports = {
     },
     "14": {
       "on": false,
-      "value": 83,
+      "value": 67,
       "forceMaster": true
     },
     "15": {
@@ -307,7 +307,22 @@ module.exports = {
     },
     "16": {
       "on": false,
-      "value": 58,
+      "value": 47,
+      "forceMaster": false
+    },
+    "17": {
+      "on": false,
+      "value": 144,
+      "forceMaster": true
+    },
+    "18": {
+      "on": false,
+      "value": 255,
+      "forceMaster": false
+    },
+    "19": {
+      "on": false,
+      "value": 0,
       "forceMaster": false
     }
   },
@@ -342,15 +357,15 @@ module.exports = {
           }
         ]
       ],
-      "value": 0,
-      "on": false,
+      "value": 255,
+      "on": true,
       "name": "Bunt",
       "order": "xcoord",
       "pattern": "alternate"
     },
     "2": {
       "members": [
-        "group:6"
+        "all:13"
       ],
       "states": [
         [
@@ -392,7 +407,7 @@ module.exports = {
       ],
       "value": 255,
       "on": false,
-      "name": "Bunt2",
+      "name": "oben",
       "order": "xcoord",
       "pattern": "alternate"
     }
@@ -400,16 +415,16 @@ module.exports = {
   "liveChases": {
     "1": {
       "on": false,
-      "stopped": true,
-      "value": 131,
+      "stopped": false,
+      "value": 233,
       "members": [
         "group:6"
       ],
       "light": {
-        "from": 0.31249992052714026,
-        "to": 0.6458333333333333
+        "from": 0,
+        "to": 1
       },
-      "speed": 0.812,
+      "speed": 0.40349999999999997,
       "colors": [
         {
           "channels": {
@@ -419,6 +434,30 @@ module.exports = {
               255
             ],
             "g": [
+              0,
+              255
+            ],
+            "b": 0
+          }
+        },
+        {
+          "channels": {
+            "m": 255,
+            "r": 0,
+            "g": [
+              0,
+              255
+            ],
+            "b": [
+              0,
+              255
+            ]
+          }
+        },
+        {
+          "channels": {
+            "m": 255,
+            "r": [
               0,
               255
             ],
@@ -434,7 +473,7 @@ module.exports = {
       "burst": false,
       "fadeLockedToSpeed": true,
       "name": "Bunt",
-      "fade": 0.7386944659550984
+      "fade": 0.05331574904669368
     },
     "2": {
       "on": false,
@@ -446,7 +485,7 @@ module.exports = {
       ],
       "light": {
         "from": 0.125,
-        "to": 0.36458333333333337
+        "to": 0.5208333333333333
       },
       "speed": 0.04,
       "colors": [
@@ -475,19 +514,19 @@ module.exports = {
         "group:7"
       ],
       "light": 1,
-      "speed": 1.028,
+      "speed": 0.435,
       "colors": [
         {
           "channels": {
             "m": 0,
             "r": 0,
             "pan": {
-              "from": 45,
-              "to": 155
+              "from": 34,
+              "to": 170
             },
             "tilt": {
-              "from": 10,
-              "to": 111
+              "from": 30,
+              "to": 128
             }
           }
         }
@@ -507,8 +546,8 @@ module.exports = {
       "members": [
         "group:7"
       ],
-      "light": 0.4958333969116211,
-      "speed": 0.768,
+      "light": 0.45613606770833337,
+      "speed": 0.419,
       "colors": [
         {
           "channels": {
@@ -522,10 +561,11 @@ module.exports = {
       ],
       "colorsDraft": null,
       "single": false,
-      "burst": true,
+      "burst": false,
       "fadeLockedToSpeed": true,
       "name": "Sp",
-      "fade": 0
+      "fade": 0,
+      "colorMode": "random"
     }
   },
   "dmxMaster": 255,
