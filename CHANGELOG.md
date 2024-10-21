@@ -1,5 +1,9 @@
 # Changelog
 
+## October 2024
+
+- Fixed live chase fade time fader scale being quadratic even if percentage-based
+
 ## September 2024
 
 - Memories: Added X+Y and X-Y ordering for states and gradients

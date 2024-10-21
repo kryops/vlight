@@ -94,7 +94,11 @@ export const StatelessLiveChaseWidget = memoInProduction(
             <FaderWithContainer
               min={state.fadeLockedToSpeed ? 100 : liveChaseMinSpeed}
               max={0}
-              quadraticScale={liveChaseFaderQuadraticScale}
+              quadraticScale={
+                state.fadeLockedToSpeed
+                  ? undefined
+                  : liveChaseFaderQuadraticScale
+              }
               value={
                 state.fadeLockedToSpeed
                   ? ((state.fade ?? 0) / state.speed) * 100
