@@ -3,6 +3,7 @@
 ## October 2024
 
 - Fixed live chase fade time fader scale being quadratic even if percentage-based
+- Fixed live memory gradient movement only working after the fader was moved
 
 ## September 2024
 

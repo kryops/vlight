@@ -47,8 +47,8 @@ function hasMovingGradient(liveMemory: LiveMemory) {
   return (
     liveMemory.on &&
     !!liveMemory.gradientMovement &&
-    !!liveMemory.gradientSpeed &&
     liveMemory.states.some(state => Array.isArray(state))
+    // we don't check for gradientSpeed here, as we fall back to a default value if not set
   )
 }
 
