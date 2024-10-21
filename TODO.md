@@ -45,6 +45,7 @@
   - State selection mode by index
   - Persist as entities, not state?
   - Compact view: burst button only
+  - Flash step frequency on tap to sync button
 - Dynamic Pages
   - Multi-control widgets
 - New Controls
@@ -60,6 +61,9 @@
 
 ## Tech
 
+- Pub/Sub
+  - DMX universe updates
+  - Controls / based on widgets
 - React Router scroll restoration
 - Backend restructuring
   - easier masterData extension / new entity process?
