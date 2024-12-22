@@ -1,7 +1,7 @@
 import { css } from '@linaria/core'
 import { ValueOrRandom } from '@vlight/types'
 import { highestRandomValue, isValueRange } from '@vlight/utils'
-import { useState } from 'react'
+import { JSX, useState } from 'react'
 
 import { useEvent } from '../../../hooks/performance'
 import { centeredText } from '../../css/basic-styles'

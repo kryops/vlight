@@ -1,5 +1,6 @@
 import { ValueOrRandom } from '@vlight/types'
 import { isValueRange, valueToFraction } from '@vlight/utils'
+import { JSX } from 'react'
 
 import { useEvent } from '../../../hooks/performance'
 import { memoInProduction } from '../../../util/development'

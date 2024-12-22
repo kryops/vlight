@@ -12,7 +12,7 @@ import {
 } from '@vlight/types'
 import { css } from '@linaria/core'
 import { commaStringToArray, ensureBetween, shallowEqual } from '@vlight/utils'
-import { useCallback, useEffect, useState } from 'react'
+import { JSX, useCallback, useEffect, useState } from 'react'
 
 import { baseline, primaryShade } from '../styles'
 import { cx } from '../../util/styles'

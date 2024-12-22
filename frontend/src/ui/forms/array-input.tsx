@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { JSX, useMemo } from 'react'
 import { css } from '@linaria/core'
 import { toArray } from '@vlight/utils'
 
