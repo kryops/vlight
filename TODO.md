@@ -61,6 +61,7 @@
 
 ## Tech
 
+- Migrate away from react-beautiful-dnd, which was deprecated (towards pragmatic dnd?)
 - Pub/Sub
   - DMX universe updates
   - Controls / based on widgets
