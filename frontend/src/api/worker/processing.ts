@@ -37,7 +37,7 @@ function processChannelDeltaMap(
 
 function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
   switch (message.type) {
-    case 'state':
+    case 'state': {
       const { type, ...rest } = message
 
       // type checking
@@ -47,7 +47,7 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
       state.version = ++stateVersion
 
       break
-
+    }
     case 'masterdata':
       state.masterData = message.masterData
       break

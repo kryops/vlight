@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { writeFile, stat, mkdir } from 'fs/promises'
 
-import prettier from 'prettier'
+import { format, Options, resolveConfig } from 'prettier'
 import { EntityName, EntityArray, EntityType, IdType } from '@vlight/types'
 import { logger } from '@vlight/utils'
 
@@ -40,11 +40,11 @@ function generateId(entries: EntityArray): string {
   return String(highestNumber + 1)
 }
 
-let cachedPrettierConfig: prettier.Options | null = null
+let cachedPrettierConfig: Options | null = null
 
 async function getPrettierConfig() {
   if (!cachedPrettierConfig) {
-    cachedPrettierConfig = await prettier.resolveConfig(__dirname)
+    cachedPrettierConfig = await resolveConfig(__dirname)
   }
 
   return cachedPrettierConfig
@@ -94,7 +94,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
 
     const filePath = getModulePath(entity, !!global) + '.js'
 
-    const fileContent = await prettier.format(
+    const fileContent = await format(
       `const ${entity} = ${JSON.stringify(entries, null, 2)}
   
   module.exports = ${entity}

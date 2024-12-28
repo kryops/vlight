@@ -34,6 +34,7 @@ process.on('unhandledRejection', err => {
 if (!isDevelopment) {
   process.on('SIGINT', () => {
     logger.warn('SIGINT received, exiting...')
+    // eslint-disable-next-line n/no-process-exit
     process.exit()
   })
 }
