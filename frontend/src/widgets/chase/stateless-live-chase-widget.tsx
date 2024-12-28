@@ -102,7 +102,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
               value={
                 state.fadeLockedToSpeed
                   ? ((state.fade ?? 0) / state.speed) * 100
-                  : state.fade ?? 0
+                  : (state.fade ?? 0)
               }
               onChange={changeFadeTime}
               label="Fade"

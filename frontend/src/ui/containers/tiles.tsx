@@ -10,7 +10,7 @@ import { memoInProduction } from '../../util/development'
 /**
  * Container element for rendering tiles in a grid.
  */
-export const TileGrid = ({ children }: PropsWithChildren<{}>) => (
+export const TileGrid = ({ children }: PropsWithChildren) => (
   <div className={flexWrap}>{children}</div>
 )
 

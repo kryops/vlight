@@ -144,6 +144,7 @@ export function initPersistedState(): void {
     const statePath = join(configDirectoryPath, project, stateConfigFileName)
     persistedState = {
       ...getEmptyPersistedState(),
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       ...require(statePath),
     }
   } catch {

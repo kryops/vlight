@@ -2,7 +2,9 @@ import { AddressInfo } from 'net'
 import { networkInterfaces } from 'os'
 
 /** Returns the given IP address as string. */
-export function getAddressString(address: string | AddressInfo | {}): string {
+export function getAddressString(
+  address: string | AddressInfo | { address?: string; port?: number }
+): string {
   if (typeof address === 'string') {
     return address
   }

@@ -56,8 +56,8 @@ export function convertValueOrRandom(
       return [min ?? (value as number), value as number]
     case ValueOrRandomType.Range:
       return {
-        from: Array.isArray(value) ? value[0] : min ?? (value as number),
-        to: Array.isArray(value) ? value[1] ?? value[0] : (value as number),
+        from: Array.isArray(value) ? value[0] : (min ?? (value as number)),
+        to: Array.isArray(value) ? (value[1] ?? value[0]) : (value as number),
       }
   }
 }
@@ -118,7 +118,7 @@ export function ValueOrRandomFaderEditor({
       ...localState,
       localState.length
         ? localState[localState.length - 1]
-        : faderProps.min ?? 0,
+        : (faderProps.min ?? 0),
     ])
   })
 

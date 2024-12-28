@@ -42,7 +42,7 @@ export const ChannelFader = memoInProduction(
 
     const fixtureName =
       fixture && fixtureType && fixture.channel === channel
-        ? fixture.name ?? fixtureType.name
+        ? (fixture.name ?? fixtureType.name)
         : undefined
 
     return (

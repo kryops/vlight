@@ -112,5 +112,5 @@ export async function showPromptDialog({
       initialValue: { value: initialValue },
     }
   )
-  return result ? result.value ?? '' : undefined
+  return result ? (result.value ?? '') : undefined
 }

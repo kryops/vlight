@@ -28,7 +28,7 @@ export function removeOverlay(component: ComponentType<OverlayProps>) {
 /**
  * Wrapper component that renders all overlays registered via {@link addOverlay}
  */
-export const OverlayContainer = ({ children }: PropsWithChildren<{}>) => {
+export const OverlayContainer = ({ children }: PropsWithChildren) => {
   const [, setCounter] = useState(0)
 
   useEffect(() => {

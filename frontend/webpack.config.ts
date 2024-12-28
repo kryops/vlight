@@ -124,15 +124,17 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       open: true,
       allowedHosts: 'all',
       historyApiFallback: true,
-      proxy: {
-        '/api': {
+      proxy: [
+        {
+          context: ['/api'],
           target: 'http://localhost:8000/',
         },
-        '/websocket': {
+        {
+          context: ['/websocket'],
           target: 'ws://localhost:8000/',
           ws: true,
         },
-      },
+      ],
     },
     plugins: [
       new DefinePlugin({
@@ -205,7 +207,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
   }
 
   if (profile) {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
     const smp = new SpeedMeasurePlugin()
     return smp.wrap(configuration)
