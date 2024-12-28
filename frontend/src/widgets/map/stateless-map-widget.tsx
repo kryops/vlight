@@ -29,7 +29,7 @@ const widget = css`
   overflow: hidden;
   background: ${iconShade(3)};
 
-  :before {
+  &:before {
     content: '';
     display: block;
     padding-top: 100%; /* initial ratio of 1:1*/

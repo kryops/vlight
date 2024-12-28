@@ -73,7 +73,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
               },
             },
             {
-              loader: '@linaria/webpack-loader',
+              loader: '@wyw-in-js/webpack-loader',
               options: {
                 sourceMap: true,
               },
