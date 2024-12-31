@@ -14,7 +14,6 @@ const expressApp = express()
 export const httpServer = createServer(expressApp)
 
 export async function initExpressApp(): Promise<void> {
-  // @ts-expect-error invalid types
   expressApp.use(history())
 
   expressApp.post('/api', express.json(), (req, res) => {
@@ -26,7 +25,6 @@ export async function initExpressApp(): Promise<void> {
     }
   })
 
-  // @ts-expect-error invalid types
   expressApp.use(compression())
   expressApp.use(express.static(join(__dirname, '../../../../frontend/dist')))
 }
