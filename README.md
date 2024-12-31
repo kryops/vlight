@@ -103,8 +103,6 @@ Start in development mode with hot reloading:
 > yarn dev
 ```
 
-> **NOTE**: Due to https://github.com/microsoft/TypeScript/issues/32651, the backend won't rebuild automatically if there are TypeScript errors.
-
 ### Protocols
 
 [vLight Client Protocol via REST/WebSocket](./backend/src/services/api/README.md)
