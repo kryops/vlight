@@ -1,43 +1,29 @@
-import { ComponentType, useEffect, useState, PropsWithChildren } from 'react'
-import { addToMutableArray, removeFromMutableArray } from '@vlight/utils'
+import { ComponentType, PropsWithChildren, useSyncExternalStore } from 'react'
 
 export interface OverlayProps {
   onClose?: () => void
 }
 
-const overlays: ComponentType<OverlayProps>[] = []
-
+let currentOverlays: ComponentType<OverlayProps>[] = []
 let overlaysChanged: (() => void) | null = null
 
-/**
- * Renders the given component as an overlay.
- */
 export function addOverlay(component: ComponentType<OverlayProps>) {
-  addToMutableArray(overlays, component)
+  currentOverlays = [...currentOverlays, component]
   overlaysChanged?.()
 }
 
-/**
- * Removes an overlay previously added via {@link addOverlay}.
- */
 export function removeOverlay(component: ComponentType<OverlayProps>) {
-  removeFromMutableArray(overlays, component)
+  currentOverlays = currentOverlays.filter(it => it !== component)
   overlaysChanged?.()
 }
 
-/**
- * Wrapper component that renders all overlays registered via {@link addOverlay}
- */
+function subscribe(callback: () => void) {
+  overlaysChanged = callback
+  return () => (overlaysChanged = null)
+}
+
 export const OverlayContainer = ({ children }: PropsWithChildren) => {
-  const [, setCounter] = useState(0)
-
-  useEffect(() => {
-    overlaysChanged = () => setCounter(count => count + 1)
-
-    return () => {
-      overlaysChanged = null
-    }
-  }, [])
+  const overlays = useSyncExternalStore(subscribe, () => currentOverlays)
 
   return (
     <>
