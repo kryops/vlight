@@ -1,5 +1,6 @@
 import './ui/global-styles'
 
+import { StrictMode } from 'react'
 import { BrowserRouter } from 'react-router-dom'
 
 import { ApiWrapper } from './api/api-wrapper'
@@ -8,23 +9,23 @@ import { ErrorBoundary } from './util/error-boundary'
 import { SettingsWrapper } from './settings'
 import { OverlayContainer } from './ui/overlays/overlay'
 
-// Cannot use strict mode due to https://github.com/atlassian/react-beautiful-dnd/issues/2350
-
 /**
  * Main app component.
  */
 const App = () => (
-  <ErrorBoundary>
-    <BrowserRouter>
-      <SettingsWrapper>
-        <ApiWrapper>
-          <OverlayContainer>
-            <MainContainer />
-          </OverlayContainer>
-        </ApiWrapper>
-      </SettingsWrapper>
-    </BrowserRouter>
-  </ErrorBoundary>
+  <StrictMode>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <SettingsWrapper>
+          <ApiWrapper>
+            <OverlayContainer>
+              <MainContainer />
+            </OverlayContainer>
+          </ApiWrapper>
+        </SettingsWrapper>
+      </BrowserRouter>
+    </ErrorBoundary>
+  </StrictMode>
 )
 
 export default App

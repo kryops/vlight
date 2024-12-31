@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd'
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
 
 import { memoInProduction } from '../../util/development'
 
