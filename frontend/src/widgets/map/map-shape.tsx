@@ -31,6 +31,7 @@ export interface MapShapeProps {
   y?: number
   xSize?: number
   ySize?: number
+  rotation?: number
 
   /**
    * Controls whether to highlight the shape.
@@ -81,6 +82,7 @@ export const MapShape = forwardRef<HTMLDivElement, MapShapeProps>(
       onDown,
       onUp,
       children,
+      rotation,
     },
     ref
   ) => {
@@ -100,6 +102,9 @@ export const MapShape = forwardRef<HTMLDivElement, MapShapeProps>(
       borderStyle: border,
       borderWidth: highlighted ? '2px' : undefined,
       borderColor: highlighted ? 'red' : color ? iconShade(0) : undefined,
+      transform: rotation
+        ? `translate(-50%, -50%) ${rotation ? `rotate(${rotation}deg)` : ''}`
+        : undefined,
     }
 
     const commonProps = {

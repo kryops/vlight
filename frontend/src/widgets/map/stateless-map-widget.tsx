@@ -211,6 +211,7 @@ export const StatelessMapWidget = memoInProduction(
                       onFixtureDown ? () => onFixtureDown(fixture) : undefined
                     }
                     onUp={onFixtureUp ? () => onFixtureUp(fixture) : undefined}
+                    rotation={fixture.rotation}
                   >
                     {highlighted &&
                       highlightedFixtures?.length !== undefined &&

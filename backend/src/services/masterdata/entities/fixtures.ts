@@ -47,7 +47,14 @@ function computeChannel({
  */
 function processFixture(fixture: Fixture): Fixture | Fixture[] {
   const { id, type, channel, name } = fixture
-  const { count, xOffset, yOffset, channelOffset, ...resetToKeep } = fixture
+  const {
+    count,
+    xOffset,
+    yOffset,
+    channelOffset,
+    rotationOffset,
+    ...resetToKeep
+  } = fixture
 
   const fixtureType = masterDataMaps.fixtureTypes.get(type)
   if (!fixtureType) {
@@ -80,6 +87,10 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
     y:
       fixture.y !== undefined
         ? fixture.y + (index - 1) * (fixture.yOffset ?? 0)
+        : undefined,
+    rotation:
+      fixture.rotation !== undefined || fixture.rotationOffset !== undefined
+        ? (fixture.rotation ?? 0) + (index - 1) * (fixture.rotationOffset ?? 0)
         : undefined,
   }))
 }

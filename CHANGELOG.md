@@ -1,5 +1,9 @@
 # Changelog
 
+## January 2025
+
+- Added fixture rotation on the map
+
 ## October 2024
 
 - Fixed live chase fade time fader scale being quadratic even if percentage-based

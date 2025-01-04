@@ -86,6 +86,22 @@ export interface Fixture extends DbEntity {
   yOffset?: number
 
   /**
+   * The rotation of the fixture in degrees.
+   * Only affects the display on the map.
+   *
+   * Defaults to 0.
+   */
+  rotation?: number
+
+  /**
+   * The rotation offset between multiple fixtures in degrees.
+   * Only affects fixtures created via {@link count} or {@link fixturesSharingChannel}.
+   *
+   * Defaults to 0.
+   */
+  rotationOffset?: number
+
+  /**
    * Internal reference to the original fixture definition ID if multiple fixtures
    * are defined via {@link count}.
    */

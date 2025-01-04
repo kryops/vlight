@@ -121,6 +121,9 @@ export function FixtureEditor({
       channel: channel + index * (channelsPerFixture + (channelOffset ?? 0)),
       x: x + index * (xOffset ?? 8),
       y: y + index * (yOffset ?? 0),
+      rotation:
+        (formState.values.rotation ?? 0) +
+        index * (formState.values.rotationOffset ?? 0),
       originalId: id,
     }))
 
@@ -203,6 +206,18 @@ export function FixtureEditor({
                 </>
               }
             />
+            <Label
+              label="Rotation"
+              input={
+                <FormNumberInput
+                  formState={formState}
+                  name="rotation"
+                  min={0}
+                  max={360}
+                  step={1}
+                />
+              }
+            />
             <h4>Multiple Fixtures</h4>
             <Select
               entries={[
@@ -272,6 +287,20 @@ export function FixtureEditor({
                       className={autoWidthInput}
                     />
                   </>
+                }
+              />
+            )}
+            {(count ?? fixturesSharingChannel ?? 1) >= 2 && (
+              <Label
+                label="Rotation offset"
+                input={
+                  <FormNumberInput
+                    formState={formState}
+                    name="rotationOffset"
+                    min={0}
+                    max={360}
+                    step={1}
+                  />
                 }
               />
             )}
