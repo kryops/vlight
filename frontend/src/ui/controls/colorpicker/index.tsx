@@ -1,12 +1,17 @@
 import { css } from '@linaria/core'
 import { useRef } from 'react'
 
-import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
+import {
+  getFractionWithMargin,
+  getTouchEventOffset,
+  NormalizedTouchEvent,
+} from '../../../util/touch'
 import { Touchable } from '../../components/touchable'
 import { useDelayedState } from '../../../hooks/delayed-state'
 import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
 import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
+import { useEvent } from '../../../hooks/performance'
 
 import { ColorPickerBackground } from './background'
 import {
@@ -135,6 +140,29 @@ export const ColorPicker = memoInProduction(
         ? lastPositionRef.current
         : positionFromColor
 
+    const onTouch = useEvent(
+      (event: NormalizedTouchEvent<HTMLDivElement>): void => {
+        const offset = getTouchEventOffset(event, touchRef)
+        if (!offset) {
+          return
+        }
+        const { x, y } = getFractionWithMargin(offset, 4)
+        const newPosition = { x, y }
+        const newColor = positionToColor(newPosition)
+        if (
+          lastPositionRef.current &&
+          isSameColor(positionToColor(lastPositionRef.current), newColor)
+        ) {
+          return
+        }
+        lastPositionRef.current = newPosition
+        setLocalColor(newColor)
+        onChange(newColor)
+      }
+    )
+
+    const onUp = useEvent(() => setLocalColor(null, true))
+
     return (
       <div
         className={cx(container, setDefaultHeight && defaultHeight, className)}
@@ -142,25 +170,8 @@ export const ColorPicker = memoInProduction(
         <Touchable
           className={colorPicker}
           ref={touchRef}
-          onTouch={event => {
-            const offset = getTouchEventOffset(event, touchRef)
-            if (!offset) {
-              return
-            }
-            const { x, y } = getFractionWithMargin(offset, 4)
-            const newPosition = { x, y }
-            const newColor = positionToColor(newPosition)
-            if (
-              lastPositionRef.current &&
-              isSameColor(positionToColor(lastPositionRef.current), newColor)
-            ) {
-              return
-            }
-            lastPositionRef.current = newPosition
-            setLocalColor(newColor)
-            onChange(newColor)
-          }}
-          onUp={() => setLocalColor(null, true)}
+          onTouch={onTouch}
+          onUp={onUp}
           preventScroll
         >
           <ColorPickerBackground />

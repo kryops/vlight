@@ -10,7 +10,7 @@ import { iconChase, iconPercentage, iconTime } from '../../ui/icons'
 import { memoInProduction } from '../../util/development'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
-import { useEvent } from '../../hooks/performance'
+import { useDeepEqualMemo, useEvent } from '../../hooks/performance'
 import { cx } from '../../util/styles'
 
 import { LiveChaseWidgetColorControls } from './live-chase-widget-color-controls'
@@ -57,15 +57,19 @@ export const StatelessLiveChaseWidget = memoInProduction(
       update({ fadeLockedToSpeed: !state.fadeLockedToSpeed })
     )
 
+    const light = useDeepEqualMemo(state.light)
+
     const changeLight = useEvent((light: ValueOrRandom<number>) =>
       update({ light })
     )
+
+    const onTitleClick = useEvent(() => update({ on: !state.on }))
 
     return (
       <Widget
         icon={iconChase}
         title={title}
-        onTitleClick={() => update({ on: !state.on })}
+        onTitleClick={onTitleClick}
         turnedOn={state.on}
         contentClassName={flexWrap}
         titleSide={<LiveChaseWidgetTopControls id={id} state={state} />}
@@ -113,7 +117,7 @@ export const StatelessLiveChaseWidget = memoInProduction(
             <ValueOrRandomFader
               min={0}
               max={1}
-              value={state.light}
+              value={light}
               onChange={changeLight}
               label="Light"
             />
