@@ -4,7 +4,7 @@
 // @ts-check
 /** @type {Partial<import('../backend/src/services/config').VLightConfiguration>} */
 const userConfig = {
-  project: 'default',
+  project: 'tonspur2025',
   enableUsbDmxDevices: true,
   enableVLightDevices: false,
   enableArtNetDevices: false,
