@@ -205,6 +205,63 @@ const memorySceneStatePresets = [
       },
     ],
   },
+  {
+    id: '8',
+    name: 'col',
+    state: [
+      {
+        channels: {
+          m: 0,
+          r: 0,
+          g: 0,
+          b: 0,
+          tilt: 0,
+          pan: 0,
+        },
+        mirrored: true,
+      },
+      {
+        channels: {
+          m: 0,
+          r: 0,
+          g: 0,
+          b: 0,
+          tilt: 0,
+          pan: 0,
+          col: 255,
+        },
+        mirrored: true,
+      },
+    ],
+  },
+  {
+    id: '9',
+    name: 'tilt2',
+    state: [
+      {
+        channels: {
+          m: 0,
+          r: 0,
+          g: 0,
+          b: 0,
+          tilt: 182,
+          pan: 0,
+        },
+        mirrored: true,
+      },
+      {
+        channels: {
+          m: 0,
+          r: 0,
+          g: 0,
+          b: 0,
+          tilt: 83,
+          pan: 0,
+        },
+        mirrored: true,
+      },
+    ],
+  },
 ]
 
 module.exports = memorySceneStatePresets
