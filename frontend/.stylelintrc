@@ -3,6 +3,7 @@
   "customSyntax": "@linaria/postcss-linaria",
   "rules": {
     "block-no-empty": null,
+    "declaration-property-value-no-unknown": null,
     "media-query-no-invalid": null,
     "no-descending-specificity": null,
     "no-empty-source": null,

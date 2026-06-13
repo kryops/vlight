@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { css } from '@linaria/core'
 import {
   MemorySceneState,
@@ -128,10 +128,8 @@ export function MemorySceneStateEditor({
     onChange(state)
   })
 
-  useEffect(() => {
-    if (Array.isArray(localState) && currentStop >= localState.length)
-      setCurrentStop(localState.length - 1)
-  }, [currentStop, localState])
+  if (Array.isArray(localState) && currentStop >= localState.length)
+    setCurrentStop(localState.length - 1)
 
   const isGradient = Array.isArray(localState)
 

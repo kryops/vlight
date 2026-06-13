@@ -205,6 +205,7 @@ function StaticEntitiesWidgetInput({
         commaStringToArray(mappingString)
       )
     ) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMappingString(initialMappingString)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

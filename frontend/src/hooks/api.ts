@@ -37,6 +37,7 @@ export function useApiConnecting(): boolean {
 export function useCompleteApiState(except?: Array<keyof ApiState>): ApiState {
   const [, forceUpdate] = useReducer(state => state + 1, 0)
   const exceptRef = useRef(except)
+  // eslint-disable-next-line react-hooks/refs
   exceptRef.current = except
 
   useEffect(() => {
@@ -67,6 +68,7 @@ export function useApiState<TKey extends keyof ApiState>(
   const [_state, setState] = useState(apiState[key])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setState(apiState[key])
 
     function eventHandler() {
@@ -168,6 +170,7 @@ export function useApiStateSelector<T>(
     selector(apiState, undefined)
   )
   const selectorRef = useRef(selector)
+  // eslint-disable-next-line react-hooks/refs
   selectorRef.current = selector
 
   useEffect(() => {

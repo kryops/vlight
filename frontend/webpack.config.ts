@@ -9,14 +9,14 @@ import ExtractCssPlugin from 'mini-css-extract-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import TerserPlugin from 'terser-webpack-plugin'
 import type { JsMinifyOptions as SwcOptions } from '@swc/core'
-import {
-  Configuration,
-  DefinePlugin,
-  HotModuleReplacementPlugin,
-  WebpackPluginInstance,
+import webpack, {
+  type Configuration,
+  type WebpackPluginInstance,
 } from 'webpack'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import ReactRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
+
+const { DefinePlugin, HotModuleReplacementPlugin } = webpack
 
 interface Env {
   analyze?: any
@@ -37,8 +37,8 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
 
   const configuration: Configuration = {
     entry: [
-      isProduction && join(__dirname, 'src/polyfills.ts'),
-      join(__dirname, 'src/index.tsx'),
+      isProduction && join(import.meta.dirname, 'src/polyfills.ts'),
+      join(import.meta.dirname, 'src/index.tsx'),
     ].filter(Boolean) as [string, ...string[]],
     mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? 'source-map' : 'cheap-module-source-map',
@@ -46,7 +46,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
     // https://github.com/pmmmwh/react-refresh-webpack-plugin/issues/235
     target: isProduction ? 'browserslist' : 'web',
     output: {
-      path: join(__dirname, 'dist'),
+      path: join(import.meta.dirname, 'dist'),
       publicPath: '/',
       globalObject: 'this', // support web workers
     },
@@ -101,8 +101,8 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
       extensions: ['.ts', '.tsx', '.js'],
       alias: {
         // transpile from sources in frontend build
-        '@vlight/controls': join(__dirname, '../shared/controls/src'),
-        '@vlight/utils': join(__dirname, '../shared/utils/src'),
+        '@vlight/controls': join(import.meta.dirname, '../shared/controls/src'),
+        '@vlight/utils': join(import.meta.dirname, '../shared/utils/src'),
         ...(profileReact
           ? {
               'react-dom$': 'react-dom/profiling',
@@ -145,7 +145,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
         'process.env.DEBUG': JSON.stringify(false),
       }),
       new HtmlWebpackPlugin({
-        template: join(__dirname, 'index.html'),
+        template: join(import.meta.dirname, 'index.html'),
       }),
       new ExtractCssPlugin({
         ignoreOrder: true,
@@ -201,7 +201,7 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
     //         type: 'filesystem',
     //         name: isProduction ? 'production' : 'development',
     //         buildDependencies: {
-    //           config: [__filename, join(__dirname, '../yarn.lock')],
+    //           config: [__filename, join(import.meta.dirname, '../yarn.lock')],
     //         },
     //       },
   }

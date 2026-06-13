@@ -10,8 +10,7 @@ import { useEvent } from '../../../../hooks/performance'
 
 import { DynamicPageRowEditor } from './dynamic-page-row-editor'
 
-export interface DynamicPageEditProps
-  extends EntityEditorProps<'dynamicPages'> {
+export interface DynamicPageEditProps extends EntityEditorProps<'dynamicPages'> {
   inline?: boolean
 }
 

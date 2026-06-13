@@ -2,8 +2,6 @@
   "compilerOptions": {
     "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": "node_modules",
-    "downlevelIteration": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
@@ -12,8 +10,8 @@
     "isolatedModules": true,
     "jsx": "react",
     "lib": ["esnext"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "node20",
+    "moduleResolution": "node16",
     "noEmit": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
@@ -21,10 +19,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "paths": {
-      "*": ["*", "../@types/*"],
-      "@vlight/controls": ["../shared/controls/src"],
-      "@vlight/types": ["../shared/types/src"],
-      "@vlight/utils": ["../shared/utils/src"]
+      "*": ["./*", "./@types/*"],
+      "@vlight/controls": ["./shared/controls/src"],
+      "@vlight/types": ["./shared/types/src"],
+      "@vlight/utils": ["./shared/utils/src"]
     },
     "types": ["node", "jest"],
     "resolveJsonModule": true,

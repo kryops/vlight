@@ -330,8 +330,7 @@ export function computeAndBroadcastDmxChannelChange({
   return changedDmx
 }
 
-export interface ComputeUniverseChannelRawValueChangeArgs
-  extends ComputeAndBroadcastDmxChannelChangeArgs {
+export interface ComputeUniverseChannelRawValueChangeArgs extends ComputeAndBroadcastDmxChannelChangeArgs {
   universe: Universe
 }
 
