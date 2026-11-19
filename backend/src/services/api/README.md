@@ -6,7 +6,9 @@
 
 Connect to `/websocket`
 
-Upon connection, the client will be sent the universe
+Upon connection, the client will be sent the full state.
+
+DMX universe updates are only sent to clients that subscribed with a `universe-subscription` message. Upon subscribing, the client is sent the complete universe, followed by deltas.
 
 ### HTTP/REST
 

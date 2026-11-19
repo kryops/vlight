@@ -24,6 +24,8 @@ export type ApiWorkerCommand =
   | { type: 'update' }
   /** Command to send a message to the backend. */
   | { type: 'message'; message: ApiInMessage }
+  /** Command to add or remove a consumer of the DMX universe. */
+  | { type: 'universe-subscription'; subscribe: boolean }
 
 /** WebSocket connection to the backend */
 let socket: WebSocket | undefined
@@ -38,6 +40,14 @@ let clientApiState: ApiState | undefined
 let messageQueue: ApiOutMessage[] = []
 /** The last time a heartbeat was received from the server. */
 let lastHeartBeat: number | undefined
+/** Number of frontend consumers that currently need DMX universe updates. */
+let universeSubscribers = 0
+/** Whether we are waiting for the full universe after subscribing. */
+let awaitingUniverse = false
+/** Pending unsubscribe from universe updates, if any. */
+let universeUnsubscribeTimeout: ReturnType<typeof setTimeout> | undefined
+/** How long to wait before actually unsubscribing from universe updates. */
+const universeUnsubscribeDelay = 1000
 /** Pending reconnect attempt, if any. */
 let reconnectTimeout: ReturnType<typeof setTimeout> | undefined
 
@@ -117,6 +127,8 @@ function connectWebSocket() {
   socket.onopen = () => {
     logger.info('WebSocket connection established')
     connecting = false
+    // subscriptions do not survive a reconnect
+    if (universeSubscribers > 0) sendUniverseSubscription(true)
     sendState()
   }
 
@@ -129,6 +141,13 @@ function connectWebSocket() {
         lastHeartBeat = Date.now()
       } else {
         messageQueue.push(message)
+
+        if (message.type === 'universe' && awaitingUniverse) {
+          // first universe after subscribing: don't wait for the next throttled update
+          awaitingUniverse = false
+          processMessageQueue()
+          sendClientUpdate()
+        }
       }
     } catch (e) {
       logger.error(
@@ -165,8 +184,19 @@ function handleClose() {
   apiState = undefined
   clientApiState = undefined
   lastHeartBeat = undefined
+  if (universeUnsubscribeTimeout) {
+    clearTimeout(universeUnsubscribeTimeout)
+    universeUnsubscribeTimeout = undefined
+  }
   sendState()
   reconnectTimeout = setTimeout(connectWebSocket, 1000)
+}
+
+function sendUniverseSubscription(subscribe: boolean) {
+  if (socket?.readyState !== WebSocket.OPEN) return
+  awaitingUniverse = subscribe
+  const message: ApiInMessage = { type: 'universe-subscription', subscribe }
+  socket.send(JSON.stringify(message))
 }
 
 function sendApiMessage(message: ApiInMessage) {
@@ -193,6 +223,25 @@ self.addEventListener('message', event => {
       break
     case 'state':
       sendState()
+      break
+    case 'universe-subscription':
+      if (command.subscribe) {
+        universeSubscribers++
+        if (universeUnsubscribeTimeout) {
+          // still subscribed on the backend: just cancel the pending unsubscribe
+          clearTimeout(universeUnsubscribeTimeout)
+          universeUnsubscribeTimeout = undefined
+        } else if (universeSubscribers === 1) {
+          sendUniverseSubscription(true)
+        }
+      } else if (universeSubscribers > 0 && --universeSubscribers === 0) {
+        // Delay unsubscribing, as components often unmount and mount again right away
+        // (e.g. on navigation), which would make the backend resend the whole universe
+        universeUnsubscribeTimeout = setTimeout(() => {
+          universeUnsubscribeTimeout = undefined
+          sendUniverseSubscription(false)
+        }, universeUnsubscribeDelay)
+      }
       break
     case 'update':
       processMessageQueue()

@@ -5,6 +5,7 @@ import { CSSProperties, ReactNode, useEffect, useRef, Ref } from 'react'
 import { backgroundColor, baselinePx, iconShade } from '../../ui/styles'
 import { Touchable } from '../../ui/components/touchable'
 import { apiState, apiStateEmitter } from '../../api/api-state'
+import { subscribeToUniverse } from '../../api'
 import { getEffectiveFixtureColor } from '../../util/fixtures'
 
 const shapeStyle = css`
@@ -179,10 +180,12 @@ export function FixtureTypeMapShape({
     }
 
     apiStateEmitter.on('universe', eventHandler)
+    const unsubscribe = subscribeToUniverse()
     eventHandler()
 
     return () => {
       apiStateEmitter.off('universe', eventHandler)
+      unsubscribe()
     }
   }, [fixtureType, channel])
 

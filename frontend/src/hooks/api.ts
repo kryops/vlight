@@ -1,7 +1,8 @@
-import { useMemo, useSyncExternalStore } from 'react'
+import { useEffect, useMemo, useSyncExternalStore } from 'react'
 import { MasterData, MasterDataMaps } from '@vlight/types'
 import { shallowEqual } from '@vlight/utils'
 
+import { subscribeToUniverse } from '../api'
 import { getMasterDataMaps } from '../api/masterdata'
 import { ApiState } from '../api/worker/processing'
 import { apiStateEmitter, apiState, workerState } from '../api/api-state'
@@ -111,6 +112,17 @@ export interface UseApiStateSelectorOptions {
 }
 
 /**
+ * React Hook that subscribes to DMX universe updates from the backend
+ * while the calling component is mounted.
+ */
+export function useUniverseSubscription(enabled = true): void {
+  useEffect(() => {
+    if (!enabled) return
+    return subscribeToUniverse()
+  }, [enabled])
+}
+
+/**
  * Wraps the selector so that it returns the previous value
  * as long as the new one is shallowly equal.
  */
@@ -138,6 +150,7 @@ export function useApiStateSelector<T>(
 ): T {
   const event = options?.event
   const includeUniverse = options?.includeUniverse ?? false
+  useUniverseSubscription(includeUniverse)
 
   const subscribe = useMemo(() => {
     if (event) return subscribeTo(event)
@@ -161,4 +174,7 @@ export function useApiStateSelector<T>(
  *
  * NOTE: This Hook may re-render up to 20 times per second.
  */
-export const useDmxUniverse = (): number[] => useApiState('universe')
+export function useDmxUniverse(): number[] {
+  useUniverseSubscription()
+  return useApiState('universe')
+}

@@ -7,7 +7,11 @@ import {
 } from '../config'
 import { getDmxUniverse } from '../universe'
 import { howLong } from '../../util/time'
-import { broadcastToSockets, sockets } from '../http/websocket'
+import {
+  broadcastToSockets,
+  broadcastToUniverseSubscribers,
+  hasUniverseSubscribers,
+} from '../http/websocket'
 
 import { getApiUniverseDeltaMessage, getApiUniverseMessage } from './protocol'
 import { getFullState } from './messages'
@@ -22,7 +26,7 @@ const changedUninverseChannels: Set<number> = new Set<number>()
  * If too many channels were changed, it sends the complete DMX universe instead.
  */
 function flushChangedUniverseChannels() {
-  if (!sockets.length || changedUninverseChannels.size === 0) {
+  if (!hasUniverseSubscribers() || changedUninverseChannels.size === 0) {
     return
   }
   const message =
@@ -33,7 +37,7 @@ function flushChangedUniverseChannels() {
         )
       : getApiUniverseMessage(getDmxUniverse())
 
-  broadcastToSockets(message)
+  broadcastToUniverseSubscribers(message)
 
   changedUninverseChannels.clear()
 }
@@ -64,7 +68,7 @@ export function handleApiMessage(message: ApiInMessage): void {
  * Marks the given universe channel as changed, to be flushed in the next batch.
  */
 export function broadcastUniverseChannelToApiClients(channel: number): void {
-  if (!sockets.length) {
+  if (!hasUniverseSubscribers()) {
     return
   }
   changedUninverseChannels.add(channel)

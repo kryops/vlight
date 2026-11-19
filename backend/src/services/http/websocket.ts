@@ -4,7 +4,8 @@ import { removeFromMutableArray, logger } from '@vlight/utils'
 
 import { getFullState } from '../api/messages'
 import { handleApiMessage } from '../api'
-import { getApiHeartBeatMessage } from '../api/protocol'
+import { getApiHeartBeatMessage, getApiUniverseMessage } from '../api/protocol'
+import { getDmxUniverse } from '../universe'
 
 import { httpServer } from './express'
 
@@ -21,6 +22,9 @@ const maxMissedPongs = 2
 /** The web sockets of all connected clients. */
 export const sockets: ws[] = []
 
+/** The web sockets of clients that are subscribed to DMX universe updates. */
+const universeSubscribers = new Set<ws>()
+
 /** Pings sent to each socket since its last pong. */
 const missedPongs = new WeakMap<ws, number>()
 
@@ -28,6 +32,38 @@ function removeSocket(socket: ws) {
   if (!sockets.includes(socket)) return
   logger.info('Socket disconnected')
   removeFromMutableArray(sockets, socket)
+  universeSubscribers.delete(socket)
+}
+
+/** Returns whether any connected client is subscribed to DMX universe updates. */
+export function hasUniverseSubscribers(): boolean {
+  return universeSubscribers.size > 0
+}
+
+/**
+ * Subscribes or unsubscribes the socket to DMX universe updates.
+ * A newly subscribed socket is sent the complete universe.
+ */
+export function setUniverseSubscription(socket: ws, subscribe: boolean): void {
+  logger.debug(
+    `Socket ${subscribe ? 'subscribed to' : 'unsubscribed from'} universe updates`
+  )
+  if (!subscribe) {
+    universeSubscribers.delete(socket)
+  } else if (!universeSubscribers.has(socket)) {
+    universeSubscribers.add(socket)
+    sendSocketMessage(socket, getApiUniverseMessage(getDmxUniverse()))
+  }
+}
+
+/**
+ * Broadcasts the given message to all clients subscribed to DMX universe updates.
+ */
+export function broadcastToUniverseSubscribers(message: ApiOutMessage): void {
+  if (!universeSubscribers.size) return
+  logger.debug('broadcast universe WebSocket message', message.type)
+  const messageString = JSON.stringify(message)
+  universeSubscribers.forEach(socket => socket.send(messageString))
 }
 
 /**
@@ -65,6 +101,10 @@ export function registerSocket(socket: ws): void {
       parsed = JSON.parse((message as Buffer).toString())
     } catch {
       logger.warn('Ignoring unparsable WebSocket message')
+      return
+    }
+    if (parsed?.type === 'universe-subscription') {
+      setUniverseSubscription(socket, !!parsed.subscribe)
       return
     }
     handleApiMessage(parsed)

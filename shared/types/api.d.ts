@@ -165,6 +165,18 @@ export interface ApiResetStateMessage {
   type: 'reset-state'
 }
 
+/**
+ * Subscribes or unsubscribes the sending client to DMX universe updates.
+ *
+ * Only subscribed clients receive `universe-delta` messages.
+ * Upon subscribing, the client is sent the complete universe.
+ * Subscriptions end when the connection is closed.
+ */
+export interface ApiUniverseSubscriptionMessage {
+  type: 'universe-subscription'
+  subscribe: boolean
+}
+
 /** Messages that can flow from the client to the server. */
 export type ApiInMessage<T extends EntityName = any> =
   | ApiChannelMessage
@@ -179,6 +191,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiRemoveEntityMessage<T>
   | ApiResetStateMessage
   | ApiDmxMasterMessage
+  | ApiUniverseSubscriptionMessage
 
 // Outgoing messages
 

@@ -61,7 +61,6 @@
 ## Tech
 
 - Pub/Sub
-  - DMX universe updates
   - Controls / based on widgets
 - React Router scroll restoration
 - Backend restructuring

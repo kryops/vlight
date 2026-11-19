@@ -45,6 +45,25 @@ export function sendApiMessage(message: ApiInMessage): void {
 }
 
 /**
+ * Subscribes to DMX universe updates from the backend until the returned
+ * function is called. The backend only sends universe updates
+ * while at least one subscription is active.
+ */
+export function subscribeToUniverse(): () => void {
+  const command = (subscribe: boolean): ApiWorkerCommand => ({
+    type: 'universe-subscription',
+    subscribe,
+  })
+  apiWorker.postMessage(command(true))
+  let active = true
+  return () => {
+    if (!active) return
+    active = false
+    apiWorker.postMessage(command(false))
+  }
+}
+
+/**
  * Changes the value of a single DMX channel.
  */
 export function setChannel(channel: number, value: number): void {
