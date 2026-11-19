@@ -38,6 +38,8 @@ let clientApiState: ApiState | undefined
 let messageQueue: ApiOutMessage[] = []
 /** The last time a heartbeat was received from the server. */
 let lastHeartBeat: number | undefined
+/** Pending reconnect attempt, if any. */
+let reconnectTimeout: ReturnType<typeof setTimeout> | undefined
 
 /** Sends the complete state to the frontend. */
 function sendState() {
@@ -105,7 +107,12 @@ function sendClientUpdate() {
 }
 
 function connectWebSocket() {
+  reconnectTimeout = undefined
+  disposeSocket()
   socket = new WebSocket(`ws://${self.location.host}/websocket`)
+  // start the timeout right away, so a connection that hangs before
+  // delivering its first heartbeat still fails over
+  lastHeartBeat = Date.now()
 
   socket.onopen = () => {
     logger.info('WebSocket connection established')
@@ -138,14 +145,28 @@ function connectWebSocket() {
   socket.onerror = e => logger.error('WebSocket error', e)
 }
 
+/** Detaches and closes the current socket so it cannot trigger further events. */
+function disposeSocket() {
+  if (!socket) return
+  socket.onopen = socket.onmessage = socket.onclose = socket.onerror = null
+  try {
+    socket.close()
+  } catch {
+    // ignore
+  }
+  socket = undefined
+}
+
 function handleClose() {
   logger.warn('WebSocket connection was closed, reconnecting...')
+  disposeSocket()
+  if (reconnectTimeout) clearTimeout(reconnectTimeout)
   connecting = true
   apiState = undefined
   clientApiState = undefined
   lastHeartBeat = undefined
   sendState()
-  setTimeout(connectWebSocket, 1000)
+  reconnectTimeout = setTimeout(connectWebSocket, 1000)
 }
 
 function sendApiMessage(message: ApiInMessage) {
