@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { useSettings } from '../../../hooks/settings'
 import { Settings } from '../../../settings'

@@ -111,12 +111,12 @@ export async function init(): Promise<void> {
   const start = Date.now()
   const { usb }: typeof import('usb') = require('usb') // eslint-disable-line
 
-  usb.on('attach', async () => {
+  usb.addEventListener('connect', async () => {
     // linux seems to need a bit of time here
     await delay(100)
     connectUsbDmxDevices(initDevice)
   })
-  usb.on('detach', disconnectUsbDmxDevices)
+  usb.addEventListener('disconnect', () => disconnectUsbDmxDevices())
 
   setInterval(flushUsbDmxDevices, devicesFlushInterval)
   setInterval(clearBannedDevices, 30000)
@@ -127,13 +127,3 @@ export async function init(): Promise<void> {
 
   howLong(start, 'initUsbDmxDevices')
 }
-
-process.on('exit', () => {
-  if (!enableUsbDmxDevices) return
-  try {
-    const { usb }: typeof import('usb') = require('usb') // eslint-disable-line
-    usb.unrefHotplugEvents()
-  } catch {
-    // do nothing
-  }
-})

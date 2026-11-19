@@ -7,7 +7,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=24.0.0"
   },
   "scripts": {
     "build": "tsc -b ./src",
@@ -21,21 +21,21 @@
     "@vlight/types": "*",
     "@vlight/utils": "*",
     "artnet": "^1.4.0",
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "connect-history-api-fallback": "^2.0.0",
-    "express": "^5.2.1",
-    "node-hid": "^3.3.0",
-    "prettier": "^3.8.4",
+    "express": "^5.3.0",
+    "node-hid": "^3.4.0",
+    "prettier": "^3.10.1",
     "qrcode-terminal": "^0.12.0",
     "source-map-support": "^0.5.21",
-    "usb": "^2.18.0",
-    "ws": "^8.21.0"
+    "usb": "^3.3.0",
+    "ws": "^8.23.0"
   },
   "devDependencies": {
     "@types/compression": "^1.8.1",
     "@types/connect-history-api-fallback": "^1.5.4",
     "@types/express": "^5.0.6",
-    "@types/node": "^24.0.0",
+    "@types/node": "^26.6.6",
     "@types/node-hid": "^3.0.0",
     "@types/qrcode-terminal": "^0.12.2",
     "@types/source-map-support": "^0.5.10",

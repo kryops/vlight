@@ -10,8 +10,6 @@ module.exports = function (api) {
         '@babel/preset-env',
         {
           modules: isTest ? 'commonjs' : false,
-          useBuiltIns: 'entry',
-          corejs: '3.49',
         },
       ],
       [
@@ -20,16 +18,19 @@ module.exports = function (api) {
           runtime: 'automatic',
         },
       ],
-      '@babel/preset-typescript',
-      '@wyw-in-js',
+      ['@babel/preset-typescript', { onlyRemoveTypeImports: false }],
     ],
     plugins: [
       [
-        '@babel/plugin-transform-runtime',
+        // replaces `useBuiltIns: 'entry'` of Babel 7: expands `import 'core-js/es'`
+        // to the polyfills required by the browserslist targets
+        'babel-plugin-polyfill-corejs3',
         {
-          useESModules: !isTest,
+          method: 'entry-global',
+          version: '3.51',
         },
       ],
+      '@babel/plugin-transform-runtime',
 
       // optimization
       '@babel/plugin-transform-react-constant-elements',

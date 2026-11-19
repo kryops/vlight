@@ -60,6 +60,7 @@ const button_transparent = css`
     background: transparent;
   }
 
+  /* stylelint-disable-next-line selector-no-invalid -- placeholder of the interpolation */
   &.${button_active} > svg {
     opacity: 1;
   }

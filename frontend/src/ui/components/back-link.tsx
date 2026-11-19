@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { ReactNode } from 'react'
 
 /** Link that navigates back. */

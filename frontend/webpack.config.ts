@@ -76,6 +76,15 @@ export const webpackConfiguration = (env: Env = {}): Configuration => {
               loader: '@wyw-in-js/webpack-loader',
               options: {
                 sourceMap: true,
+                // polished is evaluated at build time via a runtime require()
+                importOverrides: {
+                  polished: { unknown: 'allow' },
+                  '@mdi/js': { unknown: 'allow' },
+                  // api-state starts the API worker, which cannot be evaluated at build time
+                  './src/api/api-state.ts': {
+                    mock: './src/util/wyw-api-state-stub.ts',
+                  },
+                },
               },
             },
           ],

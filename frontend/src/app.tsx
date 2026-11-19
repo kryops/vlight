@@ -1,7 +1,7 @@
 import './ui/global-styles'
 
 import { StrictMode } from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router'
 
 import { ApiWrapper } from './api/api-wrapper'
 import { MainContainer } from './ui/main/main-container'

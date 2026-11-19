@@ -41,8 +41,8 @@ export function useCompleteApiState(except?: Array<keyof ApiState>): ApiState {
   exceptRef.current = except
 
   useEffect(() => {
-    const listener = (eventName: string) => {
-      if (!exceptRef.current?.includes(eventName as any)) {
+    const listener = ({ name }: { name: string }) => {
+      if (!exceptRef.current?.includes(name as any)) {
         forceUpdate()
       }
     }
@@ -174,8 +174,10 @@ export function useApiStateSelector<T>(
   selectorRef.current = selector
 
   useEffect(() => {
-    const listener = (eventNameOrData: any) => {
-      if (eventNameOrData === 'universe' && !options?.includeUniverse) return
+    const listener = (eventOrData: any) => {
+      // onAny listeners receive the event object, `on` listeners the event data
+      const eventName = options?.event ? options.event : eventOrData?.name
+      if (eventName === 'universe' && !options?.includeUniverse) return
 
       setCurrentState(oldValue => {
         const newValue = selectorRef.current(apiState, oldValue)

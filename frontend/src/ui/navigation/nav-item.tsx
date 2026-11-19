@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router'
 
 import { Icon } from '../icons/icon'
 import { baseline, primaryShade } from '../styles'

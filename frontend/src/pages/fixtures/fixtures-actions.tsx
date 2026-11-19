@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { setFixtureState } from '../../api'
 import { Button } from '../../ui/buttons/button'
