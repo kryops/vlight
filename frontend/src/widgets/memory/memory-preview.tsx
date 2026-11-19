@@ -37,8 +37,8 @@ function getMemoryUniverse(
       masterDataMaps,
     })
 
-    const memberFixtures = members.map(
-      member => masterDataMaps.fixtures.get(member)!
+    const memberFixtures = members.map(member =>
+      masterDataMaps.fixtures.get(member)!
     )
 
     const stateInfo = getMemorySceneStateInfo(scene, memberFixtures)

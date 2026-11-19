@@ -1,6 +1,4 @@
-/**
- * @jest-environment node
- */
+import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
 import { Fixture, FixtureChannels, FixtureType } from '@vlight/types'
 
@@ -22,9 +20,9 @@ import { masterData, masterDataMaps } from '../../src/services/masterdata'
 import { universes } from '../../src/services/universe/state'
 import { handleDmxMasterApiMessage } from '../../src/services/universe/computing'
 
-jest.mock('../../src/devices')
-jest.mock('../../src/services/api')
-jest.mock('../../src/services/masterdata')
+vi.mock('../../src/devices')
+vi.mock('../../src/services/api')
+vi.mock('../../src/services/masterdata')
 
 const fixtureTypeWithMaster: FixtureType = {
   id: '1',
@@ -110,7 +108,7 @@ describe('services/universe', () => {
   beforeEach(() => {
     universes.forEach(removeUniverse)
     initUniverse()
-    jest.resetAllMocks()
+    vi.resetAllMocks()
   })
 
   describe('addUniverse', () => {
@@ -214,7 +212,7 @@ describe('services/universe', () => {
     it('broadcasts changes', () => {
       const universe = universeWithFixtures({ m: 127 })
       addUniverse(universe)
-      jest.resetAllMocks()
+      vi.resetAllMocks()
       removeUniverse(universe)
       expect(broadcastUniverseChannelToDevices).toHaveBeenCalledWith(1, 0)
       expect(broadcastUniverseChannelToApiClients).toHaveBeenCalledWith(1)
@@ -223,7 +221,7 @@ describe('services/universe', () => {
     it('does not broadcast if nothing changed', () => {
       const universe = universeWithFixtures()
       addUniverse(universe)
-      jest.resetAllMocks()
+      vi.resetAllMocks()
       removeUniverse(universe)
       expect(broadcastUniverseChannelToDevices).not.toHaveBeenCalled()
       expect(broadcastUniverseChannelToApiClients).not.toHaveBeenCalled()
@@ -343,7 +341,7 @@ describe('services/universe', () => {
     it('broadcasts changes', () => {
       const universe = universeWithFixtures({ m: 127, r: 255 })
       addUniverse(universe)
-      jest.resetAllMocks()
+      vi.resetAllMocks()
       setUniverseState(universe, { masterValue: 127 })
       expect(broadcastUniverseChannelToDevices).toHaveBeenCalledWith(1, 63)
       expect(broadcastUniverseChannelToApiClients).toHaveBeenCalledWith(1)
@@ -352,7 +350,7 @@ describe('services/universe', () => {
     it('does not broadcast if nothing changed', () => {
       const universe = universeWithFixtures({ m: 127, r: 255 })
       addUniverse(universe)
-      jest.resetAllMocks()
+      vi.resetAllMocks()
       setUniverseState(universe, { masterValue: 255 })
       expect(broadcastUniverseChannelToDevices).not.toHaveBeenCalled()
       expect(broadcastUniverseChannelToApiClients).not.toHaveBeenCalled()
@@ -378,7 +376,7 @@ describe('services/universe', () => {
     it('broadcasts changes', () => {
       const universe = universeWithFixtures({ m: 127, r: 255 })
       addUniverse(universe)
-      jest.resetAllMocks()
+      vi.resetAllMocks()
       overwriteUniverse(universe, universeWithFixtures({ m: 63, r: 255 }))
       expect(broadcastUniverseChannelToDevices).toHaveBeenCalledWith(1, 63)
       expect(broadcastUniverseChannelToApiClients).toHaveBeenCalledWith(1)
@@ -387,7 +385,7 @@ describe('services/universe', () => {
     it('does not broadcast if nothing changed', () => {
       const universe = universeWithFixtures({ m: 127, r: 255 })
       addUniverse(universe)
-      jest.resetAllMocks()
+      vi.resetAllMocks()
       overwriteUniverse(universe, universe)
       expect(broadcastUniverseChannelToDevices).not.toHaveBeenCalled()
       expect(broadcastUniverseChannelToApiClients).not.toHaveBeenCalled()

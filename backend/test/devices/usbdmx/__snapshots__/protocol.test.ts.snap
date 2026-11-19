@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`devices/usbdmx/protocol getChannelBlockMessage 1`] = `
+exports[`devices/usbdmx/protocol > getChannelBlockMessage 1`] = `
 [
   0,
   0,
@@ -39,7 +39,7 @@ exports[`devices/usbdmx/protocol getChannelBlockMessage 1`] = `
 ]
 `;
 
-exports[`devices/usbdmx/protocol getChannelBlockMessage 2`] = `
+exports[`devices/usbdmx/protocol > getChannelBlockMessage 2`] = `
 [
   0,
   1,
@@ -78,7 +78,7 @@ exports[`devices/usbdmx/protocol getChannelBlockMessage 2`] = `
 ]
 `;
 
-exports[`devices/usbdmx/protocol getModeMessage 1`] = `
+exports[`devices/usbdmx/protocol > getModeMessage 1`] = `
 [
   16,
   2,

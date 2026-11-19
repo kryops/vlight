@@ -1,6 +1,4 @@
-/**
- * @jest-environment node
- */
+import { describe, expect, it } from 'vite-plus/test'
 
 import { universeSize } from '../../../src/services/config'
 import {

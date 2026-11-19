@@ -205,10 +205,9 @@ function StaticEntitiesWidgetInput({
         commaStringToArray(mappingString)
       )
     ) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setMappingString(initialMappingString)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [initialMappingString])
 
   const changeEntities = useEvent((newValue: IdType[]): void =>

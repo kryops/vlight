@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vite-plus/test'
+
 import { mapToDictionary } from '../src/map'
 
 describe('util/map', () => {

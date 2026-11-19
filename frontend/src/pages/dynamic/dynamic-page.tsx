@@ -59,7 +59,7 @@ const DynamicPage = memoInProduction(() => {
 
   useEffect(() => {
     cancelEditing()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // oxlint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   const save = useEvent(() => {

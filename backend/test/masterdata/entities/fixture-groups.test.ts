@@ -1,3 +1,5 @@
+import { beforeAll, describe, expect, it } from 'vite-plus/test'
+
 import { fillMasterDataEntity } from '../../../src/services/masterdata'
 import { processFixtureGroups } from '../../../src/services/masterdata/entities/fixture-groups'
 

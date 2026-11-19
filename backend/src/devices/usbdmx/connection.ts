@@ -30,7 +30,7 @@ export async function connectUsbDmxDevices(
   callback: (device: HIDWithInfo) => void
 ): Promise<void> {
   // using require() so we only actually load the module if USB DMX is turned on
-  const hid: typeof import('node-hid') = require('node-hid') // eslint-disable-line
+  const hid: typeof import('node-hid') = require('node-hid')
 
   hid
     .devices()
@@ -69,7 +69,7 @@ export async function connectUsbDmxDevices(
  */
 export async function disconnectUsbDmxDevices(): Promise<void> {
   // using require() so we only actually load the module if USB DMX is turned on
-  const hid: typeof import('node-hid') = require('node-hid') // eslint-disable-line
+  const hid: typeof import('node-hid') = require('node-hid')
   const paths = hid
     .devices()
     .filter(

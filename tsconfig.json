@@ -24,7 +24,7 @@
       "@vlight/types": ["./shared/types/src"],
       "@vlight/utils": ["./shared/utils/src"]
     },
-    "types": ["node", "jest"],
+    "types": ["node"],
     "resolveJsonModule": true,
     "strict": true,
     "skipDefaultLibCheck": true,

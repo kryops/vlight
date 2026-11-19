@@ -28,10 +28,9 @@ export function useDeepEqualMemo<T>(value: T) {
 }
 
 // via https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function useEvent<T extends Function>(handler: T): T {
   const handlerRef = useRef<T>(handler)
-  // eslint-disable-next-line react-hooks/refs
+  // oxlint-disable-next-line react-hooks/refs
   handlerRef.current = handler
 
   return useCallback((...args: any[]) => handlerRef.current(...args), []) as any

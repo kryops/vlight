@@ -30,9 +30,9 @@ import {
 import { ApiWorkerCommand } from './worker/api.worker'
 
 export const apiWorker = new Worker(
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore cannot change module type, as otherwise the webpack configuration won't compile
-  new URL('./worker/api.worker.ts', import.meta.url)
+  // @ts-ignore import.meta is not allowed with the CommonJS module type
+  new URL('./worker/api.worker.ts', import.meta.url),
+  { type: 'module' }
 )
 
 /**

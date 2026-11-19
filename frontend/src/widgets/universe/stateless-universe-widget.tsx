@@ -55,7 +55,7 @@ export const StatelessUniverseWidget = memoInProduction(
       return universe.map((_, index) =>
         getFixtureAtChannel(masterData, index + 1)
       )
-    }, [masterData]) // eslint-disable-line react-hooks/exhaustive-deps
+    }, [masterData]) // oxlint-disable-line react-hooks/exhaustive-deps
     const range = createRangeArray(from, to)
     // try to wrap it in a few rows to fit in with other widgets
     const maxWidth = Math.round(

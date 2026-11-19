@@ -40,7 +40,7 @@ const UniversePage = memoInProduction(() => {
     return universe.map((_, index) =>
       getFixtureAtChannel(masterData, index + 1)
     )
-  }, [masterData]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [masterData]) // oxlint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

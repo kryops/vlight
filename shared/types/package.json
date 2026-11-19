@@ -12,6 +12,7 @@
     "doc": "typedoc index.ts"
   },
   "devDependencies": {
-    "typedoc": "^0.28.20"
+    "typedoc": "^0.28.20",
+    "typescript": "npm:@typescript/typescript6@^6.0.2"
   }
 }

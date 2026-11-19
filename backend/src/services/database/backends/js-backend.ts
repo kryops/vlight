@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { writeFile, stat, mkdir } from 'fs/promises'
 
-import { format, Options, resolveConfig } from 'prettier'
+import { format, FormatOptions } from 'oxfmt'
 import { EntityName, EntityArray, EntityType, IdType } from '@vlight/types'
 import { logger } from '@vlight/utils'
 
@@ -40,14 +40,16 @@ function generateId(entries: EntityArray): string {
   return String(highestNumber + 1)
 }
 
-let cachedPrettierConfig: Options | null = null
-
-async function getPrettierConfig() {
-  if (!cachedPrettierConfig) {
-    cachedPrettierConfig = await resolveConfig(__dirname)
-  }
-
-  return cachedPrettierConfig
+/**
+ * Formatting options for the generated files,
+ * matching the `fmt` config in the root vite.config.ts.
+ */
+const formatConfig: FormatOptions = {
+  trailingComma: 'es5',
+  tabWidth: 2,
+  semi: false,
+  singleQuote: true,
+  arrowParens: 'avoid',
 }
 
 const cache = new Map<EntityName, EntityArray<any>>()
@@ -75,7 +77,6 @@ export class JsDatabaseBackend implements DatabaseBackend {
       // do nothing
     }
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const rawEntries: EntityArray<T> = require(configPath)
       cache.set(entity, rawEntries)
       return rawEntries
@@ -94,16 +95,19 @@ export class JsDatabaseBackend implements DatabaseBackend {
 
     const filePath = getModulePath(entity, !!global) + '.js'
 
-    const fileContent = await format(
+    const { code: fileContent, errors } = await format(
+      filePath,
       `const ${entity} = ${JSON.stringify(entries, null, 2)}
-  
+
   module.exports = ${entity}
 `,
-      {
-        ...(await getPrettierConfig()),
-        parser: 'typescript',
-      }
+      formatConfig
     )
+    if (errors.length) {
+      throw new Error(
+        `Failed to format ${filePath}: ${errors.map(e => e.message).join(', ')}`
+      )
+    }
 
     // Create project directory if it does not exist
     const projectDirectory = join(filePath, '..')

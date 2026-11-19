@@ -1,3 +1,5 @@
+import { beforeAll, describe, expect, it } from 'vite-plus/test'
+
 import { Fixture } from '@vlight/types'
 
 import { fillMasterDataEntity } from '../../../src/services/masterdata'

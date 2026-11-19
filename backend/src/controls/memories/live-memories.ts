@@ -96,8 +96,8 @@ function getUniverseForLiveMemory(
     masterData,
     masterDataMaps,
   })
-  const memberFixtures = members.map(
-    member => masterDataMaps.fixtures.get(member)!
+  const memberFixtures = members.map(member =>
+    masterDataMaps.fixtures.get(member)!
   )
   const stateInfo = getMemorySceneStateInfo(liveMemory, memberFixtures)
   const gradientOffset = gradientMovementOffsets.get(id)

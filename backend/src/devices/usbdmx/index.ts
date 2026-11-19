@@ -109,7 +109,7 @@ export async function init(): Promise<void> {
     return
   }
   const start = Date.now()
-  const { usb }: typeof import('usb') = require('usb') // eslint-disable-line
+  const { usb }: typeof import('usb') = require('usb')
 
   usb.addEventListener('connect', async () => {
     // linux seems to need a bit of time here
