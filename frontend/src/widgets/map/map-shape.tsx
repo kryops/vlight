@@ -7,6 +7,7 @@ import { Touchable } from '../../ui/components/touchable'
 import { apiState, apiStateEmitter } from '../../api/api-state'
 import { subscribeToUniverse } from '../../api'
 import { getEffectiveFixtureColor } from '../../util/fixtures'
+import { ChannelType } from '@vlight/controls'
 
 const shapeStyle = css`
   border: 1px solid ${iconShade(1)};
@@ -24,6 +25,22 @@ const shapeStyle = css`
 const shapeStyle_circle = css`
   border-radius: 100%;
 `
+
+const positionMarkerStyle = css`
+  position: absolute;
+  width: 25%;
+  height: 25%;
+  border-radius: 100%;
+  background: ${iconShade(1)};
+  border: 1px solid ${backgroundColor};
+  box-sizing: border-box;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+`
+
+// Marker moves within this area (in percent of the shape) to stay inside circles
+const markerRangeStart = 25
+const markerRangeSize = 50
 
 export interface MapShapeProps {
   shape?: FixtureShape
@@ -148,6 +165,10 @@ export function FixtureTypeMapShape({
 }: FixtureTypeMapShapeProps) {
   const { border, shape, xSize, ySize } = fixtureType
   const elementRef = useRef<HTMLDivElement>(null)
+  const markerRef = useRef<HTMLDivElement>(null)
+  const panOffset = fixtureType.mapping.indexOf(ChannelType.Pan)
+  const tiltOffset = fixtureType.mapping.indexOf(ChannelType.Tilt)
+  const hasPosition = !!channel && panOffset !== -1 && tiltOffset !== -1
 
   // Performance: We update the fixture colors without React
   useEffect(() => {
@@ -172,6 +193,15 @@ export function FixtureTypeMapShape({
         return
 
       lastValues = values
+
+      const marker = markerRef.current
+      if (marker && panOffset !== -1 && tiltOffset !== -1) {
+        const toPercent = (value = 0) =>
+          `${markerRangeStart + (value / 255) * markerRangeSize}%`
+        marker.style.left = toPercent(values[panOffset])
+        marker.style.top = toPercent(255 - (values[tiltOffset] ?? 0))
+      }
+
       const color =
         getEffectiveFixtureColor({ channel: 1 }, fixtureType, values) ?? null
       if (color === lastColor) return
@@ -187,7 +217,7 @@ export function FixtureTypeMapShape({
       apiStateEmitter.off('universe', eventHandler)
       unsubscribe()
     }
-  }, [fixtureType, channel])
+  }, [fixtureType, channel, panOffset, tiltOffset])
 
   return (
     <MapShape
@@ -197,6 +227,15 @@ export function FixtureTypeMapShape({
       border={border}
       xSize={xSize}
       ySize={ySize}
-    />
+    >
+      {rest.children}
+      {hasPosition && (
+        <div
+          ref={markerRef}
+          className={positionMarkerStyle}
+          style={{ left: '50%', top: '50%' }}
+        />
+      )}
+    </MapShape>
   )
 }
