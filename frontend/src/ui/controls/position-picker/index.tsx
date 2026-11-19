@@ -4,7 +4,6 @@ import { useRef } from 'react'
 
 import { useDelayedState } from '../../../hooks/delayed-state'
 import { useShallowEqualMemo } from '../../../hooks/performance'
-import { memoInProduction } from '../../../util/development'
 import { getFractionWithMargin, getTouchEventOffset } from '../../../util/touch'
 import { Touchable } from '../../components/touchable'
 import {
@@ -52,56 +51,58 @@ export interface PositionPickerProps {
   onChange: (position: Position) => void
 }
 
-export const PositionPicker = memoInProduction(
-  ({ pan = 0, tilt = 0, onChange }: PositionPickerProps) => {
-    const [localPosition, setLocalPosition] = useDelayedState<Position | null>(
-      null
-    )
-    const touchRef = useRef<HTMLDivElement>(null)
+export const PositionPicker = ({
+  pan = 0,
+  tilt = 0,
+  onChange,
+}: PositionPickerProps) => {
+  const [localPosition, setLocalPosition] = useDelayedState<Position | null>(
+    null
+  )
+  const touchRef = useRef<HTMLDivElement>(null)
 
-    const currentPosition: Position = localPosition ?? { pan, tilt }
+  const currentPosition: Position = localPosition ?? { pan, tilt }
 
-    const lastPositionRef = useRef<Position>(currentPosition)
+  const lastPositionRef = useRef<Position>(currentPosition)
 
-    const markerStyle = useShallowEqualMemo({
-      top: `${((255 - currentPosition.tilt) / 255) * 100}%`,
-      left: `${(currentPosition.pan / 255) * 100}%`,
-    })
+  const markerStyle = useShallowEqualMemo({
+    top: `${((255 - currentPosition.tilt) / 255) * 100}%`,
+    left: `${(currentPosition.pan / 255) * 100}%`,
+  })
 
-    return (
-      <Touchable
-        ref={touchRef}
-        className={positionPicker}
-        onTouch={event => {
-          const offset = getTouchEventOffset(event, touchRef)
-          if (!offset) {
-            return
-          }
-          const { x, y } = getFractionWithMargin(offset, positionMarkerSize / 2)
-          const toValue = (fraction: number) =>
-            Math.round(fractionToValue(fraction, 0, 255))
-          const newPosition: Position = {
-            pan: toValue(x),
-            tilt: toValue(1 - y),
-          }
+  return (
+    <Touchable
+      ref={touchRef}
+      className={positionPicker}
+      onTouch={event => {
+        const offset = getTouchEventOffset(event, touchRef)
+        if (!offset) {
+          return
+        }
+        const { x, y } = getFractionWithMargin(offset, positionMarkerSize / 2)
+        const toValue = (fraction: number) =>
+          Math.round(fractionToValue(fraction, 0, 255))
+        const newPosition: Position = {
+          pan: toValue(x),
+          tilt: toValue(1 - y),
+        }
 
-          if (
-            lastPositionRef.current.pan === newPosition.pan &&
-            lastPositionRef.current.tilt === newPosition.tilt
-          ) {
-            return
-          }
-          lastPositionRef.current = newPosition
-          setLocalPosition(newPosition)
-          onChange(newPosition)
-        }}
-        onUp={() => setLocalPosition(null, true)}
-        preventScroll
-      >
-        <div className={markerContainer}>
-          <div className={positionMarker} style={markerStyle} />
-        </div>
-      </Touchable>
-    )
-  }
-)
+        if (
+          lastPositionRef.current.pan === newPosition.pan &&
+          lastPositionRef.current.tilt === newPosition.tilt
+        ) {
+          return
+        }
+        lastPositionRef.current = newPosition
+        setLocalPosition(newPosition)
+        onChange(newPosition)
+      }}
+      onUp={() => setLocalPosition(null, true)}
+      preventScroll
+    >
+      <div className={markerContainer}>
+        <div className={positionMarker} style={markerStyle} />
+      </div>
+    </Touchable>
+  )
+}

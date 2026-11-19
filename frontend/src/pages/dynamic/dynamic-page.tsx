@@ -1,9 +1,8 @@
 import { useParams } from 'react-router'
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useState } from 'react'
 import { DynamicPage as DynamicPageEntity, WidgetConfig } from '@vlight/types'
 
 import { useMasterData, useRawMasterData } from '../../hooks/api'
-import { memoInProduction } from '../../util/development'
 import { Grid } from '../../ui/containers/grid'
 import { DynamicWidget } from '../../widgets/dynamic-widget'
 import { Header } from '../../ui/containers/header'
@@ -12,7 +11,6 @@ import { DynamicPageEditor } from '../config/entities/editors/dynamic-page-edito
 import { Button } from '../../ui/buttons/button'
 import { centeredText } from '../../ui/css/basic-styles'
 import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
-import { useEvent } from '../../hooks/performance'
 import { editEntityWithCustomLogic } from '../config/entities/entity-ui-mapping'
 
 const widgetTypesWithoutHotkeys: Array<WidgetConfig['type']> = [
@@ -24,12 +22,20 @@ const widgetTypesWithoutHotkeys: Array<WidgetConfig['type']> = [
 /**
  * Displays a user-configured dynamic page with an ID given as route param.
  */
-const DynamicPage = memoInProduction(() => {
+const DynamicPage = () => {
   const { id } = useParams<{ id: string }>()
   const masterData = useMasterData()
   const rawMasterData = useRawMasterData()
   const [editing, setEditing] = useState(false)
   const [editedPage, setEditedPage] = useState<DynamicPageEntity | null>(null)
+
+  // reset the editing state when navigating to another page
+  const [prevId, setPrevId] = useState(id)
+  if (id !== prevId) {
+    setPrevId(id)
+    setEditing(false)
+    setEditedPage(null)
+  }
 
   const page = masterData.dynamicPages.find(p => p.id === id)
   const rawPage = rawMasterData.dynamicPages.find(p => p.id === id)
@@ -52,24 +58,19 @@ const DynamicPage = memoInProduction(() => {
 
   const { headline, rows } = page
 
-  const cancelEditing = useEvent(() => {
+  const cancelEditing = () => {
     setEditing(false)
     setEditedPage(null)
-  })
+  }
 
-  useEffect(() => {
-    cancelEditing()
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
-
-  const save = useEvent(() => {
+  const save = () => {
     if (editedPage !== null) {
       editEntityWithCustomLogic('dynamicPages', editedPage)
     }
     cancelEditing()
-  })
+  }
 
-  const startEditing = useEvent(() => setEditing(true))
+  const startEditing = () => setEditing(true)
 
   return (
     <>
@@ -162,6 +163,6 @@ const DynamicPage = memoInProduction(() => {
       )}
     </>
   )
-})
+}
 
 export default DynamicPage

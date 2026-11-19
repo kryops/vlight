@@ -1,4 +1,3 @@
-import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
 import { useApiStateSelector } from '../../hooks/api'
 import { useNumberHotkey } from '../../hooks/hotkey'
@@ -11,7 +10,7 @@ import { ChasesActions } from './chases-actions'
  *
  * Displays widgets for all live chases.
  */
-const ChasesPage = memoInProduction(() => {
+const ChasesPage = () => {
   const liveChasesCount = useApiStateSelector(
     apiState => Object.keys(apiState.liveChases).length,
     { event: 'liveChases' }
@@ -24,6 +23,6 @@ const ChasesPage = memoInProduction(() => {
       <LiveChases startHotkeyIndex={0} activeHotkeyIndex={activeHotkeyIndex} />
     </>
   )
-})
+}
 
 export default ChasesPage

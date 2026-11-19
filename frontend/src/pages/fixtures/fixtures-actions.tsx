@@ -41,7 +41,7 @@ export function FixturesActions() {
   )
 
   return (
-    <HotkeyContext.Provider value={true}>
+    <HotkeyContext value={true}>
       <Link to={entitiesPageRoute('fixtures')}>
         <Button icon={iconConfig} transparent />
       </Link>
@@ -63,6 +63,6 @@ export function FixturesActions() {
       >
         OFF
       </Button>
-    </HotkeyContext.Provider>
+    </HotkeyContext>
   )
 }

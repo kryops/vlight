@@ -174,7 +174,7 @@ export function Widget({
   }, [hotkeysActive])
 
   return (
-    <HotkeyContext.Provider value={!!hotkeysActive}>
+    <HotkeyContext value={!!hotkeysActive}>
       <div
         ref={ref}
         className={cx(
@@ -225,6 +225,6 @@ export function Widget({
           <div className={bottomLine} style={{ background: bottomLineColor }} />
         )}
       </div>
-    </HotkeyContext.Provider>
+    </HotkeyContext>
   )
 }

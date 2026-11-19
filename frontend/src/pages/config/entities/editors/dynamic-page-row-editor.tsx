@@ -10,7 +10,6 @@ import {
   WidgetConfig,
 } from '@vlight/types'
 import { assertNever, toArray } from '@vlight/utils'
-import { useCallback } from 'react'
 
 import { FormState, useFormStateArray } from '../../../../hooks/form'
 import { iconAdd, iconDelete, iconDown, iconUp } from '../../../../ui/icons'
@@ -25,8 +24,6 @@ import { useBreakpoint } from '../../../../ui/hooks/breakpoint'
 import { Button } from '../../../../ui/buttons/button'
 import { flexContainer } from '../../../../ui/css/flex'
 import { cx } from '../../../../util/styles'
-import { useEvent } from '../../../../hooks/performance'
-import { memoInProduction } from '../../../../util/development'
 
 import { DynamicPageCellEditor } from './dynamic-page-cell-editor'
 
@@ -150,177 +147,158 @@ export interface DynamicPageRowEditorProps {
   formState: FormState<DynamicPage>
 }
 
-export const DynamicPageRowEditor = memoInProduction(
-  ({ row, rowIndex, formState }: DynamicPageRowEditorProps) => {
-    const masterDataMaps = useMasterDataMaps()
-    const liveChases = useApiState('liveChases')
-    const liveMemories = useApiState('liveMemories')
+export const DynamicPageRowEditor = ({
+  row,
+  rowIndex,
+  formState,
+}: DynamicPageRowEditorProps) => {
+  const masterDataMaps = useMasterDataMaps()
+  const liveChases = useApiState('liveChases')
+  const liveMemories = useApiState('liveMemories')
 
-    const rows = useFormStateArray(formState, 'rows')
+  const rows = useFormStateArray(formState, 'rows')
 
-    const isLarge = useBreakpoint(600)
+  const isLarge = useBreakpoint(600)
 
-    function changeRowProperty<TKey extends keyof DynamicPageRow>(
-      row: DynamicPageRow,
-      key: TKey,
-      value: DynamicPageRow[TKey]
-    ) {
-      rows.update(row, { ...row, [key]: value })
-    }
+  function changeRowProperty<TKey extends keyof DynamicPageRow>(
+    row: DynamicPageRow,
+    key: TKey,
+    value: DynamicPageRow[TKey]
+  ) {
+    rows.update(row, { ...row, [key]: value })
+  }
 
-    function moveRow(offset: 1 | -1) {
-      const newRows = [...rows.value]
-      const row = newRows[rowIndex]
-      newRows[rowIndex] = newRows[rowIndex + offset]
-      newRows[rowIndex + offset] = row
-      formState.changeValue('rows', newRows)
-    }
+  function moveRow(offset: 1 | -1) {
+    const newRows = [...rows.value]
+    const row = newRows[rowIndex]
+    newRows[rowIndex] = newRows[rowIndex + offset]
+    newRows[rowIndex + offset] = row
+    formState.changeValue('rows', newRows)
+  }
 
-    const changeCells = useEvent((newCells: DynamicPageCell[]) =>
-      changeRowProperty(row, 'cells', newCells)
-    )
+  const changeCells = (newCells: DynamicPageCell[]) =>
+    changeRowProperty(row, 'cells', newCells)
 
-    const changeCell = useEvent(
-      (cell: DynamicPageCell, changes: DynamicPageCell) => {
-        changeRowProperty(
-          row,
-          'cells',
-          row.cells.map(it => (it === cell ? changes : it))
-        )
-      }
-    )
-
-    const removeCell = useEvent((cell: DynamicPageCell) => {
-      changeRowProperty(
-        row,
-        'cells',
-        row.cells.filter(it => it !== cell)
-      )
-    })
-
-    const addCell = useEvent(async () => {
-      const initialValue: DynamicPageCell = {
-        widgets: [{ type: 'map' }],
-      }
-      const result = await showDialogWithReturnValue<DynamicPageCell>(
-        onChange => (
-          <DynamicPageCellEditor cell={initialValue} onChange={onChange} />
-        ),
-        okCancel,
-        { showCloseButton: true, initialValue }
-      )
-      if (result) changeRowProperty(row, 'cells', [...row.cells, result])
-    })
-
-    const renderCellContent = useCallback(
-      (cell: DynamicPageCell) => (
-        <div
-          onClick={async () => {
-            const result = await showDialogWithReturnValue<DynamicPageCell>(
-              onChange => (
-                <DynamicPageCellEditor cell={cell} onChange={onChange} />
-              ),
-              okCancel,
-              { showCloseButton: true }
-            )
-            if (result) changeCell(cell, result)
-          }}
-        >
-          <div className={cellDeleteContainer}>
-            {cell.factor && `x${cell.factor}`}
-            {row.cells.length > 1 && (
-              <Icon
-                icon={iconDelete}
-                className={cellDeleteIcon}
-                hoverable
-                inline
-                onClick={event => {
-                  event.stopPropagation()
-                  removeCell(cell)
-                }}
-              />
-            )}
-          </div>
-          {cell.widgets.map((widget, widgetIndex) => (
-            <p key={widgetIndex} className={paragraph}>
-              {getWidgetDisplayString(
-                widget,
-                masterDataMaps,
-                liveChases,
-                liveMemories
-              )}
-            </p>
-          ))}
-          {cell.widgets.length === 0 && (
-            <p className={paragraph}>
-              <i>(empty)</i>
-            </p>
-          )}
-        </div>
-      ),
-      [
-        row.cells.length,
-        changeCell,
-        removeCell,
-        masterDataMaps,
-        liveChases,
-        liveMemories,
-      ]
-    )
-
-    const removeRow = useEvent(() => rows.remove(row))
-    const changeHeadline = useEvent((newValue: string | undefined): void =>
-      changeRowProperty(row, 'headline', newValue)
-    )
-    const moveDown = useEvent(() => moveRow(1))
-    const moveUp = useEvent(() => moveRow(-1))
-
-    return (
-      <div className={rowStyle}>
-        <div className={flexContainer}>
-          {rowIndex > 0 && (
-            <Button
-              icon={iconUp}
-              transparent
-              onClick={moveUp}
-              title="Move up"
-            />
-          )}
-          {rowIndex < rows.value.length - 1 && (
-            <Button
-              icon={iconDown}
-              transparent
-              onClick={moveDown}
-              title="Move down"
-            />
-          )}
-          <TextInput value={row.headline} onChange={changeHeadline} />
-          <Button
-            icon={iconDelete}
-            transparent
-            onClick={removeRow}
-            title="Remove row"
-          />
-        </div>
-        <div className={cx(cellsContainer, isLarge && flexContainer)}>
-          {row.cells.length > 0 && (
-            <SortableList
-              direction={isLarge ? 'horizontal' : 'vertical'}
-              entries={row.cells}
-              onChange={changeCells}
-              entryClassName={cellStyle}
-              containerClassName={isLarge ? horizontalCellContainer : undefined}
-              renderEntryContent={renderCellContent}
-            />
-          )}
-          <Button
-            icon={iconAdd}
-            className={addCellButton}
-            title="Add cell"
-            onClick={addCell}
-          />
-        </div>
-      </div>
+  const changeCell = (cell: DynamicPageCell, changes: DynamicPageCell) => {
+    changeRowProperty(
+      row,
+      'cells',
+      row.cells.map(it => (it === cell ? changes : it))
     )
   }
-)
+
+  const removeCell = (cell: DynamicPageCell) => {
+    changeRowProperty(
+      row,
+      'cells',
+      row.cells.filter(it => it !== cell)
+    )
+  }
+
+  const addCell = async () => {
+    const initialValue: DynamicPageCell = {
+      widgets: [{ type: 'map' }],
+    }
+    const result = await showDialogWithReturnValue<DynamicPageCell>(
+      onChange => (
+        <DynamicPageCellEditor cell={initialValue} onChange={onChange} />
+      ),
+      okCancel,
+      { showCloseButton: true, initialValue }
+    )
+    if (result) changeRowProperty(row, 'cells', [...row.cells, result])
+  }
+
+  const renderCellContent = (cell: DynamicPageCell) => (
+    <div
+      onClick={async () => {
+        const result = await showDialogWithReturnValue<DynamicPageCell>(
+          onChange => <DynamicPageCellEditor cell={cell} onChange={onChange} />,
+          okCancel,
+          { showCloseButton: true }
+        )
+        if (result) changeCell(cell, result)
+      }}
+    >
+      <div className={cellDeleteContainer}>
+        {cell.factor && `x${cell.factor}`}
+        {row.cells.length > 1 && (
+          <Icon
+            icon={iconDelete}
+            className={cellDeleteIcon}
+            hoverable
+            inline
+            onClick={event => {
+              event.stopPropagation()
+              removeCell(cell)
+            }}
+          />
+        )}
+      </div>
+      {cell.widgets.map((widget, widgetIndex) => (
+        <p key={widgetIndex} className={paragraph}>
+          {getWidgetDisplayString(
+            widget,
+            masterDataMaps,
+            liveChases,
+            liveMemories
+          )}
+        </p>
+      ))}
+      {cell.widgets.length === 0 && (
+        <p className={paragraph}>
+          <i>(empty)</i>
+        </p>
+      )}
+    </div>
+  )
+
+  const removeRow = () => rows.remove(row)
+  const changeHeadline = (newValue: string | undefined): void =>
+    changeRowProperty(row, 'headline', newValue)
+  const moveDown = () => moveRow(1)
+  const moveUp = () => moveRow(-1)
+
+  return (
+    <div className={rowStyle}>
+      <div className={flexContainer}>
+        {rowIndex > 0 && (
+          <Button icon={iconUp} transparent onClick={moveUp} title="Move up" />
+        )}
+        {rowIndex < rows.value.length - 1 && (
+          <Button
+            icon={iconDown}
+            transparent
+            onClick={moveDown}
+            title="Move down"
+          />
+        )}
+        <TextInput value={row.headline} onChange={changeHeadline} />
+        <Button
+          icon={iconDelete}
+          transparent
+          onClick={removeRow}
+          title="Remove row"
+        />
+      </div>
+      <div className={cx(cellsContainer, isLarge && flexContainer)}>
+        {row.cells.length > 0 && (
+          <SortableList
+            direction={isLarge ? 'horizontal' : 'vertical'}
+            entries={row.cells}
+            onChange={changeCells}
+            entryClassName={cellStyle}
+            containerClassName={isLarge ? horizontalCellContainer : undefined}
+            renderEntryContent={renderCellContent}
+          />
+        )}
+        <Button
+          icon={iconAdd}
+          className={addCellButton}
+          title="Add cell"
+          onClick={addCell}
+        />
+      </div>
+    </div>
+  )
+}

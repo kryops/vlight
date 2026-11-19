@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
 import {
   getFractionWithMargin,
@@ -9,9 +9,7 @@ import {
 import { Touchable } from '../../components/touchable'
 import { useDelayedState } from '../../../hooks/delayed-state'
 import { baseline, iconShade, primaryShade, baselinePx } from '../../styles'
-import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
-import { useEvent } from '../../../hooks/performance'
 
 import { ColorPickerBackground } from './background'
 import {
@@ -114,93 +112,87 @@ export interface ColorPickerProps {
  *
  * Displays a 2D color gradient as well as color presets.
  */
-export const ColorPicker = memoInProduction(
-  ({
-    r = 0,
-    g = 0,
-    b = 0,
-    onChange,
-    setDefaultHeight = false,
-    className,
-  }: ColorPickerProps) => {
-    const [localColor, setLocalColor] =
-      useDelayedState<ColorPickerColor | null>(null)
-    const touchRef = useRef<HTMLDivElement>(null)
+export const ColorPicker = ({
+  r = 0,
+  g = 0,
+  b = 0,
+  onChange,
+  setDefaultHeight = false,
+  className,
+}: ColorPickerProps) => {
+  const [localColor, setLocalColor] = useDelayedState<ColorPickerColor | null>(
+    null
+  )
+  const touchRef = useRef<HTMLDivElement>(null)
 
-    const currentColor: ColorPickerColor = localColor ?? { r, g, b }
-    const positionFromColor = colorToPosition(currentColor)
+  const currentColor: ColorPickerColor = localColor ?? { r, g, b }
+  const positionFromColor = colorToPosition(currentColor)
 
-    const lastPositionRef = useRef<ColorPickerPosition | null>(
-      positionFromColor
-    )
+  // the exact position the user touched last, as multiple positions can map to the same color
+  const [lastPosition, setLastPosition] = useState<ColorPickerPosition | null>(
+    null
+  )
 
-    const position =
-      lastPositionRef.current &&
-      isSameColor(currentColor, positionToColor(lastPositionRef.current))
-        ? lastPositionRef.current
-        : positionFromColor
+  const position =
+    lastPosition && isSameColor(currentColor, positionToColor(lastPosition))
+      ? lastPosition
+      : positionFromColor
 
-    const onTouch = useEvent(
-      (event: NormalizedTouchEvent<HTMLDivElement>): void => {
-        const offset = getTouchEventOffset(event, touchRef)
-        if (!offset) {
-          return
-        }
-        const { x, y } = getFractionWithMargin(offset, 4)
-        const newPosition = { x, y }
-        const newColor = positionToColor(newPosition)
-        if (
-          lastPositionRef.current &&
-          isSameColor(positionToColor(lastPositionRef.current), newColor)
-        ) {
-          return
-        }
-        lastPositionRef.current = newPosition
-        setLocalColor(newColor)
-        onChange(newColor)
-      }
-    )
-
-    const onUp = useEvent(() => setLocalColor(null, true))
-
-    return (
-      <div
-        className={cx(container, setDefaultHeight && defaultHeight, className)}
-      >
-        <Touchable
-          className={colorPicker}
-          ref={touchRef}
-          onTouch={onTouch}
-          onUp={onUp}
-          preventScroll
-        >
-          <ColorPickerBackground />
-          {position && (
-            <div className={markerContainer}>
-              <div
-                className={positionMarker}
-                style={{
-                  top: `${position.y * 100}%`,
-                  left: `${position.x * 100}%`,
-                  background: colorToCss(currentColor),
-                }}
-              />
-            </div>
-          )}
-        </Touchable>
-        <div className={colorPresetBar}>
-          {colorPresets.map((presetColor, index) => (
-            <div
-              key={index}
-              className={cx(colorPreset, {
-                [colorPresetActive]: isSameColor(presetColor, currentColor),
-              })}
-              style={{ background: colorToCss(presetColor) }}
-              onClick={() => onChange(presetColor)}
-            />
-          ))}
-        </div>
-      </div>
-    )
+  const onTouch = (event: NormalizedTouchEvent<HTMLDivElement>): void => {
+    const offset = getTouchEventOffset(event, touchRef)
+    if (!offset) {
+      return
+    }
+    const { x, y } = getFractionWithMargin(offset, 4)
+    const newPosition = { x, y }
+    const newColor = positionToColor(newPosition)
+    if (lastPosition && isSameColor(positionToColor(lastPosition), newColor)) {
+      return
+    }
+    setLastPosition(newPosition)
+    setLocalColor(newColor)
+    onChange(newColor)
   }
-)
+
+  const onUp = () => setLocalColor(null, true)
+
+  return (
+    <div
+      className={cx(container, setDefaultHeight && defaultHeight, className)}
+    >
+      <Touchable
+        className={colorPicker}
+        ref={touchRef}
+        onTouch={onTouch}
+        onUp={onUp}
+        preventScroll
+      >
+        <ColorPickerBackground />
+        {position && (
+          <div className={markerContainer}>
+            <div
+              className={positionMarker}
+              style={{
+                top: `${position.y * 100}%`,
+                left: `${position.x * 100}%`,
+                background: colorToCss(currentColor),
+              }}
+            />
+          </div>
+        )}
+      </Touchable>
+      <div className={colorPresetBar}>
+        {colorPresets.map((presetColor, index) => (
+          <div
+            key={index}
+            className={cx(colorPreset, {
+              [colorPresetActive]: isSameColor(presetColor, currentColor),
+            })}
+            style={{ background: colorToCss(presetColor) }}
+            onClick={() => onChange(presetColor)}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}

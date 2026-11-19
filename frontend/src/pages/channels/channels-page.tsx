@@ -6,7 +6,6 @@ import { getUniverseIndex } from '../../api/util'
 import { useApiState } from '../../hooks/api'
 import { ChannelFader } from '../../ui/controls/fader/channel-fader'
 import { pageWithWidgets } from '../../ui/css/page'
-import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { Header } from '../../ui/containers/header'
 
@@ -24,7 +23,7 @@ const allChannels = createRangeArray(1, 512)
  *
  * Displays faders for all DMX channels.
  */
-const ChannelsPage = memoInProduction(() => {
+const ChannelsPage = () => {
   const channels = useApiState('channels')
 
   return (
@@ -42,6 +41,6 @@ const ChannelsPage = memoInProduction(() => {
       </div>
     </>
   )
-})
+}
 
 export default ChannelsPage

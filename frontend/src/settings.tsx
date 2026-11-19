@@ -1,4 +1,3 @@
-import { css } from '@linaria/core'
 import {
   useState,
   useMemo,
@@ -7,11 +6,8 @@ import {
   useEffect,
 } from 'react'
 
-import { getCssVariableDefinitions } from './ui/styles'
-
-const lightTheme = css`
-  ${getCssVariableDefinitions(true)}
-`
+import { lightTheme } from './ui/theme'
+import { defaultSettings, loadSettings, saveSettings } from './settings-storage'
 
 /**
  * Frontend settings that are persisted in the local storage.
@@ -39,24 +35,13 @@ export interface SettingsWithUpdate extends Settings {
   updateSettings: (settings: Partial<Settings>) => void
 }
 
-const localStorageKey = 'vlightSettings'
-
-const defaultSettings: Settings = {
-  lightMode: true,
-  miniMap: false,
-}
-
-const initialSettings = localStorage[localStorageKey]
-  ? { ...defaultSettings, ...JSON.parse(localStorage[localStorageKey]) }
-  : defaultSettings
-
 /**
  * React context that provides the frontend settings as well as a method to change them.
  *
  * Use via the `useSettings` Hook.
  */
 export const SettingsContext = createContext<SettingsWithUpdate>({
-  ...initialSettings,
+  ...defaultSettings,
   updateSettings: () => {},
 })
 
@@ -65,7 +50,7 @@ export const SettingsContext = createContext<SettingsWithUpdate>({
  * and takes care of switching between light/dark mode.
  */
 export function SettingsWrapper({ children }: PropsWithChildren) {
-  const [settings, setSettings] = useState<Settings>(initialSettings)
+  const [settings, setSettings] = useState<Settings>(loadSettings)
 
   const { lightMode } = settings
 
@@ -75,22 +60,20 @@ export function SettingsWrapper({ children }: PropsWithChildren) {
     else root.classList.remove(lightTheme)
   }, [lightMode])
 
+  useEffect(() => {
+    saveSettings(settings)
+  }, [settings])
+
   const settingsWithUpdate: SettingsWithUpdate = useMemo<SettingsWithUpdate>(
     () => ({
       ...settings,
       updateSettings: partial =>
-        setSettings(prevSettings => {
-          const newSettings = { ...prevSettings, ...partial }
-          localStorage[localStorageKey] = JSON.stringify(newSettings)
-          return newSettings
-        }),
+        setSettings(prevSettings => ({ ...prevSettings, ...partial })),
     }),
     [settings]
   )
 
   return (
-    <SettingsContext.Provider value={settingsWithUpdate}>
-      {children}
-    </SettingsContext.Provider>
+    <SettingsContext value={settingsWithUpdate}>{children}</SettingsContext>
   )
 }

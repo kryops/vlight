@@ -1,5 +1,5 @@
 import Emittery from 'emittery'
-import { MasterData } from '@vlight/types'
+import { EntityName, MasterData } from '@vlight/types'
 
 import { ApiWorkerState, ApiWorkerCommand } from './worker/api.worker'
 import { ApiState } from './worker/processing'
@@ -38,6 +38,21 @@ export const workerState = {
 export const apiStateEmitter = new Emittery<{
   [key in keyof ApiState | 'connecting']: undefined
 }>()
+
+/**
+ * Optimistically replaces the raw master data entries of the given type on the client,
+ * e.g. to prevent flickering while waiting for the backend to confirm a change.
+ */
+export function setRawMasterDataEntriesLocally(
+  type: EntityName,
+  entries: unknown[]
+): void {
+  apiState.rawMasterData = {
+    ...apiState.rawMasterData!,
+    [type]: entries,
+  }
+  void apiStateEmitter.emit('rawMasterData')
+}
 
 function messageListener(event: MessageEvent) {
   const message: ApiWorkerState = event.data

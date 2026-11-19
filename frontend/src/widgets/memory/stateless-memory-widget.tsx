@@ -2,7 +2,6 @@ import { css } from '@linaria/core'
 import { Memory, MemoryState } from '@vlight/types'
 
 import { setMemoryState } from '../../api'
-import { useEvent } from '../../hooks/performance'
 import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { Button } from '../../ui/buttons/button'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
@@ -11,7 +10,6 @@ import { faderContainer } from '../../ui/css/fader-container'
 import { iconConfig, iconLight, iconMemory, iconOn } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
-import { memoInProduction } from '../../util/development'
 
 const outerContainer = css`
   width: 100%;
@@ -44,99 +42,96 @@ export interface StatelessMemoryWidgetProps extends WidgetPassthrough {
 /**
  * Stateless widget to display a memory.
  */
-export const StatelessMemoryWidget = memoInProduction(
-  ({ memory, state, ...passThrough }: StatelessMemoryWidgetProps) => {
-    const changeValue = useEvent((value: number) =>
-      setMemoryState(
-        memory.id,
-        {
-          value,
-        },
-        true
-      )
+export const StatelessMemoryWidget = ({
+  memory,
+  state,
+  ...passThrough
+}: StatelessMemoryWidgetProps) => {
+  const changeValue = (value: number) =>
+    setMemoryState(
+      memory.id,
+      {
+        value,
+      },
+      true
     )
 
-    const openEditor = useEvent(() =>
-      openEntityEditorForId('memories', memory.id)
+  const openEditor = () => openEntityEditorForId('memories', memory.id)
+
+  const toggleOn = () =>
+    setMemoryState(
+      memory.id,
+      {
+        on: !state.on,
+      },
+      true
     )
 
-    const toggleOn = useEvent(() =>
-      setMemoryState(
-        memory.id,
-        {
-          on: !state.on,
-        },
-        true
-      )
+  const instantOn = () =>
+    setMemoryState(
+      memory.id,
+      {
+        on: true,
+      },
+      true
     )
 
-    const instantOn = useEvent(() =>
-      setMemoryState(
-        memory.id,
-        {
-          on: true,
-        },
-        true
-      )
-    )
+  const instantOff = () => setMemoryState(memory.id, { on: false }, true)
 
-    const instantOff = () => setMemoryState(memory.id, { on: false }, true)
+  const display = memory.display ?? 'both'
 
-    const display = memory.display ?? 'both'
-
-    return (
-      <Widget
-        key={memory.id}
-        icon={iconMemory}
-        title={memory.name ?? memory.id}
-        onTitleClick={display === 'flash' ? undefined : toggleOn}
-        turnedOn={state.on}
-        {...passThrough}
-      >
-        <div className={outerContainer}>
-          <div className={container}>
-            {(display === 'fader' || display === 'both') && (
-              <div className={faderContainer}>
-                <Fader
-                  className={fader}
-                  max={255}
-                  step={1}
-                  value={state.value ?? 0}
-                  onChange={changeValue}
-                />
-              </div>
-            )}
-            {(display === 'flash' || display === 'both') && (
-              <Button
-                icon={iconLight}
-                onDown={instantOn}
-                onUp={instantOff}
-                title="Instant on/off"
-                hotkey="m"
-                className={button}
+  return (
+    <Widget
+      key={memory.id}
+      icon={iconMemory}
+      title={memory.name ?? memory.id}
+      onTitleClick={display === 'flash' ? undefined : toggleOn}
+      turnedOn={state.on}
+      {...passThrough}
+    >
+      <div className={outerContainer}>
+        <div className={container}>
+          {(display === 'fader' || display === 'both') && (
+            <div className={faderContainer}>
+              <Fader
+                className={fader}
+                max={255}
+                step={1}
+                value={state.value ?? 0}
+                onChange={changeValue}
               />
-            )}
-            {display === 'toggle' && (
-              <Button
-                icon={iconOn}
-                onClick={toggleOn}
-                title="Toggle on/off"
-                hotkey="m"
-                className={button}
-              />
-            )}
-          </div>
-          <div className={configContainer}>
-            <Icon
-              icon={iconConfig}
-              onClick={openEditor}
-              shade={1}
-              hoverable
-              inline
+            </div>
+          )}
+          {(display === 'flash' || display === 'both') && (
+            <Button
+              icon={iconLight}
+              onDown={instantOn}
+              onUp={instantOff}
+              title="Instant on/off"
+              hotkey="m"
+              className={button}
             />
-          </div>
+          )}
+          {display === 'toggle' && (
+            <Button
+              icon={iconOn}
+              onClick={toggleOn}
+              title="Toggle on/off"
+              hotkey="m"
+              className={button}
+            />
+          )}
         </div>
-      </Widget>
-    )
-  }
-)
+        <div className={configContainer}>
+          <Icon
+            icon={iconConfig}
+            onClick={openEditor}
+            shade={1}
+            hoverable
+            inline
+          />
+        </div>
+      </div>
+    </Widget>
+  )
+}

@@ -28,7 +28,6 @@ import {
 import { Button } from '../../ui/buttons/button'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { iconControl } from '../../ui/icons'
-import { memoInProduction } from '../../util/development'
 
 export type ControlsWidgetProps = WidgetPassthrough
 
@@ -51,36 +50,34 @@ const stopAll = () => {
   stopAllMemories()
 }
 
-export const ControlsWidget = memoInProduction(
-  ({ ...passThrough }: ControlsWidgetProps) => {
-    const [isAnyOn, isAnyRunning] = useApiStateSelector(apiState => [
-      allOffMapping.some(([check]) => check(apiState)),
-      isAnyChaseRunning(apiState) || isAnyMemoryRunning(apiState),
-    ])
+export const ControlsWidget = ({ ...passThrough }: ControlsWidgetProps) => {
+  const [isAnyOn, isAnyRunning] = useApiStateSelector(apiState => [
+    allOffMapping.some(([check]) => check(apiState)),
+    isAnyChaseRunning(apiState) || isAnyMemoryRunning(apiState),
+  ])
 
-    return (
-      <Widget title="Controls" icon={iconControl} {...passThrough}>
-        <div>
-          <Button
-            block
-            onDown={turnAllOff}
-            title="Turn all controls off"
-            hotkey="m"
-            disabled={!isAnyOn}
-          >
-            ALL OFF
-          </Button>
-          <Button
-            block
-            onDown={stopAll}
-            title="Stop all chases"
-            hotkey="n"
-            disabled={!isAnyRunning}
-          >
-            STOP ALL
-          </Button>
-        </div>
-      </Widget>
-    )
-  }
-)
+  return (
+    <Widget title="Controls" icon={iconControl} {...passThrough}>
+      <div>
+        <Button
+          block
+          onDown={turnAllOff}
+          title="Turn all controls off"
+          hotkey="m"
+          disabled={!isAnyOn}
+        >
+          ALL OFF
+        </Button>
+        <Button
+          block
+          onDown={stopAll}
+          title="Stop all chases"
+          hotkey="n"
+          disabled={!isAnyRunning}
+        >
+          STOP ALL
+        </Button>
+      </div>
+    </Widget>
+  )
+}

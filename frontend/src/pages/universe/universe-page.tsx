@@ -5,7 +5,6 @@ import { useDmxUniverse, useMasterDataAndMaps } from '../../hooks/api'
 import { Bar } from '../../ui/controls/bar'
 import { pageWithWidgets } from '../../ui/css/page'
 import { baseline } from '../../ui/styles'
-import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import {
   getFixtureAtChannel,
@@ -31,16 +30,19 @@ const universeBar_connected = css`
 /**
  * Displays the current state of the DMX universe as channel bars.
  */
-const UniversePage = memoInProduction(() => {
+const UniversePage = () => {
   const universe = useDmxUniverse()
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
   const { fixtureTypes } = masterDataMaps
 
-  const fixturesAtIndex = useMemo(() => {
-    return universe.map((_, index) =>
-      getFixtureAtChannel(masterData, index + 1)
-    )
-  }, [masterData]) // oxlint-disable-line react-hooks/exhaustive-deps
+  const universeLength = universe.length
+  const fixturesAtIndex = useMemo(
+    () =>
+      Array.from({ length: universeLength }, (_, index) =>
+        getFixtureAtChannel(masterData, index + 1)
+      ),
+    [masterData, universeLength]
+  )
 
   return (
     <>
@@ -85,6 +87,6 @@ const UniversePage = memoInProduction(() => {
       </div>
     </>
   )
-})
+}
 
 export default UniversePage

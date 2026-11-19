@@ -25,7 +25,7 @@ import { getFixtureStateColor } from '../../../../util/fixtures'
 import { cx } from '../../../../util/styles'
 import { editorTitle } from '../../../../ui/css/editor-styles'
 import { flexContainer } from '../../../../ui/css/flex'
-import { useDeepEqualMemo, useEvent } from '../../../../hooks/performance'
+import { useDeepEqualMemo } from '../../../../hooks/performance'
 import { Button } from '../../../../ui/buttons/button'
 import { Checkbox } from '../../../../ui/forms/checkbox'
 import { MemorySceneStatePresets } from '../../../../widgets/memory/memory-scene-state-presets'
@@ -123,10 +123,10 @@ export function MemorySceneStateEditor({
   const [currentStop, setCurrentStop] = useState(0)
   const mapping = useCommonFixtureMapping(scene.members)
 
-  const updateState = useEvent((state: MemorySceneState) => {
+  const updateState = (state: MemorySceneState) => {
     setLocalState(state)
     onChange(state)
-  })
+  }
 
   if (Array.isArray(localState) && currentStop >= localState.length)
     setCurrentStop(localState.length - 1)
@@ -165,43 +165,41 @@ export function MemorySceneStateEditor({
     channels: activeGradientStop ? activeGradientStop.channels : {},
   })
 
-  const changeGradientStop = useEvent((newState: Partial<FixtureState>) =>
+  const changeGradientStop = (newState: Partial<FixtureState>) =>
     setGradientEntry(currentStop, { channels: newState.channels })
-  )
 
-  const changeFixtureState = useEvent((partialState: Partial<FixtureState>) => {
+  const changeFixtureState = (partialState: Partial<FixtureState>) => {
     if (Array.isArray(localState)) return
     const newState = mergeFixtureStates(localState, partialState)
     updateState(newState)
-  })
+  }
 
-  const changePositionMode = useEvent((value: MemoryScenePositionMode): void =>
+  const changePositionMode = (value: MemoryScenePositionMode): void =>
     setGradientEntry(currentStop, {
       position:
         value === MemoryScenePositionMode.Auto
           ? undefined
           : gradientPositions[currentStop],
     })
-  )
 
-  const changePosition = useEvent((value: number | undefined): void => {
+  const changePosition = (value: number | undefined): void => {
     if (value === undefined) return
     const position = ensureBetween(value, 0, 100)
     setGradientEntry(currentStop, { position })
-  })
+  }
 
-  const removeCurrentStop = useEvent(() => {
+  const removeCurrentStop = () => {
     if (!Array.isArray(localState)) return
     const newState = localState.filter((_, i) => i !== currentStop)
     updateState(newState)
-  })
+  }
 
-  const toggleMirrored = useEvent(() => {
+  const toggleMirrored = () => {
     if (!Array.isArray(localState)) return
     const mirrored = localState.some(it => it.mirrored)
     const newState = localState.map(it => ({ ...it, mirrored: !mirrored }))
     updateState(newState)
-  })
+  }
 
   const content = Array.isArray(localState) ? (
     <>
@@ -285,7 +283,7 @@ export function MemorySceneStateEditor({
     />
   )
 
-  const changeType = useEvent((toGradient: boolean): void => {
+  const changeType = (toGradient: boolean): void => {
     let newState = localState
     if (toGradient && !Array.isArray(localState)) {
       newState = [
@@ -298,10 +296,10 @@ export function MemorySceneStateEditor({
     }
 
     updateState(newState)
-  })
+  }
 
-  const toggleGradient = useEvent(() => changeType(!isGradient))
-  const getCurrentState = useEvent(() => localState)
+  const toggleGradient = () => changeType(!isGradient)
+  const getCurrentState = () => localState
 
   return (
     <>

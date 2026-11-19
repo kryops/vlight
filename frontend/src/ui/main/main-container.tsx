@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { Suspense, useCallback, useState, useEffect } from 'react'
+import { Suspense, useCallback, useState } from 'react'
 import { useLocation } from 'react-router'
 
 import { RoutesOutlet } from '../../pages/routes-outlet'
@@ -7,7 +7,6 @@ import { iconClose, iconMenu } from '../icons'
 import { CornerButton } from '../navigation/corner-button'
 import { Navigation } from '../navigation/navigation'
 import { baseline, zNavigation, backgroundColor } from '../styles'
-import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { ErrorBoundary } from '../../util/error-boundary'
 
@@ -52,15 +51,18 @@ const alwaysShowNav = window.innerWidth >= navBreakpoint
  * - the routing outlet for the main content
  * - the corner overlay for the minimal and quick settings
  */
-export const MainContainer = memoInProduction(() => {
+export const MainContainer = () => {
   const [nav, setNav] = useState(alwaysShowNav)
   const location = useLocation()
 
   const toggleNav = useCallback(() => setNav(!nav), [nav])
 
-  useEffect(() => {
+  // close the navigation after navigating
+  const [prevLocationKey, setPrevLocationKey] = useState(location.key)
+  if (location.key !== prevLocationKey) {
+    setPrevLocationKey(location.key)
     if (!alwaysShowNav) setNav(false)
-  }, [location])
+  }
 
   const navOverlayed = nav && !alwaysShowNav
 
@@ -87,4 +89,4 @@ export const MainContainer = memoInProduction(() => {
       <CornerOverlay />
     </div>
   )
-})
+}

@@ -1,5 +1,5 @@
 import { deepEqual, shallowEqual } from '@vlight/utils'
-import { useCallback, useRef, useState } from 'react'
+import { useState } from 'react'
 
 /**
  * React Hook that memoizes a value as long as its shallowly equal to the value before.
@@ -25,13 +25,4 @@ export function useDeepEqualMemo<T>(value: T) {
   }
 
   return state
-}
-
-// via https://github.com/reactjs/rfcs/blob/useevent/text/0000-useevent.md
-export function useEvent<T extends Function>(handler: T): T {
-  const handlerRef = useRef<T>(handler)
-  // oxlint-disable-next-line react-hooks/refs
-  handlerRef.current = handler
-
-  return useCallback((...args: any[]) => handlerRef.current(...args), []) as any
 }

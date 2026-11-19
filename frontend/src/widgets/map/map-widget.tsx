@@ -1,5 +1,4 @@
 import { useMasterData } from '../../hooks/api'
-import { memoInProduction } from '../../util/development'
 
 import {
   StatelessMapWidget,
@@ -13,7 +12,7 @@ type MapWidgetProps = Omit<StatelessMapWidgetProps, 'fixtures' | 'universe'>
  *
  * NOTE: Re-renders up to 20 times a second.
  */
-export const MapWidget = memoInProduction((props: MapWidgetProps) => {
+export const MapWidget = (props: MapWidgetProps) => {
   const masterData = useMasterData()
 
   return (
@@ -23,4 +22,4 @@ export const MapWidget = memoInProduction((props: MapWidgetProps) => {
       {...props}
     />
   )
-})
+}

@@ -8,8 +8,6 @@ import {
 } from '@vlight/utils'
 
 import { useDelayedState } from '../../../hooks/delayed-state'
-import { useEvent } from '../../../hooks/performance'
-import { memoInProduction } from '../../../util/development'
 import { iconShade } from '../../styles'
 
 import {
@@ -80,68 +78,65 @@ export interface RangeFaderProps {
 /**
  * Fader that controls a range between 2 values.
  */
-export const RangeFader = memoInProduction(
-  ({
-    value,
-    min = 0,
-    max = 100,
-    quadraticScale = 1,
-    step,
-    onChange,
-    ...passThrough
-  }: RangeFaderProps) => {
-    const [localValue, setLocalValue] =
-      useDelayedState<ValueRange<number> | null>(null)
-    const valueToUse = localValue ?? value
+export const RangeFader = ({
+  value,
+  min = 0,
+  max = 100,
+  quadraticScale = 1,
+  step,
+  onChange,
+  ...passThrough
+}: RangeFaderProps) => {
+  const [localValue, setLocalValue] =
+    useDelayedState<ValueRange<number> | null>(null)
+  const valueToUse = localValue ?? value
 
-    const getFraction = (coordinate: number) =>
-      valueToFraction(coordinate, min, max, quadraticScale)
+  const getFraction = (coordinate: number) =>
+    valueToFraction(coordinate, min, max, quadraticScale)
 
-    const onTouch = useEvent((fraction: number): void => {
-      const rawCoordinate = fractionToValue(fraction, min, max, quadraticScale)
+  const onTouch = (fraction: number): void => {
+    const rawCoordinate = fractionToValue(fraction, min, max, quadraticScale)
 
-      const newRawValue =
-        Math.abs(valueToUse.from - rawCoordinate) <
-          Math.abs(valueToUse.to - rawCoordinate) ||
-        Math.abs(valueToUse.from - rawCoordinate) >
-          Math.abs(min - rawCoordinate)
-          ? valueRange(rawCoordinate, valueToUse.to)
-          : valueRange(valueToUse.from, rawCoordinate)
+    const newRawValue =
+      Math.abs(valueToUse.from - rawCoordinate) <
+        Math.abs(valueToUse.to - rawCoordinate) ||
+      Math.abs(valueToUse.from - rawCoordinate) > Math.abs(min - rawCoordinate)
+        ? valueRange(rawCoordinate, valueToUse.to)
+        : valueRange(valueToUse.from, rawCoordinate)
 
-      setLocalValue(newRawValue)
-      const roundedValue = valueRange(
-        roundToStep(newRawValue.from, step),
-        roundToStep(newRawValue.to, step)
-      )
-      onChange(roundedValue)
-    })
-
-    const onUp = useEvent(() => setLocalValue(null, true))
-
-    return (
-      <FaderBase {...passThrough} onTouch={onTouch} onUp={onUp}>
-        <div
-          className={track}
-          style={{
-            top:
-              Math.round(
-                trackOffset + trackHeight * (1 - getFraction(valueToUse.to))
-              ) + 'px',
-            height:
-              Math.round(
-                trackHeight *
-                  (getFraction(valueToUse.to) - getFraction(valueToUse.from))
-              ) + 'px',
-          }}
-        />
-        {[valueToUse.from, valueToUse.to].map((coordinate, index) => (
-          <FaderButton
-            key={index}
-            fraction={getFraction(coordinate)}
-            height={faderWidth / 4}
-          />
-        ))}
-      </FaderBase>
+    setLocalValue(newRawValue)
+    const roundedValue = valueRange(
+      roundToStep(newRawValue.from, step),
+      roundToStep(newRawValue.to, step)
     )
+    onChange(roundedValue)
   }
-)
+
+  const onUp = () => setLocalValue(null, true)
+
+  return (
+    <FaderBase {...passThrough} onTouch={onTouch} onUp={onUp}>
+      <div
+        className={track}
+        style={{
+          top:
+            Math.round(
+              trackOffset + trackHeight * (1 - getFraction(valueToUse.to))
+            ) + 'px',
+          height:
+            Math.round(
+              trackHeight *
+                (getFraction(valueToUse.to) - getFraction(valueToUse.from))
+            ) + 'px',
+        }}
+      />
+      {[valueToUse.from, valueToUse.to].map((coordinate, index) => (
+        <FaderButton
+          key={index}
+          fraction={getFraction(coordinate)}
+          height={faderWidth / 4}
+        />
+      ))}
+    </FaderBase>
+  )
+}

@@ -9,7 +9,6 @@ import { editorTitle } from '../../ui/css/editor-styles'
 import { iconAdd, iconDelete } from '../../ui/icons'
 import { baseline, iconShade } from '../../ui/styles'
 import { cx } from '../../util/styles'
-import { useEvent } from '../../hooks/performance'
 
 import { ChaseColorEditor } from './chase-color-editor'
 import { getChasePreviewColor } from './utils'
@@ -88,23 +87,24 @@ export function ChaseColorsEditor({
   const effectiveIndex = Math.min(localState.length - 1, selectedIndex)
   const selectedColor: ChaseColor | undefined = localState[effectiveIndex]
 
-  const onChangeWrapper = useEvent((newColors: ChaseColor[]) => {
+  const onChangeWrapper = (newColors: ChaseColor[]) => {
     setLocalState(newColors)
     onChange(newColors)
-  })
+  }
 
-  const getCurrentColors = useEvent(() => localState)
+  const getCurrentColors = () => localState
 
-  const removeColor = useEvent(
-    (event: { stopPropagation: () => void } | undefined, index: number) => {
-      const color = localState[index]
-      event?.stopPropagation()
-      onChangeWrapper(localState.filter(it => it !== color))
-      if (index < selectedIndex) setSelectedIndex(selectedIndex - 1)
-    }
-  )
+  const removeColor = (
+    event: { stopPropagation: () => void } | undefined,
+    index: number
+  ) => {
+    const color = localState[index]
+    event?.stopPropagation()
+    onChangeWrapper(localState.filter(it => it !== color))
+    if (index < selectedIndex) setSelectedIndex(selectedIndex - 1)
+  }
 
-  const addColor = useEvent(() => {
+  const addColor = () => {
     onChangeWrapper([
       ...localState,
       {
@@ -115,9 +115,9 @@ export function ChaseColorsEditor({
       },
     ])
     setSelectedIndex(localState.length)
-  })
+  }
 
-  const changeSelectedColor = useEvent((newColor: ChaseColor | null): void =>
+  const changeSelectedColor = (newColor: ChaseColor | null): void =>
     onChangeWrapper(
       newColor === null
         ? localState.filter((_, index) => index !== effectiveIndex)
@@ -125,7 +125,6 @@ export function ChaseColorsEditor({
             index === effectiveIndex ? newColor : color
           )
     )
-  )
 
   return (
     <>

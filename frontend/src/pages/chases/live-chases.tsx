@@ -12,7 +12,6 @@ import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
 import { StatelessLiveChaseWidget } from '../../widgets/chase/stateless-live-chase-widget'
 import { showPromptDialog } from '../../ui/overlays/dialog'
-import { memoInProduction } from '../../util/development'
 import { apiState } from '../../api/api-state'
 import { getHotkeyLabel } from '../../hooks/hotkey'
 import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
@@ -80,43 +79,44 @@ export interface LiveChasesProps {
 /**
  * Displays widgets for all live chases.
  */
-export const LiveChases = memoInProduction(
-  ({ startHotkeyIndex, activeHotkeyIndex }: LiveChasesProps) => {
-    const liveChases = useApiState('liveChases')
+export const LiveChases = ({
+  startHotkeyIndex,
+  activeHotkeyIndex,
+}: LiveChasesProps) => {
+  const liveChases = useApiState('liveChases')
 
-    return (
-      <div className={container}>
-        <Header
-          level={3}
-          rightContent={
-            <Icon
-              icon={iconAdd}
-              size={8}
-              hoverable
-              inline
-              onClick={addLiveChase}
-            />
-          }
-        >
-          Live Chases
-        </Header>
-        <div className={cx(pageWithWidgets, widgetContainer)}>
-          {Object.entries(liveChases).map(([id, liveChase], index) => (
-            <StatelessLiveChaseWidget
-              key={id}
-              title={liveChase.name ?? `Live Chase ${id}`}
-              id={id}
-              state={liveChase}
-              hotkeysActive={activeHotkeyIndex === index}
-              cornerLabel={
-                startHotkeyIndex !== undefined
-                  ? getHotkeyLabel(startHotkeyIndex + index)
-                  : undefined
-              }
-            />
-          ))}
-        </div>
+  return (
+    <div className={container}>
+      <Header
+        level={3}
+        rightContent={
+          <Icon
+            icon={iconAdd}
+            size={8}
+            hoverable
+            inline
+            onClick={addLiveChase}
+          />
+        }
+      >
+        Live Chases
+      </Header>
+      <div className={cx(pageWithWidgets, widgetContainer)}>
+        {Object.entries(liveChases).map(([id, liveChase], index) => (
+          <StatelessLiveChaseWidget
+            key={id}
+            title={liveChase.name ?? `Live Chase ${id}`}
+            id={id}
+            state={liveChase}
+            hotkeysActive={activeHotkeyIndex === index}
+            cornerLabel={
+              startHotkeyIndex !== undefined
+                ? getHotkeyLabel(startHotkeyIndex + index)
+                : undefined
+            }
+          />
+        ))}
       </div>
-    )
-  }
-)
+    </div>
+  )
+}

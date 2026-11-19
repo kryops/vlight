@@ -1,6 +1,5 @@
 import { EntityName } from '@vlight/types'
 
-import { memoInProduction } from '../../util/development'
 import { settingsPageRoute, entitiesPageRoute } from '../routes'
 import { TileGrid, Tile } from '../../ui/containers/tiles'
 import { iconConfig } from '../../ui/icons'
@@ -14,7 +13,7 @@ import { entityUiMapping } from './entities/entity-ui-mapping'
  * - the settings page
  * - configuration pages for all master data entities
  */
-const ConfigPage = memoInProduction(() => {
+const ConfigPage = () => {
   return (
     <div>
       <h1>Config</h1>
@@ -33,6 +32,6 @@ const ConfigPage = memoInProduction(() => {
       </TileGrid>
     </div>
   )
-})
+}
 
 export default ConfigPage

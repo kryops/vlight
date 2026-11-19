@@ -2,7 +2,6 @@ import { css } from '@linaria/core'
 
 import { mainNavigationItems } from '../../pages'
 import { iconShade, primaryShade, zNavigation } from '../styles'
-import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { useApiStateSelector, useMasterData } from '../../hooks/api'
 import { iconDynamicPage } from '../icons'
@@ -62,38 +61,39 @@ export interface NavigationProps {
 /**
  * Main navigation component.
  */
-export const Navigation = memoInProduction(
-  ({ showLabels = false, floating = false }: NavigationProps) => {
-    const masterData = useMasterData()
-    const highlightedItems = useApiStateSelector(apiState =>
-      mainNavigationItems.map(item => item.highlighted?.(apiState) ?? false)
-    )
-    const { dynamicPages } = masterData
+export const Navigation = ({
+  showLabels = false,
+  floating = false,
+}: NavigationProps) => {
+  const masterData = useMasterData()
+  const highlightedItems = useApiStateSelector(apiState =>
+    mainNavigationItems.map(item => item.highlighted?.(apiState) ?? false)
+  )
+  const { dynamicPages } = masterData
 
-    return (
-      <div className={cx(navigation, floating && navigation_floating)}>
-        {mainNavigationItems.map(({ route, icon, label }, index) => (
-          <NavItem
-            key={route}
-            to={route}
-            icon={icon}
-            label={label}
-            showLabel={showLabels}
-            highlighted={highlightedItems[index]}
-            hotkey={navigationHotkeys[index]}
-          />
-        ))}
-        {dynamicPages.map(({ id, icon, headline }, index) => (
-          <NavItem
-            key={id}
-            to={dynamicPageRoute(id)}
-            icon={icon ?? iconDynamicPage}
-            label={headline ?? id}
-            showLabel={showLabels}
-            hotkey={navigationHotkeys[index + mainNavigationItems.length]}
-          />
-        ))}
-      </div>
-    )
-  }
-)
+  return (
+    <div className={cx(navigation, floating && navigation_floating)}>
+      {mainNavigationItems.map(({ route, icon, label }, index) => (
+        <NavItem
+          key={route}
+          to={route}
+          icon={icon}
+          label={label}
+          showLabel={showLabels}
+          highlighted={highlightedItems[index]}
+          hotkey={navigationHotkeys[index]}
+        />
+      ))}
+      {dynamicPages.map(({ id, icon, headline }, index) => (
+        <NavItem
+          key={id}
+          to={dynamicPageRoute(id)}
+          icon={icon ?? iconDynamicPage}
+          label={headline ?? id}
+          showLabel={showLabels}
+          hotkey={navigationHotkeys[index + mainNavigationItems.length]}
+        />
+      ))}
+    </div>
+  )
+}

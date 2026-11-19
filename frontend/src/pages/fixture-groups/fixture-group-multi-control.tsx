@@ -15,16 +15,11 @@ import {
   useMasterDataAndMaps,
 } from '../../hooks/api'
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
-import {
-  useDeepEqualMemo,
-  useEvent,
-  useShallowEqualMemo,
-} from '../../hooks/performance'
+import { useDeepEqualMemo, useShallowEqualMemo } from '../../hooks/performance'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { MultiToggleInput } from '../../ui/forms/multi-toggle-input'
 import { iconGroup } from '../../ui/icons'
-import { memoInProduction } from '../../util/development'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 import { addMemoryFromFixtureState } from '../memories/memories-actions'
 
@@ -60,32 +55,29 @@ function FixtureGroupMultiControlInner() {
     [masterDataMaps]
   )
 
-  const changeFixtureGroupState = useEvent(
-    (newState: Partial<FixtureState>) => {
-      const stateToApply = { ...newState }
-      if (stateToApply.on === undefined && commonState.on)
-        stateToApply.on = true
+  const changeFixtureGroupState = (newState: Partial<FixtureState>) => {
+    const stateToApply = { ...newState }
+    if (stateToApply.on === undefined && commonState.on) stateToApply.on = true
 
-      for (const group of selectedGroups) {
-        setFixtureGroupState(
-          group.id,
-          mergeFixtureStates(
-            undefined,
-            stateToApply,
-            getCommonFixtureMapping(group.fixtures, masterDataAndMaps)
-          ),
-          true
-        )
-      }
+    for (const group of selectedGroups) {
+      setFixtureGroupState(
+        group.id,
+        mergeFixtureStates(
+          undefined,
+          stateToApply,
+          getCommonFixtureMapping(group.fixtures, masterDataAndMaps)
+        ),
+        true
+      )
     }
-  )
+  }
 
-  const onSave = useEvent(async () => {
+  const onSave = async () => {
     await addMemoryFromFixtureState({
       fixtureState: commonState,
       members: selectedGroupIds.map(id => FixtureMappingPrefix.Group + id),
     })
-  })
+  }
 
   return (
     <TwoColumDialogContainer
@@ -118,7 +110,7 @@ function FixtureGroupMultiControlInner() {
 /**
  * Collapsible widget to control multiple fixture groups together.
  */
-export const FixtureGroupMultiControl = memoInProduction(() => {
+export const FixtureGroupMultiControl = () => {
   const masterData = useMasterData()
   if (masterData.fixtureGroups.length < 2) return null
 
@@ -127,4 +119,4 @@ export const FixtureGroupMultiControl = memoInProduction(() => {
       <FixtureGroupMultiControlInner />
     </Collapsible>
   )
-})
+}

@@ -2,7 +2,6 @@ import { css } from '@linaria/core'
 import { ensureBetween, valueToFraction } from '@vlight/utils'
 
 import { baseline, iconShade, primaryShade, textShade } from '../styles'
-import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 
 const bar = css`
@@ -85,56 +84,54 @@ export interface BarProps {
 /**
  * Bar for displaying a value, e.g. for a DMX channel.
  */
-export const Bar = memoInProduction(
-  ({
-    label,
-    topCornerLabel,
-    bottomCornerLabel,
-    bottomCornerLabelOverflow = false,
-    value,
-    min = 0,
-    max = 1,
-    color,
-    className,
-  }: BarProps) => {
-    const fraction = ensureBetween(valueToFraction(value, min, max), 0, 1)
+export const Bar = ({
+  label,
+  topCornerLabel,
+  bottomCornerLabel,
+  bottomCornerLabelOverflow = false,
+  value,
+  min = 0,
+  max = 1,
+  color,
+  className,
+}: BarProps) => {
+  const fraction = ensureBetween(valueToFraction(value, min, max), 0, 1)
 
-    return (
-      <div
-        className={cx(bar, className)}
-        style={color ? { borderBottomColor: color } : undefined}
-      >
-        <div className={barLabel}>{label}</div>
-        {topCornerLabel && (
-          <div className={cx(barCornerLabel, barTopCornerLabel)}>
-            {topCornerLabel}
-          </div>
-        )}
-        {bottomCornerLabel && (
-          <div
-            className={cx(
-              barCornerLabel,
-              barBottomCornerLabel,
-              bottomCornerLabelOverflow && barBottomCornerLabel_overflow
-            )}
-          >
-            {bottomCornerLabel}
-          </div>
-        )}
-        {fraction > 0 && (
-          <div
-            className={barLevel}
-            style={
-              fraction < 1
-                ? {
-                    opacity: 0.3 + fraction * 0.7,
-                    transform: `scaleY(${fraction})`,
-                  }
-                : undefined
-            }
-          />
-        )}
-      </div>
-    )
-  }
-)
+  return (
+    <div
+      className={cx(bar, className)}
+      style={color ? { borderBottomColor: color } : undefined}
+    >
+      <div className={barLabel}>{label}</div>
+      {topCornerLabel && (
+        <div className={cx(barCornerLabel, barTopCornerLabel)}>
+          {topCornerLabel}
+        </div>
+      )}
+      {bottomCornerLabel && (
+        <div
+          className={cx(
+            barCornerLabel,
+            barBottomCornerLabel,
+            bottomCornerLabelOverflow && barBottomCornerLabel_overflow
+          )}
+        >
+          {bottomCornerLabel}
+        </div>
+      )}
+      {fraction > 0 && (
+        <div
+          className={barLevel}
+          style={
+            fraction < 1
+              ? {
+                  opacity: 0.3 + fraction * 0.7,
+                  transform: `scaleY(${fraction})`,
+                }
+              : undefined
+          }
+        />
+      )}
+    </div>
+  )
+}

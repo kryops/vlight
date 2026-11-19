@@ -2,8 +2,6 @@ import { IdType } from '@vlight/types'
 import { ComponentType } from 'react'
 
 import { FormState } from '../../hooks/form'
-import { useEvent } from '../../hooks/performance'
-import { memoInProduction } from '../../util/development'
 
 import { TextInput, TypedInputProps, NumberInput } from './typed-input'
 import { Checkbox } from './checkbox'
@@ -28,7 +26,7 @@ export interface FormInputProps<
 function wrapTypedInput<TValue, TAdditionalProps extends object>(
   TypedInput: ComponentType<TypedInputProps<TValue> & TAdditionalProps>
 ) {
-  return memoInProduction(function FormInput<
+  return function FormInput<
     TValues extends { [key in TName]?: TValue | undefined },
     TName extends keyof TValues,
   >({
@@ -39,9 +37,8 @@ function wrapTypedInput<TValue, TAdditionalProps extends object>(
   }: FormInputProps<TValue, TValues, TName> &
     Omit<TypedInputProps<TValue>, 'value' | 'onChange'> &
     Omit<TAdditionalProps, 'value' | 'onChange'>) {
-    const onChange = useEvent((value: TValue | undefined): void =>
+    const onChange = (value: TValue | undefined): void =>
       formState.changeValue(name, value ?? (fallbackValue as any))
-    )
 
     return (
       <TypedInput
@@ -50,7 +47,7 @@ function wrapTypedInput<TValue, TAdditionalProps extends object>(
         {...(rest as any)}
       />
     )
-  })
+  }
 }
 
 /**
@@ -71,111 +68,101 @@ export const FormCheckbox = wrapTypedInput(Checkbox)
 /**
  * Wrapper around {@link Select} for use with a form state.
  */
-export const FormSelect = memoInProduction(
-  <
-    TValue,
-    TValues extends { [key in TName]?: TValue | undefined },
-    TName extends keyof TValues,
-  >({
-    formState,
-    name,
-    entries,
-    ...rest
-  }: FormInputProps<TValue, TValues, TName> &
-    Omit<SelectProps<TValue>, 'value' | 'onChange'>) => {
-    const onChange = useEvent((value: any) =>
-      formState.changeValue(name, value as any)
-    )
+export const FormSelect = <
+  TValue,
+  TValues extends { [key in TName]?: TValue | undefined },
+  TName extends keyof TValues,
+>({
+  formState,
+  name,
+  entries,
+  ...rest
+}: FormInputProps<TValue, TValues, TName> &
+  Omit<SelectProps<TValue>, 'value' | 'onChange'>) => {
+  const onChange = (value: any) => formState.changeValue(name, value as any)
 
-    return (
-      <Select
-        entries={entries}
-        value={formState.values[name] as any}
-        onChange={onChange}
-        {...rest}
-      />
-    )
-  }
-)
+  return (
+    <Select
+      entries={entries}
+      value={formState.values[name] as any}
+      onChange={onChange}
+      {...rest}
+    />
+  )
+}
 
 /**
  * Wrapper around {@link EntityReferenceSelect} for use with a form state.
  */
-export const FormEntityReferenceSelect = memoInProduction(
-  <TValues extends { [key in TName]: IdType }, TName extends keyof TValues>({
-    formState,
-    name,
-    entity,
-    ...rest
-  }: FormInputProps<IdType, TValues, TName> &
-    Omit<EntityReferenceSelectProps, 'value' | 'onChange'>) => {
-    const onChange = useEvent((value: string | undefined) =>
-      formState.changeValue(name, value as any)
-    )
+export const FormEntityReferenceSelect = <
+  TValues extends { [key in TName]: IdType },
+  TName extends keyof TValues,
+>({
+  formState,
+  name,
+  entity,
+  ...rest
+}: FormInputProps<IdType, TValues, TName> &
+  Omit<EntityReferenceSelectProps, 'value' | 'onChange'>) => {
+  const onChange = (value: string | undefined) =>
+    formState.changeValue(name, value as any)
 
-    return (
-      <EntityReferenceSelect
-        entity={entity}
-        value={formState.values[name] as any}
-        onChange={onChange}
-        {...rest}
-      />
-    )
-  }
-)
+  return (
+    <EntityReferenceSelect
+      entity={entity}
+      value={formState.values[name] as any}
+      onChange={onChange}
+      {...rest}
+    />
+  )
+}
 
 /**
  * Wrapper around {@link ArrayInput} for use with a form state.
  */
-export const FormArrayInput = memoInProduction(
-  <
-    TValue,
-    TValues extends { [key in TName]: TValue[] },
-    TName extends keyof TValues,
-  >({
-    formState,
-    name,
-    ...rest
-  }: FormInputProps<TValue[], TValues, TName> &
-    Omit<ArrayInputProps<TValue>, 'value' | 'onChange'>) => {
-    const onChange = useEvent((value: TValue[]) =>
-      formState.changeValue(name, value as any)
-    )
+export const FormArrayInput = <
+  TValue,
+  TValues extends { [key in TName]: TValue[] },
+  TName extends keyof TValues,
+>({
+  formState,
+  name,
+  ...rest
+}: FormInputProps<TValue[], TValues, TName> &
+  Omit<ArrayInputProps<TValue>, 'value' | 'onChange'>) => {
+  const onChange = (value: TValue[]) =>
+    formState.changeValue(name, value as any)
 
-    return (
-      <ArrayInput
-        value={formState.values[name] as any}
-        onChange={onChange}
-        {...rest}
-      />
-    )
-  }
-)
+  return (
+    <ArrayInput
+      value={formState.values[name] as any}
+      onChange={onChange}
+      {...rest}
+    />
+  )
+}
 
 /**
  * Wrapper around {@link FixtureListInput} for use with a form state.
  */
-export const FormFixtureListInput = memoInProduction(
-  <
-    TValue,
-    TValues extends { [key in TName]: TValue[] },
-    TName extends keyof TValues,
-  >({
-    formState,
-    name,
-    ...rest
-  }: FormInputProps<TValue[], TValues, TName> &
-    Omit<FixtureListInputProps, 'value' | 'onChange'>) => {
-    const onChange = useEvent((value: string[]) =>
-      formState.changeValue(name, value as any)
-    )
+export const FormFixtureListInput = <
+  TValue,
+  TValues extends { [key in TName]: TValue[] },
+  TName extends keyof TValues,
+>({
+  formState,
+  name,
+  ...rest
+}: FormInputProps<TValue[], TValues, TName> &
+  Omit<FixtureListInputProps, 'value' | 'onChange'>) => {
+  const onChange = (value: string[]) =>
+    formState.changeValue(name, value as any)
 
-    return (
-      <FixtureListInput
-        value={formState.values[name] as any}
-        onChange={onChange}
-        {...rest}
-      />
-    )
-  }
-)
+  return (
+    <FixtureListInput
+      value={formState.values[name] as any}
+      onChange={onChange}
+      {...rest}
+    />
+  )
+}

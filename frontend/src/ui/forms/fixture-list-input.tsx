@@ -16,8 +16,6 @@ import {
 } from '../icons'
 import { baseline, iconShade } from '../styles'
 import { useDelayedState } from '../../hooks/delayed-state'
-import { memoInProduction } from '../../util/development'
-import { useEvent } from '../../hooks/performance'
 
 import { SortableFixtureMapping } from './sortable-fixture-mapping'
 
@@ -150,174 +148,164 @@ export interface FixtureListInputProps {
 /**
  * Input component to select a fixture string list.
  */
-export const FixtureListInput = memoInProduction(
-  ({
-    value,
-    onChange,
-    hideGroupMode = false,
-    ordering = false,
-    compact = false,
-  }: FixtureListInputProps) => {
-    // We apply the changed value immediately, as otherwise the list might flicker
-    const [localValue, setLocalValue] = useDelayedState<string[] | null>(null)
+export const FixtureListInput = ({
+  value,
+  onChange,
+  hideGroupMode = false,
+  ordering = false,
+  compact = false,
+}: FixtureListInputProps) => {
+  // We apply the changed value immediately, as otherwise the list might flicker
+  const [localValue, setLocalValue] = useDelayedState<string[] | null>(null)
 
-    const valueToDisplay = localValue ?? value ?? []
-    const onChangeWrapper = useEvent((newValue: string[]) => {
-      onChange(newValue)
-      setLocalValue(newValue)
-      setLocalValue(null, true)
-    })
+  const valueToDisplay = localValue ?? value ?? []
+  const onChangeWrapper = (newValue: string[]) => {
+    onChange(newValue)
+    setLocalValue(newValue)
+    setLocalValue(null, true)
+  }
 
-    const rawMasterData = useRawMasterData()
-    const { masterData, masterDataMaps } = useMasterDataAndMaps()
-    const [activeCategory, setActiveCategory] = useState(
-      ordering ? null : categories[0]
-    )
+  const rawMasterData = useRawMasterData()
+  const { masterData, masterDataMaps } = useMasterDataAndMaps()
+  const [activeCategory, setActiveCategory] = useState(
+    ordering ? null : categories[0]
+  )
 
-    const base = activeCategory?.useRawMasterData ? rawMasterData : masterData
+  const base = activeCategory?.useRawMasterData ? rawMasterData : masterData
 
-    const allEntities = activeCategory
-      ? (base[activeCategory.entity] as Array<
-          FixtureType | Fixture | FixtureGroup
-        >)
-      : []
+  const allEntities = activeCategory
+    ? (base[activeCategory.entity] as Array<
+        FixtureType | Fixture | FixtureGroup
+      >)
+    : []
 
-    const fixtureCountByEntity = new Map<ListEntityType, number>(
-      allEntities
-        .map<number>(entity => {
-          if (activeCategory === allFixturesCategory)
-            return (entity as Fixture).count ?? 1
-          if (activeCategory === fixtureTypeCategory)
-            return masterData.fixtures.filter(it => it.type === entity.id)
-              .length
-          if (activeCategory === groupCategory)
-            return (entity as FixtureGroup).fixtures.length
+  const fixtureCountByEntity = new Map<ListEntityType, number>(
+    allEntities
+      .map<number>(entity => {
+        if (activeCategory === allFixturesCategory)
+          return (entity as Fixture).count ?? 1
+        if (activeCategory === fixtureTypeCategory)
+          return masterData.fixtures.filter(it => it.type === entity.id).length
+        if (activeCategory === groupCategory)
+          return (entity as FixtureGroup).fixtures.length
 
-          return 1
-        })
-        .map<[ListEntityType, number]>((count, index) => [
-          allEntities[index],
-          count,
-        ])
-    )
-
-    const countByCategory = getCountByCategory(valueToDisplay)
-
-    const entities = allEntities.filter(entity => {
-      const fixtureCount = fixtureCountByEntity.get(entity) ?? 0
-      return fixtureCount >= 1
-    })
-
-    const allMappedFixtures = new Set(
-      mapFixtureList(valueToDisplay, {
-        masterData,
-        masterDataMaps,
+        return 1
       })
+      .map<[ListEntityType, number]>((count, index) => [
+        allEntities[index],
+        count,
+      ])
+  )
+
+  const countByCategory = getCountByCategory(valueToDisplay)
+
+  const entities = allEntities.filter(entity => {
+    const fixtureCount = fixtureCountByEntity.get(entity) ?? 0
+    return fixtureCount >= 1
+  })
+
+  const allMappedFixtures = new Set(
+    mapFixtureList(valueToDisplay, {
+      masterData,
+      masterDataMaps,
+    })
+  )
+
+  const availableCategories = hideGroupMode
+    ? categories.filter(it => it !== groupCategory)
+    : categories
+
+  const onCategoryClick = (_event: any, category: FixtureListCategory | null) =>
+    setActiveCategory(category)
+
+  const onEntryClick = (_event: any, entry: string) =>
+    onChangeWrapper(
+      valueToDisplay.includes(entry)
+        ? valueToDisplay.filter(it => it !== entry)
+        : [...valueToDisplay, entry]
     )
 
-    const availableCategories = hideGroupMode
-      ? categories.filter(it => it !== groupCategory)
-      : categories
+  return (
+    <div className={cx(flexAuto, container)}>
+      <div className={categoryContainer}>
+        {ordering && (
+          <Button<null>
+            className={categoryEntry}
+            active={activeCategory === null}
+            icon={iconList}
+            iconColor={iconShade(0)}
+            onClick={onCategoryClick}
+            onClickArg={null}
+          />
+        )}
+        {availableCategories.map((category, index) => {
+          const count = countByCategory.get(category) ?? 0
 
-    const onCategoryClick = useEvent(
-      (_event: any, category: FixtureListCategory | null) =>
-        setActiveCategory(category)
-    )
-
-    const onEntryClick = useEvent((_event: any, entry: string) =>
-      onChangeWrapper(
-        valueToDisplay.includes(entry)
-          ? valueToDisplay.filter(it => it !== entry)
-          : [...valueToDisplay, entry]
-      )
-    )
-
-    return (
-      <div className={cx(flexAuto, container)}>
-        <div className={categoryContainer}>
-          {ordering && (
-            <Button<null>
+          return (
+            <Button<FixtureListCategory>
+              key={index}
               className={categoryEntry}
-              active={activeCategory === null}
-              icon={iconList}
-              iconColor={iconShade(0)}
+              active={category === activeCategory}
               onClick={onCategoryClick}
-              onClickArg={null}
-            />
-          )}
-          {availableCategories.map((category, index) => {
-            const count = countByCategory.get(category) ?? 0
+              onClickArg={category}
+              title={category.label}
+              icon={category.icon}
+              iconColor={iconShade(0)}
+            >
+              {count > 0 && ` ${count}`}
+            </Button>
+          )
+        })}
+      </div>
+      {activeCategory === null && (
+        <SortableFixtureMapping
+          value={valueToDisplay}
+          onChange={onChangeWrapper}
+          compact={compact}
+        />
+      )}
+      {activeCategory && (
+        <div
+          className={cx(scrollContainer, compact && scrollContainer_compact)}
+        >
+          {entities.map(entity => {
+            const entry = activeCategory?.prefix + entity.id
+            const active = valueToDisplay.includes(entry)
+            const text =
+              entity.name +
+              (activeCategory !== fixtureCategory
+                ? ` [${fixtureCountByEntity.get(entity)}]`
+                : '')
 
             return (
-              <Button<FixtureListCategory>
-                key={index}
-                className={categoryEntry}
-                active={category === activeCategory}
-                onClick={onCategoryClick}
-                onClickArg={category}
-                title={category.label}
-                icon={category.icon}
-                iconColor={iconShade(0)}
+              <Button<string>
+                key={entity.id}
+                className={listEntry}
+                active={active}
+                block
+                onClick={onEntryClick}
+                onClickArg={entry}
+                disabled={
+                  activeCategory === fixtureCategory &&
+                  !active &&
+                  allMappedFixtures.has(entity.id)
+                }
               >
-                {count > 0 && ` ${count}`}
+                {text}
               </Button>
             )
           })}
         </div>
-        {activeCategory === null && (
-          <SortableFixtureMapping
-            value={valueToDisplay}
-            onChange={onChangeWrapper}
-            compact={compact}
-          />
-        )}
-        {activeCategory && (
-          <div
-            className={cx(scrollContainer, compact && scrollContainer_compact)}
-          >
-            {entities.map(entity => {
-              const entry = activeCategory?.prefix + entity.id
-              const active = valueToDisplay.includes(entry)
-              const text =
-                entity.name +
-                (activeCategory !== fixtureCategory
-                  ? ` [${fixtureCountByEntity.get(entity)}]`
-                  : '')
+      )}
+    </div>
+  )
+}
 
-              return (
-                <Button<string>
-                  key={entity.id}
-                  className={listEntry}
-                  active={active}
-                  block
-                  onClick={onEntryClick}
-                  onClickArg={entry}
-                  disabled={
-                    activeCategory === fixtureCategory &&
-                    !active &&
-                    allMappedFixtures.has(entity.id)
-                  }
-                >
-                  {text}
-                </Button>
-              )
-            })}
-          </div>
-        )}
-      </div>
-    )
+export const FixtureListEditor = (props: FixtureListInputProps) => {
+  const [localState, setLocalState] = useState(props.value)
+  const onChange = (value: string[]) => {
+    setLocalState(value)
+    props.onChange(value)
   }
-)
-
-export const FixtureListEditor = memoInProduction(
-  (props: FixtureListInputProps) => {
-    const [localState, setLocalState] = useState(props.value)
-    const onChange = useEvent((value: string[]) => {
-      setLocalState(value)
-      props.onChange(value)
-    })
-    return (
-      <FixtureListInput {...props} value={localState} onChange={onChange} />
-    )
-  }
-)
+  return <FixtureListInput {...props} value={localState} onChange={onChange} />
+}

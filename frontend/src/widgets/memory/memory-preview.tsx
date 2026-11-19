@@ -8,7 +8,6 @@ import { MasterData, MasterDataMaps, MemoryScene } from '@vlight/types'
 import { createZeroArray } from '@vlight/utils'
 
 import { useMasterDataAndMaps } from '../../hooks/api'
-import { memoInProduction } from '../../util/development'
 import { StatelessMapWidget } from '../map/stateless-map-widget'
 
 export interface MemoryPreviewProps {
@@ -71,23 +70,25 @@ function getMemoryUniverse(
 /**
  * Component to preview the fixture states of a memory on the map.
  */
-export const MemoryPreview = memoInProduction(
-  ({ scenes, displayFixtureOrder = false, className }: MemoryPreviewProps) => {
-    const { masterData, masterDataMaps } = useMasterDataAndMaps()
+export const MemoryPreview = ({
+  scenes,
+  displayFixtureOrder = false,
+  className,
+}: MemoryPreviewProps) => {
+  const { masterData, masterDataMaps } = useMasterDataAndMaps()
 
-    const universe = getMemoryUniverse(scenes, masterData, masterDataMaps)
+  const universe = getMemoryUniverse(scenes, masterData, masterDataMaps)
 
-    return (
-      <StatelessMapWidget
-        fixtures={masterData.fixtures}
-        universe={universe}
-        className={className}
-        highlightedFixtures={
-          displayFixtureOrder && scenes.length === 1
-            ? mapFixtureList(scenes[0].members, { masterData, masterDataMaps })
-            : undefined
-        }
-      />
-    )
-  }
-)
+  return (
+    <StatelessMapWidget
+      fixtures={masterData.fixtures}
+      universe={universe}
+      className={className}
+      highlightedFixtures={
+        displayFixtureOrder && scenes.length === 1
+          ? mapFixtureList(scenes[0].members, { masterData, masterDataMaps })
+          : undefined
+      }
+    />
+  )
+}

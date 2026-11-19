@@ -33,7 +33,7 @@ export default defineConfig({
         },
       },
     }),
-    react(),
+    react({ compiler: { logDiagnostics: true } }),
     // only adds the core-js polyfills that are used and missing in the
     // browsers listed in .browserslistrc
     legacy({

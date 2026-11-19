@@ -28,7 +28,6 @@ import {
   getFractionWithMargin,
   getTouchEventOffset,
 } from '../../../../util/touch'
-import { useEvent } from '../../../../hooks/performance'
 
 const checkboxLink = css`
   display: block;
@@ -92,9 +91,8 @@ export function FixtureEditor({
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
   const [sharing, setSharing] = useState(!!entry.fixturesSharingChannel)
   const touchRef = useRef<HTMLDivElement>(null)
-  const toggleCreateGroup = useEvent(() =>
+  const toggleCreateGroup = () =>
     formState.changeValue('createGroup', !formState.values.createGroup)
-  )
 
   const {
     type,

@@ -8,7 +8,7 @@ import {
 import { ChannelType } from '@vlight/controls'
 import { createRangeArray, createZeroArray } from '@vlight/utils'
 
-import { masterDataMaps } from '../api/masterdata'
+import { getMasterDataMaps } from '../api/masterdata'
 
 const rgbwMapping = [
   ChannelType.Red,
@@ -124,7 +124,7 @@ export function getFixtureAtChannel(
   return masterData.fixtures.find(fixture => {
     if (fixture.channel === channel) return true
     if (fixture.channel > channel) return false
-    const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
+    const fixtureType = getMasterDataMaps().fixtureTypes.get(fixture.type)
     if (!fixtureType) return false
     const maxChannel = fixture.channel + fixtureType.mapping.length - 1
     return maxChannel >= channel

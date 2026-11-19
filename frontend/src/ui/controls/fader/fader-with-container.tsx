@@ -1,4 +1,3 @@
-import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
 import { centeredText, smallText } from '../../css/basic-styles'
 import { Icon } from '../../icons/icon'
@@ -46,29 +45,27 @@ export interface FaderWithContainerProps {
 /**
  * A fader with an additional label and/or icon at the bottom.
  */
-export const FaderWithContainer = memoInProduction(
-  ({
-    bottomLabel,
-    bottomIcon,
-    onBottomIconClick,
-    className,
-    faderClassName,
-    ...passThrough
-  }: FaderWithContainerProps) => {
-    return (
-      <div className={cx(centeredText, className)}>
-        <Fader {...passThrough} className={faderClassName} />
-        {bottomLabel && <div className={smallText}>{bottomLabel}</div>}
-        {bottomIcon && (
-          <Icon
-            icon={bottomIcon}
-            hoverable
-            inline
-            padding
-            onClick={onBottomIconClick}
-          />
-        )}
-      </div>
-    )
-  }
-)
+export const FaderWithContainer = ({
+  bottomLabel,
+  bottomIcon,
+  onBottomIconClick,
+  className,
+  faderClassName,
+  ...passThrough
+}: FaderWithContainerProps) => {
+  return (
+    <div className={cx(centeredText, className)}>
+      <Fader {...passThrough} className={faderClassName} />
+      {bottomLabel && <div className={smallText}>{bottomLabel}</div>}
+      {bottomIcon && (
+        <Icon
+          icon={bottomIcon}
+          hoverable
+          inline
+          padding
+          onClick={onBottomIconClick}
+        />
+      )}
+    </div>
+  )
+}

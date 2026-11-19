@@ -1,7 +1,5 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useId } from 'react'
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd'
-
-import { memoInProduction } from '../../util/development'
 
 export interface SortableListProps<T> {
   /**
@@ -44,94 +42,88 @@ export interface SortableListProps<T> {
   direction?: 'vertical' | 'horizontal'
 }
 
-let sortableListIndex = 0
-
 /**
  * Not necessary to extract this into a separate component,
  * but recommended for performance reasons.
  */
-const InnerSortableList = memoInProduction(
-  ({
-    entries,
-    entryClassName,
-    renderEntryContent,
-    getKey,
-  }: Omit<SortableListProps<any>, 'containerClassName' | 'onChange'>) => {
-    return (
-      <>
-        {entries.map((entry, index) => (
-          <Draggable
-            key={getKey?.(entry) ?? index}
-            draggableId={String(getKey?.(entry) ?? index)}
-            index={index}
-            isDragDisabled={entries.length < 2}
-          >
-            {provided => (
-              <div
-                className={entryClassName}
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-              >
-                {renderEntryContent(entry)}
-              </div>
-            )}
-          </Draggable>
-        ))}
-      </>
-    )
-  }
-)
+const InnerSortableList = ({
+  entries,
+  entryClassName,
+  renderEntryContent,
+  getKey,
+}: Omit<SortableListProps<any>, 'containerClassName' | 'onChange'>) => {
+  return (
+    <>
+      {entries.map((entry, index) => (
+        <Draggable
+          key={getKey?.(entry) ?? index}
+          draggableId={String(getKey?.(entry) ?? index)}
+          index={index}
+          isDragDisabled={entries.length < 2}
+        >
+          {provided => (
+            <div
+              className={entryClassName}
+              ref={provided.innerRef}
+              {...provided.draggableProps}
+              {...provided.dragHandleProps}
+            >
+              {renderEntryContent(entry)}
+            </div>
+          )}
+        </Draggable>
+      ))}
+    </>
+  )
+}
 
 /**
  * Sortable list of entries of the same type.
  */
-export const SortableList = memoInProduction(
-  <T extends any>({
-    entries,
-    onChange,
-    containerClassName,
-    entryClassName,
-    renderEntryContent,
-    getKey,
-    direction,
-  }: SortableListProps<T>) => {
-    const [droppableId] = useState(() => sortableListIndex++)
+export const SortableList = <T extends any>({
+  entries,
+  onChange,
+  containerClassName,
+  entryClassName,
+  renderEntryContent,
+  getKey,
+  direction,
+}: SortableListProps<T>) => {
+  const droppableId = useId()
 
-    return (
-      <DragDropContext
-        onDragEnd={result => {
-          if (!result.destination) return
+  return (
+    <DragDropContext
+      onDragEnd={result => {
+        if (!result.destination) return
 
-          const newEntries = [...entries]
-          const [removed] = newEntries.splice(result.source.index, 1)
-          newEntries.splice(result.destination.index, 0, removed)
+        const newEntries = [...entries]
+        const [removed] = newEntries.splice(result.source.index, 1)
+        newEntries.splice(result.destination.index, 0, removed)
 
-          onChange(newEntries)
-        }}
+        onChange(newEntries)
+      }}
+    >
+      <Droppable
+        droppableId={droppableId}
+        isDropDisabled={entries.length < 2}
+        direction={direction}
       >
-        <Droppable
-          droppableId={String(droppableId)}
-          isDropDisabled={entries.length < 2}
-          direction={direction}
-        >
-          {provided => (
-            <div
-              className={containerClassName}
-              ref={provided.innerRef}
-              {...provided.droppableProps}
-            >
-              <InnerSortableList
-                entries={entries}
-                renderEntryContent={renderEntryContent}
-                entryClassName={entryClassName}
-                getKey={getKey}
-              />
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    )
-  }
-)
+        {provided => (
+          <div
+            className={containerClassName}
+            ref={provided.innerRef}
+            {...provided.droppableProps}
+          >
+            <InnerSortableList
+              entries={entries}
+              renderEntryContent={renderEntryContent}
+              entryClassName={entryClassName}
+              getKey={getKey}
+            />
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  )
+}

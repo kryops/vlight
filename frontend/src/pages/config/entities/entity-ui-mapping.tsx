@@ -12,7 +12,7 @@ import {
 } from '../../../ui/icons'
 import { baseline } from '../../../ui/styles'
 import { FixtureTypeMapShape } from '../../../widgets/map/map-shape'
-import { masterDataMaps } from '../../../api/masterdata'
+import { getMasterDataMaps } from '../../../api/masterdata'
 import { apiState } from '../../../api/api-state'
 import { getOccupiedFixtureChannels } from '../../../util/fixtures'
 import {
@@ -182,7 +182,7 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
           {
             mapFixtureList(entry.fixtures, {
               masterData: apiState.masterData!,
-              masterDataMaps,
+              masterDataMaps: getMasterDataMaps(),
             }).length
           }{' '}
           Fixtures

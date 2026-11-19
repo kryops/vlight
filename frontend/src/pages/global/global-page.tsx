@@ -1,5 +1,4 @@
 import { pageWithWidgets } from '../../ui/css/page'
-import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
 import { DmxMasterWidget } from '../../widgets/global/dmx-master-widget'
 import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
@@ -10,7 +9,7 @@ import { ControlsWidget } from '../../widgets/global/controls-widget'
  *
  * Displays global controls.
  */
-const GlobalPage = memoInProduction(() => {
+const GlobalPage = () => {
   const activeHotkeyIndex = useNumberHotkey(2)
 
   return (
@@ -28,6 +27,6 @@ const GlobalPage = memoInProduction(() => {
       </div>
     </>
   )
-})
+}
 
 export default GlobalPage

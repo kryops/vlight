@@ -1,10 +1,10 @@
 import { css } from '@linaria/core'
-import { EntityType, EntityName, MasterData } from '@vlight/types'
+import { EntityType, EntityName } from '@vlight/types'
 import { getId } from '@vlight/utils'
 import { useCallback } from 'react'
 
 import { setEntities } from '../../../api'
-import { apiStateEmitter, apiState } from '../../../api/api-state'
+import { setRawMasterDataEntriesLocally } from '../../../api/api-state'
 import { baseline, primaryShade } from '../../../ui/styles'
 import { Icon } from '../../../ui/icons/icon'
 import { iconCopy, iconDelete, iconDrag } from '../../../ui/icons'
@@ -12,7 +12,6 @@ import { showDialog } from '../../../ui/overlays/dialog'
 import { yesNo } from '../../../ui/overlays/buttons'
 import { SortableList } from '../../../ui/containers/sortable-list'
 import { useMasterDataMaps } from '../../../hooks/api'
-import { useEvent } from '../../../hooks/performance'
 
 import { openEntityEditor } from './editors'
 import {
@@ -58,16 +57,12 @@ export function EntityList<T extends EntityName>({
 }: EntityListProps<T>) {
   const masterDataMaps = useMasterDataMaps()
 
-  const changeEntities = useEvent((newEntries: EntityType<T>[]) => {
+  const changeEntities = (newEntries: EntityType<T>[]) => {
     // Update the client in real-time to prevent flickering
-    ;(apiState.rawMasterData as MasterData) = {
-      ...(apiState.rawMasterData as MasterData),
-      [type]: newEntries as any,
-    }
-    void apiStateEmitter.emit('rawMasterData')
+    setRawMasterDataEntriesLocally(type, newEntries)
 
     setEntities(type, newEntries)
-  })
+  }
 
   const renderEntryContent = useCallback(
     (entry: EntityType<T>) => (

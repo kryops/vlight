@@ -1,7 +1,6 @@
 import { css } from '@linaria/core'
 import { InputHTMLAttributes } from 'react'
 
-import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { backgroundColor, textShade, baseline, inputWidth } from '../styles'
 
@@ -25,16 +24,20 @@ const input = css`
 /**
  * Wrapper around HTML input to provide custom styling.
  */
-export const Input = memoInProduction(
-  ({ type = 'text', value, onChange, className, ...rest }: InputProps) => {
-    return (
-      <input
-        type={type}
-        value={value}
-        onChange={event => onChange(event.target.value)}
-        className={cx(input, className)}
-        {...rest}
-      />
-    )
-  }
-)
+export const Input = ({
+  type = 'text',
+  value,
+  onChange,
+  className,
+  ...rest
+}: InputProps) => {
+  return (
+    <input
+      type={type}
+      value={value}
+      onChange={event => onChange(event.target.value)}
+      className={cx(input, className)}
+      {...rest}
+    />
+  )
+}

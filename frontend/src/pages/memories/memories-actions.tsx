@@ -109,7 +109,7 @@ export function MemoriesActions() {
   }))
 
   return (
-    <HotkeyContext.Provider value={true}>
+    <HotkeyContext value={true}>
       <Button icon={iconAdd} transparent onClick={addMemory} />
       <Link to={entitiesPageRoute('memories')}>
         <Button icon={iconConfig} transparent />
@@ -141,6 +141,6 @@ export function MemoriesActions() {
       >
         OFF
       </Button>
-    </HotkeyContext.Provider>
+    </HotkeyContext>
   )
 }

@@ -6,7 +6,6 @@ import { Label } from '../../../../ui/forms/label'
 import { iconAdd } from '../../../../ui/icons'
 import { newDynamicPageFactory } from '../new-entity-factories'
 import { Button } from '../../../../ui/buttons/button'
-import { useEvent } from '../../../../hooks/performance'
 
 import { DynamicPageRowEditor } from './dynamic-page-row-editor'
 
@@ -25,7 +24,7 @@ export function DynamicPageEditor({
   const formState = useFormState(entry, { onChange })
   const rows = useFormStateArray(formState, 'rows')
 
-  const addRow = useEvent(() => rows.add(newDynamicPageFactory().rows[0]))
+  const addRow = () => rows.add(newDynamicPageFactory().rows[0])
 
   return (
     <>

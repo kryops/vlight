@@ -8,7 +8,6 @@ import { isAnyOn, isAllOn } from '../../util/state'
 import { entitiesPageRoute } from '../routes'
 import { openEntityEditor } from '../config/entities/editors'
 import { HotkeyContext } from '../../hooks/hotkey'
-import { memoInProduction } from '../../util/development'
 import { apiState } from '../../api/api-state'
 import { ApiState } from '../../api/worker/processing'
 
@@ -36,7 +35,7 @@ const addFixtureGroup = () => openEntityEditor('fixtureGroups')
  * - All on
  * - All off
  */
-export const FixtureGroupsActions = memoInProduction(() => {
+export const FixtureGroupsActions = () => {
   const { allOn, allOff } = useApiStateSelector(
     apiState => ({
       allOn: isAllOn(apiState.fixtureGroups),
@@ -46,7 +45,7 @@ export const FixtureGroupsActions = memoInProduction(() => {
   )
 
   return (
-    <HotkeyContext.Provider value={true}>
+    <HotkeyContext value={true}>
       <Button icon={iconAdd} transparent onClick={addFixtureGroup} />
       <Link to={entitiesPageRoute('fixtureGroups')}>
         <Button icon={iconConfig} transparent />
@@ -69,6 +68,6 @@ export const FixtureGroupsActions = memoInProduction(() => {
       >
         OFF
       </Button>
-    </HotkeyContext.Provider>
+    </HotkeyContext>
   )
-})
+}

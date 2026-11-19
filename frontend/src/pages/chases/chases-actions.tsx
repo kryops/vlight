@@ -4,7 +4,6 @@ import { iconLight, iconLightOff, iconStop } from '../../ui/icons'
 import { useApiStateSelector } from '../../hooks/api'
 import { isAnyOn, isAllOn } from '../../util/state'
 import { HotkeyContext } from '../../hooks/hotkey'
-import { memoInProduction } from '../../util/development'
 import { apiState } from '../../api/api-state'
 import { ApiState } from '../../api/worker/processing'
 
@@ -42,7 +41,7 @@ export const turnAllChasesOff = () => setOnForAllChases(false)
  * - All on
  * - All off
  */
-export const ChasesActions = memoInProduction(() => {
+export const ChasesActions = () => {
   const { allOn, allOff, allStopped } = useApiStateSelector(
     apiState => ({
       allOn: isAllOn(apiState.liveChases),
@@ -53,7 +52,7 @@ export const ChasesActions = memoInProduction(() => {
   )
 
   return (
-    <HotkeyContext.Provider value={true}>
+    <HotkeyContext value={true}>
       <Button
         icon={iconStop}
         onClick={stopAllChases}
@@ -81,6 +80,6 @@ export const ChasesActions = memoInProduction(() => {
       >
         OFF
       </Button>
-    </HotkeyContext.Provider>
+    </HotkeyContext>
   )
-})
+}

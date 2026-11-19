@@ -1,6 +1,6 @@
 import { FixtureBorderStyle, FixtureShape, FixtureType } from '@vlight/types'
 import { css, cx } from '@linaria/core'
-import { CSSProperties, forwardRef, ReactNode, useEffect, useRef } from 'react'
+import { CSSProperties, ReactNode, useEffect, useRef, Ref } from 'react'
 
 import { backgroundColor, baselinePx, iconShade } from '../../ui/styles'
 import { Touchable } from '../../ui/components/touchable'
@@ -59,76 +59,74 @@ export interface MapShapeProps {
   onUp?: () => void
 
   children?: ReactNode
+
+  ref?: Ref<HTMLDivElement>
 }
 
 /**
  * Component to display a shape on the map.
  */
-export const MapShape = forwardRef<HTMLDivElement, MapShapeProps>(
-  (
-    {
-      shape,
-      border,
-      x,
-      y,
-      xSize,
-      ySize,
-      highlighted = false,
-      color,
-      title,
-      className,
-      style,
-      percentages,
-      onDown,
-      onUp,
-      children,
-      rotation,
-    },
-    ref
-  ) => {
-    const defaultSize = 5
+export const MapShape = ({
+  shape,
+  border,
+  x,
+  y,
+  xSize,
+  ySize,
+  highlighted = false,
+  color,
+  title,
+  className,
+  style,
+  percentages,
+  onDown,
+  onUp,
+  children,
+  rotation,
+  ref,
+}: MapShapeProps) => {
+  const defaultSize = 5
 
-    const finalStyle: CSSProperties = {
-      ...style,
-      background: color,
-      left: x !== undefined ? `${x}%` : undefined,
-      top: y !== undefined ? `${y}%` : undefined,
-      width: percentages
-        ? `${xSize ?? defaultSize}%`
-        : baselinePx * (xSize ?? defaultSize),
-      height: percentages
-        ? `${ySize ?? defaultSize}%`
-        : baselinePx * (ySize ?? defaultSize),
-      borderStyle: border,
-      borderWidth: highlighted ? '2px' : undefined,
-      borderColor: highlighted ? 'red' : color ? iconShade(0) : undefined,
-      transform: rotation
-        ? `translate(-50%, -50%) ${rotation ? `rotate(${rotation}deg)` : ''}`
-        : undefined,
-    }
-
-    const commonProps = {
-      className: cx(
-        shapeStyle,
-        shape !== 'square' && shapeStyle_circle,
-        className
-      ),
-      style: finalStyle,
-      title: title,
-      ref,
-    }
-
-    if (onDown || onUp) {
-      return (
-        <Touchable {...commonProps} onDown={onDown} onUp={onUp}>
-          {children}
-        </Touchable>
-      )
-    }
-
-    return <div {...commonProps}>{children}</div>
+  const finalStyle: CSSProperties = {
+    ...style,
+    background: color,
+    left: x !== undefined ? `${x}%` : undefined,
+    top: y !== undefined ? `${y}%` : undefined,
+    width: percentages
+      ? `${xSize ?? defaultSize}%`
+      : baselinePx * (xSize ?? defaultSize),
+    height: percentages
+      ? `${ySize ?? defaultSize}%`
+      : baselinePx * (ySize ?? defaultSize),
+    borderStyle: border,
+    borderWidth: highlighted ? '2px' : undefined,
+    borderColor: highlighted ? 'red' : color ? iconShade(0) : undefined,
+    transform: rotation
+      ? `translate(-50%, -50%) ${rotation ? `rotate(${rotation}deg)` : ''}`
+      : undefined,
   }
-)
+
+  const commonProps = {
+    className: cx(
+      shapeStyle,
+      shape !== 'square' && shapeStyle_circle,
+      className
+    ),
+    style: finalStyle,
+    title: title,
+    ref,
+  }
+
+  if (onDown || onUp) {
+    return (
+      <Touchable {...commonProps} onDown={onDown} onUp={onUp}>
+        {children}
+      </Touchable>
+    )
+  }
+
+  return <div {...commonProps}>{children}</div>
+}
 
 export type FixtureTypeMapShapeProps = Omit<
   MapShapeProps,

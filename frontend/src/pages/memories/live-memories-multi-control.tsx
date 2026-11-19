@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 
 import { setLiveMemoryState } from '../../api'
 import { useApiState } from '../../hooks/api'
-import { useEvent, useShallowEqualMemo } from '../../hooks/performance'
+import { useShallowEqualMemo } from '../../hooks/performance'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { Widget } from '../../ui/containers/widget'
@@ -12,7 +12,6 @@ import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { MultiToggleInput } from '../../ui/forms/multi-toggle-input'
 import { iconLiveMemory } from '../../ui/icons'
-import { memoInProduction } from '../../util/development'
 
 function LiveMemoriesMultiControlInner() {
   const [selectedMemoryIds, setSelectedMemoryIds] = useState<string[]>([])
@@ -24,7 +23,7 @@ function LiveMemoriesMultiControlInner() {
     selectedMemoryIds.map(id => memoryStates[id]?.value ?? 0)
   )
 
-  const changeValue = useEvent((value: number) =>
+  const changeValue = (value: number) =>
     selectedMemoryIds.forEach(id =>
       setLiveMemoryState(
         id,
@@ -34,7 +33,6 @@ function LiveMemoriesMultiControlInner() {
         true
       )
     )
-  )
 
   const liveMemoryIds = useShallowEqualMemo(Object.keys(memoryStates))
 
@@ -43,7 +41,7 @@ function LiveMemoriesMultiControlInner() {
     [memoryStates]
   )
 
-  const toggleOn = useEvent(() =>
+  const toggleOn = () =>
     selectedMemoryIds.forEach(id =>
       setLiveMemoryState(
         id,
@@ -53,7 +51,6 @@ function LiveMemoriesMultiControlInner() {
         true
       )
     )
-  )
 
   return (
     <TwoColumDialogContainer
@@ -92,7 +89,7 @@ function LiveMemoriesMultiControlInner() {
 /**
  * Collapsible widget to control multiple live memories together.
  */
-export const LiveMemoriesMultiControl = memoInProduction(() => {
+export const LiveMemoriesMultiControl = () => {
   const memoryStates = useApiState('liveMemories')
   if (Object.keys(memoryStates).length < 2) return null
 
@@ -101,4 +98,4 @@ export const LiveMemoriesMultiControl = memoInProduction(() => {
       <LiveMemoriesMultiControlInner />
     </Collapsible>
   )
-})
+}

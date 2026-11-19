@@ -23,7 +23,7 @@ import {
   editorPreviewColumn,
   editorTitle,
 } from '../../../../ui/css/editor-styles'
-import { useDeepEqualMemo, useEvent } from '../../../../hooks/performance'
+import { useDeepEqualMemo } from '../../../../hooks/performance'
 
 const fixtureShapeEntries: SelectEntry<FixtureShape>[] = [
   { value: 'circle', label: 'Circle' },
@@ -50,12 +50,10 @@ export function FixtureTypeEditor({
     formState.values.mapping.join(',')
   )
 
-  const changeMapping = useEvent(
-    (newMappingString: string | undefined): void => {
-      setMappingString(newMappingString)
-      formState.changeValue('mapping', commaStringToArray(newMappingString))
-    }
-  )
+  const changeMapping = (newMappingString: string | undefined): void => {
+    setMappingString(newMappingString)
+    formState.changeValue('mapping', commaStringToArray(newMappingString))
+  }
 
   const shapePreview: AdditionalMapShape[] = useDeepEqualMemo([
     {

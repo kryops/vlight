@@ -6,9 +6,8 @@ import {
   IdType,
 } from '@vlight/types'
 import { arrayRange } from '@vlight/utils'
-import { forwardRef, useMemo } from 'react'
+import { useMemo, Ref } from 'react'
 
-import { memoInProduction } from '../../util/development'
 import { backgroundColor, baseline, iconShade } from '../../ui/styles'
 import { getEffectiveFixtureColor } from '../../util/fixtures'
 import { useMasterDataMaps } from '../../hooks/api'
@@ -127,117 +126,109 @@ export interface StatelessMapWidgetProps {
   onFixtureUp?: (fixture: Fixture) => void
 
   className?: string
+
+  ref?: Ref<HTMLDivElement>
 }
 
 /**
  * Stateless widget to display a map of fixtures or shapes, optionally with a DMX universe state.
  */
-export const StatelessMapWidget = memoInProduction(
-  forwardRef<HTMLDivElement, StatelessMapWidgetProps>(
-    (
-      {
-        universe,
-        fixtures,
-        highlightedFixtures,
-        additionalShapes,
-        standalone = false,
-        displayChannels = false,
-        enableDmxUniverse = false,
-        rotate180,
-        onFixtureDown,
-        onFixtureUp,
-        className,
-      },
-      ref
-    ) => {
-      const { fixtureTypes } = useMasterDataMaps()
-      const positionedFixtures = useMemo(
-        () =>
-          (fixtures ?? []).filter(
-            fixture => fixture.x !== undefined && fixture.y !== undefined
-          ),
-        [fixtures]
-      )
+export const StatelessMapWidget = ({
+  universe,
+  fixtures,
+  highlightedFixtures,
+  additionalShapes,
+  standalone = false,
+  displayChannels = false,
+  enableDmxUniverse = false,
+  rotate180,
+  onFixtureDown,
+  onFixtureUp,
+  className,
+  ref,
+}: StatelessMapWidgetProps) => {
+  const { fixtureTypes } = useMasterDataMaps()
+  const positionedFixtures = useMemo(
+    () =>
+      (fixtures ?? []).filter(
+        fixture => fixture.x !== undefined && fixture.y !== undefined
+      ),
+    [fixtures]
+  )
 
-      const adjustCoord = (coord: number) => (rotate180 ? 100 - coord : coord)
+  const adjustCoord = (coord: number) => (rotate180 ? 100 - coord : coord)
 
-      return (
-        <div
-          className={cx(widget, standalone && widget_standalone, className)}
-          ref={ref}
-        >
-          <div className={container}>
-            {positionedFixtures.flatMap(fixture => {
-              const fixtureType = fixtureTypes.get(fixture.type)
-              if (!fixtureType) return null
+  return (
+    <div
+      className={cx(widget, standalone && widget_standalone, className)}
+      ref={ref}
+    >
+      <div className={container}>
+        {positionedFixtures.flatMap(fixture => {
+          const fixtureType = fixtureTypes.get(fixture.type)
+          if (!fixtureType) return null
 
-              const highlightedIndex =
-                highlightedFixtures?.indexOf(fixture.id) ?? -1
-              const highlighted = highlightedIndex !== -1
+          const highlightedIndex =
+            highlightedFixtures?.indexOf(fixture.id) ?? -1
+          const highlighted = highlightedIndex !== -1
 
-              return arrayRange(
-                1,
-                fixture.fixturesSharingChannel ?? 1,
-                it => it - 1
-              ).map(offset => {
-                return (
-                  <FixtureTypeMapShape
-                    key={fixture.id + '_' + offset}
-                    fixtureType={fixtureType}
-                    x={
-                      fixture.x !== undefined
-                        ? adjustCoord(
-                            fixture.x + offset * (fixture.xOffset ?? 8)
-                          )
-                        : undefined
-                    }
-                    y={
-                      fixture.y !== undefined
-                        ? adjustCoord(
-                            fixture.y + offset * (fixture.yOffset ?? 0)
-                          )
-                        : undefined
-                    }
-                    color={
-                      universe &&
-                      getEffectiveFixtureColor(fixture, fixtureType, universe)
-                    }
-                    channel={enableDmxUniverse ? fixture.channel : undefined}
-                    highlighted={highlighted}
-                    title={fixture.name}
-                    className={fixtureStyle}
-                    percentages
-                    onDown={
-                      onFixtureDown ? () => onFixtureDown(fixture) : undefined
-                    }
-                    onUp={onFixtureUp ? () => onFixtureUp(fixture) : undefined}
-                    rotation={fixture.rotation}
-                  >
-                    {highlighted &&
-                      highlightedFixtures?.length !== undefined &&
-                      highlightedFixtures?.length > 1 &&
-                      displayChannels !== 'highlighted' &&
-                      highlightedIndex + 1}
-                    {(displayChannels === true ||
-                      (displayChannels === 'highlighted' && highlighted)) &&
-                      fixture.channel}
-                  </FixtureTypeMapShape>
-                )
-              })
-            })}
-            {additionalShapes?.map((shape, index) => (
-              <MapShape
-                key={index}
-                {...shape}
-                x={adjustCoord(shape.x)}
-                y={adjustCoord(shape.y)}
+          return arrayRange(
+            1,
+            fixture.fixturesSharingChannel ?? 1,
+            it => it - 1
+          ).map(offset => {
+            return (
+              <FixtureTypeMapShape
+                key={fixture.id + '_' + offset}
+                fixtureType={fixtureType}
+                x={
+                  fixture.x !== undefined
+                    ? adjustCoord(fixture.x + offset * (fixture.xOffset ?? 8))
+                    : undefined
+                }
+                y={
+                  fixture.y !== undefined
+                    ? adjustCoord(fixture.y + offset * (fixture.yOffset ?? 0))
+                    : undefined
+                }
+                color={
+                  universe &&
+                  getEffectiveFixtureColor(fixture, fixtureType, universe)
+                }
+                channel={enableDmxUniverse ? fixture.channel : undefined}
+                highlighted={highlighted}
+                title={fixture.name}
                 className={fixtureStyle}
                 percentages
-              />
-            ))}
-          </div>
-        </div>
-      )
-    }
+                onDown={
+                  onFixtureDown ? () => onFixtureDown(fixture) : undefined
+                }
+                onUp={onFixtureUp ? () => onFixtureUp(fixture) : undefined}
+                rotation={fixture.rotation}
+              >
+                {highlighted &&
+                  highlightedFixtures?.length !== undefined &&
+                  highlightedFixtures?.length > 1 &&
+                  displayChannels !== 'highlighted' &&
+                  highlightedIndex + 1}
+                {(displayChannels === true ||
+                  (displayChannels === 'highlighted' && highlighted)) &&
+                  fixture.channel}
+              </FixtureTypeMapShape>
+            )
+          })
+        })}
+        {additionalShapes?.map((shape, index) => (
+          <MapShape
+            key={index}
+            {...shape}
+            x={adjustCoord(shape.x)}
+            y={adjustCoord(shape.y)}
+            className={fixtureStyle}
+            percentages
+          />
+        ))}
+      </div>
+    </div>
   )
-)
+}

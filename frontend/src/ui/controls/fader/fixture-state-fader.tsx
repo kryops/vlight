@@ -1,8 +1,5 @@
 import { FixtureState } from '@vlight/types'
 
-import { memoInProduction } from '../../../util/development'
-import { useEvent } from '../../../hooks/performance'
-
 import { Fader } from './fader'
 
 export interface FixtureStateFaderProps {
@@ -26,24 +23,26 @@ export interface FixtureStateFaderProps {
 /**
  * Fader component to control the property of a fixture state.
  */
-export const FixtureStateFader = memoInProduction(
-  ({ channelType, value, colorPicker, onChange }: FixtureStateFaderProps) => {
-    const changeFn = useEvent((newValue: number) =>
-      onChange({
-        channels: {
-          [channelType]: newValue,
-        },
-      })
-    )
-    return (
-      <Fader
-        max={255}
-        step={1}
-        label={channelType.toUpperCase()}
-        value={value ?? 0}
-        onChange={changeFn}
-        colorPicker={colorPicker}
-      />
-    )
-  }
-)
+export const FixtureStateFader = ({
+  channelType,
+  value,
+  colorPicker,
+  onChange,
+}: FixtureStateFaderProps) => {
+  const changeFn = (newValue: number) =>
+    onChange({
+      channels: {
+        [channelType]: newValue,
+      },
+    })
+  return (
+    <Fader
+      max={255}
+      step={1}
+      label={channelType.toUpperCase()}
+      value={value ?? 0}
+      onChange={changeFn}
+      colorPicker={colorPicker}
+    />
+  )
+}

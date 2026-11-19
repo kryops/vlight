@@ -2,8 +2,6 @@ import { createRangeArray } from '@vlight/utils'
 import { createContext, useContext, useMemo, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 
-import { useEvent } from './performance'
-
 /** Context to indicate whether keyboard hotkeys should be active. */
 export const HotkeyContext = createContext(false)
 
@@ -35,8 +33,6 @@ export function useHotkey(
 
   const enabled = !!hotkey && !!callback && (forceActive ?? active)
 
-  const eventHandler = useEvent((event: KeyboardEvent) => callback?.(event))
-
   const args = useMemo(
     () => ({
       enabled,
@@ -46,7 +42,8 @@ export function useHotkey(
     [enabled, keyup]
   )
 
-  useHotkeys(hotkey ?? emptyArray, eventHandler, args)
+  // without explicit dependencies, useHotkeys always calls the latest callback
+  useHotkeys(hotkey ?? emptyArray, event => callback?.(event), args)
 
   return enabled
 }

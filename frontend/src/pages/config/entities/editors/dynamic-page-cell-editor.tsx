@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 import { DynamicPageCell, WidgetConfig } from '@vlight/types'
 
 import { editorTitle } from '../../../../ui/css/editor-styles'
@@ -8,7 +8,6 @@ import { iconAdd } from '../../../../ui/icons'
 import { WidgetInput, widgetTypes } from '../../../../ui/forms/widget-input'
 import { SortableList } from '../../../../ui/containers/sortable-list'
 import { Button } from '../../../../ui/buttons/button'
-import { useEvent } from '../../../../hooks/performance'
 
 export interface DynamicPageCellEditorProps {
   cell: DynamicPageCell
@@ -33,46 +32,38 @@ export function DynamicPageCellEditor({
     onChange(newCell)
   }
 
-  const replaceWidget = useEvent(
-    (widget: WidgetConfig, changes: WidgetConfig) => {
-      setCellProperty(
-        'widgets',
-        localCell.widgets.map(it => (it === widget ? changes : it))
-      )
-    }
-  )
+  const replaceWidget = (widget: WidgetConfig, changes: WidgetConfig) => {
+    setCellProperty(
+      'widgets',
+      localCell.widgets.map(it => (it === widget ? changes : it))
+    )
+  }
 
-  const removeWidget = useEvent((widget: WidgetConfig) => {
+  const removeWidget = (widget: WidgetConfig) => {
     setCellProperty(
       'widgets',
       localCell.widgets.filter(it => it !== widget)
     )
-  })
+  }
 
-  const changeFactor = useEvent((factor: number | undefined) =>
+  const changeFactor = (factor: number | undefined) =>
     setCellProperty('factor', factor)
-  )
-  const changeWidgets = useEvent((widgets: WidgetConfig[]) =>
+  const changeWidgets = (widgets: WidgetConfig[]) =>
     setCellProperty('widgets', widgets)
+
+  const renderEntryContent = (widget: WidgetConfig) => (
+    <WidgetInput
+      value={widget}
+      onChange={newWidget => replaceWidget(widget, newWidget)}
+      onDelete={() => removeWidget(widget)}
+    />
   )
 
-  const renderEntryContent = useCallback(
-    (widget: WidgetConfig) => (
-      <WidgetInput
-        value={widget}
-        onChange={newWidget => replaceWidget(widget, newWidget)}
-        onDelete={() => removeWidget(widget)}
-      />
-    ),
-    [replaceWidget, removeWidget]
-  )
-
-  const addWidget = useEvent(() =>
+  const addWidget = () =>
     setCellProperty('widgets', [
       ...localCell.widgets,
       widgetTypes.map.defaultValueFactory(),
     ])
-  )
 
   return (
     <>

@@ -1,8 +1,6 @@
 import { css } from '@linaria/core'
 
-import { useEvent } from '../../hooks/performance'
 import { useSettings } from '../../hooks/settings'
-import { memoInProduction } from '../../util/development'
 import { MapWidget } from '../../widgets/map/map-widget'
 import { useBreakpoint } from '../hooks/breakpoint'
 import { iconFullscreen, iconLight, iconMap } from '../icons'
@@ -52,16 +50,14 @@ function toggleFullScreen() {
  * - a minimap and its toggle
  * - a light/dark mode toggle
  */
-export const CornerOverlay = memoInProduction(() => {
+export const CornerOverlay = () => {
   const { lightMode, miniMap, updateSettings } = useSettings()
   const isLarge = useBreakpoint(600)
 
   const displayMiniMap = isLarge && miniMap
 
-  const toggleMiniMap = useEvent(() => updateSettings({ miniMap: !miniMap }))
-  const toggleLightMode = useEvent(() =>
-    updateSettings({ lightMode: !lightMode })
-  )
+  const toggleMiniMap = () => updateSettings({ miniMap: !miniMap })
+  const toggleLightMode = () => updateSettings({ lightMode: !lightMode })
 
   return (
     <>
@@ -90,4 +86,4 @@ export const CornerOverlay = memoInProduction(() => {
       {displayMiniMap && <MapWidget className={miniMapOverlay} />}
     </>
   )
-})
+}

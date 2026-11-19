@@ -12,7 +12,7 @@ import {
 } from '@vlight/types'
 import { css } from '@linaria/core'
 import { commaStringToArray, ensureBetween, shallowEqual } from '@vlight/utils'
-import { JSX, useCallback, useEffect, useState } from 'react'
+import { JSX, useCallback, useState } from 'react'
 
 import { baseline, primaryShade } from '../styles'
 import { cx } from '../../util/styles'
@@ -21,8 +21,6 @@ import { apiState } from '../../api/api-state'
 import type { ApiState } from '../../api/worker/processing'
 import { Button } from '../buttons/button'
 import { flexContainer } from '../css/flex'
-import { useEvent } from '../../hooks/performance'
-import { memoInProduction } from '../../util/development'
 import { useApiState } from '../../hooks/api'
 
 import { Label } from './label'
@@ -138,24 +136,21 @@ function UniverseChannelWidgetInput({
   value,
   onChange,
 }: WidgetTypeInputProps<UniverseWidgetConfig | ChannelsWidgetConfig>) {
-  const changeFrom = useEvent((newValue: number | undefined): void =>
+  const changeFrom = (newValue: number | undefined): void =>
     onChange({
       ...value,
       from: ensureBetween(newValue ?? 1, 1, 512),
     })
-  )
-  const changeTo = useEvent((newValue: number | undefined): void =>
+  const changeTo = (newValue: number | undefined): void =>
     onChange({
       ...value,
       to: ensureBetween(newValue ?? 512, 1, 512),
     })
-  )
-  const changeTitle = useEvent((newValue: string | undefined): void =>
+  const changeTitle = (newValue: string | undefined): void =>
     onChange({
       ...value,
       title: newValue,
     })
-  )
 
   return (
     <>
@@ -198,7 +193,10 @@ function StaticEntitiesWidgetInput({
   const [mappingString, setMappingString] = useState(initialMappingString)
 
   // Needed e.g. for reordering widgets
-  useEffect(() => {
+  const [prevInitialMappingString, setPrevInitialMappingString] =
+    useState(initialMappingString)
+  if (initialMappingString !== prevInitialMappingString) {
+    setPrevInitialMappingString(initialMappingString)
     if (
       !shallowEqual(
         commaStringToArray(initialMappingString),
@@ -207,17 +205,15 @@ function StaticEntitiesWidgetInput({
     ) {
       setMappingString(initialMappingString)
     }
-    // oxlint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialMappingString])
+  }
 
-  const changeEntities = useEvent((newValue: IdType[]): void =>
+  const changeEntities = (newValue: IdType[]): void =>
     onChange({
       ...value,
       id: newValue,
     })
-  )
 
-  const changeMapping = useEvent((newValue: string | undefined): void => {
+  const changeMapping = (newValue: string | undefined): void => {
     setMappingString(newValue)
     if (value.type === 'fixture' || value.type === 'fixture-group') {
       onChange({
@@ -225,7 +221,7 @@ function StaticEntitiesWidgetInput({
         mapping: commaStringToArray(newValue),
       })
     }
-  })
+  }
 
   return (
     <>
@@ -264,12 +260,11 @@ function LiveEntitiesWidgetInput({
 }: WidgetTypeInputProps<LiveMemoryWidgetConfig | LiveChaseWidgetConfig>) {
   const state = useApiState(widgetTypes[value.type].stateReference!)
 
-  const changeEntities = useEvent((newValue: IdType[]): void =>
+  const changeEntities = (newValue: IdType[]): void =>
     onChange({
       ...value,
       id: newValue,
     })
-  )
 
   const renderInput = useCallback(
     (
@@ -332,54 +327,53 @@ export interface WidgetInputProps {
 /**
  * Input to select a widget with.
  */
-export const WidgetInput = memoInProduction(
-  ({ value, onChange, onDelete, className }: WidgetInputProps) => {
-    const onChangeType = useEvent(
-      (newValue: WidgetConfig['type'] | undefined): void => {
-        if (!newValue) return
-        onChange(widgetTypes[newValue].defaultValueFactory())
-      }
-    )
+export const WidgetInput = ({
+  value,
+  onChange,
+  onDelete,
+  className,
+}: WidgetInputProps) => {
+  const onChangeType = (newValue: WidgetConfig['type'] | undefined): void => {
+    if (!newValue) return
+    onChange(widgetTypes[newValue].defaultValueFactory())
+  }
 
-    const onDeleteInternal = useEvent(
-      (event?: { stopPropagation: () => void }) => {
-        event?.stopPropagation()
-        onDelete?.()
-      }
-    )
+  const onDeleteInternal = (event?: { stopPropagation: () => void }) => {
+    event?.stopPropagation()
+    onDelete?.()
+  }
 
-    return (
-      <div className={cx(container, className)}>
-        <div className={flexContainer}>
-          <Select
-            entries={typeSelectEntries}
-            value={value?.type}
-            onChange={onChangeType}
+  return (
+    <div className={cx(container, className)}>
+      <div className={flexContainer}>
+        <Select
+          entries={typeSelectEntries}
+          value={value?.type}
+          onChange={onChangeType}
+        />
+        {onDelete && (
+          <Button
+            icon={iconDelete}
+            title="Remove widget"
+            transparent
+            onClick={onDeleteInternal}
           />
-          {onDelete && (
-            <Button
-              icon={iconDelete}
-              title="Remove widget"
-              transparent
-              onClick={onDeleteInternal}
-            />
-          )}
-        </div>
-
-        {(value?.type === 'universe' || value?.type === 'channels') && (
-          <UniverseChannelWidgetInput value={value} onChange={onChange} />
-        )}
-
-        {(value?.type === 'fixture' ||
-          value?.type === 'fixture-group' ||
-          value?.type === 'memory') && (
-          <StaticEntitiesWidgetInput value={value} onChange={onChange} />
-        )}
-
-        {(value?.type === 'live-memory' || value?.type === 'live-chase') && (
-          <LiveEntitiesWidgetInput value={value} onChange={onChange} />
         )}
       </div>
-    )
-  }
-)
+
+      {(value?.type === 'universe' || value?.type === 'channels') && (
+        <UniverseChannelWidgetInput value={value} onChange={onChange} />
+      )}
+
+      {(value?.type === 'fixture' ||
+        value?.type === 'fixture-group' ||
+        value?.type === 'memory') && (
+        <StaticEntitiesWidgetInput value={value} onChange={onChange} />
+      )}
+
+      {(value?.type === 'live-memory' || value?.type === 'live-chase') && (
+        <LiveEntitiesWidgetInput value={value} onChange={onChange} />
+      )}
+    </div>
+  )
+}

@@ -9,7 +9,7 @@ import { ChannelType } from '@vlight/controls'
 
 import { apiState } from '../../../api/api-state'
 import { getOccupiedFixtureChannels } from '../../../util/fixtures'
-import { masterDataMaps } from '../../../api/masterdata'
+import { getMasterDataMaps } from '../../../api/masterdata'
 
 type WithoutId<T> = Omit<T, 'id'>
 
@@ -23,7 +23,7 @@ export function newFixtureTypeFactory(): WithoutId<FixtureType> {
 export function newFixtureFactory(): WithoutId<Fixture> {
   const occupiedChannels =
     apiState.masterData?.fixtures.flatMap(fixture =>
-      getOccupiedFixtureChannels(fixture, masterDataMaps)
+      getOccupiedFixtureChannels(fixture, getMasterDataMaps())
     ) ?? []
   const occupiedChannelSet = new Set(occupiedChannels)
 

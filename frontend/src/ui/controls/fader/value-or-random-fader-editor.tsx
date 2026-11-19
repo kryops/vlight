@@ -3,7 +3,6 @@ import { ValueOrRandom } from '@vlight/types'
 import { highestRandomValue, isValueRange } from '@vlight/utils'
 import { JSX, useState } from 'react'
 
-import { useEvent } from '../../../hooks/performance'
 import { centeredText } from '../../css/basic-styles'
 import { editorTitle } from '../../css/editor-styles'
 import { faderContainer } from '../../css/fader-container'
@@ -107,12 +106,12 @@ export function ValueOrRandomFaderEditor({
   const [localState, setLocalState] = useState(value ?? faderProps.min ?? 0)
   const type = getValueOrRandomType(localState)
 
-  const onChangeWrapper = useEvent((newValue: ValueOrRandom<number>) => {
+  const onChangeWrapper = (newValue: ValueOrRandom<number>) => {
     setLocalState(newValue)
     onChange(newValue)
-  })
+  }
 
-  const addValue = useEvent(() => {
+  const addValue = () => {
     if (!Array.isArray(localState)) return
     onChangeWrapper([
       ...localState,
@@ -120,7 +119,7 @@ export function ValueOrRandomFaderEditor({
         ? localState[localState.length - 1]
         : (faderProps.min ?? 0),
     ])
-  })
+  }
 
   let content: JSX.Element
 

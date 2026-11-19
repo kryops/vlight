@@ -5,7 +5,6 @@ import { Button } from '../../ui/buttons/button'
 import { iconLight, iconLightOff } from '../../ui/icons'
 import { useApiStateSelector } from '../../hooks/api'
 import { HotkeyContext } from '../../hooks/hotkey'
-import { memoInProduction } from '../../util/development'
 import { ApiState } from '../../api/worker/processing'
 
 const allChannels = createRangeArray(1, 512)
@@ -22,7 +21,7 @@ export const turnAllChannelsOff = () => setChannels(allChannels, 0)
  * - All on
  * - All off
  */
-export const ChannelsActions = memoInProduction(() => {
+export const ChannelsActions = () => {
   const { isActive, isFullOn } = useApiStateSelector(
     apiState => {
       const isActive = isAnyChannelOn(apiState)
@@ -35,7 +34,7 @@ export const ChannelsActions = memoInProduction(() => {
   )
 
   return (
-    <HotkeyContext.Provider value={true}>
+    <HotkeyContext value={true}>
       <Button
         icon={iconLight}
         onClick={turnAllChannelsOn}
@@ -54,6 +53,6 @@ export const ChannelsActions = memoInProduction(() => {
       >
         OFF
       </Button>
-    </HotkeyContext.Provider>
+    </HotkeyContext>
   )
-})
+}

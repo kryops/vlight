@@ -1,5 +1,4 @@
 import { useApiStateSelector, useMasterData } from '../../hooks/api'
-import { memoInProduction } from '../../util/development'
 import { pageWithWidgets } from '../../ui/css/page'
 import { MemoryWidget } from '../../widgets/memory/memory-widget'
 import { Header } from '../../ui/containers/header'
@@ -17,7 +16,7 @@ import { LiveMemories } from './live-memories'
  * - widgets for all configured memories
  * - live memories
  */
-const MemoriesPage = memoInProduction(() => {
+const MemoriesPage = () => {
   const { memories } = useMasterData()
 
   const liveMemoriesCount = useApiStateSelector(
@@ -50,6 +49,6 @@ const MemoriesPage = memoInProduction(() => {
       />
     </>
   )
-})
+}
 
 export default MemoriesPage

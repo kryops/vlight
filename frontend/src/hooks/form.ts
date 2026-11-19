@@ -1,6 +1,12 @@
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import {
+  useState,
+  useCallback,
+  useEffect,
+  useEffectEvent,
+  useMemo,
+} from 'react'
 
-import { useEvent, useShallowEqualMemo } from './performance'
+import { useShallowEqualMemo } from './performance'
 
 export interface FormState<TValues extends object> {
   values: TValues
@@ -20,11 +26,11 @@ export function useFormState<TValues extends object>(
 ): FormState<TValues> {
   const [values, setValues] = useState(initialValues)
 
-  const change = useEvent((values: TValues) => onChange?.(values))
+  const change = useEffectEvent((values: TValues) => onChange?.(values))
 
   useEffect(() => {
     change(values)
-  }, [change, values])
+  }, [values])
 
   const changeValue = useCallback(
     <TKey extends keyof TValues>(key: TKey, value: TValues[TKey]) => {

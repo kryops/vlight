@@ -2,7 +2,6 @@ import { css } from '@linaria/core'
 import { useReducer, useRef, useState } from 'react'
 import { Dictionary, Fixture, FixtureState } from '@vlight/types'
 
-import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
 import { MapWidget } from '../../widgets/map/map-widget'
 import { baseline } from '../../ui/styles'
@@ -11,7 +10,6 @@ import { useApiState, useMasterDataAndMaps } from '../../hooks/api'
 import { mergeFixtureStates } from '../../../../shared/controls/src'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 import { setFixtureState } from '../../api'
-import { useEvent } from '../../hooks/performance'
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
 import { showDialog } from '../../ui/overlays/dialog'
 import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
@@ -48,7 +46,7 @@ function openFixtureDialog(fixture: Fixture) {
  * - displays each fixture's DMX channel
  * - allows clicking on a fixture to make it light up
  */
-const MapPage = memoInProduction(() => {
+const MapPage = () => {
   const [fixtureTestMode, toggleFixtureTestMode] = useReducer(
     value => !value,
     false
@@ -73,24 +71,22 @@ const MapPage = memoInProduction(() => {
 
   const backupStateRef = useRef<Dictionary<FixtureState>>({})
 
-  const turnFixtureOn = useEvent((fixture: Fixture) => {
+  const turnFixtureOn = (fixture: Fixture) => {
     if (!(fixtureStates[fixture.id] as any)?.__test)
       backupStateRef.current[fixture.id] = fixtureStates[fixture.id]
     return setFixtureState(fixture.id, fixtureTestState)
-  })
+  }
 
-  const turnFixtureOff = useEvent((fixture: Fixture) => {
+  const turnFixtureOff = (fixture: Fixture) => {
     const backupState = backupStateRef.current[fixture.id] ?? {
       on: false,
       channels: {},
     }
     return setFixtureState(fixture.id, backupState)
-  })
+  }
 
-  const changeFixtureTestState = useEvent(
-    (partialState: Partial<FixtureState>) =>
-      setFixtureTestState(mergeFixtureStates(fixtureTestState, partialState))
-  )
+  const changeFixtureTestState = (partialState: Partial<FixtureState>) =>
+    setFixtureTestState(mergeFixtureStates(fixtureTestState, partialState))
 
   const fixtureMapping = useCommonFixtureMapping(
     masterDataAndMaps.masterData.fixtures.map(fixture => fixture.id)
@@ -154,6 +150,6 @@ const MapPage = memoInProduction(() => {
       </div>
     </>
   )
-})
+}
 
 export default MapPage

@@ -2,14 +2,12 @@ import { Link } from 'react-router'
 
 import { useSettings } from '../../../hooks/settings'
 import { Settings } from '../../../settings'
-import { memoInProduction } from '../../../util/development'
 import { Clickable } from '../../../ui/components/clickable'
 import { BackArrow } from '../../../ui/components/back-arrow'
 import { configPageRoute } from '../../routes'
 import { showDialog } from '../../../ui/overlays/dialog'
 import { resetState } from '../../../api'
 import { yesNo } from '../../../ui/overlays/buttons'
-import { useEvent } from '../../../hooks/performance'
 
 const promptResetState = async () => {
   const result = await showDialog(
@@ -29,13 +27,12 @@ const promptResetState = async () => {
  *
  * Allows changing the frontend settings, as well as resetting the backend state.
  */
-const SettingsPage = memoInProduction(() => {
+const SettingsPage = () => {
   const settings = useSettings()
   const { lightMode, updateSettings } = settings
 
-  const toggleSetting = useEvent((setting: keyof Settings) =>
+  const toggleSetting = (setting: keyof Settings) =>
     updateSettings({ [setting]: !settings[setting] })
-  )
 
   return (
     <div>
@@ -53,6 +50,6 @@ const SettingsPage = memoInProduction(() => {
       </p>
     </div>
   )
-})
+}
 
 export default SettingsPage

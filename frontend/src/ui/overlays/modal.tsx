@@ -6,9 +6,8 @@ import { zOverlay, primaryShade, baseline, iconShade } from '../styles'
 import { iconClose } from '../icons'
 import { ErrorBoundary } from '../../util/error-boundary'
 import { useHotkey } from '../../hooks/hotkey'
-import { useEvent } from '../../hooks/performance'
 
-import { removeOverlay, addOverlay } from './overlay'
+import { removeOverlay, addOverlay, OverlayProps } from './overlay'
 import { ModalButton } from './buttons'
 
 export interface ModalProps<T> {
@@ -158,7 +157,7 @@ export function Modal<T>({
     { forceActive: true }
   )
 
-  const closeModal = useEvent(() => onClose(null as any))
+  const closeModal = () => onClose(null as any)
 
   return (
     <div
@@ -206,11 +205,14 @@ export function showModal<T>(
   registerCloseHandler?: (fn: (value: T) => void) => void
 ): Promise<T> {
   return new Promise<T>(resolve => {
-    const Overlay = () => (
+    // onClose is provided by the OverlayContainer and removes this overlay.
+    // It must not reference Overlay itself, as the React Compiler hoists
+    // closures that only reference outer variables out of the component.
+    const Overlay = ({ onClose }: OverlayProps) => (
       <Modal
         {...props}
         onClose={value => {
-          removeOverlay(Overlay)
+          onClose?.()
           resolve(value)
         }}
       />

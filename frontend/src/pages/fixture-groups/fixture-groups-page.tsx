@@ -1,7 +1,6 @@
 import { useMasterData } from '../../hooks/api'
 import { FixtureGroupWidget } from '../../widgets/fixture-group/fixture-group-widget'
 import { pageWithWidgets } from '../../ui/css/page'
-import { memoInProduction } from '../../util/development'
 import { Header } from '../../ui/containers/header'
 import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
 
@@ -15,7 +14,7 @@ import { FixtureGroupMultiControl } from './fixture-group-multi-control'
  * - a multi-control widget
  * - widgets for all configured fixture groups
  */
-const FixtureGroupsPage = memoInProduction(() => {
+const FixtureGroupsPage = () => {
   const { fixtureGroups } = useMasterData()
 
   const activeHotkeyIndex = useNumberHotkey(fixtureGroups.length)
@@ -36,6 +35,6 @@ const FixtureGroupsPage = memoInProduction(() => {
       </div>
     </>
   )
-})
+}
 
 export default FixtureGroupsPage

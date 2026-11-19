@@ -9,7 +9,6 @@ import { pageWithWidgets } from '../../ui/css/page'
 import { iconAdd } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
-import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import {
   StatelessLiveMemoryWidget,
@@ -56,46 +55,47 @@ export interface LiveMemoriesProps {
  * - a multi-control
  * - widgets for all live memory
  */
-export const LiveMemories = memoInProduction(
-  ({ startHotkeyIndex, activeHotkeyIndex }: LiveMemoriesProps) => {
-    const liveMemories = useApiState('liveMemories')
+export const LiveMemories = ({
+  startHotkeyIndex,
+  activeHotkeyIndex,
+}: LiveMemoriesProps) => {
+  const liveMemories = useApiState('liveMemories')
 
-    return (
-      <div className={container}>
-        <Header
-          level={3}
-          rightContent={
-            <Icon
-              icon={iconAdd}
-              size={8}
-              hoverable
-              inline
-              onClick={addLiveMemory}
-            />
-          }
-        >
-          Live Memories
-        </Header>
+  return (
+    <div className={container}>
+      <Header
+        level={3}
+        rightContent={
+          <Icon
+            icon={iconAdd}
+            size={8}
+            hoverable
+            inline
+            onClick={addLiveMemory}
+          />
+        }
+      >
+        Live Memories
+      </Header>
 
-        <LiveMemoriesMultiControl />
+      <LiveMemoriesMultiControl />
 
-        <div className={cx(pageWithWidgets, widgetContainer)}>
-          {Object.entries(liveMemories).map(([id, memory], index) => (
-            <StatelessLiveMemoryWidget
-              key={id}
-              title={memory.name ?? `Live Memory ${id}`}
-              id={id}
-              state={memory}
-              hotkeysActive={index === activeHotkeyIndex}
-              cornerLabel={
-                startHotkeyIndex !== undefined
-                  ? getHotkeyLabel(startHotkeyIndex + index)
-                  : undefined
-              }
-            />
-          ))}
-        </div>
+      <div className={cx(pageWithWidgets, widgetContainer)}>
+        {Object.entries(liveMemories).map(([id, memory], index) => (
+          <StatelessLiveMemoryWidget
+            key={id}
+            title={memory.name ?? `Live Memory ${id}`}
+            id={id}
+            state={memory}
+            hotkeysActive={index === activeHotkeyIndex}
+            cornerLabel={
+              startHotkeyIndex !== undefined
+                ? getHotkeyLabel(startHotkeyIndex + index)
+                : undefined
+            }
+          />
+        ))}
       </div>
-    )
-  }
-)
+    </div>
+  )
+}

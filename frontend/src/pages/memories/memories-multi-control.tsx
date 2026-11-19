@@ -8,7 +8,7 @@ import {
   useMasterData,
   useMasterDataAndMaps,
 } from '../../hooks/api'
-import { useEvent, useShallowEqualMemo } from '../../hooks/performance'
+import { useShallowEqualMemo } from '../../hooks/performance'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { Widget } from '../../ui/containers/widget'
@@ -16,7 +16,6 @@ import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { MultiToggleInput } from '../../ui/forms/multi-toggle-input'
 import { iconMemory } from '../../ui/icons'
-import { memoInProduction } from '../../util/development'
 
 function MemoriesMultiControlInner() {
   const [selectedMemoryIds, setSelectedMemoryIds] = useState<string[]>([])
@@ -31,7 +30,7 @@ function MemoriesMultiControlInner() {
     selectedMemoryIds.map(id => memoryStates[id]?.value ?? 0)
   )
 
-  const changeValue = useEvent((value: number) =>
+  const changeValue = (value: number) =>
     setMemoryState(
       selectedMemoryIds,
       {
@@ -39,7 +38,6 @@ function MemoriesMultiControlInner() {
       },
       true
     )
-  )
 
   const getDisplayValue = useCallback(
     (id: IdType) => masterDataMaps.memories.get(id)?.name ?? id,
@@ -48,7 +46,7 @@ function MemoriesMultiControlInner() {
 
   const memoryIds = useShallowEqualMemo(masterData.memories.map(it => it.id))
 
-  const toggleOn = useEvent(() =>
+  const toggleOn = () =>
     setMemoryState(
       selectedMemoryIds,
       {
@@ -56,7 +54,6 @@ function MemoriesMultiControlInner() {
       },
       true
     )
-  )
 
   return (
     <TwoColumDialogContainer
@@ -95,7 +92,7 @@ function MemoriesMultiControlInner() {
 /**
  * Collapsible widget to control multiple memories together.
  */
-export const MemoriesMultiControl = memoInProduction(() => {
+export const MemoriesMultiControl = () => {
   const masterData = useMasterData()
   if (masterData.memories.length < 2) return null
 
@@ -104,4 +101,4 @@ export const MemoriesMultiControl = memoInProduction(() => {
       <MemoriesMultiControlInner />
     </Collapsible>
   )
-})
+}

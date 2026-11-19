@@ -14,12 +14,11 @@ import {
   useMasterDataAndMaps,
 } from '../../hooks/api'
 import { useCommonFixtureMapping } from '../../hooks/fixtures'
-import { useDeepEqualMemo, useEvent } from '../../hooks/performance'
+import { useDeepEqualMemo } from '../../hooks/performance'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
 import { FixtureListInput } from '../../ui/forms/fixture-list-input'
 import { iconLights } from '../../ui/icons'
-import { memoInProduction } from '../../util/development'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 import { addMemoryFromFixtureState } from '../memories/memories-actions'
 
@@ -50,7 +49,7 @@ function FixturesMultiControlInner() {
     )
   )
 
-  const changeFixtureState = useEvent((newState: Partial<FixtureState>) => {
+  const changeFixtureState = (newState: Partial<FixtureState>) => {
     const stateToApply = { ...newState }
     if (stateToApply.on === undefined && commonFixtureState.on)
       stateToApply.on = true
@@ -69,14 +68,14 @@ function FixturesMultiControlInner() {
       )
       setFixtureState(fixtureIds, stateForFixtures, true)
     }
-  })
+  }
 
-  const onSave = useEvent(async () => {
+  const onSave = async () => {
     await addMemoryFromFixtureState({
       fixtureState: commonFixtureState,
       members: fixtureStrings,
     })
-  })
+  }
 
   return (
     <TwoColumDialogContainer
@@ -106,7 +105,7 @@ function FixturesMultiControlInner() {
  *
  * Allows selection by definition, type, and group.
  */
-export const FixturesMultiControl = memoInProduction(() => {
+export const FixturesMultiControl = () => {
   const masterData = useMasterData()
   if (masterData.fixtures.length < 2) return null
 
@@ -115,4 +114,4 @@ export const FixturesMultiControl = memoInProduction(() => {
       <FixturesMultiControlInner />
     </Collapsible>
   )
-})
+}

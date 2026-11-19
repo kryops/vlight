@@ -1,7 +1,6 @@
 import { ChaseColor, ChaseColorPreset } from '@vlight/types'
 
 import { useMasterData } from '../../hooks/api'
-import { memoInProduction } from '../../util/development'
 import {
   editEntityWithCustomLogic,
   removeEntityWithCustomLogic,
@@ -33,26 +32,27 @@ export interface ChaseColorPresetsProps {
 /**
  * Displays the chase color presets and allows editing and deleting them.
  */
-export const ChaseColorPresets = memoInProduction(
-  ({ getCurrentColors, onChange }: ChaseColorPresetsProps) => {
-    const masterData = useMasterData()
+export const ChaseColorPresets = ({
+  getCurrentColors,
+  onChange,
+}: ChaseColorPresetsProps) => {
+  const masterData = useMasterData()
 
-    return (
-      <PresetsEditor
-        presets={masterData.chaseColorPresets}
-        getName={getName}
-        getBackgrounds={getBackgrounds}
-        onApply={preset => onChange(preset.colors)}
-        onSave={name =>
-          editEntityWithCustomLogic('chaseColorPresets', {
-            id: '',
-            name,
-            colors: getCurrentColors(),
-          })
-        }
-        onRename={onRename}
-        onDelete={onDelete}
-      />
-    )
-  }
-)
+  return (
+    <PresetsEditor
+      presets={masterData.chaseColorPresets}
+      getName={getName}
+      getBackgrounds={getBackgrounds}
+      onApply={preset => onChange(preset.colors)}
+      onSave={name =>
+        editEntityWithCustomLogic('chaseColorPresets', {
+          id: '',
+          name,
+          colors: getCurrentColors(),
+        })
+      }
+      onRename={onRename}
+      onDelete={onDelete}
+    />
+  )
+}

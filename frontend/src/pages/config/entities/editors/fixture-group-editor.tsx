@@ -12,7 +12,6 @@ import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 import { editorPreviewColumn } from '../../../../ui/css/editor-styles'
 import { useFixtureList } from '../../../../hooks/fixtures'
-import { useEvent } from '../../../../hooks/performance'
 
 /**
  * Dialog content to edit a fixture group.
@@ -28,7 +27,7 @@ export function FixtureGroupEditor({
 
   const fixtureIds = useFixtureList(formState.values.fixtures)
 
-  const toggleFixture = useEvent((fixture: Fixture) => {
+  const toggleFixture = (fixture: Fixture) => {
     const isActive = formState.values.fixtures.includes(fixture.id)
 
     // fixture active, but through a mapping
@@ -42,7 +41,7 @@ export function FixtureGroupEditor({
         ? formState.values.fixtures.filter(it => it !== fixture.id)
         : [...formState.values.fixtures, fixture.id]
     )
-  })
+  }
 
   return (
     <>

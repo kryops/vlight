@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 
 import { baseline } from '../styles'
 import { flexEndSpacerString, flexWrap } from '../css/flex'
-import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 
 const grid = css`
@@ -49,24 +48,22 @@ export interface GridProps {
 /**
  * Flexible responsive grid row component.
  */
-export const Grid = memoInProduction(
-  ({ headline, cells, className }: GridProps) => {
-    const factorSum = cells.reduce((sum, { factor }) => sum + (factor ?? 1), 0)
-    return (
-      <>
-        {headline && <h2 className={headlineStyle}>{headline}</h2>}
-        <div className={cx(grid, className)}>
-          {cells.map(({ factor, children, className }, index) => (
-            <div
-              key={index}
-              className={cx(flexWrap, gridCell, className)}
-              style={{ flexBasis: ((factor ?? 1) / factorSum) * 100 + '%' }}
-            >
-              {children}
-            </div>
-          ))}
-        </div>
-      </>
-    )
-  }
-)
+export const Grid = ({ headline, cells, className }: GridProps) => {
+  const factorSum = cells.reduce((sum, { factor }) => sum + (factor ?? 1), 0)
+  return (
+    <>
+      {headline && <h2 className={headlineStyle}>{headline}</h2>}
+      <div className={cx(grid, className)}>
+        {cells.map(({ factor, children, className }, index) => (
+          <div
+            key={index}
+            className={cx(flexWrap, gridCell, className)}
+            style={{ flexBasis: ((factor ?? 1) / factorSum) * 100 + '%' }}
+          >
+            {children}
+          </div>
+        ))}
+      </div>
+    </>
+  )
+}

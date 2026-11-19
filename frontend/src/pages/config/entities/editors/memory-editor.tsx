@@ -15,11 +15,10 @@ import {
   editorTitle,
 } from '../../../../ui/css/editor-styles'
 import { newMemoryFactory } from '../new-entity-factories'
-import { useEvent } from '../../../../hooks/performance'
 import { Button } from '../../../../ui/buttons/button'
 import { editEntity, removeEntity, setMemoryState } from '../../../../api'
 import { apiState } from '../../../../api/api-state'
-import { masterDataMaps } from '../../../../api/masterdata'
+import { getMasterDataMaps } from '../../../../api/masterdata'
 
 import { MemorySceneEditor } from './memory-scene-editor'
 
@@ -44,17 +43,13 @@ export function MemoryEditor({
   const scenes = useFormStateArray(formState, 'scenes')
   const [onBeforePreview, setOnBeforePreview] = useState(false)
 
-  const changeScene = useEvent(
-    (newScene: MemoryScene, oldScene: MemoryScene) => {
-      scenes.update(oldScene, newScene)
-    }
-  )
+  const changeScene = (newScene: MemoryScene, oldScene: MemoryScene) => {
+    scenes.update(oldScene, newScene)
+  }
 
-  const removeScene = useEvent((_event: any, scene: MemoryScene) =>
-    scenes.remove(scene)
-  )
+  const removeScene = (_event: any, scene: MemoryScene) => scenes.remove(scene)
 
-  const addScene = useEvent(() => scenes.add(newMemoryFactory().scenes[0]))
+  const addScene = () => scenes.add(newMemoryFactory().scenes[0])
 
   return (
     <>
@@ -125,7 +120,10 @@ export function MemoryEditor({
                 )
 
                 let i = 0
-                while (!masterDataMaps.memories.get(previewId) && i++ < 100) {
+                while (
+                  !getMasterDataMaps().memories.get(previewId) &&
+                  i++ < 100
+                ) {
                   await new Promise(resolve => setTimeout(resolve, 10))
                 }
 

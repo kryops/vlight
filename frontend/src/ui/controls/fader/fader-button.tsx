@@ -1,6 +1,5 @@
 import { css } from '@linaria/core'
 
-import { memoInProduction } from '../../../util/development'
 import { cx } from '../../../util/styles'
 import { smallText } from '../../css/basic-styles'
 import { baseline, primaryShade } from '../../styles'
@@ -55,33 +54,33 @@ export interface FaderButtonProps {
   className?: string
 }
 
+const defaultHeight = faderWidth * 1.25
+
 /**
  * A fader button / knob.
  */
-export const FaderButton = memoInProduction(
-  ({
-    fraction,
-    label,
-    subLabel,
-    height = faderWidth * 1.25,
-    className,
-  }: FaderButtonProps) => {
-    const offset = Math.max(0, (faderHeight - trackHeight) / 2 - height / 2)
-    const offsetHeight = faderHeight - height - offset * 2
-    const y = Math.round(offset + offsetHeight - fraction * offsetHeight)
+export const FaderButton = ({
+  fraction,
+  label,
+  subLabel,
+  height = defaultHeight,
+  className,
+}: FaderButtonProps) => {
+  const offset = Math.max(0, (faderHeight - trackHeight) / 2 - height / 2)
+  const offsetHeight = faderHeight - height - offset * 2
+  const y = Math.round(offset + offsetHeight - fraction * offsetHeight)
 
-    return (
-      <div
-        className={cx(
-          button,
-          label && label.length > 3 && button_small,
-          className
-        )}
-        style={{ height: `${height}px`, transform: `translateY(${y}px)` }}
-      >
-        {label}
-        {subLabel && <div className={subLabelStyle}>{subLabel}</div>}
-      </div>
-    )
-  }
-)
+  return (
+    <div
+      className={cx(
+        button,
+        label && label.length > 3 && button_small,
+        className
+      )}
+      style={{ height: `${height}px`, transform: `translateY(${y}px)` }}
+    >
+      {label}
+      {subLabel && <div className={subLabelStyle}>{subLabel}</div>}
+    </div>
+  )
+}

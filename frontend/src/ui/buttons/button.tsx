@@ -8,7 +8,6 @@ import { Icon } from '../icons/icon'
 import { Clickable } from '../components/clickable'
 import { NormalizedTouchEvent } from '../../util/touch'
 import { useHotkey } from '../../hooks/hotkey'
-import { memoInProduction } from '../../util/development'
 
 const button = css`
   display: inline-block;
@@ -155,97 +154,95 @@ export interface ButtonProps<T> {
   className?: string
 }
 
-export const Button = memoInProduction(
-  <T extends any = undefined>({
-    children,
-    onClick,
-    onDown,
-    onUp,
-    onClickArg,
-    icon,
-    iconColor,
+export const Button = <T extends any = undefined>({
+  children,
+  onClick,
+  onDown,
+  onUp,
+  onClickArg,
+  icon,
+  iconColor,
+  hotkey,
+  active,
+  disabled = false,
+  block = false,
+  transparent = false,
+  className,
+  title,
+}: ButtonProps<T>) => {
+  const [hotkeyPressed, setHotkeyPressed] = useState(false)
+
+  const hotkeyEnabled = useHotkey(
     hotkey,
-    active,
-    disabled = false,
-    block = false,
-    transparent = false,
-    className,
-    title,
-  }: ButtonProps<T>) => {
-    const [hotkeyPressed, setHotkeyPressed] = useState(false)
+    event => {
+      if (event.type === 'keyup') {
+        onUp?.(onClickArg as T)
+        setHotkeyPressed(false)
+      } else {
+        onDown?.(onClickArg as T)
+        onClick?.(undefined, onClickArg as T)
+        setHotkeyPressed(true)
+      }
+    },
+    { keyup: true }
+  )
 
-    const hotkeyEnabled = useHotkey(
-      hotkey,
-      event => {
-        if (event.type === 'keyup') {
-          onUp?.(onClickArg as T)
-          setHotkeyPressed(false)
-        } else {
-          onDown?.(onClickArg as T)
-          onClick?.(undefined, onClickArg as T)
-          setHotkeyPressed(true)
-        }
-      },
-      { keyup: true }
-    )
+  const transparentIcon = !children && transparent
+  const inactive = active === false || disabled
 
-    const transparentIcon = !children && transparent
-    const inactive = active === false || disabled
+  const classNames = cx(
+    button,
+    block && buttonBlock,
+    (active === true || hotkeyPressed) && button_active,
+    inactive && button_inactive,
+    disabled && button_disabled,
+    transparent && button_transparent,
+    className
+  )
 
-    const classNames = cx(
-      button,
-      block && buttonBlock,
-      (active === true || hotkeyPressed) && button_active,
-      inactive && button_inactive,
-      disabled && button_disabled,
-      transparent && button_transparent,
-      className
-    )
+  const hotkeyTooltip =
+    hotkey && hotkeyEnabled ? `(${hotkey.toUpperCase()})` : undefined
 
-    const hotkeyTooltip =
-      hotkey && hotkeyEnabled ? `(${hotkey.toUpperCase()})` : undefined
+  const titleToDisplay =
+    title && hotkeyTooltip
+      ? `${title} ${hotkeyTooltip}`
+      : title || hotkeyTooltip
 
-    const titleToDisplay =
-      title && hotkeyTooltip
-        ? `${title} ${hotkeyTooltip}`
-        : title || hotkeyTooltip
+  const content = (
+    <>
+      {icon && (
+        <Icon
+          icon={icon}
+          color={iconColor}
+          inline
+          className={children ? iconStyle : undefined}
+          hoverable={transparentIcon && active === undefined}
+          shade={transparentIcon && !inactive ? 0 : 1}
+        />
+      )}
+      {children}
+    </>
+  )
 
-    const content = (
-      <>
-        {icon && (
-          <Icon
-            icon={icon}
-            color={iconColor}
-            inline
-            className={children ? iconStyle : undefined}
-            hoverable={transparentIcon && active === undefined}
-            shade={transparentIcon && !inactive ? 0 : 1}
-          />
-        )}
-        {children}
-      </>
-    )
-
-    return onDown || onUp ? (
-      <Touchable
-        className={classNames}
-        title={titleToDisplay}
-        onDown={onDown && (() => onDown(onClickArg as T))}
-        onUp={
-          (onUp && (() => onUp(onClickArg as T))) ??
-          (onClick && (() => onClick(undefined, onClickArg as T)))
-        }
-      >
-        {content}
-      </Touchable>
-    ) : (
-      <Clickable
-        className={classNames}
-        title={titleToDisplay}
-        onClick={onClick && (event => onClick(event, onClickArg as T))}
-      >
-        {content}
-      </Clickable>
-    )
-  }
-)
+  return onDown || onUp ? (
+    <Touchable
+      className={classNames}
+      title={titleToDisplay}
+      onDown={onDown && (() => onDown(onClickArg as T))}
+      onUp={
+        (onUp && (() => onUp(onClickArg as T))) ??
+        (onClick && (() => onClick(undefined, onClickArg as T)))
+      }
+    >
+      {content}
+    </Touchable>
+  ) : (
+    <Clickable
+      className={classNames}
+      title={titleToDisplay}
+      onClick={onClick && (event => onClick(event, onClickArg as T))}
+    >
+      {content}
+    </Clickable>
+  )
+}

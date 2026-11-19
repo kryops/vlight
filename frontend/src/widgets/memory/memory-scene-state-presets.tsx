@@ -1,7 +1,6 @@
 import { MemorySceneState, MemorySceneStatePreset } from '@vlight/types'
 
 import { useMasterData } from '../../hooks/api'
-import { memoInProduction } from '../../util/development'
 import {
   editEntityWithCustomLogic,
   removeEntityWithCustomLogic,
@@ -33,26 +32,27 @@ export interface MemorySceneStatePresetsProps {
 /**
  * Displays the memory scene state presets and allows editing and deleting them.
  */
-export const MemorySceneStatePresets = memoInProduction(
-  ({ getCurrentState, onChange }: MemorySceneStatePresetsProps) => {
-    const masterData = useMasterData()
+export const MemorySceneStatePresets = ({
+  getCurrentState,
+  onChange,
+}: MemorySceneStatePresetsProps) => {
+  const masterData = useMasterData()
 
-    return (
-      <PresetsEditor
-        presets={masterData.memorySceneStatePresets}
-        getName={getName}
-        getBackgrounds={getBackgrounds}
-        onApply={preset => onChange(preset.state)}
-        onSave={name =>
-          editEntityWithCustomLogic('memorySceneStatePresets', {
-            id: '',
-            name,
-            state: getCurrentState(),
-          })
-        }
-        onRename={onRename}
-        onDelete={onDelete}
-      />
-    )
-  }
-)
+  return (
+    <PresetsEditor
+      presets={masterData.memorySceneStatePresets}
+      getName={getName}
+      getBackgrounds={getBackgrounds}
+      onApply={preset => onChange(preset.state)}
+      onSave={name =>
+        editEntityWithCustomLogic('memorySceneStatePresets', {
+          id: '',
+          name,
+          state: getCurrentState(),
+        })
+      }
+      onRename={onRename}
+      onDelete={onDelete}
+    />
+  )
+}

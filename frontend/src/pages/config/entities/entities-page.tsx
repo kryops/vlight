@@ -1,14 +1,12 @@
 import { useParams } from 'react-router'
 import { EntityName } from '@vlight/types'
 
-import { memoInProduction } from '../../../util/development'
 import { BackArrow } from '../../../ui/components/back-arrow'
 import { useRawMasterData } from '../../../hooks/api'
 import { Icon } from '../../../ui/icons/icon'
 import { iconAdd } from '../../../ui/icons'
 import { BackLink } from '../../../ui/components/back-link'
 import { Header } from '../../../ui/containers/header'
-import { useEvent } from '../../../hooks/performance'
 
 import { entityUiMapping } from './entity-ui-mapping'
 import { EntityList } from './entity-list'
@@ -21,11 +19,11 @@ import { openEntityEditor } from './editors'
  * Displays a sortable list of entries that can be edited or deleted,
  * and a button to add one.
  */
-const EntitiesPage = memoInProduction(() => {
+const EntitiesPage = () => {
   const { type } = useParams<{ type: EntityName }>()
   const rawMasterData = useRawMasterData()
 
-  const openEditor = useEvent(() => type && openEntityEditor(type))
+  const openEditor = () => type && openEntityEditor(type)
 
   if (!type || !entityUiMapping[type]) return null
   const entries = rawMasterData[type]
@@ -43,6 +41,6 @@ const EntitiesPage = memoInProduction(() => {
       <EntityList type={type} entries={entries as any} />
     </div>
   )
-})
+}
 
 export default EntitiesPage

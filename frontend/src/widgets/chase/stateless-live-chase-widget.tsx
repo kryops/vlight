@@ -7,10 +7,9 @@ import { Fader } from '../../ui/controls/fader/fader'
 import { faderContainer } from '../../ui/css/fader-container'
 import { flexAuto, flexWrap } from '../../ui/css/flex'
 import { iconChase, iconPercentage, iconTime } from '../../ui/icons'
-import { memoInProduction } from '../../util/development'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
-import { useDeepEqualMemo, useEvent } from '../../hooks/performance'
+import { useDeepEqualMemo } from '../../hooks/performance'
 import { cx } from '../../util/styles'
 
 import { LiveChaseWidgetColorControls } from './live-chase-widget-color-controls'
@@ -36,96 +35,91 @@ export interface StatelessLiveChaseWidgetProps extends WidgetPassthrough {
 /**
  * Stateless widget to display a live chase.
  */
-export const StatelessLiveChaseWidget = memoInProduction(
-  ({ id, state, title, ...passThrough }: StatelessLiveChaseWidgetProps) => {
-    const update = (newState: Partial<LiveChase>) =>
-      setLiveChaseState(id, newState, true)
+export const StatelessLiveChaseWidget = ({
+  id,
+  state,
+  title,
+  ...passThrough
+}: StatelessLiveChaseWidgetProps) => {
+  const update = (newState: Partial<LiveChase>) =>
+    setLiveChaseState(id, newState, true)
 
-    const changeSpeed = useEvent((speed: number) =>
-      updateLiveChaseSpeed(id, state, speed)
-    )
+  const changeSpeed = (speed: number) => updateLiveChaseSpeed(id, state, speed)
 
-    const changeValue = useEvent((value: number) => update({ value }))
+  const changeValue = (value: number) => update({ value })
 
-    const changeFadeTime = useEvent((value: number) =>
-      update({
-        fade: state.fadeLockedToSpeed ? (value / 100) * state.speed : value,
-      })
-    )
+  const changeFadeTime = (value: number) =>
+    update({
+      fade: state.fadeLockedToSpeed ? (value / 100) * state.speed : value,
+    })
 
-    const toggleFadeLockedToSpeed = useEvent(() =>
-      update({ fadeLockedToSpeed: !state.fadeLockedToSpeed })
-    )
+  const toggleFadeLockedToSpeed = () =>
+    update({ fadeLockedToSpeed: !state.fadeLockedToSpeed })
 
-    const light = useDeepEqualMemo(state.light)
+  const light = useDeepEqualMemo(state.light)
 
-    const changeLight = useEvent((light: ValueOrRandom<number>) =>
-      update({ light })
-    )
+  const changeLight = (light: ValueOrRandom<number>) => update({ light })
 
-    const onTitleClick = useEvent(() => update({ on: !state.on }))
+  const onTitleClick = () => update({ on: !state.on })
 
-    return (
-      <Widget
-        icon={iconChase}
-        title={title}
-        onTitleClick={onTitleClick}
-        turnedOn={state.on}
-        contentClassName={flexWrap}
-        titleSide={<LiveChaseWidgetTopControls id={id} state={state} />}
-        {...passThrough}
-      >
-        <div className={flexAuto}>
-          <div className={cx(faderContainer, container)}>
-            <LiveChaseWidgetColorControls id={id} state={state} />
+  return (
+    <Widget
+      icon={iconChase}
+      title={title}
+      onTitleClick={onTitleClick}
+      turnedOn={state.on}
+      contentClassName={flexWrap}
+      titleSide={<LiveChaseWidgetTopControls id={id} state={state} />}
+      {...passThrough}
+    >
+      <div className={flexAuto}>
+        <div className={cx(faderContainer, container)}>
+          <LiveChaseWidgetColorControls id={id} state={state} />
 
-            <Fader
-              max={255}
-              step={1}
-              value={state.value ?? 0}
-              onChange={changeValue}
-              label="Value"
-            />
-            <Fader
-              min={liveChaseMinSpeed}
-              max={liveChaseMaxSpeed}
-              quadraticScale={liveChaseFaderQuadraticScale}
-              value={state.speed}
-              onChange={changeSpeed}
-              label="Speed"
-              subLabel={`${state.speed.toFixed(2)}s`}
-            />
-            <FaderWithContainer
-              min={state.fadeLockedToSpeed ? 100 : liveChaseMinSpeed}
-              max={0}
-              quadraticScale={
-                state.fadeLockedToSpeed
-                  ? undefined
-                  : liveChaseFaderQuadraticScale
-              }
-              value={
-                state.fadeLockedToSpeed
-                  ? ((state.fade ?? 0) / state.speed) * 100
-                  : (state.fade ?? 0)
-              }
-              onChange={changeFadeTime}
-              label="Fade"
-              subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
-              bottomIcon={state.fadeLockedToSpeed ? iconPercentage : iconTime}
-              onBottomIconClick={toggleFadeLockedToSpeed}
-            />
-            <ValueOrRandomFader
-              min={0}
-              max={1}
-              value={light}
-              onChange={changeLight}
-              label="Light"
-            />
-          </div>
-
-          <LiveChaseWidgetBottomControls id={id} state={state} title={title} />
+          <Fader
+            max={255}
+            step={1}
+            value={state.value ?? 0}
+            onChange={changeValue}
+            label="Value"
+          />
+          <Fader
+            min={liveChaseMinSpeed}
+            max={liveChaseMaxSpeed}
+            quadraticScale={liveChaseFaderQuadraticScale}
+            value={state.speed}
+            onChange={changeSpeed}
+            label="Speed"
+            subLabel={`${state.speed.toFixed(2)}s`}
+          />
+          <FaderWithContainer
+            min={state.fadeLockedToSpeed ? 100 : liveChaseMinSpeed}
+            max={0}
+            quadraticScale={
+              state.fadeLockedToSpeed ? undefined : liveChaseFaderQuadraticScale
+            }
+            value={
+              state.fadeLockedToSpeed
+                ? ((state.fade ?? 0) / state.speed) * 100
+                : (state.fade ?? 0)
+            }
+            onChange={changeFadeTime}
+            label="Fade"
+            subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
+            bottomIcon={state.fadeLockedToSpeed ? iconPercentage : iconTime}
+            onBottomIconClick={toggleFadeLockedToSpeed}
+          />
+          <ValueOrRandomFader
+            min={0}
+            max={1}
+            value={light}
+            onChange={changeLight}
+            label="Light"
+          />
         </div>
-      </Widget>
-    )
-  }
-)
+
+        <LiveChaseWidgetBottomControls id={id} state={state} title={title} />
+      </div>
+    </Widget>
+  )
+}

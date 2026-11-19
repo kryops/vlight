@@ -3,7 +3,6 @@ import { NavLink, useNavigate } from 'react-router'
 
 import { Icon } from '../icons/icon'
 import { baseline, primaryShade } from '../styles'
-import { memoInProduction } from '../../util/development'
 import { cx } from '../../util/styles'
 import { useHotkey } from '../../hooks/hotkey'
 
@@ -67,36 +66,34 @@ export interface NavItemProps {
 /**
  * Navigation item component.
  */
-export const NavItem = memoInProduction(
-  ({
-    to,
-    icon,
-    label,
-    showLabel = false,
-    highlighted = false,
-    hotkey,
-  }: NavItemProps) => {
-    const navigate = useNavigate()
+export const NavItem = ({
+  to,
+  icon,
+  label,
+  showLabel = false,
+  highlighted = false,
+  hotkey,
+}: NavItemProps) => {
+  const navigate = useNavigate()
 
-    useHotkey(hotkey, () => navigate(to), { forceActive: true })
+  useHotkey(hotkey, () => navigate(to), { forceActive: true })
 
-    const title = hotkey ? `${label} (${hotkey.toUpperCase()})` : label
+  const title = hotkey ? `${label} (${hotkey.toUpperCase()})` : label
 
-    return (
-      <NavLink
-        to={to}
-        title={title}
-        className={({ isActive }) =>
-          cx(
-            navItem,
-            highlighted && navItem_highlighted,
-            isActive && navItem_active
-          )
-        }
-      >
-        <Icon icon={icon} shade={highlighted ? 0 : 1} />
-        {showLabel && <span className={navLabel}>{label}</span>}
-      </NavLink>
-    )
-  }
-)
+  return (
+    <NavLink
+      to={to}
+      title={title}
+      className={({ isActive }) =>
+        cx(
+          navItem,
+          highlighted && navItem_highlighted,
+          isActive && navItem_active
+        )
+      }
+    >
+      <Icon icon={icon} shade={highlighted ? 0 : 1} />
+      {showLabel && <span className={navLabel}>{label}</span>}
+    </NavLink>
+  )
+}

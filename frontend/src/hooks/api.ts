@@ -1,63 +1,43 @@
-import { useEffect, useReducer, useRef, useState } from 'react'
+import { useMemo, useSyncExternalStore } from 'react'
 import { MasterData, MasterDataMaps } from '@vlight/types'
 import { shallowEqual } from '@vlight/utils'
 
-import { masterDataMaps } from '../api/masterdata'
+import { getMasterDataMaps } from '../api/masterdata'
 import { ApiState } from '../api/worker/processing'
 import { apiStateEmitter, apiState, workerState } from '../api/api-state'
+
+type ApiStateEvent = keyof ApiState | 'connecting'
+
+const subscriptions = new Map<
+  ApiStateEvent,
+  (callback: () => void) => () => void
+>()
+
+/**
+ * Returns a (stable) `useSyncExternalStore` subscribe function for the given event.
+ */
+function subscribeTo(event: ApiStateEvent) {
+  let subscribe = subscriptions.get(event)
+  if (!subscribe) {
+    subscribe = (callback: () => void) => apiStateEmitter.on(event, callback)
+    subscriptions.set(event, subscribe)
+  }
+  return subscribe
+}
+
+const getConnecting = () => workerState.connecting
 
 /**
  * React Hook that returns whether the WebSocket to the backend is currently connecting.
  */
 export function useApiConnecting(): boolean {
-  const [state, setState] = useState(workerState.connecting)
-  useEffect(() => {
-    function eventHandler() {
-      setState(workerState.connecting)
-    }
-
-    apiStateEmitter.on('connecting', eventHandler)
-
-    return () => {
-      apiStateEmitter.off('connecting', eventHandler)
-    }
-  }, [])
-
-  return state
-}
-
-/**
- * React Hook that returns the complete API state and re-renders on updates.
- *
- * NOTE: As this includes the universe state, it may re-render up to 20 times a second.
- * Consider excluding the `universe` state if you do not need it.
- *
- * If you only need a single state property, prefer {@link useApiState}.
- */
-export function useCompleteApiState(except?: Array<keyof ApiState>): ApiState {
-  const [, forceUpdate] = useReducer(state => state + 1, 0)
-  const exceptRef = useRef(except)
-  // oxlint-disable-next-line react-hooks/refs
-  exceptRef.current = except
-
-  useEffect(() => {
-    const listener = ({ name }: { name: string }) => {
-      if (!exceptRef.current?.includes(name as any)) {
-        forceUpdate()
-      }
-    }
-
-    apiStateEmitter.onAny(listener)
-    return () => {
-      apiStateEmitter.offAny(listener)
-    }
-  }, [])
-
-  return apiState
+  return useSyncExternalStore(subscribeTo('connecting'), getConnecting)
 }
 
 /**
  * React Hook that returns a single state property and re-renders on updates.
+ *
+ * The top-level properties of the API state are replaced (not mutated) on every update.
  *
  * If you only need the state of a single sub-property of the given key,
  * use {@link useApiStateEntry} instead.
@@ -65,26 +45,8 @@ export function useCompleteApiState(except?: Array<keyof ApiState>): ApiState {
 export function useApiState<TKey extends keyof ApiState>(
   key: TKey
 ): NonNullable<ApiState[TKey]> {
-  const [_state, setState] = useState(apiState[key])
-
-  useEffect(() => {
-    // oxlint-disable-next-line react-hooks/set-state-in-effect
-    setState(apiState[key])
-
-    function eventHandler() {
-      setState(apiState[key])
-    }
-
-    apiStateEmitter.on(key, eventHandler)
-
-    return () => {
-      apiStateEmitter.off(key, eventHandler)
-    }
-  }, [key])
-
   // We assume that someone will display a loading screen further up if not all data is present
-  // We do not return _state here as it may lag behind when the key changes
-  return apiState[key]!
+  return useSyncExternalStore(subscribeTo(key), () => apiState[key])!
 }
 
 /**
@@ -92,22 +54,12 @@ export function useApiState<TKey extends keyof ApiState>(
  */
 export function useApiStateEntry<
   TKey extends keyof ApiState,
-  TSubKey extends keyof ApiState[TKey],
->(key: TKey, subKey: TSubKey): ApiState[TKey][TSubKey] {
-  const [_state, setState] = useState((apiState as any)[key][subKey])
-  useEffect(() => {
-    function eventHandler() {
-      setState((apiState as any)[key][subKey])
-    }
-
-    apiStateEmitter.on(key, eventHandler)
-
-    return () => {
-      apiStateEmitter.off(key, eventHandler)
-    }
-  }, [key, subKey])
-
-  return (apiState as any)[key][subKey]
+  TSubKey extends keyof NonNullable<ApiState[TKey]>,
+>(key: TKey, subKey: TSubKey): NonNullable<ApiState[TKey]>[TSubKey] {
+  return useSyncExternalStore(
+    subscribeTo(key),
+    () => (apiState[key] as NonNullable<ApiState[TKey]>)?.[subKey]
+  )
 }
 
 /**
@@ -129,10 +81,8 @@ export const useRawMasterData = (): MasterData => useApiState('rawMasterData')
  * If you need to iterate over all entries, prefer {@link useMasterData}.
  * If you need both, prefer {@link useMasterDataAndMaps}.
  */
-export const useMasterDataMaps = (): MasterDataMaps => {
-  // refresh the component when the master data changes
-  useMasterData()
-  return masterDataMaps
+export function useMasterDataMaps(): MasterDataMaps {
+  return useSyncExternalStore(subscribeTo('masterData'), getMasterDataMaps)
 }
 
 interface MasterDataWithMaps {
@@ -146,7 +96,11 @@ interface MasterDataWithMaps {
  */
 export function useMasterDataAndMaps(): MasterDataWithMaps {
   const masterData = useMasterData()
-  return { masterData, masterDataMaps }
+  const masterDataMaps = useMasterDataMaps()
+  return useMemo(
+    () => ({ masterData, masterDataMaps }),
+    [masterData, masterDataMaps]
+  )
 }
 
 export interface UseApiStateSelectorOptions {
@@ -157,43 +111,49 @@ export interface UseApiStateSelectorOptions {
 }
 
 /**
+ * Wraps the selector so that it returns the previous value
+ * as long as the new one is shallowly equal.
+ */
+function createShallowEqualSelector<T>(selector: (apiState: ApiState) => T) {
+  let hasValue = false
+  let lastValue: T
+  return () => {
+    const newValue = selector(apiState)
+    if (hasValue && shallowEqual(newValue, lastValue)) return lastValue
+    hasValue = true
+    lastValue = newValue
+    return newValue
+  }
+}
+
+/**
  * React Hook that returns the value selected from the API state,
  * only re-rendering on changes (except for the DMX universe).
  *
  * Does a shallow equality check on array and object values
  */
 export function useApiStateSelector<T>(
-  selector: (apiState: ApiState, oldValue: T | undefined) => T,
+  selector: (apiState: ApiState) => T,
   options?: UseApiStateSelectorOptions
-) {
-  const [currentState, setCurrentState] = useState(
-    selector(apiState, undefined)
-  )
-  const selectorRef = useRef(selector)
-  // oxlint-disable-next-line react-hooks/refs
-  selectorRef.current = selector
+): T {
+  const event = options?.event
+  const includeUniverse = options?.includeUniverse ?? false
 
-  useEffect(() => {
-    const listener = (eventOrData: any) => {
-      // onAny listeners receive the event object, `on` listeners the event data
-      const eventName = options?.event ? options.event : eventOrData?.name
-      if (eventName === 'universe' && !options?.includeUniverse) return
-
-      setCurrentState(oldValue => {
-        const newValue = selectorRef.current(apiState, oldValue)
-        return shallowEqual(newValue, oldValue) ? oldValue : newValue
+  const subscribe = useMemo(() => {
+    if (event) return subscribeTo(event)
+    return (callback: () => void) =>
+      apiStateEmitter.onAny(({ name }) => {
+        if (name === 'universe' && !includeUniverse) return
+        callback()
       })
-    }
+  }, [event, includeUniverse])
 
-    if (options?.event) apiStateEmitter.on(options?.event, listener)
-    else apiStateEmitter.onAny(listener)
-    return () => {
-      if (options?.event) apiStateEmitter.off(options?.event, listener)
-      else apiStateEmitter.offAny(listener)
-    }
-  }, [options?.includeUniverse, options?.event])
+  const getSnapshot = useMemo(
+    () => createShallowEqualSelector(selector),
+    [selector]
+  )
 
-  return currentState
+  return useSyncExternalStore(subscribe, getSnapshot)
 }
 
 /**

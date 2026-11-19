@@ -1,8 +1,6 @@
 import { roundToStep, fractionToValue, valueToFraction } from '@vlight/utils'
 
 import { useDelayedState } from '../../../hooks/delayed-state'
-import { useEvent } from '../../../hooks/performance'
-import { memoInProduction } from '../../../util/development'
 
 import { FaderBase } from './fader-base'
 import { FaderButton } from './fader-button'
@@ -64,41 +62,39 @@ export interface FaderProps {
 /**
  * Standard fader component.
  */
-export const Fader = memoInProduction(
-  ({
-    value,
-    min = 0,
-    max = 100,
-    quadraticScale = 1,
-    step,
-    label,
-    subLabel,
-    onChange,
-    ...passThrough
-  }: FaderProps) => {
-    const [localValue, setLocalValue] = useDelayedState<number | null>(null)
-    const valueToUse = localValue ?? value
+export const Fader = ({
+  value,
+  min = 0,
+  max = 100,
+  quadraticScale = 1,
+  step,
+  label,
+  subLabel,
+  onChange,
+  ...passThrough
+}: FaderProps) => {
+  const [localValue, setLocalValue] = useDelayedState<number | null>(null)
+  const valueToUse = localValue ?? value
 
-    const onTouch = useEvent((fraction: number): void => {
-      const newRawValue = fractionToValue(fraction, min, max, quadraticScale)
-      if (newRawValue === valueToUse) {
-        return
-      }
-      setLocalValue(newRawValue)
-      const roundedValue = roundToStep(newRawValue, step)
-      onChange(roundedValue)
-    })
-
-    const onUp = useEvent(() => setLocalValue(null, true))
-
-    return (
-      <FaderBase {...passThrough} onTouch={onTouch} onUp={onUp}>
-        <FaderButton
-          fraction={valueToFraction(valueToUse, min, max, quadraticScale)}
-          label={label}
-          subLabel={subLabel}
-        />
-      </FaderBase>
-    )
+  const onTouch = (fraction: number): void => {
+    const newRawValue = fractionToValue(fraction, min, max, quadraticScale)
+    if (newRawValue === valueToUse) {
+      return
+    }
+    setLocalValue(newRawValue)
+    const roundedValue = roundToStep(newRawValue, step)
+    onChange(roundedValue)
   }
-)
+
+  const onUp = () => setLocalValue(null, true)
+
+  return (
+    <FaderBase {...passThrough} onTouch={onTouch} onUp={onUp}>
+      <FaderButton
+        fraction={valueToFraction(valueToUse, min, max, quadraticScale)}
+        label={label}
+        subLabel={subLabel}
+      />
+    </FaderBase>
+  )
+}
