@@ -49,10 +49,10 @@ function processFixture(fixture: Fixture): Fixture | Fixture[] {
   const { id, type, channel, name } = fixture
   const {
     count,
-    xOffset,
-    yOffset,
+    xOffset: _xOffset,
+    yOffset: _yOffset,
     channelOffset,
-    rotationOffset,
+    rotationOffset: _rotationOffset,
     ...resetToKeep
   } = fixture
 

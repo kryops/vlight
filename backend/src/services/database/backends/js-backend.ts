@@ -80,7 +80,7 @@ export class JsDatabaseBackend implements DatabaseBackend {
       const rawEntries: EntityArray<T> = require(configPath)
       cache.set(entity, rawEntries)
       return rawEntries
-    } catch (error) {
+    } catch {
       logger.warn(`No database file found for entity "${entity}"`)
       return []
     }

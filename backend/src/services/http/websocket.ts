@@ -62,7 +62,7 @@ export function registerSocket(socket: ws): void {
     logger.trace('incoming message:', message)
     let parsed: any
     try {
-      parsed = JSON.parse(message.toString())
+      parsed = JSON.parse((message as Buffer).toString())
     } catch {
       logger.warn('Ignoring unparsable WebSocket message')
       return

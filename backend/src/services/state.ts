@@ -134,7 +134,7 @@ export function getPersistedState(): PersistedState {
  */
 export function resetState(): void {
   persistedState = getEmptyPersistedState()
-  reloadControls(true)
+  void reloadControls(true)
   broadcastApplicationStateToApiClients()
 }
 

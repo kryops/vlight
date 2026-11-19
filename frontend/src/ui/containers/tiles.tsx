@@ -62,7 +62,7 @@ export const Tile = memoInProduction(
     const navigate = useNavigate()
 
     const clickHandler = () => {
-      if (target) navigate(target)
+      if (target) void navigate(target)
       onClick?.()
     }
 

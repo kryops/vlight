@@ -45,7 +45,8 @@ setLogLevel(logLevel as LogLevel)
 async function init() {
   await initDatabase()
 
-  await Promise.all([initPersistedState(), initMasterData()])
+  initPersistedState()
+  await initMasterData()
 
   await initUniverse()
 
@@ -74,4 +75,4 @@ async function init() {
   }
 }
 
-init()
+void init()

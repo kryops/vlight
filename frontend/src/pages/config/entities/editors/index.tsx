@@ -24,7 +24,7 @@ export function openEntityEditorForId<T extends EntityName>(
   )
   if (!entry) return
 
-  openEntityEditor(type, entry as any)
+  void openEntityEditor(type, entry as any)
 }
 
 /**

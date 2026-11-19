@@ -10,7 +10,9 @@ import * as chases from './chases'
  */
 export async function initControls(): Promise<void> {
   await Promise.all(
-    [channels, fixtures, fixtureGroups, memories, chases].map(it => it.init())
+    [channels, fixtures, fixtureGroups, memories, chases].map(async it =>
+      it.init()
+    )
   )
 }
 

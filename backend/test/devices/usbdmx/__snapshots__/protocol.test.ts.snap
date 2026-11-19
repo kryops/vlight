@@ -1,6 +1,6 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`devices/usbdmx/protocol > getChannelBlockMessage 1`] = `
+exports[`devices/usbdmx/protocol > getChannelBlockMessage > block 0 1`] = `
 [
   0,
   0,
@@ -39,7 +39,7 @@ exports[`devices/usbdmx/protocol > getChannelBlockMessage 1`] = `
 ]
 `;
 
-exports[`devices/usbdmx/protocol > getChannelBlockMessage 2`] = `
+exports[`devices/usbdmx/protocol > getChannelBlockMessage > block 1 1`] = `
 [
   0,
   1,

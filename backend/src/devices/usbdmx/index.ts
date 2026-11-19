@@ -92,7 +92,7 @@ function clearBannedDevices() {
 
   logger.info('Clearing banned UsbDmx devices')
   bannedDevices.clear()
-  connectUsbDmxDevices(initDevice)
+  void connectUsbDmxDevices(initDevice)
 }
 
 function broadcastUniverseChannel(channel: number) {
@@ -114,7 +114,7 @@ export async function init(): Promise<void> {
   usb.addEventListener('connect', async () => {
     // linux seems to need a bit of time here
     await delay(100)
-    connectUsbDmxDevices(initDevice)
+    void connectUsbDmxDevices(initDevice)
   })
   usb.addEventListener('disconnect', () => disconnectUsbDmxDevices())
 

@@ -12,7 +12,7 @@ export class ListRegistry<T> {
   }
 
   async runParallel(cb: (entry: T) => void | Promise<void>): Promise<void> {
-    await Promise.all(this.entries.map(cb))
+    await Promise.all(this.entries.map(async entry => cb(entry)))
   }
 }
 

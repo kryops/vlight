@@ -127,7 +127,7 @@ function registerApiMessageHandlers() {
   // will flush the complete application state including the master data to all connected clients
 
   registerApiMessageHandler('entity', (message: ApiEntityMessage<any>) => {
-    updateMasterDataEntityWithLocking(message.entity, options =>
+    void updateMasterDataEntityWithLocking(message.entity, options =>
       writeDatabaseEntity(message.entity, message.entries, options)
     )
     return false
@@ -136,7 +136,7 @@ function registerApiMessageHandlers() {
   registerApiMessageHandler(
     'add-entity',
     (message: ApiAddEntityMessage<any>) => {
-      updateMasterDataEntityWithLocking(message.entity, options =>
+      void updateMasterDataEntityWithLocking(message.entity, options =>
         addDatabaseEntry(message.entity, message.entry, options)
       )
       return false
@@ -146,7 +146,7 @@ function registerApiMessageHandlers() {
   registerApiMessageHandler(
     'update-entity',
     (message: ApiUpdateEntityMessage<any>) => {
-      updateMasterDataEntityWithLocking(message.entity, options =>
+      void updateMasterDataEntityWithLocking(message.entity, options =>
         updateDatabaseEntry(message.entity, message.entry, options)
       )
       return false
@@ -156,7 +156,7 @@ function registerApiMessageHandlers() {
   registerApiMessageHandler(
     'remove-entity',
     (message: ApiRemoveEntityMessage<any>) => {
-      updateMasterDataEntityWithLocking(message.entity, options =>
+      void updateMasterDataEntityWithLocking(message.entity, options =>
         removeDatabaseEntry(message.entity, message.id, options)
       )
       return false

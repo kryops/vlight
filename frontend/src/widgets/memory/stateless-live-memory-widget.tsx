@@ -104,8 +104,8 @@ export interface StatelessLiveMemoryWidgetProps extends WidgetPassthrough {
 export const StatelessLiveMemoryWidget = memoInProduction(
   ({ id, state, title, ...passThrough }: StatelessLiveMemoryWidgetProps) => {
     const {
-      on,
-      value,
+      on: _on,
+      value: _value,
       gradientSpeed = defaultLiveMemoryGradientSpeed,
       gradientMovement,
       gradientMovementInverted,
@@ -177,7 +177,7 @@ export const StatelessLiveMemoryWidget = memoInProduction(
     })
 
     const showPreview = useEvent(() => {
-      showDialog(<MemoryPreview scenes={scenes} />, undefined, {
+      void showDialog(<MemoryPreview scenes={scenes} />, undefined, {
         showCloseButton: true,
         closeOnBackDrop: true,
         title: `Live Memory ${state.name}`,

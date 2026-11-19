@@ -107,7 +107,7 @@ function mockDmxMaster(value: number) {
 describe('services/universe', () => {
   beforeEach(() => {
     universes.forEach(removeUniverse)
-    initUniverse()
+    void initUniverse()
     vi.resetAllMocks()
   })
 
@@ -237,9 +237,15 @@ describe('services/universe', () => {
     })
 
     it('throws on invalid channels', () => {
-      expect(() => setUniverseChannel(universe, -1, 0)).toThrow()
-      expect(() => setUniverseChannel(universe, 0, 0)).toThrow()
-      expect(() => setUniverseChannel(universe, universeSize + 1, 0)).toThrow()
+      expect(() => setUniverseChannel(universe, -1, 0)).toThrow(
+        /invalid channel/
+      )
+      expect(() => setUniverseChannel(universe, 0, 0)).toThrow(
+        /invalid channel/
+      )
+      expect(() => setUniverseChannel(universe, universeSize + 1, 0)).toThrow(
+        /invalid channel/
+      )
     })
 
     it('changes values', () => {

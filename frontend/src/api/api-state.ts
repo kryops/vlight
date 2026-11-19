@@ -71,12 +71,12 @@ function messageListener(event: MessageEvent) {
       if (k === 'masterData')
         updateMasterDataMapsFromBackend(value as MasterData)
 
-      apiStateEmitter.emit(k)
+      void apiStateEmitter.emit(k)
     })
   }
 
   if (oldConnecting !== workerState.connecting) {
-    apiStateEmitter.emit('connecting')
+    void apiStateEmitter.emit('connecting')
   }
 }
 

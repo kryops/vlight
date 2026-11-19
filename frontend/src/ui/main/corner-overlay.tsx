@@ -37,13 +37,13 @@ function toggleFullScreen() {
     !document.fullscreenElement &&
     !(document as any).webkitFullscreenElement
   ) {
-    document.documentElement.requestFullscreen?.()
+    void document.documentElement.requestFullscreen?.()
 
     if (!document.documentElement.requestFullscreen) {
       ;(document.documentElement as any).webkitRequestFullscreen?.()
     }
   } else if (document.exitFullscreen) {
-    document.exitFullscreen()
+    void document.exitFullscreen()
   }
 }
 

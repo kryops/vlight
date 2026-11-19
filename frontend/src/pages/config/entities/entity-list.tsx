@@ -64,7 +64,7 @@ export function EntityList<T extends EntityName>({
       ...(apiState.rawMasterData as MasterData),
       [type]: newEntries as any,
     }
-    apiStateEmitter.emit('rawMasterData')
+    void apiStateEmitter.emit('rawMasterData')
 
     setEntities(type, newEntries)
   })

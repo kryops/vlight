@@ -16,7 +16,7 @@ describe('devices/usbdmx/protocol', () => {
     for (let i = 0; i < universeSize; i++) {
       universe[i] = i
     }
-    expect(getChannelBlockMessage(universe, 0)).toMatchSnapshot()
-    expect(getChannelBlockMessage(universe, 1)).toMatchSnapshot()
+    expect(getChannelBlockMessage(universe, 0)).toMatchSnapshot('block 0')
+    expect(getChannelBlockMessage(universe, 1)).toMatchSnapshot('block 1')
   })
 })
