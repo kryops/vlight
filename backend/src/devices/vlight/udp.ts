@@ -20,6 +20,12 @@ export async function initUdpMulticast(): Promise<void> {
 
   await new Promise<void>(resolve => {
     udpSocket = createSocket({ type: 'udp4', reuseAddr: true })
+    // without a listener, a bind error would leave this promise pending forever
+    // and block the application startup
+    udpSocket.on('error', e => {
+      logger.error('UDP socket error:', e)
+      resolve()
+    })
     udpSocket.bind(udpPort, () => {
       udpSocket.setBroadcast(true)
       udpSocket.setMulticastTTL(4)
@@ -39,6 +45,6 @@ export function sendUdpMulticastMessage(message: Buffer): void {
     if (message.length !== 513) {
       logger.trace('broadcast vLight UDP message', message)
     }
-    udpSocket.send(message, udpPort)
+    udpSocket.send(message, udpPort, udpMulticastAddress)
   }
 }

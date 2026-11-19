@@ -25,7 +25,7 @@ This message is sent by the server upon connecting (TCP) or periodically (UDP)
 
 ### DMX Channel
 
-Length: 2 Bytes (Channel 1-250) or 3 Bytes (Channel 256-512)
+Length: 2 Bytes (Channel 1-250) or 3 Bytes (Channel 251-512)
 
 Multiple messages of this type can be transferred together in a single UDP datagram.
 

@@ -23,7 +23,7 @@ export function getChannelFromUniverseIndex(index: number): number {
  * Throws an error if the given channel number is out of the valid DMX range of 1-512.
  */
 export function assertValidChannel(channel: number): void {
-  if (channel < 1 || channel > universeSize) {
+  if (!Number.isInteger(channel) || channel < 1 || channel > universeSize) {
     throw new Error(`invalid channel: ${channel}`)
   }
 }

@@ -30,7 +30,8 @@ export function createUniverse(
       const fixture = masterDataMaps.fixtures.get(fixtureId)
       if (!fixture) return
       const { channel } = fixture
-      const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)!
+      const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
+      if (!fixtureType) return
 
       mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
         const index = getUniverseIndex(channel) + offset

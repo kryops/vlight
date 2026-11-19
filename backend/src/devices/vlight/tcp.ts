@@ -27,7 +27,15 @@ function handleConnection(socket: Socket) {
 
 export async function initTcpServer(): Promise<void> {
   const server = createServer(handleConnection)
-  await new Promise<void>(resolve => server.listen(tcpPort, () => resolve()))
+  await new Promise<void>(resolve => {
+    // without a listener, a listen error would leave this promise pending forever
+    // and block the application startup
+    server.on('error', e => {
+      logger.error('Could not start vLight TCP server:', e)
+      resolve()
+    })
+    server.listen(tcpPort, () => resolve())
+  })
 }
 
 export function sendTcpBroadcastMessage(message: Buffer): void {

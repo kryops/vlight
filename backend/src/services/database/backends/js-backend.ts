@@ -1,5 +1,5 @@
 import { join } from 'path'
-import { writeFile, stat, mkdir } from 'fs/promises'
+import { writeFile, mkdir } from 'fs/promises'
 
 import { format, FormatOptions } from 'oxfmt'
 import { EntityName, EntityArray, EntityType, IdType } from '@vlight/types'
@@ -91,33 +91,42 @@ export class JsDatabaseBackend implements DatabaseBackend {
     entries: EntityArray<T>,
     { global }: DatabaseEntityOptions = {}
   ): Promise<void> {
+    // Update the cache right away, so subsequent read-modify-write operations
+    // build upon these entries even while the file is still being written
+    const previousEntries = cache.get(entity)
     cache.set(entity, entries)
 
     const filePath = getModulePath(entity, !!global) + '.js'
 
-    const { code: fileContent, errors } = await format(
-      filePath,
-      `const ${entity} = ${JSON.stringify(entries, null, 2)}
+    try {
+      const { code: fileContent, errors } = await format(
+        filePath,
+        `const ${entity} = ${JSON.stringify(entries, null, 2)}
 
   module.exports = ${entity}
 `,
-      formatConfig
-    )
-    if (errors.length) {
-      throw new Error(
-        `Failed to format ${filePath}: ${errors.map(e => e.message).join(', ')}`
+        formatConfig
       )
-    }
+      if (errors.length) {
+        throw new Error(
+          `Failed to format ${filePath}: ${errors.map(e => e.message).join(', ')}`
+        )
+      }
 
-    // Create project directory if it does not exist
-    const projectDirectory = join(filePath, '..')
-    try {
-      await stat(projectDirectory)
-    } catch {
-      await mkdir(projectDirectory)
-    }
+      // Create project directory if it does not exist
+      const projectDirectory = join(filePath, '..')
+      await mkdir(projectDirectory, { recursive: true })
 
-    await writeFile(filePath, fileContent)
+      await writeFile(filePath, fileContent)
+    } catch (e) {
+      // Roll back the cache so it stays in sync with the file,
+      // unless a later write has replaced it in the meantime
+      if (cache.get(entity) === entries) {
+        if (previousEntries) cache.set(entity, previousEntries)
+        else cache.delete(entity)
+      }
+      throw e
+    }
   }
 
   async addEntry<T extends EntityName>(

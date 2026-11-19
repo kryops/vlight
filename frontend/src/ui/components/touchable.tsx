@@ -115,6 +115,17 @@ export const Touchable = ({
       }
     })
 
+  // A cancelled pointer (e.g. by a system gesture) never receives an up event,
+  // so we treat it as one to not leave the control in its active state
+  const pointerUpOrCancelListener = pointerEventSupport
+    ? (e: PointerEvent<HTMLDivElement>) => {
+        if (upListener) {
+          upListener(e)
+        }
+        pointerActive.current = false
+      }
+    : undefined
+
   return (
     <div
       className={cx(preventScroll && preventScrollStyle, className)}
@@ -132,19 +143,12 @@ export const Touchable = ({
             }
           : undefined
       }
-      onPointerUp={
-        pointerEventSupport
-          ? e => {
-              if (upListener) {
-                upListener(e)
-              }
-              pointerActive.current = false
-            }
-          : undefined
-      }
+      onPointerUp={pointerUpOrCancelListener}
+      onPointerCancel={pointerUpOrCancelListener}
       onPointerMove={pointerEventSupport ? moveListener : undefined}
       onTouchStart={!pointerEventSupport ? downListener : undefined}
       onTouchEnd={!pointerEventSupport ? upListener : undefined}
+      onTouchCancel={!pointerEventSupport ? upListener : undefined}
       onTouchMove={!pointerEventSupport ? moveListener : undefined}
       onContextMenu={event => event.preventDefault()}
     >

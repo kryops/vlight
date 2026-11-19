@@ -65,7 +65,8 @@ function setFixtureGroupStateToUniverse(
 
   let changed = false
   for (const { type, channel } of fixtures) {
-    const fixtureType = masterDataMaps.fixtureTypes.get(type)!
+    const fixtureType = masterDataMaps.fixtureTypes.get(type)
+    if (!fixtureType) continue
     mapFixtureStateToChannels(fixtureType, state).forEach((value, index) => {
       if (setUniverseChannel(universe, channel + index, value)) {
         changed = true

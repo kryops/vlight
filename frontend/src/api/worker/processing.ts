@@ -50,6 +50,7 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
     }
     case 'masterdata':
       state.masterData = message.masterData
+      state.rawMasterData = message.rawMasterData
       break
 
     case 'universe':
@@ -98,16 +99,20 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
       state.memories = {
         ...state.memories,
       }
+      // The backend always merges memory states (e.g. to keep the computed `forceMaster`),
+      // so we do the same regardless of `message.merge` to stay in sync
       forEach(
         message.id,
         id =>
           (state.memories![id] = mergeMemoryStates(
-            message.merge ? state.memories![id] : undefined,
+            state.memories![id],
             message.state
           ))
       )
       break
 
+    // `null` (= deleted) is kept here and passed on, so the main thread
+    // can remove the entry when applying the partial update
     case 'live-memory':
       state.liveMemories = {
         ...state.liveMemories,

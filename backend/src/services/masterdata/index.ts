@@ -29,7 +29,12 @@ import {
   getAffectedEntities,
 } from './dependencies'
 import { getMasterDataEntityDefinition } from './registry'
-import { masterData, rawMasterData, masterDataMaps } from './data'
+import {
+  masterData,
+  rawMasterData,
+  masterDataMaps,
+  allEntityNames,
+} from './data'
 
 async function loadMasterDataEntity<T extends EntityName>(entity: T) {
   const definition = getMasterDataEntityDefinition(entity)
@@ -88,18 +93,42 @@ async function updateMasterDataEntityWithLocking<T extends EntityName>(
       if (entry) {
         const [entity, operation] = entry
         changedEntities.add(entity)
-        await updateMasterDataEntity(entity, operation)
+        try {
+          await updateMasterDataEntity(entity, operation)
+        } catch (e) {
+          // continue with the other operations, and still reload the entity
+          // as its database state may have been changed partially
+          logger.error(`Updating "${entity}" failed:`, e)
+        }
       }
 
       if (!pendingOperations.length) {
         const entitiesToReload = [...changedEntities]
         changedEntities.clear()
-        await reloadAfterUpdate(entitiesToReload)
+        try {
+          await reloadAfterUpdate(entitiesToReload)
+        } catch (e) {
+          logger.error('Reloading master data failed:', e)
+        }
       }
     }
   } finally {
     running = false
   }
+}
+
+const validEntityNames = new Set<string>(allEntityNames)
+
+/**
+ * Returns whether the given entity name is valid.
+ *
+ * Entity names are used as file names and in the generated database files,
+ * so we must not accept arbitrary input from the API.
+ */
+function isValidEntityName(entity: unknown): entity is EntityName {
+  if (typeof entity === 'string' && validEntityNames.has(entity)) return true
+  logger.warn('Ignoring API message for invalid entity', entity)
+  return false
 }
 
 /**
@@ -127,6 +156,7 @@ function registerApiMessageHandlers() {
   // will flush the complete application state including the master data to all connected clients
 
   registerApiMessageHandler('entity', (message: ApiEntityMessage<any>) => {
+    if (!isValidEntityName(message.entity)) return false
     void updateMasterDataEntityWithLocking(message.entity, options =>
       writeDatabaseEntity(message.entity, message.entries, options)
     )
@@ -136,6 +166,7 @@ function registerApiMessageHandlers() {
   registerApiMessageHandler(
     'add-entity',
     (message: ApiAddEntityMessage<any>) => {
+      if (!isValidEntityName(message.entity)) return false
       void updateMasterDataEntityWithLocking(message.entity, options =>
         addDatabaseEntry(message.entity, message.entry, options)
       )
@@ -146,6 +177,7 @@ function registerApiMessageHandlers() {
   registerApiMessageHandler(
     'update-entity',
     (message: ApiUpdateEntityMessage<any>) => {
+      if (!isValidEntityName(message.entity)) return false
       void updateMasterDataEntityWithLocking(message.entity, options =>
         updateDatabaseEntry(message.entity, message.entry, options)
       )
@@ -156,6 +188,7 @@ function registerApiMessageHandlers() {
   registerApiMessageHandler(
     'remove-entity',
     (message: ApiRemoveEntityMessage<any>) => {
+      if (!isValidEntityName(message.entity)) return false
       void updateMasterDataEntityWithLocking(message.entity, options =>
         removeDatabaseEntry(message.entity, message.id, options)
       )

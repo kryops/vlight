@@ -1,4 +1,4 @@
-import { mkdir, stat, writeFile } from 'fs/promises'
+import { mkdir, writeFile } from 'fs/promises'
 import { join } from 'path'
 
 import {
@@ -108,11 +108,7 @@ async function checkAndPersistCurrentState() {
 
   const projectDirectory = join(configDirectoryPath, project)
 
-  try {
-    await stat(projectDirectory)
-  } catch {
-    await mkdir(projectDirectory)
-  }
+  await mkdir(projectDirectory, { recursive: true })
 
   await writeFile(join(projectDirectory, 'state.js'), currentStateString)
 
