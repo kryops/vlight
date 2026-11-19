@@ -7,6 +7,7 @@ import {
   FixtureState,
   LiveChase,
   LiveMemory,
+  LiveMovement,
   MemoryState,
 } from '@vlight/types'
 import { mapToDictionary, logger } from '@vlight/utils'
@@ -18,6 +19,7 @@ import { liveMemories, memoryStates } from '../controls/memories'
 import { howLong } from '../util/time'
 import { reloadControls } from '../controls'
 import { liveChases } from '../controls/chases/live-chases'
+import { liveMovements } from '../controls/movements/live-movements'
 
 import {
   statePersistenceFlushInterval,
@@ -36,6 +38,7 @@ export interface PersistedState {
   memories: Dictionary<MemoryState>
   liveMemories: Dictionary<LiveMemory>
   liveChases: Dictionary<LiveChase>
+  liveMovements: Dictionary<LiveMovement>
   dmxMaster: number
   dmxMasterFade: number
 }
@@ -50,6 +53,7 @@ function getEmptyPersistedState(): PersistedState {
     memories: {},
     liveMemories: {},
     liveChases: {},
+    liveMovements: {},
     dmxMaster: 255,
     dmxMasterFade: 0,
   }
@@ -82,6 +86,7 @@ function getCurrentState(): PersistedState {
     memories: mapToDictionary(memoryStates, isNotInitialState),
     liveMemories: mapToDictionary(liveMemories),
     liveChases: mapToDictionary(liveChases),
+    liveMovements: mapToDictionary(liveMovements),
     dmxMaster: getDmxMaster(),
     dmxMasterFade: getDmxMasterFade(),
   }
@@ -126,7 +131,7 @@ export function getPersistedState(): PersistedState {
  * Resets the persisted state and reloads all controls.
  *
  * NOTE: Some controls are not contained in the master data, but only saved as state
- * (e.g. live memories, live chases). These controls are deleted when resetting the state.
+ * (e.g. live memories, live chases, live movements). These controls are deleted when resetting the state.
  */
 export function resetState(): void {
   persistedState = getEmptyPersistedState()

@@ -1,5 +1,4 @@
 import { IdType, LiveChase } from '@vlight/types'
-import { css } from '@linaria/core'
 import { useRef } from 'react'
 
 import { setLiveChaseState, setLiveChaseStep } from '../../api'
@@ -12,38 +11,14 @@ import {
   iconStop,
   iconSync,
 } from '../../ui/icons'
-import { baseline, errorShade, successShade } from '../../ui/styles'
+import { errorShade, successShade } from '../../ui/styles'
 import { Button } from '../../ui/buttons/button'
 import { apiState } from '../../api/api-state'
 import { useTapSync } from '../../hooks/speed'
+import { activeButton, widgetTitleControls } from '../../ui/css/widget-controls'
 
 import { updateLiveChaseSpeed } from './utils'
 import { liveChaseMaxSpeed, liveChaseMinSpeed } from './constants'
-
-const controls = css`
-  margin: ${baseline(-1.5)};
-
-  > * {
-    padding-left: ${baseline(2)};
-    padding-right: ${baseline(2)};
-  }
-`
-
-const activeButton = css`
-  position: relative;
-
-  &:after {
-    position: absolute;
-    top: ${baseline(1)};
-    left: ${baseline(1)};
-    content: '';
-    width: ${baseline(6.5)};
-    height: ${baseline(6.5)};
-    border-radius: 100%;
-    border: 2px solid ${successShade(0)};
-    pointer-events: none;
-  }
-`
 
 export interface LiveChaseWidgetTopControlsProps {
   id: IdType
@@ -123,7 +98,7 @@ export const LiveChaseWidgetTopControls = ({
     })
 
   return (
-    <div className={controls}>
+    <div className={widgetTitleControls}>
       <Button
         icon={iconSpeedBurst}
         title="Speed burst"

@@ -1,4 +1,4 @@
-import { FixtureState, FixtureStateGradient } from './fixture'
+import { FixtureOrder, FixtureState, FixtureStateGradient } from './fixture'
 import { DbEntity, EntityMembers } from './util'
 
 /**
@@ -39,7 +39,7 @@ export interface MemoryScene {
    *
    * Defaults to `members`.
    */
-  order?: 'members' | 'xcoord' | 'ycoord' | 'x+y' | 'x-y'
+  order?: FixtureOrder
 
   /** The states of the scene. */
   states: Array<MemorySceneState>

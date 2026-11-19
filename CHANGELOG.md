@@ -1,5 +1,9 @@
 # Changelog
 
+## November 2026
+
+- Added movements for moving heads: Live pan/tilt patterns (line, sine, circle, square, eight) on the chases page and as dynamic page widget
+
 ## January 2025
 
 - Added fixture rotation on the map

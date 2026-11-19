@@ -12,6 +12,7 @@ import { MemoryWidget } from './memory/memory-widget'
 import { MapWidget } from './map/map-widget'
 import { LiveMemoryWidget } from './memory/live-memory-widget'
 import { LiveChaseWidget } from './chase/live-chase-widget'
+import { LiveMovementWidget } from './movement/live-movement-widget'
 import { DmxMasterWidget } from './global/dmx-master-widget'
 import { ControlsWidget } from './global/controls-widget'
 
@@ -125,6 +126,21 @@ export const DynamicWidget = ({
             return (
               <LiveChaseWidget
                 key={`live-chase${id}`}
+                id={id}
+                {...passThrough}
+              />
+            )
+          })}
+        </>
+      )
+
+    case 'live-movement':
+      return (
+        <>
+          {toArray(config.id).map(id => {
+            return (
+              <LiveMovementWidget
+                key={`live-movement${id}`}
                 id={id}
                 {...passThrough}
               />

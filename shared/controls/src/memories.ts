@@ -11,10 +11,10 @@ import {
   valueToFraction,
   fractionToValue,
   overflowBetween,
-  assertNever,
 } from '@vlight/utils'
 
 import { interpolateGradientPositions } from './gradient'
+import { getOrderValue, isOrderedByCoords, orderFixtures } from './order'
 
 export enum ScenePattern {
   Row = 'row',
@@ -36,37 +36,14 @@ export function mergeMemoryStates(
 }
 
 function getIsOrderedByCoords(scene: MemoryScene) {
-  return scene.order !== undefined && scene.order !== 'members'
-}
-
-function getOrderValue(fixture: Fixture, order: MemoryScene['order']) {
-  switch (order) {
-    case undefined:
-    case 'members':
-      return 0 // this should mostly be irrelevant
-    case 'xcoord':
-      return fixture.x ?? 0
-    case 'ycoord':
-      return fixture.y ?? 0
-    case 'x+y':
-      return (fixture.x ?? 0) + (fixture.y ?? 0)
-    case 'x-y':
-      return (fixture.x ?? 0) - (fixture.y ?? 0)
-    default:
-      assertNever(order)
-      return 0
-  }
+  return isOrderedByCoords(scene.order)
 }
 
 function getMemorySceneFixtureOrder(
   scene: MemoryScene,
   memberFixtures: Fixture[]
 ): Fixture[] {
-  return !getIsOrderedByCoords(scene)
-    ? memberFixtures
-    : [...memberFixtures].sort(
-        (a, b) => getOrderValue(a, scene.order) - getOrderValue(b, scene.order)
-      )
+  return orderFixtures(memberFixtures, scene.order)
 }
 
 export interface MemorySceneStateInfo {

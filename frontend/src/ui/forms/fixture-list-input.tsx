@@ -143,6 +143,12 @@ export interface FixtureListInputProps {
    * Defaults to `false`.
    */
   compact?: boolean
+
+  /**
+   * If set, only entries are offered that contain at least one fixture
+   * whose type has all of the given channels.
+   */
+  requiredChannels?: string[]
 }
 
 /**
@@ -154,6 +160,7 @@ export const FixtureListInput = ({
   hideGroupMode = false,
   ordering = false,
   compact = false,
+  requiredChannels,
 }: FixtureListInputProps) => {
   // We apply the changed value immediately, as otherwise the list might flicker
   const [localValue, setLocalValue] = useDelayedState<string[] | null>(null)
@@ -199,9 +206,23 @@ export const FixtureListInput = ({
 
   const countByCategory = getCountByCategory(valueToDisplay)
 
+  const hasRequiredChannels = (entity: ListEntityType) => {
+    if (!requiredChannels?.length || !activeCategory) return true
+    return mapFixtureList([activeCategory.prefix + entity.id], {
+      masterData,
+      masterDataMaps,
+    }).some(fixtureId => {
+      const fixture = masterDataMaps.fixtures.get(fixtureId)
+      const mapping = fixture
+        ? masterDataMaps.fixtureTypes.get(fixture.type)?.mapping
+        : undefined
+      return requiredChannels.every(channel => mapping?.includes(channel))
+    })
+  }
+
   const entities = allEntities.filter(entity => {
     const fixtureCount = fixtureCountByEntity.get(entity) ?? 0
-    return fixtureCount >= 1
+    return fixtureCount >= 1 && hasRequiredChannels(entity)
   })
 
   const allMappedFixtures = new Set(

@@ -4,14 +4,15 @@ import * as fixtures from './fixtures'
 import * as fixtureGroups from './fixture-groups'
 import * as memories from './memories'
 import * as chases from './chases'
+import * as movements from './movements'
 
 /**
  * Initializes all controls in parallel.
  */
 export async function initControls(): Promise<void> {
   await Promise.all(
-    [channels, fixtures, fixtureGroups, memories, chases].map(async it =>
-      it.init()
+    [channels, fixtures, fixtureGroups, memories, chases, movements].map(
+      async it => it.init()
     )
   )
 }

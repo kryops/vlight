@@ -3,6 +3,7 @@ import {
   ApiStateMessage,
   LiveChase,
   LiveMemory,
+  LiveMovement,
   MasterData,
 } from '@vlight/types'
 import { logger, assertNever, forEach, mergeObjects } from '@vlight/utils'
@@ -130,6 +131,16 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
           message.merge && message.state !== null
             ? mergeObjects(state.liveChases?.[message.id], message.state)
             : (message.state as LiveChase),
+      }
+      break
+
+    case 'live-movement':
+      state.liveMovements = {
+        ...state.liveMovements,
+        [message.id]:
+          message.merge && message.state !== null
+            ? mergeObjects(state.liveMovements?.[message.id], message.state)
+            : (message.state as LiveMovement),
       }
       break
 

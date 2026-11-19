@@ -7,6 +7,7 @@ import { fixtureStates } from '../../controls/fixtures'
 import { fixtureGroupStates } from '../../controls/fixture-groups'
 import { memoryStates, liveMemories } from '../../controls/memories'
 import { liveChases } from '../../controls/chases/live-chases'
+import { liveMovements } from '../../controls/movements/live-movements'
 import { masterData, rawMasterData } from '../masterdata'
 
 import { getApiStateMessage } from './protocol'
@@ -25,6 +26,7 @@ export function getFullState(): ApiStateMessage {
     memories: mapToDictionary(memoryStates),
     liveMemories: mapToDictionary(liveMemories),
     liveChases: mapToDictionary(liveChases),
+    liveMovements: mapToDictionary(liveMovements),
     dmxMaster: getDmxMaster(),
     dmxMasterFade: getDmxMasterFade(),
   })

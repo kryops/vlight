@@ -6,6 +6,7 @@ import {
   DynamicPageRow,
   LiveChase,
   LiveMemory,
+  LiveMovement,
   MasterDataMaps,
   WidgetConfig,
 } from '@vlight/types'
@@ -31,7 +32,8 @@ function getWidgetDisplayString(
   widget: WidgetConfig,
   masterDataMaps: MasterDataMaps,
   liveChases: Dictionary<LiveChase>,
-  liveMemories: Dictionary<LiveMemory>
+  liveMemories: Dictionary<LiveMemory>,
+  liveMovements: Dictionary<LiveMovement>
 ) {
   const titlePrefix =
     'title' in widget && widget.title ? `${widget.title}: ` : ''
@@ -78,6 +80,13 @@ function getWidgetDisplayString(
         .map(id => liveChases[id]?.name ?? id)
         .join(', ')
       return `${titlePrefix}Live Chase ${name}`
+    }
+
+    case 'live-movement': {
+      const name = toArray(widget.id)
+        .map(id => liveMovements[id]?.name ?? id)
+        .join(', ')
+      return `${titlePrefix}Movement ${name}`
     }
 
     case 'map':
@@ -155,6 +164,7 @@ export const DynamicPageRowEditor = ({
   const masterDataMaps = useMasterDataMaps()
   const liveChases = useApiState('liveChases')
   const liveMemories = useApiState('liveMemories')
+  const liveMovements = useApiState('liveMovements')
 
   const rows = useFormStateArray(formState, 'rows')
 
@@ -241,7 +251,8 @@ export const DynamicPageRowEditor = ({
             widget,
             masterDataMaps,
             liveChases,
-            liveMemories
+            liveMemories,
+            liveMovements
           )}
         </p>
       ))}

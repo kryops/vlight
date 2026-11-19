@@ -18,6 +18,7 @@ function getEmptyState(): ApiState {
     memories: {},
     liveMemories: {},
     liveChases: {},
+    liveMovements: {},
     dmxMaster: 255,
     dmxMasterFade: 0,
   }

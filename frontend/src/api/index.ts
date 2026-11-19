@@ -7,6 +7,7 @@ import {
   EntityType,
   LiveMemory,
   LiveChase,
+  LiveMovement,
 } from '@vlight/types'
 import { logger } from '@vlight/utils'
 
@@ -24,6 +25,7 @@ import {
   getApiLiveMemoryMessage,
   getApiLiveChaseMessage,
   getApiLiveChaseStepMessage,
+  getApiLiveMovementMessage,
   getApiDmxMasterMessage,
   DmxMasterMessageArgs,
 } from './protocol'
@@ -163,6 +165,36 @@ export function deleteLiveChase(id: IdType): void {
  */
 export function setLiveChaseStep(id: IdType): void {
   sendApiMessage(getApiLiveChaseStepMessage(id))
+}
+
+/**
+ * Changes the state of a live movement.
+ *
+ * @param merge Set to `true` to merge the new state with the existing one,
+ *   allowing for partial state updates. Defaults to `false`.
+ */
+export function setLiveMovementState(
+  id: IdType,
+  state: Partial<LiveMovement>,
+  merge = false
+): void {
+  sendApiMessage(getApiLiveMovementMessage(id, state, merge))
+}
+
+/**
+ * Stops a live movement and returns its members to the center.
+ */
+export function resetLiveMovement(id: IdType): void {
+  sendApiMessage(
+    getApiLiveMovementMessage(id, { stopped: true, on: true }, true, true)
+  )
+}
+
+/**
+ * Deletes a live movement.
+ */
+export function deleteLiveMovement(id: IdType): void {
+  sendApiMessage(getApiLiveMovementMessage(id, null, false))
 }
 
 /**

@@ -47,7 +47,6 @@
 - Dynamic Pages
   - Multi-control widgets
 - New Controls
-  - Movement control: Patterns, play/stop, offset per fixture, mirroring
   - Programmable buttons
   - Non-live chases
   - Sequences/shows

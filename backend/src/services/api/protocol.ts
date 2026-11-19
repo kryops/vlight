@@ -11,6 +11,7 @@ import {
   MasterData,
   LiveMemory,
   LiveChase,
+  LiveMovement,
   ApiHeartBeatMessage,
 } from '@vlight/types'
 
@@ -30,6 +31,7 @@ export function getApiStateMessage({
   memories,
   liveMemories,
   liveChases,
+  liveMovements,
   dmxMaster,
   dmxMasterFade,
 }: {
@@ -42,6 +44,7 @@ export function getApiStateMessage({
   memories: Dictionary<MemoryState>
   liveMemories: Dictionary<LiveMemory>
   liveChases: Dictionary<LiveChase>
+  liveMovements: Dictionary<LiveMovement>
   dmxMaster: number
   dmxMasterFade: number
 }): ApiStateMessage {
@@ -56,6 +59,7 @@ export function getApiStateMessage({
     memories,
     liveMemories,
     liveChases,
+    liveMovements,
     dmxMaster,
     dmxMasterFade,
   }

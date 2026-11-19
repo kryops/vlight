@@ -6,6 +6,7 @@ import {
   IdType,
   LiveChaseWidgetConfig,
   LiveMemoryWidgetConfig,
+  LiveMovementWidgetConfig,
   MemoryWidgetConfig,
   UniverseWidgetConfig,
   WidgetConfig,
@@ -95,6 +96,14 @@ export const widgetTypes: { [type in WidgetType]: WidgetMapping<type> } = {
       id: Object.keys(apiState.liveChases)[0] ?? '',
     }),
     stateReference: 'liveChases',
+  },
+  'live-movement': {
+    name: 'Movement',
+    defaultValueFactory: () => ({
+      type: 'live-movement',
+      id: Object.keys(apiState.liveMovements)[0] ?? '',
+    }),
+    stateReference: 'liveMovements',
   },
   map: {
     name: 'Map',
@@ -257,7 +266,9 @@ function StaticEntitiesWidgetInput({
 function LiveEntitiesWidgetInput({
   value,
   onChange,
-}: WidgetTypeInputProps<LiveMemoryWidgetConfig | LiveChaseWidgetConfig>) {
+}: WidgetTypeInputProps<
+  LiveMemoryWidgetConfig | LiveChaseWidgetConfig | LiveMovementWidgetConfig
+>) {
   const state = useApiState(widgetTypes[value.type].stateReference!)
 
   const changeEntities = (newValue: IdType[]): void =>
@@ -371,7 +382,9 @@ export const WidgetInput = ({
         <StaticEntitiesWidgetInput value={value} onChange={onChange} />
       )}
 
-      {(value?.type === 'live-memory' || value?.type === 'live-chase') && (
+      {(value?.type === 'live-memory' ||
+        value?.type === 'live-chase' ||
+        value?.type === 'live-movement') && (
         <LiveEntitiesWidgetInput value={value} onChange={onChange} />
       )}
     </div>

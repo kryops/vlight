@@ -18,4 +18,17 @@ export {
   getMemorySceneStateInfo,
   defaultLiveMemoryGradientSpeed,
 } from './memories'
+export { isOrderedByCoords, getOrderValue, orderFixtures } from './order'
 export { getLiveChaseFixtureStates } from './chases'
+export {
+  defaultLiveMovementCenter,
+  defaultLiveMovementSpeed,
+  liveMovementChannels,
+  getLiveMovementPatternPoint,
+  getLiveMovementPosition,
+  isLiveMovementMemberInverted,
+  getLiveMovementMemberPhase,
+  getLiveMovementMemberRotation,
+  getLiveMovementFixtures,
+  getLiveMovementFixturePositions,
+} from './movements'

@@ -122,6 +122,14 @@ export interface Fixture extends DbEntity {
 export type FixtureChannels = Dictionary<number>
 
 /**
+ * Controls the order in which fixtures are processed, e.g. for applying states or offsets:
+ * - `members`: the order of the member list
+ * - `xcoord`/`ycoord`: by their coordinates on the map
+ * - `x+y`/`x-y`: diagonally by their coordinates on the map
+ */
+export type FixtureOrder = 'members' | 'xcoord' | 'ycoord' | 'x+y' | 'x-y'
+
+/**
  * The state of a fixture.
  * Also used for the state of higher-level entities (groups, memories, chases).
  */

@@ -58,6 +58,8 @@ import {
   mdiEqualBox,
   mdiCodeEqual,
   mdiArrowDecision,
+  mdiRotateOrbit,
+  mdiImageFilterCenterFocus,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -98,6 +100,7 @@ export const iconTime = mdiClockOutline
 export const iconRandom = mdiArrowDecision
 export const iconSameColor = mdiEqualBox
 export const iconSameState = mdiCodeEqual
+export const iconCenter = mdiImageFilterCenterFocus
 
 export const iconCheckbox = mdiCheckboxBlankOutline
 export const iconCheckbox_checked = mdiCheckboxOutline
@@ -115,6 +118,7 @@ export const iconGroup = mdiGroup
 export const iconMemory = mdiImageFrame
 export const iconLiveMemory = mdiImageSync
 export const iconChase = mdiAnimationPlay
+export const iconMovement = mdiRotateOrbit
 export const iconExperiment = mdiFlaskOutline
 export const iconColorPicker = mdiPaletteOutline
 export const iconPositionPicker = mdiCursorMove

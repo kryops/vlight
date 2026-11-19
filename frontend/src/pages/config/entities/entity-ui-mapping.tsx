@@ -19,6 +19,7 @@ import {
   editEntity,
   removeEntity,
   setLiveChaseState,
+  setLiveMovementState,
   setLiveMemoryState,
 } from '../../../api'
 
@@ -286,11 +287,12 @@ function replaceMappingInEntities(
     }
   }
 
-  const { liveChases, liveMemories } = apiState
+  const { liveChases, liveMemories, liveMovements } = apiState
 
   const liveEntityUpdates = [
     [liveMemories, setLiveMemoryState],
     [liveChases, setLiveChaseState],
+    [liveMovements, setLiveMovementState],
   ] as const
   for (const [entries, updateFn] of liveEntityUpdates) {
     for (const [id, entry] of Object.entries(entries)) {

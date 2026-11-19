@@ -75,6 +75,14 @@ const dynamicPages = [
               },
             ],
           },
+          {
+            widgets: [
+              {
+                type: 'live-movement',
+                id: '1',
+              },
+            ],
+          },
         ],
         headline: 'Memories, Chases',
       },

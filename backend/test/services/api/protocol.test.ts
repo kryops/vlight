@@ -5,6 +5,7 @@ import {
   FixtureState,
   LiveChase,
   LiveMemory,
+  LiveMovement,
   MasterData,
   MemoryState,
 } from '@vlight/types'
@@ -57,6 +58,20 @@ describe('api/protocol', () => {
         light: 1,
       },
     }
+    const liveMovements: Dictionary<LiveMovement> = {
+      '2': {
+        on: true,
+        stopped: false,
+        members: [],
+        pattern: 'circle',
+        center: { pan: 127, tilt: 127 },
+        scaleX: 100,
+        scaleY: 100,
+        rotation: 0,
+        offset: 0,
+        speed: 5,
+      },
+    }
     expect(
       getApiStateMessage({
         masterData: getMasterDataMock(),
@@ -68,6 +83,7 @@ describe('api/protocol', () => {
         memories,
         liveMemories,
         liveChases,
+        liveMovements,
         dmxMaster: 255,
         dmxMasterFade: 1,
       })
@@ -82,6 +98,7 @@ describe('api/protocol', () => {
       memories,
       liveMemories,
       liveChases,
+      liveMovements,
       dmxMaster: 255,
       dmxMasterFade: 1,
     })

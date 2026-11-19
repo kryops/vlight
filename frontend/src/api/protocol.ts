@@ -17,6 +17,8 @@ import {
   ApiLiveMemoryMessage,
   ApiLiveChaseMessage,
   LiveChase,
+  ApiLiveMovementMessage,
+  LiveMovement,
   ApiDmxMasterMessage,
 } from '@vlight/types'
 
@@ -145,6 +147,21 @@ export function getApiLiveChaseStepMessage(
     state: liveChase,
     merge: true,
     step: true,
+  }
+}
+
+export function getApiLiveMovementMessage(
+  id: IdType,
+  liveMovement: Partial<LiveMovement> | null,
+  merge: boolean,
+  reset?: boolean
+): ApiLiveMovementMessage {
+  return {
+    type: 'live-movement',
+    id,
+    state: liveMovement,
+    merge,
+    reset,
   }
 }
 

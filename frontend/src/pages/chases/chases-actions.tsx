@@ -1,4 +1,4 @@
-import { setLiveChaseState } from '../../api'
+import { setLiveChaseState, setLiveMovementState } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { iconLight, iconLightOff, iconStop } from '../../ui/icons'
 import { useApiStateSelector } from '../../hooks/api'
@@ -13,6 +13,11 @@ function setOnForAllChases(on: boolean) {
       setLiveChaseState(id, { on }, true)
     }
   })
+  Object.entries(apiState.liveMovements).forEach(([id, liveMovement]) => {
+    if (liveMovement.on !== on) {
+      setLiveMovementState(id, { on }, true)
+    }
+  })
 }
 
 export function stopAllChases() {
@@ -21,15 +26,23 @@ export function stopAllChases() {
       setLiveChaseState(id, { stopped: true }, true)
     }
   })
+  Object.entries(apiState.liveMovements).forEach(([id, liveMovement]) => {
+    if (!liveMovement.stopped) {
+      setLiveMovementState(id, { stopped: true }, true)
+    }
+  })
 }
 
 export function isAnyChaseOn(apiState: ApiState) {
-  return isAnyOn(apiState.liveChases)
+  return isAnyOn(apiState.liveChases) || isAnyOn(apiState.liveMovements)
 }
 
 export function isAnyChaseRunning(apiState: ApiState) {
-  return Object.values(apiState.liveChases).some(
-    liveChase => !liveChase.stopped
+  return (
+    Object.values(apiState.liveChases).some(liveChase => !liveChase.stopped) ||
+    Object.values(apiState.liveMovements).some(
+      liveMovement => liveMovement.on && !liveMovement.stopped
+    )
   )
 }
 
@@ -42,14 +55,11 @@ export const turnAllChasesOff = () => setOnForAllChases(false)
  * - All off
  */
 export const ChasesActions = () => {
-  const { allOn, allOff, allStopped } = useApiStateSelector(
-    apiState => ({
-      allOn: isAllOn(apiState.liveChases),
-      allOff: !isAnyChaseOn(apiState),
-      allStopped: !isAnyChaseRunning(apiState),
-    }),
-    { event: 'liveChases' }
-  )
+  const { allOn, allOff, allStopped } = useApiStateSelector(apiState => ({
+    allOn: isAllOn(apiState.liveChases) && isAllOn(apiState.liveMovements),
+    allOff: !isAnyChaseOn(apiState),
+    allStopped: !isAnyChaseRunning(apiState),
+  }))
 
   return (
     <HotkeyContext value={true}>

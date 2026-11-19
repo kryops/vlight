@@ -23,12 +23,9 @@ import { yesNo } from '../../ui/overlays/buttons'
 import { useDeepEqualMemo } from '../../hooks/performance'
 import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
 import { Checkbox } from '../../ui/forms/checkbox'
+import { activeButton, widgetTitleControls } from '../../ui/css/widget-controls'
 
 import { MemoryPreview } from './memory-preview'
-
-const controls = css`
-  margin: ${baseline(-1.5)};
-`
 
 const leftColumn = css`
   flex: 1 1 auto;
@@ -46,14 +43,6 @@ const rightColumn = css`
 
 const fader = css`
   margin: 0 ${baseline(2)};
-`
-
-const movementActive = css`
-  background: ${successShade(2)};
-
-  &:hover {
-    background: ${successShade(2)};
-  }
 `
 
 export interface EditLiveMemoryArgs {
@@ -187,7 +176,7 @@ export const StatelessLiveMemoryWidget = ({
       contentClassName={flexWrap}
       {...passThrough}
       titleSide={
-        <div className={controls}>
+        <div className={widgetTitleControls}>
           <Button icon={iconConfig} title="Edit" transparent onClick={edit} />
           <Button
             icon={iconDelete}
@@ -201,7 +190,9 @@ export const StatelessLiveMemoryWidget = ({
               title={gradientMovement ? 'Stop movement' : 'Start movement'}
               iconColor={gradientMovement ? successShade(0) : errorShade(0)}
               transparent
-              className={gradientMovement ? movementActive : undefined}
+              className={
+                gradientMovement && state.on ? activeButton : undefined
+              }
               onDown={toggleMovement}
               hotkey="m"
             />

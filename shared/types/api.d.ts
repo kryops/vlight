@@ -8,6 +8,7 @@ import {
   EntityArray,
   LiveMemory,
   LiveChase,
+  LiveMovement,
   EntityType,
 } from './entities'
 
@@ -110,6 +111,30 @@ export interface ApiLiveChaseMessage {
   merge?: boolean
 }
 
+/** Create/update a live movement */
+export interface ApiLiveMovementMessage {
+  type: 'live-movement'
+  id: IdType
+
+  /** `null` = Delete live movement */
+  state: Partial<LiveMovement> | null
+
+  /**
+   * If set, the movement's phase is reset so that all members return to the center.
+   *
+   * Should be combined with `stopped: true` to keep them there.
+   */
+  reset?: boolean
+
+  /**
+   * If set, the given {@link state} is merged onto the existing one instead of
+   * overwriting it completely.
+   *
+   * Defaults to `false`.
+   */
+  merge?: boolean
+}
+
 /** Change the DMX master value. */
 export interface ApiDmxMasterMessage {
   type: 'dmx-master'
@@ -185,6 +210,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiMemoryStateMessage
   | ApiLiveMemoryMessage
   | ApiLiveChaseMessage
+  | ApiLiveMovementMessage
   | ApiEntityMessage<T>
   | ApiAddEntityMessage<T>
   | ApiUpdateEntityMessage<T>
@@ -232,6 +258,9 @@ export interface ApiStateMessage {
 
   /** Dictionary of all live chase control states. */
   liveChases: Dictionary<LiveChase>
+
+  /** Dictionary of all live movement control states. */
+  liveMovements: Dictionary<LiveMovement>
 
   /** Global DMX master value. */
   dmxMaster: number
@@ -283,4 +312,5 @@ export type ApiOutMessage =
   | ApiMemoryStateMessage
   | ApiLiveMemoryMessage
   | ApiLiveChaseMessage
+  | ApiLiveMovementMessage
   | ApiDmxMasterMessage

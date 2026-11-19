@@ -5,6 +5,7 @@ import { Icon } from '../../../../ui/icons/icon'
 import { iconAdd, iconDelete } from '../../../../ui/icons'
 import { baseline, iconShade } from '../../../../ui/styles'
 import { Select, SelectEntry } from '../../../../ui/forms/select'
+import { fixtureOrderEntries } from '../../../../ui/forms/fixture-order-entries'
 import { getMemorySceneStatePreviewBackground } from '../../../../util/memories'
 import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
 import { okCancel } from '../../../../ui/overlays/buttons'
@@ -44,29 +45,6 @@ const memoryScenePatternEntries: SelectEntry<MemoryScene['pattern']>[] = [
   {
     value: 'alternate',
     label: 'Alternating',
-  },
-]
-
-const memorySceneOrderEntries: SelectEntry<MemoryScene['order']>[] = [
-  {
-    value: 'members',
-    label: 'Index',
-  },
-  {
-    value: 'xcoord',
-    label: 'X coord',
-  },
-  {
-    value: 'ycoord',
-    label: 'Y coord',
-  },
-  {
-    value: 'x+y',
-    label: 'X+Y',
-  },
-  {
-    value: 'x-y',
-    label: 'X-Y',
   },
 ]
 
@@ -176,7 +154,7 @@ export const MemorySceneEditor = ({
         <div>
           Order:{' '}
           <Select
-            entries={memorySceneOrderEntries}
+            entries={fixtureOrderEntries}
             value={scene.order}
             onChange={changeOrder}
           />

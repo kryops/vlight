@@ -69,6 +69,14 @@ export interface LiveChaseWidgetConfig {
 }
 
 /**
+ * Widget to control the state of one or multiple live movements.
+ */
+export interface LiveMovementWidgetConfig {
+  type: 'live-movement'
+  id: string | string[]
+}
+
+/**
  * Widget to display the fixture map.
  */
 export interface MapWidgetConfig {
@@ -101,6 +109,7 @@ export type WidgetConfig =
   | LiveMemoryWidgetConfig
   | MapWidgetConfig
   | LiveChaseWidgetConfig
+  | LiveMovementWidgetConfig
   | DmxMasterWidgetConfig
   | ControlsWidgetConfig
 
