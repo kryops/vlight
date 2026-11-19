@@ -64,6 +64,7 @@ const MapPage = () => {
     },
     __test: true,
   })
+  const [namesDisplayed, toggleNamesDisplayed] = useReducer(it => !it, false)
   const [mapRotated, toggleMapRotated] = useReducer(it => !it, false)
 
   const masterDataAndMaps = useMasterDataAndMaps()
@@ -107,6 +108,7 @@ const MapPage = () => {
             key={fixtureTestMode ? '1' : '0'}
             onFixtureDown={fixtureTestMode ? turnFixtureOn : openFixtureDialog}
             onFixtureUp={fixtureTestMode ? turnFixtureOff : undefined}
+            displayNames={namesDisplayed}
             rotate180={mapRotated}
           />
           {fixtureTestMode && (
@@ -132,6 +134,10 @@ const MapPage = () => {
         <div>
           <Button active={fixtureTestMode} onClick={toggleFixtureTestMode}>
             Fixture Test Mode
+          </Button>
+
+          <Button active={namesDisplayed} onClick={toggleNamesDisplayed}>
+            Show Names
           </Button>
 
           <Button active={mapRotated} onClick={toggleMapRotated}>

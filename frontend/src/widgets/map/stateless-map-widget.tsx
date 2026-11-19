@@ -50,23 +50,35 @@ const container = css`
 const fixtureStyle = css`
   position: absolute;
 
+  /* Name label, only visible on hover or with fixtureStyle_names */
+  &:before {
+    content: attr(title);
+    position: absolute;
+    top: 125%;
+    left: -100%;
+    width: 300%;
+    min-width: ${baseline(12)};
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    text-shadow: 1px 1px 4px ${backgroundColor};
+    pointer-events: none;
+    z-index: 3;
+  }
+
   &:hover {
     box-shadow: 0 0 8px ${iconShade(1)};
 
     &:before {
-      content: attr(title);
-      position: absolute;
-      top: 125%;
-      left: -100%;
-      width: 300%;
-      min-width: ${baseline(12)};
       display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.75rem;
-      text-shadow: 1px 1px 4px ${backgroundColor};
-      z-index: 3;
     }
+  }
+`
+
+const fixtureStyle_names = css`
+  &:before {
+    display: flex;
   }
 `
 
@@ -116,6 +128,13 @@ export interface StatelessMapWidgetProps {
   displayChannels?: boolean | 'highlighted'
 
   /**
+   * Controls whether to permanently display the names of all fixtures.
+   *
+   * Defaults to `false`.
+   */
+  displayNames?: boolean
+
+  /**
    * Controls whether to rotate the map by 180 degrees.
    *
    * Defaults to `false`.
@@ -140,6 +159,7 @@ export const StatelessMapWidget = ({
   additionalShapes,
   standalone = false,
   displayChannels = false,
+  displayNames = false,
   enableDmxUniverse = false,
   rotate180,
   onFixtureDown,
@@ -198,7 +218,7 @@ export const StatelessMapWidget = ({
                 channel={enableDmxUniverse ? fixture.channel : undefined}
                 highlighted={highlighted}
                 title={fixture.name}
-                className={fixtureStyle}
+                className={cx(fixtureStyle, displayNames && fixtureStyle_names)}
                 percentages
                 onDown={
                   onFixtureDown ? () => onFixtureDown(fixture) : undefined

@@ -22,7 +22,6 @@
   - On tap button (like memories)
   - Search box
 - Map
-  - Display all fixture names
   - Change size
 - Speed/Fade control
   - Global vs local speed
