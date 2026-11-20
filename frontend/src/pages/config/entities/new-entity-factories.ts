@@ -7,10 +7,6 @@ import {
 } from '@vlight/types'
 import { ChannelType } from '@vlight/controls'
 
-import { apiState } from '../../../api/api-state'
-import { getOccupiedFixtureChannels } from '../../../util/fixtures'
-import { getMasterDataMaps } from '../../../api/masterdata'
-
 type WithoutId<T> = Omit<T, 'id'>
 
 export function newFixtureTypeFactory(): WithoutId<FixtureType> {
@@ -21,26 +17,10 @@ export function newFixtureTypeFactory(): WithoutId<FixtureType> {
 }
 
 export function newFixtureFactory(): WithoutId<Fixture> {
-  const occupiedChannels =
-    apiState.masterData?.fixtures.flatMap(fixture =>
-      getOccupiedFixtureChannels(fixture, getMasterDataMaps())
-    ) ?? []
-  const occupiedChannelSet = new Set(occupiedChannels)
-
-  const getGap = (channel: number) => {
-    for (let i = channel + 1; i <= 512; i++) {
-      if (occupiedChannelSet.has(i)) return i - channel - 1
-    }
-    return 512 - channel
-  }
-  const largestGapAfterChannel = [0, ...occupiedChannels].sort(
-    (a, b) => getGap(b) - getGap(a)
-  )[0]
-
   return {
     name: 'New Fixture',
     type: '',
-    channel: largestGapAfterChannel + 1,
+    channel: 1,
   }
 }
 

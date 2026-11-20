@@ -22,7 +22,12 @@ import {
 } from '../../../../ui/css/editor-styles'
 import { Select } from '../../../../ui/forms/select'
 import { baseline, errorShade } from '../../../../ui/styles'
-import { getOccupiedFixtureChannels } from '../../../../util/fixtures'
+import {
+  findFreeFixtureChannel,
+  formatChannelList,
+  getOverlappingFixtureChannels,
+} from '../../../../util/fixtures'
+import { Button } from '../../../../ui/buttons/button'
 import { Touchable } from '../../../../ui/components/touchable'
 import {
   getFractionWithMargin,
@@ -38,44 +43,6 @@ const errorMessage = css`
   margin-top: ${baseline(4)};
   color: ${errorShade(0)};
 `
-
-function formatChannelList(channels: number[]) {
-  if (!channels.length) return ''
-  if (channels.length === 1) return channels[0]
-
-  let segmentStart: number | undefined
-  let lastNumber = -1
-  const segments: string[] = []
-
-  const lastChannel = channels[channels.length - 1]
-
-  for (const channel of channels) {
-    if (!segmentStart) {
-      segmentStart = channel
-    } else {
-      if (channel !== lastNumber + 1) {
-        segments.push(
-          lastNumber === segmentStart
-            ? String(segmentStart)
-            : `${segmentStart} - ${lastNumber}`
-        )
-        segmentStart = channel
-      }
-    }
-
-    lastNumber = channel
-
-    if (channel === lastChannel) {
-      segments.push(
-        lastNumber === segmentStart
-          ? String(segmentStart)
-          : `${segmentStart} - ${lastNumber}`
-      )
-    }
-  }
-
-  return segments.join(', ')
-}
 
 /**
  * Dialog content to edit a fixture definition.
@@ -132,24 +99,15 @@ export function FixtureEditor({
     ...(positionedFixtureEntries || []),
   ]
 
-  const occupiedChannels = getOccupiedFixtureChannels(
+  const overlappingChannels = getOverlappingFixtureChannels(
     formState.values,
-    masterDataMaps,
-    { isRaw: true }
+    masterData,
+    masterDataMaps
   )
-
-  const otherFixtures = masterData.fixtures.filter(
-    fixture => fixture.id !== id && fixture.originalId !== id
-  )
-  const otherFixtureChannels = new Set(
-    otherFixtures.flatMap(fixture =>
-      getOccupiedFixtureChannels(fixture, masterDataMaps)
-    )
-  )
-
-  const overlappingChannels = occupiedChannels.filter(channel =>
-    otherFixtureChannels.has(channel)
-  )
+  const showAutoSelect = !id || overlappingChannels.length > 0
+  const freeChannel = showAutoSelect
+    ? findFreeFixtureChannel(formState.values, masterData, masterDataMaps)
+    : undefined
 
   return (
     <>
@@ -175,11 +133,33 @@ export function FixtureEditor({
             <Label
               label="Channel"
               input={
-                <FormNumberInput
-                  formState={formState}
-                  name="channel"
-                  fallbackValue={1}
-                />
+                <>
+                  <FormNumberInput
+                    formState={formState}
+                    name="channel"
+                    fallbackValue={1}
+                    className={showAutoSelect ? autoWidthInput : undefined}
+                  />
+                  {showAutoSelect && (
+                    <Button
+                      disabled={
+                        freeChannel === undefined || freeChannel === channel
+                      }
+                      title={
+                        freeChannel === undefined
+                          ? 'No free channels available'
+                          : `Use the first free channel (${freeChannel})`
+                      }
+                      onClick={() => {
+                        if (freeChannel !== undefined) {
+                          formState.changeValue('channel', freeChannel)
+                        }
+                      }}
+                    >
+                      Auto-Select
+                    </Button>
+                  )}
+                </>
               }
             />
             <Label

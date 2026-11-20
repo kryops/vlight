@@ -6,6 +6,7 @@
 - Added mouse wheel input to faders (when a modifier key is pressed)
 - Dynamic pages: Removed cells - rows now contain widgets directly (existing cells are merged automatically)
 - Dynamic pages: Widgets are now edited directly in their rows and can be dragged within and between rows; rows can be reordered via drag handles
+- Added auto-select free channel button for fixture editor
 
 ## January 2025
 

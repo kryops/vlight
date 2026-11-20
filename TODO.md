@@ -15,8 +15,6 @@
   - Moving heads
   - Special colors preview (amber, UV)
 - Fixtures
-  - Opt-in to channel preselection
-  - Rearrange channels to fix overlaps / display overlaps in overview
   - Search box
 - Groups
   - On tap button (like memories)

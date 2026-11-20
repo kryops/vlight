@@ -10,11 +10,16 @@ import {
   iconMemory,
   iconDynamicPage,
 } from '../../../ui/icons'
-import { baseline } from '../../../ui/styles'
+import { baseline, errorShade } from '../../../ui/styles'
+import { cx } from '../../../util/styles'
 import { FixtureTypeMapShape } from '../../../widgets/map/map-shape'
 import { getMasterDataMaps } from '../../../api/masterdata'
 import { apiState } from '../../../api/api-state'
-import { getOccupiedFixtureChannels } from '../../../util/fixtures'
+import {
+  formatChannelList,
+  getOccupiedFixtureChannels,
+  getOverlappingFixtureChannels,
+} from '../../../util/fixtures'
 import {
   editEntity,
   removeEntity,
@@ -41,6 +46,10 @@ const smallInfo = css`
   font-size: 0.75rem;
   padding: 0 ${baseline(2)};
   display: inline-block;
+`
+
+const overlapInfo = css`
+  color: ${errorShade(0)};
 `
 
 const fixtureTypeStyle = css`
@@ -112,6 +121,13 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
         { isRaw: true }
       )
       const maxChannel = Math.max(...occupiedChannels)
+      const overlappingChannels = apiState.masterData
+        ? getOverlappingFixtureChannels(
+            entry,
+            apiState.masterData,
+            masterDataMaps
+          )
+        : []
 
       return (
         <>
@@ -125,6 +141,14 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
           )}
           {fixtureTypeName && (
             <div className={smallInfo}>{fixtureTypeName}</div>
+          )}
+          {overlappingChannels.length > 0 && (
+            <div
+              className={cx(smallInfo, overlapInfo)}
+              title="Channels overlapping with other fixtures"
+            >
+              Overlap: Ch {formatChannelList(overlappingChannels)}
+            </div>
           )}
         </>
       )

@@ -153,3 +153,107 @@ export function getOccupiedFixtureChannels(
     return createRangeArray(startChannel, startChannel + channelsPerFixture - 1)
   })
 }
+
+/**
+ * Returns the set of DMX channels occupied by all fixtures
+ * except the given raw fixture definition (and the fixtures created from it).
+ */
+function getChannelsOccupiedByOtherFixtures(
+  rawFixtureId: string,
+  masterData: MasterData,
+  masterDataMaps: MasterDataMaps
+): Set<number> {
+  return new Set(
+    masterData.fixtures
+      .filter(
+        fixture =>
+          !rawFixtureId ||
+          (fixture.id !== rawFixtureId && fixture.originalId !== rawFixtureId)
+      )
+      .flatMap(fixture => getOccupiedFixtureChannels(fixture, masterDataMaps))
+  )
+}
+
+/**
+ * Returns all DMX channels of a raw fixture definition
+ * that are also occupied by other fixtures.
+ */
+export function getOverlappingFixtureChannels(
+  rawFixture: Fixture,
+  masterData: MasterData,
+  masterDataMaps: MasterDataMaps
+): number[] {
+  const otherChannels = getChannelsOccupiedByOtherFixtures(
+    rawFixture.id,
+    masterData,
+    masterDataMaps
+  )
+  return getOccupiedFixtureChannels(rawFixture, masterDataMaps, {
+    isRaw: true,
+  }).filter(channel => otherChannels.has(channel))
+}
+
+/**
+ * Returns the first start channel at which the raw fixture definition
+ * fits into the universe without overlapping other fixtures.
+ *
+ * Returns `undefined` if there is no such channel.
+ */
+export function findFreeFixtureChannel(
+  rawFixture: Fixture,
+  masterData: MasterData,
+  masterDataMaps: MasterDataMaps,
+  universeSize = 512
+): number | undefined {
+  const otherChannels = getChannelsOccupiedByOtherFixtures(
+    rawFixture.id,
+    masterData,
+    masterDataMaps
+  )
+
+  for (let channel = 1; channel <= universeSize; channel++) {
+    if (otherChannels.has(channel)) continue
+    const occupiedChannels = getOccupiedFixtureChannels(
+      { ...rawFixture, channel },
+      masterDataMaps,
+      { isRaw: true }
+    )
+    if (
+      occupiedChannels.every(it => it <= universeSize && !otherChannels.has(it))
+    ) {
+      return channel
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * Formats a sorted list of channels into a compact string,
+ * e.g. `1 - 4, 7, 9 - 10`.
+ */
+export function formatChannelList(channels: number[]): string {
+  const segments: string[] = []
+  let segmentStart: number | undefined
+  let previous: number | undefined
+
+  const closeSegment = () => {
+    if (segmentStart === undefined || previous === undefined) return
+    segments.push(
+      previous === segmentStart
+        ? String(segmentStart)
+        : `${segmentStart} - ${previous}`
+    )
+  }
+
+  for (const channel of channels) {
+    if (previous === undefined || channel !== previous + 1) {
+      closeSegment()
+      segmentStart = channel
+    }
+    previous = channel
+  }
+  closeSegment()
+
+  return segments.join(', ')
+}
