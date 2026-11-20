@@ -19,6 +19,8 @@ const button = css`
   align-items: center;
   justify-content: center;
   text-align: center;
+  overflow-wrap: anywhere;
+  overflow: hidden;
 `
 
 const button_small = smallText

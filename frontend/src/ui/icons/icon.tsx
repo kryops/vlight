@@ -86,6 +86,9 @@ export interface IconProps {
    */
   hoverable?: boolean
 
+  /** Tooltip text, rendered as SVG title. */
+  title?: string
+
   onClick?: (event: ReactMouseEvent<SVGSVGElement, MouseEvent>) => void
 }
 
@@ -102,6 +105,7 @@ export const Icon = ({
   inline = false,
   padding,
   hoverable = false,
+  title,
   onClick,
 }: IconProps) => {
   return (
@@ -127,6 +131,7 @@ export const Icon = ({
       }
       onClick={onClick}
     >
+      {title && <title>{title}</title>}
       <path
         d={icon}
         className={pathClassName}

@@ -154,6 +154,7 @@ export const FixtureStateWidget = ({
             {onSave && !fixtureState.initial && (
               <Icon
                 icon={iconMemory}
+                title="Save into Memory"
                 onClick={onSave}
                 shade={1}
                 hoverable
