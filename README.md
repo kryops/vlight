@@ -29,6 +29,7 @@ Controls
 - ꙮ Fixture Groups
 - 🖼 Memories
 - 🎞 Live Chases
+- 🏃 Movement
 - 🗺 Map Overview
 - ✨ Universe Overview
 - 🌎 Global Master / Blackout
