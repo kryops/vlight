@@ -1,9 +1,17 @@
-import { roundToStep, fractionToValue, valueToFraction } from '@vlight/utils'
+import {
+  roundToStep,
+  fractionToValue,
+  valueToFraction,
+  ensureBetween,
+} from '@vlight/utils'
 
 import { useDelayedState } from '../../../hooks/delayed-state'
 
 import { FaderBase } from './fader-base'
 import { FaderButton } from './fader-button'
+
+/** Fraction of the fader range changed per mouse wheel step. */
+const wheelFractionStep = 0.04
 
 export interface FaderProps {
   /** The current fader value. */
@@ -88,8 +96,37 @@ export const Fader = ({
 
   const onUp = () => setLocalValue(null, true)
 
+  const onWheel = (direction: 1 | -1): void => {
+    const currentFraction = valueToFraction(
+      valueToUse,
+      min,
+      max,
+      quadraticScale
+    )
+    let newValue = roundToStep(
+      fractionToValue(
+        ensureBetween(currentFraction + direction * wheelFractionStep, 0, 1),
+        min,
+        max,
+        quadraticScale
+      ),
+      step
+    )
+    // make sure coarse steps are not swallowed by rounding
+    if (step && newValue === roundToStep(valueToUse, step)) {
+      newValue = valueToUse + direction * step
+    }
+    newValue = ensureBetween(newValue, min, max)
+    if (newValue === valueToUse) {
+      return
+    }
+    setLocalValue(newValue)
+    setLocalValue(null, true) // drop the local value once the update arrived
+    onChange(newValue)
+  }
+
   return (
-    <FaderBase {...passThrough} onTouch={onTouch} onUp={onUp}>
+    <FaderBase {...passThrough} onTouch={onTouch} onUp={onUp} onWheel={onWheel}>
       <FaderButton
         fraction={valueToFraction(valueToUse, min, max, quadraticScale)}
         label={label}

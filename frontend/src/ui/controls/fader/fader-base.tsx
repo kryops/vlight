@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { ReactNode, useRef } from 'react'
+import { ReactNode, useEffect, useEffectEvent, useRef } from 'react'
 import { ensureBetween } from '@vlight/utils'
 
 import { Touchable } from '../../components/touchable'
@@ -85,6 +85,14 @@ export interface FaderBaseProps {
    */
   onUp?: () => void
 
+  /**
+   * Handler for mouse wheel input while a modifier key (Ctrl, Shift, Alt or
+   * Meta) is pressed. Called with `1` for up and `-1` for down.
+   *
+   * Without a modifier key, the wheel event is left alone so scrolling works.
+   */
+  onWheel?: (direction: 1 | -1) => void
+
   children?: ReactNode
 }
 
@@ -102,9 +110,38 @@ export function FaderBase({
   className,
   onTouch,
   onUp,
+  onWheel,
   children,
 }: FaderBaseProps) {
   const trackRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const hasWheelHandler = !!onWheel
+  const handleWheel = useEffectEvent((direction: 1 | -1) =>
+    onWheel?.(direction)
+  )
+
+  // React registers wheel listeners as passive, so we need a native listener
+  // to be able to prevent scrolling/zooming when a modifier key is pressed.
+  useEffect(() => {
+    const element = containerRef.current
+    if (!element || !hasWheelHandler) {
+      return
+    }
+    const listener = (event: WheelEvent) => {
+      if (!(event.ctrlKey || event.shiftKey || event.altKey || event.metaKey)) {
+        return
+      }
+      // Shift+wheel is reported as horizontal scrolling by some browsers
+      const delta = event.deltaY || event.deltaX
+      if (!delta) {
+        return
+      }
+      event.preventDefault()
+      handleWheel(delta < 0 ? 1 : -1)
+    }
+    element.addEventListener('wheel', listener, { passive: false })
+    return () => element.removeEventListener('wheel', listener)
+  }, [hasWheelHandler])
 
   return (
     <Touchable
@@ -118,6 +155,7 @@ export function FaderBase({
         onTouch?.(fraction)
       }}
       onUp={onUp}
+      ref={containerRef}
       preventScroll
     >
       <div className={track} ref={trackRef} />

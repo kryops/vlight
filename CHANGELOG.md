@@ -3,6 +3,7 @@
 ## November 2026
 
 - Added movements for moving heads: Live pan/tilt patterns (line, sine, circle, square, eight) on the chases page and as dynamic page widget
+- Added mouse wheel input to faders (when a modifier key is pressed)
 
 ## January 2025
 
