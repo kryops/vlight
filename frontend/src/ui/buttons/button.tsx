@@ -116,6 +116,13 @@ export interface ButtonProps<T> {
   /** Color to display the icon in. */
   iconColor?: string
 
+  /**
+   * Icon size in multiples of the baseline width.
+   *
+   * Defaults to 6.
+   */
+  iconSize?: number
+
   /** Hotkey to activate the button with. */
   hotkey?: string
 
@@ -162,6 +169,7 @@ export const Button = <T extends any = undefined>({
   onClickArg,
   icon,
   iconColor,
+  iconSize,
   hotkey,
   active,
   disabled = false,
@@ -214,6 +222,7 @@ export const Button = <T extends any = undefined>({
         <Icon
           icon={icon}
           color={iconColor}
+          size={iconSize}
           inline
           className={children ? iconStyle : undefined}
           hoverable={transparentIcon && active === undefined}

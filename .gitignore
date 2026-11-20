@@ -167,6 +167,7 @@ $RECYCLE.BIN/
 
 dist
 .linaria-cache
+.playwright-mcp
 config/*/state.js
 *.tsbuildinfo
 shared/types/docs

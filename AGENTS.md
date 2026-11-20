@@ -8,3 +8,5 @@ Don't be alarmed when state changed between turns, I like to verify any changes 
 After changes, add changelog entries.
 
 If styles don't recompute correctly after changes, touch the file again; the Linaria cache is not perfect.
+
+Format code via `vp fmt`, NOT Prettier.

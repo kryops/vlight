@@ -1,21 +1,21 @@
 import { IdType, LiveChase } from '@vlight/types'
-import { useRef } from 'react'
 
 import { setLiveChaseState, setLiveChaseStep } from '../../api'
 import {
   iconDoubleSpeed,
+  iconFullView,
   iconHalfSpeed,
   iconSpeedBurst,
   iconStep,
   iconSync,
 } from '../../ui/icons'
 import { Button } from '../../ui/buttons/button'
-import { apiState } from '../../api/api-state'
 import { useTapSync } from '../../hooks/speed'
 import { widgetTitleControls } from '../../ui/css/widget-controls'
 import { StartStopButton } from '../start-stop-button'
 
 import { updateLiveChaseSpeed } from './utils'
+import { useSpeedBurst } from './use-speed-burst'
 import { liveChaseMaxSpeed, liveChaseMinSpeed } from './constants'
 
 export interface LiveChaseWidgetTopControlsProps {
@@ -35,49 +35,7 @@ export const LiveChaseWidgetTopControls = ({
 
   const updateSpeed = (speed: number) => updateLiveChaseSpeed(id, state, speed)
 
-  const speedBurstBackup = useRef<
-    Partial<LiveChase> & { otherChases?: string[] }
-  >({})
-
-  const startSpeedBurst = () => {
-    // likely hit the button multiple times
-    if (!state.burst) {
-      // disable other chases temporarily in single mode
-      const otherChases =
-        state.single && !state.on
-          ? Object.keys(apiState.liveChases).filter(
-              chase => chase !== id && apiState.liveChases[chase].on
-            )
-          : []
-      otherChases.forEach(chase =>
-        setLiveChaseState(chase, { on: false }, true)
-      )
-
-      speedBurstBackup.current = {
-        speed: state.speed,
-        fade: state.fade,
-        stopped: state.stopped,
-        on: state.on,
-        burst: false,
-        otherChases,
-      }
-    }
-    update({
-      speed: liveChaseMaxSpeed,
-      fade: 0,
-      stopped: false,
-      on: true,
-      burst: true,
-    })
-  }
-
-  const stopSpeedBurst = () => {
-    const { otherChases, ...chaseState } = speedBurstBackup.current
-    update({ ...chaseState, burst: false })
-    // If the chase was fading before, this will trigger an additional step to start fading again immediately
-    setLiveChaseStep(id)
-    otherChases?.forEach(chase => setLiveChaseState(chase, { on: true }, true))
-  }
+  const { startSpeedBurst, stopSpeedBurst } = useSpeedBurst(id, state)
 
   const tapSync = useTapSync(updateSpeed)
 
@@ -96,6 +54,19 @@ export const LiveChaseWidgetTopControls = ({
     })
 
   const start = () => update({ stopped: false, on: true })
+
+  if (state.compact) {
+    return (
+      <div className={widgetTitleControls}>
+        <Button
+          icon={iconFullView}
+          title="Full view"
+          transparent
+          onClick={() => update({ compact: false })}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className={widgetTitleControls}>

@@ -9,6 +9,7 @@
 - Added global PAUSE button to the Controls widget: Pauses all live chases, live memory gradient movements and movements, which resume from where they stopped. While paused, the affected widgets show a pause icon that resumes globally and starts the widget
 - Added auto-select free channel button for fixture editor
 - Fixtures/groups: "Save into Memory" can now add the state as a new scene to an existing memory
+- Live chases: Added compact view that only displays a large speed burst button
 - Long labels on fader buttons now wrap
 - Added tooltips to icon buttons
 

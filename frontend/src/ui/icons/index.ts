@@ -60,6 +60,8 @@ import {
   mdiArrowDecision,
   mdiRotateOrbit,
   mdiImageFilterCenterFocus,
+  mdiArrowCollapseAll,
+  mdiArrowExpandAll,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -77,6 +79,8 @@ export const iconDown = mdiArrowDown
 export const iconExpand = mdiChevronDown
 export const iconCollapse = mdiChevronUp
 export const iconFullscreen = mdiFullscreen
+export const iconCompactView = mdiArrowCollapseAll
+export const iconFullView = mdiArrowExpandAll
 export const iconCopy = mdiContentCopy
 
 export const iconStart = mdiPlay

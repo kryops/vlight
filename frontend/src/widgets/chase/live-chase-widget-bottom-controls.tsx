@@ -2,6 +2,7 @@ import { IdType, LiveChase } from '@vlight/types'
 
 import { deleteLiveChase, setLiveChaseState } from '../../api'
 import {
+  iconCompactView,
   iconDelete,
   iconList,
   iconMultiple,
@@ -129,6 +130,12 @@ export const LiveChaseWidgetBottomControls = ({
         title={colorMode.description}
         transparent
         onClick={switchColorMode}
+      />
+      <Button
+        icon={iconCompactView}
+        title="Compact view: Speed burst button only"
+        transparent
+        onClick={() => update({ compact: true })}
       />
       <Button icon={iconRename} title="Rename" transparent onClick={rename} />
       <Button

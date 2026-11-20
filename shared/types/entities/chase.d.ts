@@ -130,4 +130,10 @@ export interface LiveChase {
    * Defaults to `random`.
    */
   colorMode?: 'random' | 'same-color' | 'same-state'
+
+  /**
+   * Displays the chase's widget in compact mode,
+   * which only consists of the speed burst button.
+   */
+  compact?: boolean
 }

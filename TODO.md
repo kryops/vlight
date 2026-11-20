@@ -38,7 +38,6 @@
   - Fixture selection mode: by index, by coordinates
   - State selection mode by index
   - Persist as entities, not state?
-  - Compact view: burst button only
   - Flash step frequency on tap to sync button
 - Dynamic Pages
   - Multi-control widgets
