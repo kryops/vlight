@@ -10,5 +10,7 @@ export const globalPageNavItem: NavItemEntry = {
   label: 'Global Controls',
   page: GlobalPage,
   highlighted: apiState =>
-    apiState.dmxMaster !== 255 || apiState.dmxMasterFade !== 0,
+    apiState.dmxMaster !== 255 ||
+    apiState.dmxMasterFade !== 0 ||
+    apiState.paused,
 }

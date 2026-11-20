@@ -86,6 +86,7 @@ describe('api/protocol', () => {
         liveMovements,
         dmxMaster: 255,
         dmxMasterFade: 1,
+        paused: false,
       })
     ).toEqual({
       type: 'state',
@@ -101,6 +102,7 @@ describe('api/protocol', () => {
       liveMovements,
       dmxMaster: 255,
       dmxMasterFade: 1,
+      paused: false,
     })
   })
 

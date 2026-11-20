@@ -8,6 +8,7 @@ import { fixtureGroupStates } from '../../controls/fixture-groups'
 import { memoryStates, liveMemories } from '../../controls/memories'
 import { liveChases } from '../../controls/chases/live-chases'
 import { liveMovements } from '../../controls/movements/live-movements'
+import { isPaused } from '../../controls/pause'
 import { masterData, rawMasterData } from '../masterdata'
 
 import { getApiStateMessage } from './protocol'
@@ -29,5 +30,6 @@ export function getFullState(): ApiStateMessage {
     liveMovements: mapToDictionary(liveMovements),
     dmxMaster: getDmxMaster(),
     dmxMasterFade: getDmxMasterFade(),
+    paused: isPaused(),
   })
 }

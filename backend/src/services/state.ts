@@ -20,6 +20,7 @@ import { howLong } from '../util/time'
 import { reloadControls } from '../controls'
 import { liveChases } from '../controls/chases/live-chases'
 import { liveMovements } from '../controls/movements/live-movements'
+import { isPaused } from '../controls/pause'
 
 import {
   statePersistenceFlushInterval,
@@ -41,6 +42,7 @@ export interface PersistedState {
   liveMovements: Dictionary<LiveMovement>
   dmxMaster: number
   dmxMasterFade: number
+  paused: boolean
 }
 
 const stateConfigFileName = 'state'
@@ -56,6 +58,7 @@ function getEmptyPersistedState(): PersistedState {
     liveMovements: {},
     dmxMaster: 255,
     dmxMasterFade: 0,
+    paused: false,
   }
 }
 
@@ -89,6 +92,7 @@ function getCurrentState(): PersistedState {
     liveMovements: mapToDictionary(liveMovements),
     dmxMaster: getDmxMaster(),
     dmxMasterFade: getDmxMasterFade(),
+    paused: isPaused(),
   }
 }
 

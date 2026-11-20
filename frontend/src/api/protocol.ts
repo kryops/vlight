@@ -20,6 +20,7 @@ import {
   ApiLiveMovementMessage,
   LiveMovement,
   ApiDmxMasterMessage,
+  ApiPauseMessage,
 } from '@vlight/types'
 
 export function getApiChannelMessage(
@@ -178,5 +179,12 @@ export function getApiDmxMasterMessage({
     type: 'dmx-master',
     value,
     fade,
+  }
+}
+
+export function getApiPauseMessage(paused: boolean): ApiPauseMessage {
+  return {
+    type: 'pause',
+    paused,
   }
 }

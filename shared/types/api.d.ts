@@ -155,6 +155,17 @@ export interface ApiDmxMasterMessage {
   fade?: number
 }
 
+/**
+ * Globally pause/resume all controls that continuously recompute their universe
+ * (live chases, moving live memory gradients, live movements).
+ *
+ * When resuming, they continue from where they were paused.
+ */
+export interface ApiPauseMessage {
+  type: 'pause'
+  paused: boolean
+}
+
 // Incoming messages
 
 /** Overwrite the master data entities of a certain type. */
@@ -217,6 +228,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiRemoveEntityMessage<T>
   | ApiResetStateMessage
   | ApiDmxMasterMessage
+  | ApiPauseMessage
   | ApiUniverseSubscriptionMessage
 
 // Outgoing messages
@@ -267,6 +279,9 @@ export interface ApiStateMessage {
 
   /** Global DMX master fade time in seconds. */
   dmxMasterFade: number
+
+  /** Whether all continuously recomputing controls are globally paused. */
+  paused: boolean
 }
 
 /**
@@ -314,3 +329,4 @@ export type ApiOutMessage =
   | ApiLiveChaseMessage
   | ApiLiveMovementMessage
   | ApiDmxMasterMessage
+  | ApiPauseMessage

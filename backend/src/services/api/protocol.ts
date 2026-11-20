@@ -34,6 +34,7 @@ export function getApiStateMessage({
   liveMovements,
   dmxMaster,
   dmxMasterFade,
+  paused,
 }: {
   masterData: MasterData
   rawMasterData: MasterData
@@ -47,6 +48,7 @@ export function getApiStateMessage({
   liveMovements: Dictionary<LiveMovement>
   dmxMaster: number
   dmxMasterFade: number
+  paused: boolean
 }): ApiStateMessage {
   return {
     type: 'state',
@@ -62,6 +64,7 @@ export function getApiStateMessage({
     liveMovements,
     dmxMaster,
     dmxMasterFade,
+    paused,
   }
 }
 

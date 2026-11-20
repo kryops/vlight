@@ -6,16 +6,14 @@ import {
   iconDoubleSpeed,
   iconHalfSpeed,
   iconSpeedBurst,
-  iconStart,
   iconStep,
-  iconStop,
   iconSync,
 } from '../../ui/icons'
-import { errorShade, successShade } from '../../ui/styles'
 import { Button } from '../../ui/buttons/button'
 import { apiState } from '../../api/api-state'
 import { useTapSync } from '../../hooks/speed'
-import { activeButton, widgetTitleControls } from '../../ui/css/widget-controls'
+import { widgetTitleControls } from '../../ui/css/widget-controls'
+import { StartStopButton } from '../start-stop-button'
 
 import { updateLiveChaseSpeed } from './utils'
 import { liveChaseMaxSpeed, liveChaseMinSpeed } from './constants'
@@ -97,6 +95,8 @@ export const LiveChaseWidgetTopControls = ({
       on: state.on || !!state.stopped,
     })
 
+  const start = () => update({ stopped: false, on: true })
+
   return (
     <div className={widgetTitleControls}>
       <Button
@@ -137,13 +137,11 @@ export const LiveChaseWidgetTopControls = ({
         hotkey="n"
       />
       &nbsp;&nbsp;
-      <Button
-        icon={state.stopped ? iconStop : iconStart}
-        title={state.stopped ? 'Start' : 'Stop'}
-        iconColor={state.stopped ? errorShade(0) : successShade(0)}
-        transparent
-        className={state.stopped || !state.on ? undefined : activeButton}
-        onDown={toggleStartStop}
+      <StartStopButton
+        started={!state.stopped}
+        on={state.on}
+        onToggle={toggleStartStop}
+        onStart={start}
         hotkey="m"
       />
     </div>

@@ -17,6 +17,7 @@ import {
   Universe,
 } from '../../services/universe'
 import { controlRegistry } from '../registry'
+import { isPaused, registerPauseHandler } from '../pause'
 
 /** A map containing all defined live chases. */
 export const liveChases: Map<IdType, LiveChase> = new Map()
@@ -88,9 +89,12 @@ function recomputeLiveChase(id: IdType) {
  *
  * If the chase has just been recomputed, it creates a timeout first before the
  * interval is created to improve the behavior when changing the speed.
+ *
+ * Does nothing while paused, the interval is added when resuming.
  */
 function addInterval(id: IdType, liveChase: LiveChase) {
   removeInterval(id)
+  if (isPaused()) return
 
   const execute = () => {
     timeouts.delete(id)
@@ -221,6 +225,23 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
   return true
 }
 
+function isRunning(liveChase: LiveChase) {
+  return liveChase.on && !liveChase.stopped
+}
+
+function handlePauseChange(paused: boolean) {
+  if (paused) {
+    ;[...intervals.keys()].forEach(removeInterval)
+    ;[...timeouts.keys()].forEach(removeInterval)
+    return
+  }
+
+  // If the next step is already due, it is applied immediately
+  for (const [id, liveChase] of liveChases) {
+    if (isRunning(liveChase)) addInterval(id, liveChase)
+  }
+}
+
 function reload(reloadState?: boolean) {
   if (!reloadState) return
 
@@ -237,6 +258,7 @@ function reload(reloadState?: boolean) {
 
 export function initLiveChases(): void {
   controlRegistry.register({ reload })
+  registerPauseHandler(handlePauseChange)
   registerApiMessageHandler('live-chase', handleLiveChaseApiMessage)
 
   for (const [id, liveChase] of dictionaryToMap(

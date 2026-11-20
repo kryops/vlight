@@ -1,6 +1,7 @@
+import { setPaused } from '../../api'
 import { apiState } from '../../api/api-state'
 import { ApiState } from '../../api/worker/processing'
-import { useApiStateSelector } from '../../hooks/api'
+import { useApiState, useApiStateSelector } from '../../hooks/api'
 import {
   isAnyChannelOn,
   turnAllChannelsOff,
@@ -50,11 +51,14 @@ const stopAll = () => {
   stopAllMemories()
 }
 
+const togglePaused = () => setPaused(!apiState.paused)
+
 export const ControlsWidget = ({ ...passThrough }: ControlsWidgetProps) => {
   const [isAnyOn, isAnyRunning] = useApiStateSelector(apiState => [
     allOffMapping.some(([check]) => check(apiState)),
     isAnyChaseRunning(apiState) || isAnyMemoryRunning(apiState),
   ])
+  const paused = useApiState('paused')
 
   return (
     <Widget title="Controls" icon={iconControl} {...passThrough}>
@@ -76,6 +80,19 @@ export const ControlsWidget = ({ ...passThrough }: ControlsWidgetProps) => {
           disabled={!isAnyRunning}
         >
           STOP ALL
+        </Button>
+        <Button
+          block
+          onDown={togglePaused}
+          title={
+            paused
+              ? 'Resume all live chases, memories and movements'
+              : 'Pause all live chases, memories and movements'
+          }
+          hotkey="b"
+          active={paused}
+        >
+          PAUSE
         </Button>
       </div>
     </Widget>

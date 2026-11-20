@@ -23,7 +23,6 @@
   - Change size
 - Speed/Fade control
   - Global vs local speed
-  - Global pause/halt
 - Prepare changes before applying
   - Chases, Memories, Fixture states...
   - Fade/transition

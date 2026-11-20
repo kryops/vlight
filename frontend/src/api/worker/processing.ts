@@ -149,6 +149,10 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
       if (message.fade !== undefined) state.dmxMasterFade = message.fade
       break
 
+    case 'pause':
+      state.paused = message.paused
+      break
+
     case 'heartbeat':
       break // handled outside
 

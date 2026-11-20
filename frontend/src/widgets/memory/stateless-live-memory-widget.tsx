@@ -8,22 +8,17 @@ import { MemorySceneEditor } from '../../pages/config/entities/editors/memory-sc
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
 import { flexWrap } from '../../ui/css/flex'
-import { baseline, errorShade, successShade } from '../../ui/styles'
+import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
 import { Button } from '../../ui/buttons/button'
-import {
-  iconConfig,
-  iconDelete,
-  iconLiveMemory,
-  iconStart,
-  iconStop,
-} from '../../ui/icons'
+import { iconConfig, iconDelete, iconLiveMemory } from '../../ui/icons'
 import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
 import { yesNo } from '../../ui/overlays/buttons'
 import { useDeepEqualMemo } from '../../hooks/performance'
 import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
 import { Checkbox } from '../../ui/forms/checkbox'
-import { activeButton, widgetTitleControls } from '../../ui/css/widget-controls'
+import { widgetTitleControls } from '../../ui/css/widget-controls'
+import { StartStopButton } from '../start-stop-button'
 
 import { MemoryPreview } from './memory-preview'
 
@@ -129,6 +124,9 @@ export const StatelessLiveMemoryWidget = ({
       true
     )
 
+  const startMovement = () =>
+    setLiveMemoryState(id, { gradientMovement: true, on: true }, true)
+
   const toggleInverted = () =>
     setLiveMemoryState(
       id,
@@ -185,15 +183,13 @@ export const StatelessLiveMemoryWidget = ({
             onClick={promptDelete}
           />
           {hasGradient && (
-            <Button
-              icon={gradientMovement ? iconStart : iconStop}
-              title={gradientMovement ? 'Stop movement' : 'Start movement'}
-              iconColor={gradientMovement ? successShade(0) : errorShade(0)}
-              transparent
-              className={
-                gradientMovement && state.on ? activeButton : undefined
-              }
-              onDown={toggleMovement}
+            <StartStopButton
+              started={!!gradientMovement}
+              on={state.on}
+              onToggle={toggleMovement}
+              onStart={startMovement}
+              startTitle="Start movement"
+              stopTitle="Stop movement"
               hotkey="m"
             />
           )}

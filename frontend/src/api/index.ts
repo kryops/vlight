@@ -27,6 +27,7 @@ import {
   getApiLiveChaseStepMessage,
   getApiLiveMovementMessage,
   getApiDmxMasterMessage,
+  getApiPauseMessage,
   DmxMasterMessageArgs,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
@@ -237,6 +238,14 @@ export function resetState(): void {
  */
 export function setDmxMaster(args: DmxMasterMessageArgs): void {
   sendApiMessage(getApiDmxMasterMessage(args))
+}
+
+/**
+ * Globally pauses or resumes all continuously recomputing controls
+ * (live chases, moving live memory gradients, live movements).
+ */
+export function setPaused(paused: boolean): void {
+  sendApiMessage(getApiPauseMessage(paused))
 }
 
 /**

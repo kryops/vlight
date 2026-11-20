@@ -24,6 +24,7 @@ import {
   Universe,
 } from '../../services/universe'
 import { controlRegistry } from '../registry'
+import { isPaused, registerPauseHandler } from '../pause'
 
 /** A map containing all live memories. */
 export const liveMemories = new Map<IdType, LiveMemory>()
@@ -76,7 +77,8 @@ function processMovingGradients() {
 }
 
 function refreshGradientInterval() {
-  const hasMovingGradients = [...liveMemories.values()].some(hasMovingGradient)
+  const hasMovingGradients =
+    !isPaused() && [...liveMemories.values()].some(hasMovingGradient)
 
   if (hasMovingGradients && !gradientInterval) {
     gradientInterval = setInterval(processMovingGradients, gradientIntervalTime)
@@ -185,6 +187,7 @@ function reload(reloadState?: boolean) {
 
 export function initLiveMemories(): void {
   controlRegistry.register({ reload })
+  registerPauseHandler(refreshGradientInterval)
   registerApiMessageHandler('live-memory', handleApiMessage)
 
   for (const [id, liveMemory] of dictionaryToMap(

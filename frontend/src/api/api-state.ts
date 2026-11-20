@@ -21,6 +21,7 @@ function getEmptyState(): ApiState {
     liveMovements: {},
     dmxMaster: 255,
     dmxMasterFade: 0,
+    paused: false,
   }
 }
 

@@ -20,7 +20,8 @@ import {
 import { Button } from '../../ui/buttons/button'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
-import { activeButton, widgetTitleControls } from '../../ui/css/widget-controls'
+import { widgetTitleControls } from '../../ui/css/widget-controls'
+import { StartStopButton } from '../start-stop-button'
 import { centeredText } from '../../ui/css/basic-styles'
 import { faderContainer } from '../../ui/css/fader-container'
 import { flexAuto, flexWrap } from '../../ui/css/flex'
@@ -34,8 +35,6 @@ import {
   iconMovement,
   iconPositionPicker,
   iconRename,
-  iconStart,
-  iconStop,
 } from '../../ui/icons'
 import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
 import {
@@ -43,7 +42,7 @@ import {
   showDialogWithReturnValue,
   showPromptDialog,
 } from '../../ui/overlays/dialog'
-import { baseline, errorShade, successShade } from '../../ui/styles'
+import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
 
 import { LiveMovementPreview } from './live-movement-preview'
@@ -143,6 +142,8 @@ export const StatelessLiveMovementWidget = ({
       on: state.on || !!state.stopped,
     })
 
+  const start = () => update({ stopped: false, on: true })
+
   const returnToCenter = () => resetLiveMovement(id)
 
   const changeCenter = (center: LiveMovementPosition) => update({ center })
@@ -172,8 +173,6 @@ export const StatelessLiveMovementWidget = ({
     }
   }
 
-  const running = state.on && !state.stopped
-
   return (
     <Widget
       icon={iconMovement}
@@ -190,13 +189,11 @@ export const StatelessLiveMovementWidget = ({
             onDown={returnToCenter}
             hotkey="n"
           />
-          <Button
-            icon={state.stopped ? iconStop : iconStart}
-            title={state.stopped ? 'Start' : 'Stop'}
-            iconColor={state.stopped ? errorShade(0) : successShade(0)}
-            transparent
-            className={running ? activeButton : undefined}
-            onDown={toggleStartStop}
+          <StartStopButton
+            started={!state.stopped}
+            on={state.on}
+            onToggle={toggleStartStop}
+            onStart={start}
             hotkey="m"
           />
         </div>

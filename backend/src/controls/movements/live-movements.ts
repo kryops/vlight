@@ -14,6 +14,7 @@ import {
 } from '../../services/universe'
 import { getUniverseIndex } from '../../services/universe/utils'
 import { controlRegistry } from '../registry'
+import { isPaused, registerPauseHandler } from '../pause'
 
 /** A map containing all live movements. */
 export const liveMovements = new Map<IdType, LiveMovement>()
@@ -104,7 +105,8 @@ function processMovements() {
 }
 
 function refreshMovementInterval() {
-  const hasRunningMovements = [...liveMovements.values()].some(isRunning)
+  const hasRunningMovements =
+    !isPaused() && [...liveMovements.values()].some(isRunning)
 
   if (hasRunningMovements && !movementInterval) {
     lastExecution = Date.now()
@@ -176,6 +178,7 @@ function reload(reloadState?: boolean) {
 
 export function initLiveMovements(): void {
   controlRegistry.register({ reload })
+  registerPauseHandler(refreshMovementInterval)
   registerApiMessageHandler('live-movement', handleApiMessage)
 
   for (const [id, liveMovement] of dictionaryToMap(

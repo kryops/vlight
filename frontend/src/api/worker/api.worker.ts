@@ -81,6 +81,7 @@ function sendClientUpdate() {
       {
         dmxMaster: apiState.dmxMaster,
         dmxMasterFade: apiState.dmxMasterFade,
+        paused: apiState.paused,
       }
     : {}
   Object.entries(apiState ?? {}).forEach(([key, value]) => {
