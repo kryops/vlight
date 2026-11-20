@@ -12,6 +12,15 @@ export interface MasterDataEntityDefinition<T extends EntityName = EntityName> {
   dependencies?: EntityName[]
 
   /**
+   * Migrates entries from legacy configuration formats.
+   *
+   * In contrast to the {@link preprocessor}, the result is also used as the
+   * "raw" entries (see {@link rawMasterData}), so editing an entry in the frontend
+   * and saving it persists the migrated format.
+   */
+  migration?: (rawEntries: EntityArray<T>) => EntityArray<T>
+
+  /**
    * Transforms the given entries by e.g. resolving groups into their fixtures.
    * All other entity types that are accessed in the process must be listed as {@link dependencies}.
    *

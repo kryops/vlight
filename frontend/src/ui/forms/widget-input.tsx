@@ -13,7 +13,7 @@ import {
 } from '@vlight/types'
 import { css } from '@linaria/core'
 import { commaStringToArray, ensureBetween, shallowEqual } from '@vlight/utils'
-import { JSX, useCallback, useState } from 'react'
+import { JSX, ReactNode, useCallback, useState } from 'react'
 
 import { baseline, primaryShade } from '../styles'
 import { cx } from '../../util/styles'
@@ -136,14 +136,20 @@ const container = css`
   cursor: pointer;
 `
 
+const header = css`
+  align-items: center;
+`
+
 interface WidgetTypeInputProps<T> {
   value: T
   onChange: (value: T) => void
+  compact?: boolean
 }
 
 function UniverseChannelWidgetInput({
   value,
   onChange,
+  compact,
 }: WidgetTypeInputProps<UniverseWidgetConfig | ChannelsWidgetConfig>) {
   const changeFrom = (newValue: number | undefined): void =>
     onChange({
@@ -164,6 +170,7 @@ function UniverseChannelWidgetInput({
   return (
     <>
       <Label
+        forceSmall={compact}
         label="From"
         input={
           <NumberInput
@@ -175,12 +182,14 @@ function UniverseChannelWidgetInput({
         }
       />
       <Label
+        forceSmall={compact}
         label="To"
         input={
           <NumberInput value={value.to} onChange={changeTo} min={1} max={512} />
         }
       />
       <Label
+        forceSmall={compact}
         label="Title"
         input={<TextInput value={value.title} onChange={changeTitle} />}
       />
@@ -191,6 +200,7 @@ function UniverseChannelWidgetInput({
 function StaticEntitiesWidgetInput({
   value,
   onChange,
+  compact,
 }: WidgetTypeInputProps<
   FixtureWidgetConfig | FixtureGroupWidgetConfig | MemoryWidgetConfig
 >) {
@@ -235,6 +245,7 @@ function StaticEntitiesWidgetInput({
   return (
     <>
       <Label
+        forceSmall={compact}
         label="Entities"
         input={
           <ArrayInput
@@ -254,6 +265,7 @@ function StaticEntitiesWidgetInput({
       />
       {(value.type === 'fixture' || value.type === 'fixture-group') && (
         <Label
+          forceSmall={compact}
           label="Only channels"
           description="Comma-separated"
           input={<TextInput value={mappingString} onChange={changeMapping} />}
@@ -266,6 +278,7 @@ function StaticEntitiesWidgetInput({
 function LiveEntitiesWidgetInput({
   value,
   onChange,
+  compact,
 }: WidgetTypeInputProps<
   LiveMemoryWidgetConfig | LiveChaseWidgetConfig | LiveMovementWidgetConfig
 >) {
@@ -311,6 +324,7 @@ function LiveEntitiesWidgetInput({
 
   return (
     <Label
+      forceSmall={compact}
       label="Entities"
       input={
         <ArrayInput
@@ -332,6 +346,17 @@ export interface WidgetInputProps {
   /** If set, allows deleting the widget. */
   onDelete?: () => void
 
+  /** Content rendered in front of the type select, e.g. a drag handle. */
+  headerPrefix?: ReactNode
+
+  /**
+   * If set, always displays labels above their inputs
+   * to save horizontal space.
+   *
+   * Defaults to `false`.
+   */
+  compact?: boolean
+
   className?: string
 }
 
@@ -342,6 +367,8 @@ export const WidgetInput = ({
   value,
   onChange,
   onDelete,
+  headerPrefix,
+  compact,
   className,
 }: WidgetInputProps) => {
   const onChangeType = (newValue: WidgetConfig['type'] | undefined): void => {
@@ -356,7 +383,8 @@ export const WidgetInput = ({
 
   return (
     <div className={cx(container, className)}>
-      <div className={flexContainer}>
+      <div className={cx(flexContainer, header)}>
+        {headerPrefix}
         <Select
           entries={typeSelectEntries}
           value={value?.type}
@@ -373,19 +401,31 @@ export const WidgetInput = ({
       </div>
 
       {(value?.type === 'universe' || value?.type === 'channels') && (
-        <UniverseChannelWidgetInput value={value} onChange={onChange} />
+        <UniverseChannelWidgetInput
+          value={value}
+          onChange={onChange}
+          compact={compact}
+        />
       )}
 
       {(value?.type === 'fixture' ||
         value?.type === 'fixture-group' ||
         value?.type === 'memory') && (
-        <StaticEntitiesWidgetInput value={value} onChange={onChange} />
+        <StaticEntitiesWidgetInput
+          value={value}
+          onChange={onChange}
+          compact={compact}
+        />
       )}
 
       {(value?.type === 'live-memory' ||
         value?.type === 'live-chase' ||
         value?.type === 'live-movement') && (
-        <LiveEntitiesWidgetInput value={value} onChange={onChange} />
+        <LiveEntitiesWidgetInput
+          value={value}
+          onChange={onChange}
+          compact={compact}
+        />
       )}
     </div>
   )

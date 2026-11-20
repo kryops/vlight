@@ -1,290 +1,301 @@
 import { css } from '@linaria/core'
+import { memo, useEffect, useRef } from 'react'
+import { DynamicPageRow, WidgetConfig } from '@vlight/types'
 import {
-  Dictionary,
-  DynamicPage,
-  DynamicPageCell,
-  DynamicPageRow,
-  LiveChase,
-  LiveMemory,
-  LiveMovement,
-  MasterDataMaps,
-  WidgetConfig,
-} from '@vlight/types'
-import { assertNever, toArray } from '@vlight/utils'
+  Draggable,
+  DraggableProvidedDragHandleProps,
+  Droppable,
+} from '@hello-pangea/dnd'
 
-import { FormState, useFormStateArray } from '../../../../hooks/form'
-import { iconAdd, iconDelete, iconDown, iconUp } from '../../../../ui/icons'
+import { iconAdd, iconDelete, iconDrag } from '../../../../ui/icons'
 import { Icon } from '../../../../ui/icons/icon'
 import { baseline, primaryShade } from '../../../../ui/styles'
 import { TextInput } from '../../../../ui/forms/typed-input'
-import { useApiState, useMasterDataMaps } from '../../../../hooks/api'
-import { showDialogWithReturnValue } from '../../../../ui/overlays/dialog'
-import { okCancel } from '../../../../ui/overlays/buttons'
-import { SortableList } from '../../../../ui/containers/sortable-list'
-import { useBreakpoint } from '../../../../ui/hooks/breakpoint'
+import { WidgetInput, widgetTypes } from '../../../../ui/forms/widget-input'
 import { Button } from '../../../../ui/buttons/button'
-import { flexContainer } from '../../../../ui/css/flex'
 import { cx } from '../../../../util/styles'
 
-import { DynamicPageCellEditor } from './dynamic-page-cell-editor'
+/** Type of the drag & drop operation to move widgets. */
+export const widgetDragType = 'widget'
 
-function getWidgetDisplayString(
-  widget: WidgetConfig,
-  masterDataMaps: MasterDataMaps,
-  liveChases: Dictionary<LiveChase>,
-  liveMemories: Dictionary<LiveMemory>,
-  liveMovements: Dictionary<LiveMovement>
-) {
-  const titlePrefix =
-    'title' in widget && widget.title ? `${widget.title}: ` : ''
+/** Droppable ID prefix of the widget list of a row. */
+export const widgetDroppablePrefix = 'row-widgets-'
 
-  const { fixtures, fixtureGroups, memories } = masterDataMaps
-
-  switch (widget.type) {
-    case 'universe':
-      return `${titlePrefix}Universe ${widget.from} - ${widget.to}`
-
-    case 'channels':
-      return `${titlePrefix}Channels ${widget.from} - ${widget.to}`
-
-    case 'fixture': {
-      const name = toArray(widget.id)
-        .map(id => fixtures.get(id)?.name ?? id)
-        .join(', ')
-      return `${titlePrefix}Fixture ${name}`
-    }
-
-    case 'fixture-group': {
-      const name = toArray(widget.id)
-        .map(id => fixtureGroups.get(id)?.name ?? id)
-        .join(', ')
-      return `${titlePrefix}Group ${name}`
-    }
-
-    case 'memory': {
-      const name = toArray(widget.id)
-        .map(id => memories.get(id)?.name ?? id)
-        .join(', ')
-      return `${titlePrefix}Memory ${name}`
-    }
-
-    case 'live-memory': {
-      const name = toArray(widget.id)
-        .map(id => liveMemories[id]?.name ?? id)
-        .join(', ')
-      return `${titlePrefix}Live Memory ${name}`
-    }
-
-    case 'live-chase': {
-      const name = toArray(widget.id)
-        .map(id => liveChases[id]?.name ?? id)
-        .join(', ')
-      return `${titlePrefix}Live Chase ${name}`
-    }
-
-    case 'live-movement': {
-      const name = toArray(widget.id)
-        .map(id => liveMovements[id]?.name ?? id)
-        .join(', ')
-      return `${titlePrefix}Movement ${name}`
-    }
-
-    case 'map':
-      return `${titlePrefix}Map`
-
-    case 'dmx-master':
-      return `${titlePrefix}DMX Master`
-
-    case 'controls':
-      return `${titlePrefix}Controls (all off)`
-
-    default:
-      assertNever(widget)
-  }
-
-  return JSON.stringify(widget)
-}
-
-const rowStyle = css`
-  padding: ${baseline(2)} 0;
-  padding-bottom: 0;
-  margin: ${baseline(2)} ${baseline(-2)};
-  border: 1px solid ${primaryShade(1)};
-`
-
-const cellsContainer = css`
-  margin: ${baseline(2)} ${baseline(-1)};
-`
-
-const horizontalCellContainer = css`
-  display: flex;
-  flex: 1 1 auto;
-`
-
-const addCellButton = css`
-  margin: ${baseline()};
+const rowHeader = css`
   display: flex;
   align-items: center;
+  gap: ${baseline()};
+`
+
+const dragHandle = css`
+  flex: 0 0 auto;
+  padding: ${baseline()};
+  cursor: grab;
+  touch-action: none;
+`
+
+const widgetArea = css`
+  display: flex;
+  align-items: flex-start;
+  gap: ${baseline()};
+  margin-top: ${baseline(2)};
+`
+
+const widgetList = css`
+  display: flex;
+  align-items: flex-start;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: ${baseline(16)};
+  overflow-x: auto;
+  padding-bottom: ${baseline()};
+  border: 1px dashed transparent;
+  transition: border-color 0.2s;
+`
+
+const widgetList_draggingOver = css`
+  border-color: ${primaryShade(0)};
+`
+
+const widgetList_empty = css`
+  align-items: center;
   justify-content: center;
+  border-color: ${primaryShade(1)};
 `
 
-const cellStyle = css`
-  flex: 1 1 0;
-  padding: ${baseline(2)};
-  margin: ${baseline()};
-  background: ${primaryShade(2)};
-  cursor: pointer;
+const widgetCard = css`
+  flex: 0 0 auto;
+  width: min(${baseline(76)}, 75vw);
+  padding: 0 ${baseline()};
+  box-sizing: border-box;
+
+  & select,
+  & input {
+    min-width: 0;
+  }
 `
 
-const cellDeleteContainer = css`
-  float: right;
-  margin-left: ${baseline(3)};
+const widgetInput = css`
+  margin: 0;
+  cursor: default;
 `
 
-const cellDeleteIcon = css`
-  padding: ${baseline(2)};
-  margin: ${baseline(-2)};
+const widgetCard_dragging = css`
+  & > * {
+    box-shadow: 0 ${baseline(2)} ${baseline(6)} rgba(0, 0, 0, 0.6);
+  }
 `
 
-const paragraph = css`
-  margin: ${baseline()} 0;
+const emptyHint = css`
+  opacity: 0.6;
+  font-style: italic;
 `
+
+const addWidgetButton = css`
+  flex: 0 0 auto;
+  align-self: stretch;
+  margin: 0;
+`
+
+/** Updates a row based on its previous value. */
+export type RowUpdater = (
+  rowIndex: number,
+  updater: (row: DynamicPageRow) => DynamicPageRow
+) => void
+
+interface DraggableWidgetProps {
+  widget: WidgetConfig
+  rowIndex: number
+  widgetIndex: number
+  onChange: (widgetIndex: number, widget: WidgetConfig) => void
+  onRemove: (widgetIndex: number) => void
+}
+
+interface WidgetCardProps {
+  widget: WidgetConfig
+  widgetIndex: number
+  dragHandleProps: DraggableProvidedDragHandleProps | null
+  onChange: (widgetIndex: number, widget: WidgetConfig) => void
+  onRemove: (widgetIndex: number) => void
+}
+
+/**
+ * The content of a draggable widget.
+ *
+ * Memoized separately from the Draggable, as the Draggable's render function
+ * is called for every drag movement (e.g. when the widget is shifted
+ * to make room for the dragged one).
+ */
+const WidgetCard = memo(function WidgetCard({
+  widget,
+  widgetIndex,
+  dragHandleProps,
+  onChange,
+  onRemove,
+}: WidgetCardProps) {
+  const changeWidget = (newWidget: WidgetConfig) =>
+    onChange(widgetIndex, newWidget)
+  const removeWidget = () => onRemove(widgetIndex)
+
+  return (
+    <WidgetInput
+      value={widget}
+      onChange={changeWidget}
+      onDelete={removeWidget}
+      headerPrefix={
+        <div className={dragHandle} title="Move widget" {...dragHandleProps}>
+          <Icon icon={iconDrag} />
+        </div>
+      }
+      className={widgetInput}
+      compact
+    />
+  )
+})
+
+/**
+ * A single draggable widget editor.
+ *
+ * Memoized so that it is only re-rendered when its own props change,
+ * not whenever the row is re-rendered.
+ */
+const DraggableWidget = memo(function DraggableWidget({
+  widget,
+  rowIndex,
+  widgetIndex,
+  onChange,
+  onRemove,
+}: DraggableWidgetProps) {
+  return (
+    <Draggable
+      draggableId={`widget-${rowIndex}-${widgetIndex}`}
+      index={widgetIndex}
+    >
+      {(provided, snapshot) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          className={cx(widgetCard, snapshot.isDragging && widgetCard_dragging)}
+        >
+          <WidgetCard
+            widget={widget}
+            widgetIndex={widgetIndex}
+            dragHandleProps={provided.dragHandleProps}
+            onChange={onChange}
+            onRemove={onRemove}
+          />
+        </div>
+      )}
+    </Draggable>
+  )
+})
+
+interface WidgetListProps {
+  widgets: WidgetConfig[]
+  rowIndex: number
+  onChange: (widgetIndex: number, widget: WidgetConfig) => void
+  onRemove: (widgetIndex: number) => void
+}
+
+/**
+ * The draggable widgets of a row.
+ *
+ * Extracted into a separate component so that the Droppable's drag state
+ * changes do not re-render all widgets (see the @hello-pangea/dnd docs).
+ */
+const WidgetList = ({
+  widgets,
+  rowIndex,
+  onChange,
+  onRemove,
+}: WidgetListProps) => (
+  <>
+    {widgets.map((widget, widgetIndex) => (
+      <DraggableWidget
+        key={widgetIndex}
+        widget={widget}
+        rowIndex={rowIndex}
+        widgetIndex={widgetIndex}
+        onChange={onChange}
+        onRemove={onRemove}
+      />
+    ))}
+  </>
+)
 
 export interface DynamicPageRowEditorProps {
   row: DynamicPageRow
   rowIndex: number
-  formState: FormState<DynamicPage>
+  dragHandleProps: DraggableProvidedDragHandleProps | null
+  onUpdate: RowUpdater
+  onRemove: (rowIndex: number) => void
 }
 
-export const DynamicPageRowEditor = ({
+/**
+ * Editor for a single row of a dynamic page.
+ *
+ * Memoized, as the parent Draggable's render function is called
+ * for every drag movement.
+ *
+ * Must be rendered inside a `DragDropContext` that handles moving
+ * widgets of type {@link widgetDragType} between rows.
+ */
+export const DynamicPageRowEditor = memo(function DynamicPageRowEditor({
   row,
   rowIndex,
-  formState,
-}: DynamicPageRowEditorProps) => {
-  const masterDataMaps = useMasterDataMaps()
-  const liveChases = useApiState('liveChases')
-  const liveMemories = useApiState('liveMemories')
-  const liveMovements = useApiState('liveMovements')
+  dragHandleProps,
+  onUpdate,
+  onRemove,
+}: DynamicPageRowEditorProps) {
+  const listRef = useRef<HTMLDivElement | null>(null)
+  const scrollToEndRef = useRef(false)
 
-  const rows = useFormStateArray(formState, 'rows')
+  const widgetCount = row.widgets.length
+  useEffect(() => {
+    if (!scrollToEndRef.current) return
+    scrollToEndRef.current = false
+    const list = listRef.current
+    list?.scrollTo({ left: list.scrollWidth, behavior: 'smooth' })
+  }, [widgetCount])
 
-  const isLarge = useBreakpoint(600)
+  const changeHeadline = (headline: string | undefined) =>
+    onUpdate(rowIndex, oldRow => ({ ...oldRow, headline }))
 
-  function changeRowProperty<TKey extends keyof DynamicPageRow>(
-    row: DynamicPageRow,
-    key: TKey,
-    value: DynamicPageRow[TKey]
-  ) {
-    rows.update(row, { ...row, [key]: value })
-  }
-
-  function moveRow(offset: 1 | -1) {
-    const newRows = [...rows.value]
-    const row = newRows[rowIndex]
-    newRows[rowIndex] = newRows[rowIndex + offset]
-    newRows[rowIndex + offset] = row
-    formState.changeValue('rows', newRows)
-  }
-
-  const changeCells = (newCells: DynamicPageCell[]) =>
-    changeRowProperty(row, 'cells', newCells)
-
-  const changeCell = (cell: DynamicPageCell, changes: DynamicPageCell) => {
-    changeRowProperty(
-      row,
-      'cells',
-      row.cells.map(it => (it === cell ? changes : it))
-    )
-  }
-
-  const removeCell = (cell: DynamicPageCell) => {
-    changeRowProperty(
-      row,
-      'cells',
-      row.cells.filter(it => it !== cell)
-    )
-  }
-
-  const addCell = async () => {
-    const initialValue: DynamicPageCell = {
-      widgets: [{ type: 'map' }],
-    }
-    const result = await showDialogWithReturnValue<DynamicPageCell>(
-      onChange => (
-        <DynamicPageCellEditor cell={initialValue} onChange={onChange} />
+  const changeWidget = (widgetIndex: number, widget: WidgetConfig) =>
+    onUpdate(rowIndex, oldRow => ({
+      ...oldRow,
+      widgets: oldRow.widgets.map((it, index) =>
+        index === widgetIndex ? widget : it
       ),
-      okCancel,
-      { showCloseButton: true, initialValue }
-    )
-    if (result) changeRowProperty(row, 'cells', [...row.cells, result])
+    }))
+
+  const removeWidget = (widgetIndex: number) =>
+    onUpdate(rowIndex, oldRow => ({
+      ...oldRow,
+      widgets: oldRow.widgets.filter((_, index) => index !== widgetIndex),
+    }))
+
+  const addWidget = () => {
+    scrollToEndRef.current = true
+    onUpdate(rowIndex, oldRow => ({
+      ...oldRow,
+      widgets: [...oldRow.widgets, widgetTypes.map.defaultValueFactory()],
+    }))
   }
 
-  const renderCellContent = (cell: DynamicPageCell) => (
-    <div
-      onClick={async () => {
-        const result = await showDialogWithReturnValue<DynamicPageCell>(
-          onChange => <DynamicPageCellEditor cell={cell} onChange={onChange} />,
-          okCancel,
-          { showCloseButton: true }
-        )
-        if (result) changeCell(cell, result)
-      }}
-    >
-      <div className={cellDeleteContainer}>
-        {cell.factor && `x${cell.factor}`}
-        {row.cells.length > 1 && (
-          <Icon
-            icon={iconDelete}
-            className={cellDeleteIcon}
-            hoverable
-            inline
-            onClick={event => {
-              event.stopPropagation()
-              removeCell(cell)
-            }}
-          />
-        )}
-      </div>
-      {cell.widgets.map((widget, widgetIndex) => (
-        <p key={widgetIndex} className={paragraph}>
-          {getWidgetDisplayString(
-            widget,
-            masterDataMaps,
-            liveChases,
-            liveMemories,
-            liveMovements
-          )}
-        </p>
-      ))}
-      {cell.widgets.length === 0 && (
-        <p className={paragraph}>
-          <i>(empty)</i>
-        </p>
-      )}
-    </div>
-  )
-
-  const removeRow = () => rows.remove(row)
-  const changeHeadline = (newValue: string | undefined): void =>
-    changeRowProperty(row, 'headline', newValue)
-  const moveDown = () => moveRow(1)
-  const moveUp = () => moveRow(-1)
+  const removeRow = () => onRemove(rowIndex)
 
   return (
-    <div className={rowStyle}>
-      <div className={flexContainer}>
-        {rowIndex > 0 && (
-          <Button icon={iconUp} transparent onClick={moveUp} title="Move up" />
-        )}
-        {rowIndex < rows.value.length - 1 && (
-          <Button
-            icon={iconDown}
-            transparent
-            onClick={moveDown}
-            title="Move down"
-          />
-        )}
-        <TextInput value={row.headline} onChange={changeHeadline} />
+    <>
+      <div className={rowHeader}>
+        <div className={dragHandle} title="Move row" {...dragHandleProps}>
+          <Icon icon={iconDrag} />
+        </div>
+        <TextInput
+          value={row.headline}
+          onChange={changeHeadline}
+          placeholder="Headline"
+        />
         <Button
           icon={iconDelete}
           transparent
@@ -292,24 +303,46 @@ export const DynamicPageRowEditor = ({
           title="Remove row"
         />
       </div>
-      <div className={cx(cellsContainer, isLarge && flexContainer)}>
-        {row.cells.length > 0 && (
-          <SortableList
-            direction={isLarge ? 'horizontal' : 'vertical'}
-            entries={row.cells}
-            onChange={changeCells}
-            entryClassName={cellStyle}
-            containerClassName={isLarge ? horizontalCellContainer : undefined}
-            renderEntryContent={renderCellContent}
-          />
-        )}
+
+      <div className={widgetArea}>
+        <Droppable
+          droppableId={widgetDroppablePrefix + rowIndex}
+          type={widgetDragType}
+          direction="horizontal"
+        >
+          {(provided, snapshot) => (
+            <div
+              ref={element => {
+                provided.innerRef(element)
+                listRef.current = element
+              }}
+              {...provided.droppableProps}
+              className={cx(
+                widgetList,
+                widgetCount === 0 && widgetList_empty,
+                snapshot.isDraggingOver && widgetList_draggingOver
+              )}
+            >
+              <WidgetList
+                widgets={row.widgets}
+                rowIndex={rowIndex}
+                onChange={changeWidget}
+                onRemove={removeWidget}
+              />
+              {provided.placeholder}
+              {widgetCount === 0 && !snapshot.isDraggingOver && (
+                <span className={emptyHint}>Drop widgets here</span>
+              )}
+            </div>
+          )}
+        </Droppable>
         <Button
           icon={iconAdd}
-          className={addCellButton}
-          title="Add cell"
-          onClick={addCell}
+          className={addWidgetButton}
+          title="Add widget"
+          onClick={addWidget}
         />
       </div>
-    </div>
+    </>
   )
-}
+})

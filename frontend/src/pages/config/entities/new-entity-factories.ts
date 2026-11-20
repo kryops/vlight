@@ -78,13 +78,9 @@ export function newDynamicPageFactory(): WithoutId<DynamicPage> {
   return {
     rows: [
       {
-        cells: [
+        widgets: [
           {
-            widgets: [
-              {
-                type: 'map',
-              },
-            ],
+            type: 'map',
           },
         ],
       },

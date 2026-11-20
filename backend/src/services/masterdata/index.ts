@@ -41,7 +41,10 @@ async function loadMasterDataEntity<T extends EntityName>(entity: T) {
 
   const global = !!definition?.global
 
-  const rawEntries = await loadDatabaseEntity(entity, { global })
+  const loadedEntries = await loadDatabaseEntity(entity, { global })
+
+  const migration = definition?.migration
+  const rawEntries = migration ? migration(loadedEntries) : loadedEntries
 
   const preprocessor = definition?.preprocessor
   const entries = preprocessor ? preprocessor(rawEntries) : rawEntries

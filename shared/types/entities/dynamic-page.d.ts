@@ -113,7 +113,12 @@ export type WidgetConfig =
   | DmxMasterWidgetConfig
   | ControlsWidgetConfig
 
-/** A cell of a {@link DynamicPageRow}. */
+/**
+ * A cell of a {@link DynamicPageRow}.
+ *
+ * @deprecated Cells are no longer supported. When loading the configuration,
+ * the widgets of all cells are merged into {@link DynamicPageRow.widgets}.
+ */
 export interface DynamicPageCell {
   /**
    * The width factor
@@ -121,11 +126,7 @@ export interface DynamicPageCell {
    */
   factor?: number
 
-  /**
-   * The widgets in a cell.
-   *
-   * Displayed next to each other; wrap into multiple lines if there is not enough space.
-   */
+  /** The widgets in a cell. */
   widgets: WidgetConfig[]
 }
 
@@ -135,18 +136,25 @@ export interface DynamicPageRow {
   headline?: string
 
   /**
-   * The cells that make up the row.
+   * The widgets in the row.
    *
    * Displayed next to each other; wrap into multiple lines if there is not enough space.
    */
-  cells: DynamicPageCell[]
+  widgets: WidgetConfig[]
+
+  /**
+   * @deprecated Use {@link widgets} instead.
+   *
+   * Legacy configurations containing cells are migrated automatically
+   * by merging the widgets of all cells into {@link widgets}.
+   */
+  cells?: DynamicPageCell[]
 }
 
 /**
  * A configurable dynamic page to combine certain controls on a single page.
  *
- * Consists of *rows*, which consist of *cells*, which can contain
- * multiple *widgets*.
+ * Consists of *rows*, which contain multiple *widgets*.
  */
 export interface DynamicPage extends DbEntity {
   /** The page's display name. */

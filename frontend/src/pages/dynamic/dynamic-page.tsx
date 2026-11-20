@@ -42,14 +42,12 @@ const DynamicPage = () => {
 
   const flatWidgets = (page?.rows ?? [])
     .flatMap(row =>
-      row.cells.flatMap(cell =>
-        cell.widgets.flatMap(widget => {
-          // for multi-ID widgets we just place the widget in the array multiple times
-          if ('id' in widget && Array.isArray(widget.id)) {
-            return widget.id.map(() => widget)
-          } else return widget
-        })
-      )
+      row.widgets.flatMap(widget => {
+        // for multi-ID widgets we just place the widget in the array multiple times
+        if ('id' in widget && Array.isArray(widget.id)) {
+          return widget.id.map(() => widget)
+        } else return widget
+      })
     )
     .filter(widget => !widgetTypesWithoutHotkeys.includes(widget.type))
   const activeHotkeyIndex = useNumberHotkey(flatWidgets.length)
@@ -113,51 +111,46 @@ const DynamicPage = () => {
           </div>
         </>
       ) : (
-        rows.map(({ headline, cells }, index) => (
+        rows.map(({ headline, widgets }, index) => (
           <Grid
             key={index}
             headline={headline}
-            cells={cells.map(({ factor, widgets }) => ({
-              factor,
-              children: (
-                <>
-                  {widgets.map((widget, index) => {
-                    const hotkeyIndex = flatWidgets.indexOf(widget)
+            cells={[
+              {
+                children: widgets.map((widget, index) => {
+                  const hotkeyIndex = flatWidgets.indexOf(widget)
 
-                    if ('id' in widget && Array.isArray(widget.id)) {
-                      return (
-                        <Fragment key={index}>
-                          {widget.id.map((id, idIndex) => (
-                            <DynamicWidget
-                              key={id}
-                              config={{
-                                ...widget,
-                                id,
-                              }}
-                              hotkeysActive={
-                                hotkeyIndex + idIndex === activeHotkeyIndex
-                              }
-                              cornerLabel={getHotkeyLabel(
-                                hotkeyIndex + idIndex
-                              )}
-                            />
-                          ))}
-                        </Fragment>
-                      )
-                    }
-
+                  if ('id' in widget && Array.isArray(widget.id)) {
                     return (
-                      <DynamicWidget
-                        key={index}
-                        config={widget}
-                        hotkeysActive={hotkeyIndex === activeHotkeyIndex}
-                        cornerLabel={getHotkeyLabel(hotkeyIndex)}
-                      />
+                      <Fragment key={index}>
+                        {widget.id.map((id, idIndex) => (
+                          <DynamicWidget
+                            key={id}
+                            config={{
+                              ...widget,
+                              id,
+                            }}
+                            hotkeysActive={
+                              hotkeyIndex + idIndex === activeHotkeyIndex
+                            }
+                            cornerLabel={getHotkeyLabel(hotkeyIndex + idIndex)}
+                          />
+                        ))}
+                      </Fragment>
                     )
-                  })}
-                </>
-              ),
-            }))}
+                  }
+
+                  return (
+                    <DynamicWidget
+                      key={index}
+                      config={widget}
+                      hotkeysActive={hotkeyIndex === activeHotkeyIndex}
+                      cornerLabel={getHotkeyLabel(hotkeyIndex)}
+                    />
+                  )
+                }),
+              },
+            ]}
           />
         ))
       )}

@@ -11,6 +11,16 @@ import { useShallowEqualMemo } from './performance'
 export interface FormState<TValues extends object> {
   values: TValues
   changeValue<TKey extends keyof TValues>(key: TKey, value: TValues[TKey]): void
+  /**
+   * Changes a value based on its previous value.
+   *
+   * In contrast to {@link changeValue}, the caller does not need to know the
+   * current value, which allows passing stable callbacks to child components.
+   */
+  updateValue: <TKey extends keyof TValues>(
+    key: TKey,
+    updater: (oldValue: TValues[TKey]) => TValues[TKey]
+  ) => void
 }
 
 export interface FormStateOptions<TValues extends object> {
@@ -39,9 +49,20 @@ export function useFormState<TValues extends object>(
     []
   )
 
+  const updateValue = useCallback(
+    <TKey extends keyof TValues>(
+      key: TKey,
+      updater: (oldValue: TValues[TKey]) => TValues[TKey]
+    ) => {
+      setValues(oldValues => ({ ...oldValues, [key]: updater(oldValues[key]) }))
+    },
+    []
+  )
+
   return useShallowEqualMemo({
     values,
     changeValue,
+    updateValue,
   })
 }
 
