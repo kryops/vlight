@@ -107,6 +107,11 @@ export const StatelessLiveChaseWidget = ({
             label="Fade"
             subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
             bottomIcon={state.fadeLockedToSpeed ? iconPercentage : iconTime}
+            bottomIconTitle={
+              state.fadeLockedToSpeed
+                ? 'Fade relative to speed (click for absolute)'
+                : 'Absolute fade time (click for relative to speed)'
+            }
             onBottomIconClick={toggleFadeLockedToSpeed}
           />
           <ValueOrRandomFader

@@ -168,6 +168,7 @@ export function Modal<T>({
         <div className={modal} onClick={stopClickPropagation}>
           {showCloseButton && (
             <Icon
+              title="Close"
               icon={iconClose}
               className={closeButton}
               hoverable

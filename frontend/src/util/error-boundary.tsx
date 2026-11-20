@@ -59,6 +59,7 @@ export class ErrorBoundary extends Component<
           Error: {error.toString()}
           <br />
           <Button
+            title="Retry"
             transparent
             icon={iconSync}
             onClick={() =>

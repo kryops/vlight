@@ -67,6 +67,7 @@ export const LiveMemories = ({
         level={3}
         rightContent={
           <Icon
+            title="Add live memory"
             icon={iconAdd}
             size={8}
             hoverable

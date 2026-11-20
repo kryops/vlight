@@ -98,6 +98,7 @@ export const LiveMovements = ({
         level={3}
         rightContent={
           <Icon
+            title="Add movement"
             icon={iconAdd}
             size={8}
             hoverable

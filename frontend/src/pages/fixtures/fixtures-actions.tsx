@@ -43,7 +43,7 @@ export function FixturesActions() {
   return (
     <HotkeyContext value={true}>
       <Link to={entitiesPageRoute('fixtures')}>
-        <Button icon={iconConfig} transparent />
+        <Button title="Configure fixtures" icon={iconConfig} transparent />
       </Link>
       <Button
         icon={iconLight}

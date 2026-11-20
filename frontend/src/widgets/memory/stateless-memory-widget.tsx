@@ -124,6 +124,7 @@ export const StatelessMemoryWidget = ({
         </div>
         <div className={configContainer}>
           <Icon
+            title="Edit memory"
             icon={iconConfig}
             onClick={openEditor}
             shade={1}

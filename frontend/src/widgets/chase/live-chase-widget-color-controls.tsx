@@ -155,7 +155,12 @@ export const LiveChaseWidgetColorControls = ({
             }
           />
         ))}
-        <Button icon={iconAdd} transparent onClick={addColor} />
+        <Button
+          title="Add color"
+          icon={iconAdd}
+          transparent
+          onClick={addColor}
+        />
       </div>
       {state.colorsDraft && (
         <div className={cx(colorContainer, draftContainer)}>

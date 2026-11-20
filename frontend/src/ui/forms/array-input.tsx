@@ -118,6 +118,7 @@ export const ArrayInput = <T extends any>({
                 })}
                 {displayRemoveButtons && singleValue !== undefined && (
                   <Button
+                    title="Remove"
                     icon={iconDelete}
                     onClick={() => changeSingleValue(undefined)}
                     transparent
@@ -150,6 +151,7 @@ export const ArrayInput = <T extends any>({
             })}
             {displayRemoveButtons && singleValue !== undefined && (
               <Button
+                title="Remove"
                 icon={iconDelete}
                 onClick={() => changeSingleValue(undefined)}
                 transparent

@@ -32,7 +32,14 @@ const EntitiesPage = () => {
     <div>
       <Header
         rightContent={
-          <Icon icon={iconAdd} size={8} hoverable inline onClick={openEditor} />
+          <Icon
+            title="Add"
+            icon={iconAdd}
+            size={8}
+            hoverable
+            inline
+            onClick={openEditor}
+          />
         }
       >
         <BackArrow />

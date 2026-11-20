@@ -108,6 +108,7 @@ export const MemorySceneEditor = ({
       />
       {scene.states.length > 1 && (
         <Icon
+          title="Remove state"
           icon={iconDelete}
           padding
           onClick={() => changeStates(scene.states.filter(it => it !== state))}
@@ -140,7 +141,14 @@ export const MemorySceneEditor = ({
         )}
       >
         <div>
-          States <Icon icon={iconAdd} hoverable inline onClick={addState} />
+          States{' '}
+          <Icon
+            title="Add state"
+            icon={iconAdd}
+            hoverable
+            inline
+            onClick={addState}
+          />
         </div>
         {scene.states.length >= 2 && (
           <div>

@@ -77,6 +77,7 @@ export function EntityList<T extends EntityName>({
             entry.id}
         </div>
         <Icon
+          title="Copy"
           icon={iconCopy}
           className={entryIcon}
           hoverable
@@ -89,6 +90,7 @@ export function EntityList<T extends EntityName>({
           }
         />
         <Icon
+          title="Delete"
           icon={iconDelete}
           className={entryIcon}
           hoverable

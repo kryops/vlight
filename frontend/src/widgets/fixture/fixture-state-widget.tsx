@@ -135,6 +135,7 @@ export const FixtureStateWidget = ({
             {titleSide}
             {colorPickerCapable && (
               <Icon
+                title="Color picker"
                 icon={iconColorPicker}
                 onClick={toggleColorPicker}
                 shade={colorPicker ? 1 : 2}
@@ -144,6 +145,7 @@ export const FixtureStateWidget = ({
             )}
             {positionPickerCapable && (
               <Icon
+                title="Position picker"
                 icon={iconPositionPicker}
                 onClick={togglePositionPicker}
                 shade={positionPicker ? 1 : 2}

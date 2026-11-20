@@ -210,9 +210,14 @@ export function MemoriesActions() {
 
   return (
     <HotkeyContext value={true}>
-      <Button icon={iconAdd} transparent onClick={addMemory} />
+      <Button
+        title="Add memory"
+        icon={iconAdd}
+        transparent
+        onClick={addMemory}
+      />
       <Link to={entitiesPageRoute('memories')}>
-        <Button icon={iconConfig} transparent />
+        <Button title="Configure memories" icon={iconConfig} transparent />
       </Link>
       <Button
         icon={iconStop}

@@ -147,6 +147,7 @@ export function ValueOrRandomFaderEditor({
                 {...faderProps}
               />
               <Icon
+                title="Remove value"
                 icon={iconDelete}
                 shade={1}
                 hoverable
@@ -161,7 +162,14 @@ export function ValueOrRandomFaderEditor({
             </div>
           ))}
         </div>
-        <Icon icon={iconAdd} shade={1} hoverable size={8} onClick={addValue} />
+        <Icon
+          title="Add value"
+          icon={iconAdd}
+          shade={1}
+          hoverable
+          size={8}
+          onClick={addValue}
+        />
       </>
     )
   } else {

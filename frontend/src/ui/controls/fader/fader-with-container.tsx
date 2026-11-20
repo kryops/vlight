@@ -34,6 +34,8 @@ export interface FaderWithContainerProps {
 
   /** Icon displayed at the bottom of the fader. */
   bottomIcon?: string
+  /** Tooltip for the bottom icon. */
+  bottomIconTitle?: string
   onBottomIconClick?: () => any
 
   className?: string
@@ -48,6 +50,7 @@ export interface FaderWithContainerProps {
 export const FaderWithContainer = ({
   bottomLabel,
   bottomIcon,
+  bottomIconTitle,
   onBottomIconClick,
   className,
   faderClassName,
@@ -59,6 +62,7 @@ export const FaderWithContainer = ({
       {bottomLabel && <div className={smallText}>{bottomLabel}</div>}
       {bottomIcon && (
         <Icon
+          title={bottomIconTitle}
           icon={bottomIcon}
           hoverable
           inline

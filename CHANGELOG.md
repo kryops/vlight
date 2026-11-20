@@ -9,6 +9,7 @@
 - Added auto-select free channel button for fixture editor
 - Fixtures/groups: "Save into Memory" can now add the state as a new scene to an existing memory
 - Long labels on fader buttons now wrap
+- Added tooltips to icon buttons
 
 ## January 2025
 

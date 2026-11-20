@@ -156,7 +156,12 @@ export function ChaseColorsEditor({
             )}
           </Clickable>
         ))}
-        <Button icon={iconAdd} transparent onClick={addColor} />
+        <Button
+          title="Add color"
+          icon={iconAdd}
+          transparent
+          onClick={addColor}
+        />
       </div>
 
       {selectedColor && (

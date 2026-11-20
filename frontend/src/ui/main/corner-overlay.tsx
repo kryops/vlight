@@ -64,6 +64,7 @@ export const CornerOverlay = () => {
       <div className={cornerOverlay}>
         {isLarge && (
           <Icon
+            title="Toggle mini map"
             className={cornerIcon}
             icon={iconMap}
             hoverable
@@ -71,12 +72,14 @@ export const CornerOverlay = () => {
           />
         )}
         <Icon
+          title="Toggle light mode"
           className={cornerIcon}
           icon={iconLight}
           hoverable
           onClick={toggleLightMode}
         />
         <Icon
+          title="Toggle fullscreen"
           className={cornerIcon}
           icon={iconFullscreen}
           hoverable

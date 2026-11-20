@@ -46,9 +46,18 @@ export const FixtureGroupsActions = () => {
 
   return (
     <HotkeyContext value={true}>
-      <Button icon={iconAdd} transparent onClick={addFixtureGroup} />
+      <Button
+        title="Add fixture group"
+        icon={iconAdd}
+        transparent
+        onClick={addFixtureGroup}
+      />
       <Link to={entitiesPageRoute('fixtureGroups')}>
-        <Button icon={iconConfig} transparent />
+        <Button
+          title="Configure fixture groups"
+          icon={iconConfig}
+          transparent
+        />
       </Link>
       <Button
         icon={iconLight}

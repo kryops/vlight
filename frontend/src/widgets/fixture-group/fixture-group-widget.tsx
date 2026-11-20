@@ -50,6 +50,7 @@ export const FixtureGroupWidget = ({
       title={`${group.name ?? group.id}`}
       titleSide={
         <Icon
+          title="Edit group"
           icon={iconConfig}
           onClick={openEditor}
           shade={1}

@@ -85,6 +85,7 @@ export const SortableFixtureMapping = ({
         <Icon className={entryButton} icon={iconDrag} />
         <div className={entryName}>{name}</div>
         <Icon
+          title="Remove"
           className={entryButton}
           icon={iconDelete}
           hoverable

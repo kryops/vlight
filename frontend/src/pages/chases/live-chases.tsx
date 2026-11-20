@@ -91,6 +91,7 @@ export const LiveChases = ({
         level={3}
         rightContent={
           <Icon
+            title="Add live chase"
             icon={iconAdd}
             size={8}
             hoverable

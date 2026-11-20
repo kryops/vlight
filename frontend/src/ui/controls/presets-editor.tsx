@@ -93,6 +93,7 @@ const PresetContainer = ({
             <br />
             <br />
             <Icon
+              title="Delete preset"
               size={4}
               icon={iconDelete}
               hoverable
