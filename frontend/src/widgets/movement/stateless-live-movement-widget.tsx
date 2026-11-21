@@ -46,7 +46,7 @@ import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
 
 import { LiveMovementPreview } from './live-movement-preview'
-import { removeReferencesFromButtons } from '../../pages/config/entities/button-references'
+import { removeReferencesFromActions } from '../../pages/config/entities/action-references'
 
 /** Fastest speed (duration of a cycle in seconds). */
 export const liveMovementMaxSpeed = 0.5
@@ -183,7 +183,7 @@ export const StatelessLiveMovementWidget = ({
   const promptDelete = async () => {
     if (await showDialog(`Delete Movement "${title}"?`, yesNo)) {
       deleteLiveMovement(id)
-      removeReferencesFromButtons('live-movement', id)
+      removeReferencesFromActions('live-movement', id)
     }
   }
 

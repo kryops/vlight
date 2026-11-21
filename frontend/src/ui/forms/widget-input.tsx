@@ -9,6 +9,7 @@ import {
   LiveMemoryWidgetConfig,
   LiveMovementWidgetConfig,
   MemoryWidgetConfig,
+  SequenceWidgetConfig,
   UniverseWidgetConfig,
   WidgetConfig,
 } from '@vlight/types'
@@ -81,6 +82,14 @@ export const widgetTypes: { [type in WidgetType]: WidgetMapping<type> } = {
       id: apiState.masterData?.memories[0]?.id ?? '',
     }),
     entityReference: 'memories',
+  },
+  sequence: {
+    name: 'Sequence',
+    defaultValueFactory: () => ({
+      type: 'sequence',
+      id: apiState.masterData?.sequences[0]?.id ?? '',
+    }),
+    entityReference: 'sequences',
   },
   'live-memory': {
     name: 'Live Memory',
@@ -213,7 +222,10 @@ function StaticEntitiesWidgetInput({
   onChange,
   compact,
 }: WidgetTypeInputProps<
-  FixtureWidgetConfig | FixtureGroupWidgetConfig | MemoryWidgetConfig
+  | FixtureWidgetConfig
+  | FixtureGroupWidgetConfig
+  | MemoryWidgetConfig
+  | SequenceWidgetConfig
 >) {
   const initialMappingString =
     value.type === 'fixture' || value.type === 'fixture-group'
@@ -460,7 +472,8 @@ export const WidgetInput = ({
 
       {(value?.type === 'fixture' ||
         value?.type === 'fixture-group' ||
-        value?.type === 'memory') && (
+        value?.type === 'memory' ||
+        value?.type === 'sequence') && (
         <StaticEntitiesWidgetInput
           value={value}
           onChange={onChange}

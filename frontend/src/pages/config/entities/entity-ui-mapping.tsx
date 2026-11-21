@@ -10,6 +10,7 @@ import {
   iconMemory,
   iconDynamicPage,
   iconButton,
+  iconSequence,
 } from '../../../ui/icons'
 import { baseline, errorShade } from '../../../ui/styles'
 import { cx } from '../../../util/styles'
@@ -36,6 +37,7 @@ import { FixtureGroupEditor } from './editors/fixture-group-editor'
 import { MemoryEditor } from './editors/memory-editor'
 import { DynamicPageEditor } from './editors/dynamic-page-editor'
 import { ButtonEditor } from './editors/button-editor'
+import { SequenceEditor } from './editors/sequence-editor'
 import {
   newDynamicPageFactory,
   newFixtureFactory,
@@ -43,13 +45,14 @@ import {
   newFixtureTypeFactory,
   newMemoryFactory,
   newButtonFactory,
+  newSequenceFactory,
 } from './new-entity-factories'
 import { EntityEditorProps } from './types'
 import {
   removeIdsFromAction,
-  removeReferencesFromButtons,
-  updateButtonActions,
-} from './button-references'
+  removeReferencesFromActions,
+  updateActions,
+} from './action-references'
 
 const smallInfo = css`
   font-size: 0.75rem;
@@ -242,7 +245,27 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
     newEntityFactory: newMemoryFactory,
     onDelete: memory => {
       removeEntity('memories', memory.id)
-      removeReferencesFromButtons('memory', memory.id)
+      removeReferencesFromActions('memory', memory.id)
+    },
+  },
+  sequences: {
+    name: 'Sequences',
+    icon: iconSequence,
+    editor: SequenceEditor,
+    newEntityFactory: newSequenceFactory,
+    listPreview: entry => (
+      <>
+        {entry.name ?? entry.id}
+        <div className={smallInfo}>{entry.steps.length} Steps</div>
+        <div className={smallInfo}>
+          {entry.steps.reduce((sum, step) => sum + step.actions.length, 0)}{' '}
+          Actions
+        </div>
+      </>
+    ),
+    onDelete: sequence => {
+      removeEntity('sequences', sequence.id)
+      removeReferencesFromActions('sequence', sequence.id)
     },
   },
   buttons: {
@@ -346,13 +369,13 @@ function replaceMappingInEntities(
     }
   }
 
-  // Buttons: replace fixture mappings, and remove deleted groups
+  // Buttons and sequences: replace fixture mappings, and remove deleted groups
   const removedGroupIds = mappingsToReplace
     .filter(it => it.startsWith(FixtureMappingPrefix.Group))
     .map(it => it.slice(FixtureMappingPrefix.Group.length))
   const removeGroups = removeIdsFromAction('fixture-group', removedGroupIds)
 
-  updateButtonActions(action => {
+  updateActions(action => {
     if (action.type === 'fixture-group') return removeGroups(action)
     if (action.type !== 'fixture' || !overlaps(action.members ?? [])) {
       return action

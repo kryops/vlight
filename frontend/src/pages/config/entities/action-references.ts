@@ -1,4 +1,4 @@
-import { Action, IdType, ProgrammableButton } from '@vlight/types'
+import { Action, IdType, ProgrammableButton, Sequence } from '@vlight/types'
 
 import { editEntity } from '../../../api'
 import { apiState } from '../../../api/api-state'
@@ -7,25 +7,27 @@ import { apiState } from '../../../api/api-state'
 export type IdReferencingActionType = Extract<Action, { ids: IdType[] }>['type']
 
 /**
- * Updates the actions of all buttons.
+ * Updates the actions of all entities that contain actions
+ * (programmable buttons and sequences).
  *
  * @param mapAction returns the updated action, the same object if unchanged,
  *   or `null` to remove the action.
  */
-export function updateButtonActions(
+export function updateActions(
   mapAction: (action: Action) => Action | null
 ): void {
-  const buttons = apiState.rawMasterData?.buttons ?? []
+  const { buttons = [], sequences = [] } = apiState.rawMasterData ?? {}
+
+  let changed = false
+  const mapActions = <T extends Action>(actions: T[]): T[] =>
+    actions.flatMap(action => {
+      const result = mapAction(action)
+      if (result !== action) changed = true
+      return result ? [result as T] : []
+    })
 
   for (const button of buttons) {
-    let changed = false
-    const mapActions = <T extends Action>(actions: T[]): T[] =>
-      actions.flatMap(action => {
-        const result = mapAction(action)
-        if (result !== action) changed = true
-        return result ? [result as T] : []
-      })
-
+    changed = false
     const newButton: ProgrammableButton = {
       ...button,
       down: mapActions(button.down),
@@ -33,10 +35,22 @@ export function updateButtonActions(
     }
     if (changed) editEntity('buttons', newButton)
   }
+
+  for (const sequence of sequences) {
+    changed = false
+    const newSequence: Sequence = {
+      ...sequence,
+      steps: sequence.steps.map(step => ({
+        ...step,
+        actions: mapActions(step.actions),
+      })),
+    }
+    if (changed) editEntity('sequences', newSequence)
+  }
 }
 
 /**
- * Returns a function for {@link updateButtonActions} that removes the given IDs
+ * Returns a function for {@link updateActions} that removes the given IDs
  * from all actions of the given type.
  *
  * Actions that do not reference any entities any more are removed.
@@ -55,13 +69,13 @@ export function removeIdsFromAction(
 }
 
 /**
- * Removes the given entity from the actions of all buttons.
+ * Removes the given entity from the actions of all buttons and sequences.
  *
  * Actions that do not reference any entities any more are removed.
  */
-export function removeReferencesFromButtons(
+export function removeReferencesFromActions(
   type: IdReferencingActionType,
   id: IdType
 ): void {
-  updateButtonActions(removeIdsFromAction(type, [id]))
+  updateActions(removeIdsFromAction(type, [id]))
 }

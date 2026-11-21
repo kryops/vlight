@@ -5,6 +5,7 @@ import {
   LiveMemory,
   LiveMovement,
   MasterData,
+  SequenceState,
 } from '@vlight/types'
 import { logger, assertNever, forEach, mergeObjects } from '@vlight/utils'
 import { mergeFixtureStates, mergeMemoryStates } from '@vlight/controls'
@@ -156,6 +157,15 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
     case 'button-state':
       // inactive buttons are kept as `false` so the partial update to the main thread contains them
       state.buttons = { ...state.buttons, [message.id]: message.active }
+      break
+
+    // `null` (= stopped) is kept here and passed on, so the main thread
+    // can remove the entry when applying the partial update
+    case 'sequence-state':
+      state.sequences = {
+        ...state.sequences,
+        [message.id]: message.state as SequenceState,
+      }
       break
 
     case 'heartbeat':

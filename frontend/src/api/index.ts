@@ -8,6 +8,7 @@ import {
   LiveMemory,
   LiveChase,
   LiveMovement,
+  SequenceControl,
 } from '@vlight/types'
 import { logger } from '@vlight/utils'
 
@@ -29,6 +30,7 @@ import {
   getApiDmxMasterMessage,
   getApiPauseMessage,
   getApiButtonMessage,
+  getApiSequenceMessage,
   DmxMasterMessageArgs,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
@@ -262,6 +264,13 @@ export function pressButton(id: IdType): void {
  */
 export function releaseButton(id: IdType): void {
   sendApiMessage(getApiButtonMessage(id, false))
+}
+
+/**
+ * Controls a sequence, e.g. starting, pausing or stopping it.
+ */
+export function controlSequence(id: IdType, control: SequenceControl): void {
+  sendApiMessage(getApiSequenceMessage(id, control))
 }
 
 /**

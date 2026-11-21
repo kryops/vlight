@@ -21,7 +21,7 @@ import {
 import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
 import { centeredText } from '../../ui/css/basic-styles'
 import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
-import { removeReferencesFromButtons } from '../../pages/config/entities/button-references'
+import { removeReferencesFromActions } from '../../pages/config/entities/action-references'
 
 interface ColorModeDescriptor {
   mode: LiveChase['colorMode']
@@ -110,7 +110,7 @@ export const LiveChaseWidgetBottomControls = ({
   const promptDelete = async () => {
     if (await showDialog(`Delete Live Chase "${title}"?`, yesNo)) {
       deleteLiveChase(id)
-      removeReferencesFromButtons('live-chase', id)
+      removeReferencesFromActions('live-chase', id)
     }
   }
 

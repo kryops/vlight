@@ -5,6 +5,7 @@ import {
   FixtureType,
   Memory,
   ProgrammableButton,
+  Sequence,
 } from '@vlight/types'
 import { ChannelType } from '@vlight/controls'
 
@@ -74,5 +75,13 @@ export function newButtonFactory(): WithoutId<ProgrammableButton> {
     label: 'New Button',
     down: [],
     up: [],
+  }
+}
+
+export function newSequenceFactory(): WithoutId<Sequence> {
+  return {
+    name: 'New Sequence',
+    steps: [{ delay: 0, actions: [] }],
+    endDelay: 0,
   }
 }

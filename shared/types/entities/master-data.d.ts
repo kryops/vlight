@@ -5,6 +5,7 @@ import { Fixture } from './fixture'
 import { FixtureGroup } from './fixture-group'
 import { FixtureType } from './fixture-type'
 import { Memory, MemorySceneStatePreset } from './memory'
+import { Sequence } from './sequence'
 import { IdType } from './util'
 
 /** Mapping of entity keys to their type. */
@@ -17,6 +18,7 @@ interface MasterDataMapping {
   chaseColorPresets: ChaseColorPreset
   memorySceneStatePresets: MemorySceneStatePreset
   buttons: ProgrammableButton
+  sequences: Sequence
 }
 
 /**

@@ -1,4 +1,4 @@
-import { Action, IdType } from '@vlight/types'
+import { Action, IdType, SequenceControl } from '@vlight/types'
 import { mapFixtureList } from '@vlight/controls'
 import {
   assertNever,
@@ -10,6 +10,7 @@ import {
 } from '@vlight/utils'
 
 import { masterData, masterDataMaps } from '../../services/masterdata'
+import { handleApiMessage } from '../../services/api'
 
 import {
   channelsAdapter,
@@ -23,6 +24,7 @@ import {
   memoriesAdapter,
   pauseAdapter,
   pauseId,
+  sequencesAdapter,
   StateAdapter,
 } from './adapters'
 
@@ -226,6 +228,11 @@ function stopAll(): StateChange[] {
       state => !!state.gradientMovement,
       { gradientMovement: false }
     ),
+    ...applyToAllEntities(
+      sequencesAdapter,
+      state => state.status !== 'stopped',
+      { status: 'stopped' }
+    ),
   ]
 }
 
@@ -237,6 +244,35 @@ function setPaused(paused: boolean | ((current: boolean) => boolean)) {
     { paused: typeof paused === 'function' ? paused(current) : paused },
     true
   )
+}
+
+/**
+ * Applies a control to a sequence.
+ *
+ * The status change is recorded, so reverting it restores the previous status
+ * (running/paused/stopped).
+ */
+function controlSequence(
+  id: IdType,
+  control: SequenceControl
+): StateChange | undefined {
+  const before = sequencesAdapter.get(id)
+  if (!before) {
+    logger.warn('Action: no sequence found for ID', id)
+    return undefined
+  }
+
+  handleApiMessage({ type: 'sequence', id, control })
+
+  const after = sequencesAdapter.get(id)!
+  if (before.status === after.status) return undefined
+  return {
+    adapter: sequencesAdapter,
+    id,
+    paths: [['status']],
+    before: [before.status],
+    after: [after.status],
+  }
 }
 
 /**
@@ -261,8 +297,9 @@ export function applyAction(action: Action): StateChange[] {
       return applyToEntities(dmxMasterAdapter, [dmxMasterId], state, true)
     }
 
-    case 'global':
-      switch (action.control) {
+    case 'global': {
+      const { control } = action
+      switch (control) {
         case 'all-off':
           return turnAllOff()
         case 'stop-all':
@@ -274,9 +311,10 @@ export function applyAction(action: Action): StateChange[] {
         case 'toggle-pause':
           return setPaused(current => !current)
         default:
-          assertNever(action.control)
+          assertNever(control)
           return []
       }
+    }
 
     case 'fixture':
       return applyToEntities(
@@ -325,6 +363,12 @@ export function applyAction(action: Action): StateChange[] {
         action.state,
         !!action.partial
       )
+
+    case 'sequence':
+      return (action.ids ?? []).flatMap(id => {
+        const change = controlSequence(id, action.control)
+        return change ? [change] : []
+      })
 
     default:
       assertNever(action)

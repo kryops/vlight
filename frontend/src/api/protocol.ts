@@ -22,6 +22,8 @@ import {
   ApiDmxMasterMessage,
   ApiPauseMessage,
   ApiButtonMessage,
+  ApiSequenceMessage,
+  SequenceControl,
 } from '@vlight/types'
 
 export function getApiChannelMessage(
@@ -198,5 +200,16 @@ export function getApiButtonMessage(
     type: 'button',
     id,
     down,
+  }
+}
+
+export function getApiSequenceMessage(
+  id: IdType,
+  control: SequenceControl
+): ApiSequenceMessage {
+  return {
+    type: 'sequence',
+    id,
+    control,
   }
 }

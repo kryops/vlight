@@ -32,3 +32,11 @@ export {
   getLiveMovementFixtures,
   getLiveMovementFixturePositions,
 } from './movements'
+export {
+  minRepeatingSequenceRunDuration,
+  getSequenceRepeatCount,
+  isManualSequenceStep,
+  isManualSequenceEnd,
+  getSequenceStepTimes,
+  getSequenceRunDuration,
+} from './sequences'

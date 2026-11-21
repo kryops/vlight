@@ -26,6 +26,10 @@ import {
   stopAllMemories,
   turnAllMemoriesOff,
 } from '../../pages/memories/memories-actions'
+import {
+  isAnySequenceStarted,
+  stopAllSequences,
+} from '../../pages/sequences/sequences-actions'
 import { Button } from '../../ui/buttons/button'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { iconControl } from '../../ui/icons'
@@ -49,6 +53,7 @@ const turnAllOff = () => {
 const stopAll = () => {
   stopAllChases()
   stopAllMemories()
+  stopAllSequences()
 }
 
 const togglePaused = () => setPaused(!apiState.paused)
@@ -56,7 +61,9 @@ const togglePaused = () => setPaused(!apiState.paused)
 export const ControlsWidget = ({ ...passThrough }: ControlsWidgetProps) => {
   const [isAnyOn, isAnyRunning] = useApiStateSelector(apiState => [
     allOffMapping.some(([check]) => check(apiState)),
-    isAnyChaseRunning(apiState) || isAnyMemoryRunning(apiState),
+    isAnyChaseRunning(apiState) ||
+      isAnyMemoryRunning(apiState) ||
+      isAnySequenceStarted(apiState),
   ])
   const paused = useApiState('paused')
 
@@ -75,7 +82,7 @@ export const ControlsWidget = ({ ...passThrough }: ControlsWidgetProps) => {
         <Button
           block
           onDown={stopAll}
-          title="Stop all chases"
+          title="Stop all chases and sequences"
           hotkey="n"
           disabled={!isAnyRunning}
         >
@@ -86,8 +93,8 @@ export const ControlsWidget = ({ ...passThrough }: ControlsWidgetProps) => {
           onDown={togglePaused}
           title={
             paused
-              ? 'Resume all live chases, memories and movements'
-              : 'Pause all live chases, memories and movements'
+              ? 'Resume all live chases, memories, movements and sequences'
+              : 'Pause all live chases, memories, movements and sequences'
           }
           hotkey="b"
           active={paused}

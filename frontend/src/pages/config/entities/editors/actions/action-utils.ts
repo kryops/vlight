@@ -18,6 +18,7 @@ export const actionTypeNames: { [type in ActionType]: string } = {
   channels: 'Channels',
   'dmx-master': 'DMX Master',
   global: 'Global Controls',
+  sequence: 'Sequences',
 }
 
 /**
@@ -31,6 +32,8 @@ export function createAction(type: ActionType): Action {
       return { type }
     case 'global':
       return { type, control: 'all-off' }
+    case 'sequence':
+      return { type, ids: [], control: 'start' }
     case 'fixture':
       return { type, members: [], state: {}, partial: true }
     case 'fixture-group':

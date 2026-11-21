@@ -4,11 +4,17 @@ import {
   DmxMasterAction,
   GlobalControl,
   GlobalControlAction,
+  IdType,
+  SequenceAction,
+  SequenceControl,
 } from '@vlight/types'
 import { createRangeArray, ensureBetween } from '@vlight/utils'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { useApiState } from '../../../../../hooks/api'
+import { useApiState, useMasterDataAndMaps } from '../../../../../hooks/api'
+import { useShallowEqualMemo } from '../../../../../hooks/performance'
+import { MultiToggleInput } from '../../../../../ui/forms/multi-toggle-input'
+import { TwoColumDialogContainer } from '../../../../../ui/containers/two-column-dialog'
 import { getUniverseIndex } from '../../../../../api/util'
 import { Widget } from '../../../../../ui/containers/widget'
 import { ChannelFader } from '../../../../../ui/controls/fader/channel-fader'
@@ -177,6 +183,57 @@ export function GlobalControlActionEditor({
           onChange={control => onChange({ ...action, control })}
         />
       }
+    />
+  )
+}
+
+const sequenceControlEntries: SelectEntry<SequenceControl>[] = [
+  { value: 'start', label: 'Start / resume' },
+  { value: 'pause', label: 'Pause' },
+  { value: 'toggle', label: 'Toggle start / pause' },
+  { value: 'stop', label: 'Stop (reset to start)' },
+  { value: 'restart', label: 'Restart from the beginning' },
+  { value: 'next', label: 'Next step' },
+]
+
+/**
+ * Editor for actions that control sequences.
+ */
+export function SequenceActionEditor({
+  action,
+  onChange,
+}: ActionEditorProps<SequenceAction>) {
+  const { masterData, masterDataMaps } = useMasterDataAndMaps()
+  const sequenceIds = useShallowEqualMemo(masterData.sequences.map(it => it.id))
+  const getDisplayValue = useCallback(
+    (id: IdType) => masterDataMaps.sequences.get(id)?.name ?? id,
+    [masterDataMaps]
+  )
+
+  return (
+    <TwoColumDialogContainer
+      left={
+        <MultiToggleInput
+          value={action.ids ?? []}
+          entries={sequenceIds}
+          onChange={ids => onChange({ ...action, ids })}
+          getDisplayValue={getDisplayValue}
+        />
+      }
+      right={
+        <Label
+          label="Control"
+          input={
+            <Select
+              entries={sequenceControlEntries}
+              value={action.control}
+              onChange={control => onChange({ ...action, control })}
+            />
+          }
+        />
+      }
+      fullWidth
+      preferSingleRow
     />
   )
 }

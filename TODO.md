@@ -43,7 +43,6 @@
   - Multi-control widgets
 - New Controls
   - Non-live chases
-  - Sequences/shows
 - Inputs
   - Custom keybindings
   - LaunchPad input

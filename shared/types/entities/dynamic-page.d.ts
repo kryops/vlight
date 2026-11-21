@@ -77,6 +77,14 @@ export interface LiveMovementWidgetConfig {
 }
 
 /**
+ * Widget to control one or multiple sequences.
+ */
+export interface SequenceWidgetConfig {
+  type: 'sequence'
+  id: string | string[]
+}
+
+/**
  * Widget to display one or multiple programmable buttons.
  *
  * Unlike other widgets, all buttons are displayed within a single widget.
@@ -126,6 +134,7 @@ export type WidgetConfig =
   | DmxMasterWidgetConfig
   | ControlsWidgetConfig
   | ButtonsWidgetConfig
+  | SequenceWidgetConfig
 
 /**
  * A cell of a {@link DynamicPageRow}.

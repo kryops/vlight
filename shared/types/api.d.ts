@@ -10,6 +10,8 @@ import {
   LiveChase,
   LiveMovement,
   EntityType,
+  SequenceControl,
+  SequenceState,
 } from './entities'
 
 // Both ingoing + outgoing
@@ -180,6 +182,15 @@ export interface ApiButtonMessage {
   down: boolean
 }
 
+/**
+ * Controls a sequence, e.g. starting or stopping it.
+ */
+export interface ApiSequenceMessage {
+  type: 'sequence'
+  id: IdType
+  control: SequenceControl
+}
+
 /** Overwrite the master data entities of a certain type. */
 export interface ApiEntityMessage<T extends EntityName> {
   type: 'entity'
@@ -242,6 +253,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiDmxMasterMessage
   | ApiPauseMessage
   | ApiButtonMessage
+  | ApiSequenceMessage
   | ApiUniverseSubscriptionMessage
 
 // Outgoing messages
@@ -259,6 +271,20 @@ export interface ApiButtonStateMessage {
    * - toggled on in `toggle` mode
    */
   active: boolean
+}
+
+/**
+ * Notifies about a changed state of a sequence.
+ *
+ * Sent when the sequence is started/paused/stopped, when a step is reached,
+ * and about once a second while it is running to update the elapsed time.
+ */
+export interface ApiSequenceStateMessage {
+  type: 'sequence-state'
+  id: IdType
+
+  /** The new state, or `null` if the sequence was stopped. */
+  state: SequenceState | null
 }
 
 export interface ApiHeartBeatMessage {
@@ -318,6 +344,13 @@ export interface ApiStateMessage {
    * Not persisted, as the changes to revert cannot be restored after a restart.
    */
   buttons: Dictionary<boolean>
+
+  /**
+   * Dictionary of the runtime state of all started (running or paused) sequences.
+   *
+   * Not persisted, as the changes to revert cannot be restored after a restart.
+   */
+  sequences: Dictionary<SequenceState>
 }
 
 /**
@@ -367,3 +400,4 @@ export type ApiOutMessage =
   | ApiDmxMasterMessage
   | ApiPauseMessage
   | ApiButtonStateMessage
+  | ApiSequenceStateMessage

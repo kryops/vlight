@@ -6,6 +6,7 @@ import * as memories from './memories'
 import * as chaseColorPresets from './chase-color-presets'
 import * as memorySceneStatePresets from './memory-scene-state-presets'
 import * as buttons from './buttons'
+import * as sequences from './sequences'
 
 export async function initMasterDataEntities(): Promise<void> {
   ;[
@@ -17,5 +18,6 @@ export async function initMasterDataEntities(): Promise<void> {
     chaseColorPresets,
     memorySceneStatePresets,
     buttons,
+    sequences,
   ].forEach(entity => entity.init())
 }

@@ -53,8 +53,8 @@ export interface DmxMasterAction {
 /**
  * A global control:
  * - `all-off`: Turns all controls off
- * - `stop-all`: Stops all chases, movements, and moving live memory gradients
- * - `pause` / `resume` / `toggle-pause`: Changes the global pause state
+ * - `stop-all`: Stops all chases, movements, moving live memory gradients, and sequences
+ * - `pause` / `resume` / `toggle-pause`: Changes the global pause state (which also pauses running sequences)
  */
 export type GlobalControl =
   | 'all-off'
@@ -120,6 +120,35 @@ export interface LiveMovementAction extends EntityStateActionBase<LiveMovement> 
 }
 
 /**
+ * A control to apply to a sequence:
+ * - `start`: Starts the sequence from the beginning, or resumes it if paused
+ * - `pause`: Pauses the sequence
+ * - `toggle`: Pauses the sequence if running, otherwise starts/resumes it
+ * - `stop`: Stops the sequence and resets it to the start
+ * - `restart`: Stops the sequence and starts it again from the beginning
+ * - `next`: Immediately executes the next step (or ends the current run after the last step).
+ *   A stopped or paused sequence executes the next step, but stays paused afterwards
+ */
+export type SequenceControl =
+  | 'start'
+  | 'pause'
+  | 'toggle'
+  | 'stop'
+  | 'restart'
+  | 'next'
+
+/**
+ * Controls one or multiple sequences.
+ *
+ * When reverted, the previous status (running/paused/stopped) of the sequences is restored.
+ */
+export interface SequenceAction {
+  type: 'sequence'
+  ids: IdType[]
+  control: SequenceControl
+}
+
+/**
  * An action that changes the application state, e.g. turning on a memory.
  *
  * Actions are independent from the controls that trigger them (e.g. programmable buttons).
@@ -134,6 +163,7 @@ export type Action =
   | LiveMemoryAction
   | LiveChaseAction
   | LiveMovementAction
+  | SequenceAction
 
 /** The type of an {@link Action}. */
 export type ActionType = Action['type']

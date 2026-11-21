@@ -30,7 +30,7 @@ import { widgetTitleControls } from '../../ui/css/widget-controls'
 import { StartStopButton } from '../start-stop-button'
 
 import { MemoryPreview } from './memory-preview'
-import { removeReferencesFromButtons } from '../../pages/config/entities/button-references'
+import { removeReferencesFromActions } from '../../pages/config/entities/action-references'
 
 const leftColumn = css`
   flex: 1 1 auto;
@@ -178,7 +178,7 @@ export const StatelessLiveMemoryWidget = ({
   const promptDelete = async () => {
     if (await showDialog(`Delete Live Memory "${title}"?`, yesNo)) {
       deleteLiveMemory(id)
-      removeReferencesFromButtons('live-memory', id)
+      removeReferencesFromActions('live-memory', id)
     }
   }
 

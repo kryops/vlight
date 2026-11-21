@@ -16,6 +16,7 @@ import { LiveMovementWidget } from './movement/live-movement-widget'
 import { DmxMasterWidget } from './global/dmx-master-widget'
 import { ControlsWidget } from './global/controls-widget'
 import { ButtonsWidget } from './button/buttons-widget'
+import { SequenceWidget } from './sequence/sequence-widget'
 
 export interface DynamicWidgetProps extends WidgetPassthrough {
   config: WidgetConfig
@@ -28,7 +29,7 @@ export const DynamicWidget = ({
   config,
   ...passThrough
 }: DynamicWidgetProps) => {
-  const { fixtures, fixtureGroups, memories } = useMasterDataMaps()
+  const { fixtures, fixtureGroups, memories, sequences } = useMasterDataMaps()
 
   // TODO investigate why the keys are needed
 
@@ -166,6 +167,22 @@ export const DynamicWidget = ({
           title={config.title}
           {...passThrough}
         />
+      )
+
+    case 'sequence':
+      return (
+        <>
+          {toArray(config.id).map(id => {
+            const sequence = sequences.get(id)
+            return sequence ? (
+              <SequenceWidget
+                key={`sequence${id}`}
+                sequence={sequence}
+                {...passThrough}
+              />
+            ) : null
+          })}
+        </>
       )
 
     default:

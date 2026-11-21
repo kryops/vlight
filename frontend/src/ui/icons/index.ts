@@ -64,6 +64,8 @@ import {
   mdiArrowExpandAll,
   mdiGestureTapButton,
   mdiUndoVariant,
+  mdiTimelineClockOutline,
+  mdiSkipNext,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -131,6 +133,8 @@ export const iconPositionPicker = mdiCursorMove
 export const iconDynamicPage = mdiFileAccount
 export const iconButton = mdiGestureTapButton
 export const iconRevert = mdiUndoVariant
+export const iconSequence = mdiTimelineClockOutline
+export const iconNext = mdiSkipNext
 export const iconConfig = mdiCog
 export const iconList = mdiFormatListNumbered
 export const iconDrag = mdiDrag

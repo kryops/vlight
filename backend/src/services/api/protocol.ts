@@ -13,6 +13,7 @@ import {
   LiveChase,
   LiveMovement,
   ApiHeartBeatMessage,
+  SequenceState,
 } from '@vlight/types'
 
 import { getUniverseIndex } from '../universe/utils'
@@ -36,6 +37,7 @@ export function getApiStateMessage({
   dmxMasterFade,
   paused,
   buttons,
+  sequences,
 }: {
   masterData: MasterData
   rawMasterData: MasterData
@@ -51,6 +53,7 @@ export function getApiStateMessage({
   dmxMasterFade: number
   paused: boolean
   buttons: Dictionary<boolean>
+  sequences: Dictionary<SequenceState>
 }): ApiStateMessage {
   return {
     type: 'state',
@@ -68,6 +71,7 @@ export function getApiStateMessage({
     dmxMasterFade,
     paused,
     buttons,
+    sequences,
   }
 }
 

@@ -5,6 +5,7 @@ import {
   LiveMemory,
   LiveMovement,
   MemoryState,
+  SequenceControl,
 } from '@vlight/types'
 
 import { handleApiMessage } from '../../services/api'
@@ -17,6 +18,8 @@ import { liveMemories, memoryStates } from '../memories'
 import { liveChases } from '../chases/live-chases'
 import { liveMovements } from '../movements/live-movements'
 import { isPaused } from '../pause'
+import { sequenceStates } from '../sequences/state'
+import { masterDataMaps } from '../../services/masterdata'
 
 /**
  * Abstraction to read and change the state of a certain type of entities
@@ -154,4 +157,38 @@ export const liveMovementsAdapter: StateAdapter<LiveMovement> = {
   get: id => liveMovements.get(id),
   set: (id, state, merge) =>
     handleApiMessage({ type: 'live-movement', id, state, merge }),
+}
+
+/**
+ * Status of a sequence.
+ *
+ * Changing it starts/resumes, pauses, or stops the sequence.
+ */
+export interface SequenceStatusState {
+  status: 'running' | 'paused' | 'stopped'
+}
+
+const sequenceStatusControls: {
+  [status in SequenceStatusState['status']]: SequenceControl
+} = {
+  running: 'start',
+  paused: 'pause',
+  stopped: 'stop',
+}
+
+export const sequencesAdapter: StateAdapter<SequenceStatusState> = {
+  name: 'sequence',
+  getIds: () => [...masterDataMaps.sequences.keys()],
+  get: id =>
+    masterDataMaps.sequences.has(id)
+      ? { status: sequenceStates.get(id)?.status ?? 'stopped' }
+      : undefined,
+  set: (id, state) => {
+    if (state.status === undefined) return
+    handleApiMessage({
+      type: 'sequence',
+      id,
+      control: sequenceStatusControls[state.status],
+    })
+  },
 }

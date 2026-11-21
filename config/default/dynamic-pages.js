@@ -25,6 +25,10 @@ const dynamicPages = [
             type: 'buttons',
             ids: ['1'],
           },
+          {
+            type: 'sequence',
+            id: '1',
+          },
         ],
       },
       {

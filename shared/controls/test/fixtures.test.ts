@@ -22,6 +22,7 @@ const masterData: MasterData = {
   chaseColorPresets: [],
   memorySceneStatePresets: [],
   buttons: [],
+  sequences: [],
 }
 
 const masterDataMaps: MasterDataMaps = {
@@ -33,6 +34,7 @@ const masterDataMaps: MasterDataMaps = {
   chaseColorPresets: new Map(),
   memorySceneStatePresets: new Map(),
   buttons: new Map(),
+  sequences: new Map(),
 }
 
 describe('mapFixtureList', () => {

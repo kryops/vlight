@@ -1,4 +1,5 @@
 import { css } from '@linaria/core'
+import { useMemo } from 'react'
 import { Action, ActionType } from '@vlight/types'
 import { assertNever } from '@vlight/utils'
 
@@ -28,6 +29,7 @@ import {
   ChannelsActionEditor,
   DmxMasterActionEditor,
   GlobalControlActionEditor,
+  SequenceActionEditor,
 } from './global-action-editors'
 
 const actionContainer = css`
@@ -102,6 +104,8 @@ function ActionContent({
       return <DmxMasterActionEditor action={action} onChange={onChange} />
     case 'global':
       return <GlobalControlActionEditor action={action} onChange={onChange} />
+    case 'sequence':
+      return <SequenceActionEditor action={action} onChange={onChange} />
     default:
       assertNever(action)
       return null
@@ -125,6 +129,15 @@ export interface ActionsEditorProps<T extends Action> {
 
   /** Label for the revert toggle. */
   revertLabel?: string
+
+  /**
+   * If set, displays a select for each action to move it to one of the given targets,
+   * e.g. another step of a sequence.
+   */
+  moveTargets?: SelectEntry<number>[]
+
+  /** Called when an action is moved to one of the {@link moveTargets}. */
+  onMoveTo?: (index: number, target: number) => void
 }
 
 /**
@@ -136,7 +149,14 @@ export function ActionsEditor<T extends RevertableAction>({
   revertable = false,
   addLabel = 'Add action',
   revertLabel = 'Revert on release',
+  moveTargets,
+  onMoveTo,
 }: ActionsEditorProps<T>) {
+  const moveTargetEntries = useMemo<SelectEntry<number | undefined>[]>(
+    () => [{ value: undefined, label: 'Move to...' }, ...(moveTargets ?? [])],
+    [moveTargets]
+  )
+
   const changeAction = (index: number, action: T) =>
     onChange(actions.map((it, i) => (i === index ? action : it)))
 
@@ -192,6 +212,16 @@ export function ActionsEditor<T extends RevertableAction>({
                 </a>
               )}
               <div className={spacer} />
+              {moveTargets && moveTargets.length > 0 && onMoveTo && (
+                <Select
+                  entries={moveTargetEntries}
+                  value={undefined}
+                  onChange={target =>
+                    target !== undefined && onMoveTo(index, target)
+                  }
+                  className={typeSelect}
+                />
+              )}
               <Button
                 icon={iconUp}
                 title="Move up"
