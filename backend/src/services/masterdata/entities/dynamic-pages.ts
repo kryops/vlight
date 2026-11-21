@@ -1,7 +1,7 @@
 import { DynamicPage, DynamicPageRow } from '@vlight/types'
-import * as icons from '@mdi/js'
-
 import { registerMasterDataEntity } from '../registry'
+
+import { resolveIcon } from './icons'
 
 /**
  * Flattens the legacy `cells` of a row into its `widgets`.
@@ -36,7 +36,7 @@ export function migrateDynamicPages(pages: DynamicPage[]): DynamicPage[] {
 function processDynamicPage({ icon, ...rest }: DynamicPage): DynamicPage {
   return {
     ...rest,
-    icon: (icon && (icons as Record<string, string>)[icon]) ?? undefined,
+    icon: resolveIcon(icon),
   }
 }
 

@@ -25,6 +25,13 @@ export interface StartStopButtonProps {
   stopTitle?: string
 
   hotkey?: string
+
+  /**
+   * If set, the global pause state is ignored.
+   *
+   * Defaults to `false`.
+   */
+  ignorePause?: boolean
 }
 
 /**
@@ -41,10 +48,11 @@ export const StartStopButton = ({
   startTitle = 'Start',
   stopTitle = 'Stop',
   hotkey,
+  ignorePause = false,
 }: StartStopButtonProps) => {
   const paused = useApiState('paused')
 
-  if (paused) {
+  if (paused && !ignorePause) {
     const resume = () => {
       setPaused(false)
       onStart()

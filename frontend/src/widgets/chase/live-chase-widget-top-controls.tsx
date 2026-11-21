@@ -14,13 +14,16 @@ import { useTapSync } from '../../hooks/speed'
 import { widgetTitleControls } from '../../ui/css/widget-controls'
 import { StartStopButton } from '../start-stop-button'
 
-import { updateLiveChaseSpeed } from './utils'
+import { getLiveChaseSpeedChange } from './utils'
 import { useSpeedBurst } from './use-speed-burst'
 import { liveChaseMaxSpeed, liveChaseMinSpeed } from './constants'
 
 export interface LiveChaseWidgetTopControlsProps {
   id: IdType
   state: LiveChase
+
+  /** See `onChange` of the `StatelessLiveChaseWidget`. */
+  onChange?: (newState: Partial<LiveChase>) => void
 }
 
 /**
@@ -29,11 +32,14 @@ export interface LiveChaseWidgetTopControlsProps {
 export const LiveChaseWidgetTopControls = ({
   id,
   state,
+  onChange,
 }: LiveChaseWidgetTopControlsProps) => {
-  const update = (newState: Partial<LiveChase>) =>
-    setLiveChaseState(id, newState, true)
+  const update =
+    onChange ??
+    ((newState: Partial<LiveChase>) => setLiveChaseState(id, newState, true))
 
-  const updateSpeed = (speed: number) => updateLiveChaseSpeed(id, state, speed)
+  const updateSpeed = (speed: number) =>
+    update(getLiveChaseSpeedChange(state, speed))
 
   const { startSpeedBurst, stopSpeedBurst } = useSpeedBurst(id, state)
 
@@ -55,7 +61,7 @@ export const LiveChaseWidgetTopControls = ({
 
   const start = () => update({ stopped: false, on: true })
 
-  if (state.compact) {
+  if (state.compact && !onChange) {
     return (
       <div className={widgetTitleControls}>
         <Button
@@ -70,21 +76,25 @@ export const LiveChaseWidgetTopControls = ({
 
   return (
     <div className={widgetTitleControls}>
-      <Button
-        icon={iconSpeedBurst}
-        title="Speed burst"
-        transparent
-        onDown={startSpeedBurst}
-        onUp={stopSpeedBurst}
-        hotkey="x"
-      />
-      <Button
-        icon={iconStep}
-        title="Step"
-        transparent
-        onDown={step}
-        hotkey="c"
-      />
+      {!onChange && (
+        <>
+          <Button
+            icon={iconSpeedBurst}
+            title="Speed burst"
+            transparent
+            onDown={startSpeedBurst}
+            onUp={stopSpeedBurst}
+            hotkey="x"
+          />
+          <Button
+            icon={iconStep}
+            title="Step"
+            transparent
+            onDown={step}
+            hotkey="c"
+          />
+        </>
+      )}
       <Button
         icon={iconDoubleSpeed}
         title="Double speed"
@@ -114,6 +124,7 @@ export const LiveChaseWidgetTopControls = ({
         onToggle={toggleStartStop}
         onStart={start}
         hotkey="m"
+        ignorePause={!!onChange}
       />
     </div>
   )

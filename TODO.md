@@ -42,7 +42,6 @@
 - Dynamic Pages
   - Multi-control widgets
 - New Controls
-  - Programmable buttons
   - Non-live chases
   - Sequences/shows
 - Inputs

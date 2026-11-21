@@ -3,6 +3,7 @@
 ## November 2026
 
 - Added movements for moving heads: Live pan/tilt patterns (line, sine, circle, square, eight) on the chases page and as dynamic page widget
+- Added programmable buttons
 - Added mouse wheel input to faders (when a modifier key is pressed)
 - Dynamic pages: Removed cells - rows now contain widgets directly (existing cells are merged automatically)
 - Dynamic pages: Widgets are now edited directly in their rows and can be dragged within and between rows; rows can be reordered via drag handles

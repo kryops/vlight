@@ -1,4 +1,5 @@
 import {
+  ButtonsWidgetConfig,
   ChannelsWidgetConfig,
   EntityName,
   FixtureGroupWidgetConfig,
@@ -123,11 +124,21 @@ export const widgetTypes: { [type in WidgetType]: WidgetMapping<type> } = {
       type: 'controls',
     }),
   },
+  buttons: {
+    name: 'Buttons',
+    defaultValueFactory: () => ({
+      type: 'buttons',
+      ids: apiState.masterData?.buttons[0]
+        ? [apiState.masterData.buttons[0].id]
+        : [],
+    }),
+    entityReference: 'buttons',
+  },
 }
 
-const typeSelectEntries: SelectEntry<WidgetType>[] = Object.entries(
-  widgetTypes
-).map(([key, value]) => ({ value: key as WidgetType, label: value.name }))
+const typeSelectEntries: SelectEntry<WidgetType>[] = Object.entries(widgetTypes)
+  .map(([key, value]) => ({ value: key as WidgetType, label: value.name }))
+  .sort((a, b) => a.label.localeCompare(b.label))
 
 const container = css`
   padding: ${baseline(2)};
@@ -339,6 +350,45 @@ function LiveEntitiesWidgetInput({
   )
 }
 
+function ButtonsWidgetInput({
+  value,
+  onChange,
+  compact,
+}: WidgetTypeInputProps<ButtonsWidgetConfig>) {
+  const changeIds = (ids: IdType[]): void => onChange({ ...value, ids })
+  const changeTitle = (title: string | undefined): void =>
+    onChange({ ...value, title })
+
+  return (
+    <>
+      <Label
+        forceSmall={compact}
+        label="Buttons"
+        input={
+          <ArrayInput
+            value={value.ids ?? []}
+            onChange={changeIds}
+            renderInput={inputProps => (
+              <EntityReferenceSelect
+                entity="buttons"
+                addUndefinedOption
+                {...inputProps}
+              />
+            )}
+            displayRemoveButtons
+            sortable
+          />
+        }
+      />
+      <Label
+        forceSmall={compact}
+        label="Title"
+        input={<TextInput value={value.title} onChange={changeTitle} />}
+      />
+    </>
+  )
+}
+
 export interface WidgetInputProps {
   value: WidgetConfig | undefined
   onChange: (value: WidgetConfig) => void
@@ -422,6 +472,14 @@ export const WidgetInput = ({
         value?.type === 'live-chase' ||
         value?.type === 'live-movement') && (
         <LiveEntitiesWidgetInput
+          value={value}
+          onChange={onChange}
+          compact={compact}
+        />
+      )}
+
+      {value?.type === 'buttons' && (
+        <ButtonsWidgetInput
           value={value}
           onChange={onChange}
           compact={compact}

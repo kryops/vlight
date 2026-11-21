@@ -9,10 +9,12 @@ import {
   iconGroup,
   iconMemory,
   iconDynamicPage,
+  iconButton,
 } from '../../../ui/icons'
 import { baseline, errorShade } from '../../../ui/styles'
 import { cx } from '../../../util/styles'
 import { FixtureTypeMapShape } from '../../../widgets/map/map-shape'
+import { Icon } from '../../../ui/icons/icon'
 import { getMasterDataMaps } from '../../../api/masterdata'
 import { apiState } from '../../../api/api-state'
 import {
@@ -33,14 +35,21 @@ import { FixtureEditor } from './editors/fixture-editor'
 import { FixtureGroupEditor } from './editors/fixture-group-editor'
 import { MemoryEditor } from './editors/memory-editor'
 import { DynamicPageEditor } from './editors/dynamic-page-editor'
+import { ButtonEditor } from './editors/button-editor'
 import {
   newDynamicPageFactory,
   newFixtureFactory,
   newFixtureGroupFactory,
   newFixtureTypeFactory,
   newMemoryFactory,
+  newButtonFactory,
 } from './new-entity-factories'
 import { EntityEditorProps } from './types'
+import {
+  removeIdsFromAction,
+  removeReferencesFromButtons,
+  updateButtonActions,
+} from './button-references'
 
 const smallInfo = css`
   font-size: 0.75rem;
@@ -50,6 +59,10 @@ const smallInfo = css`
 
 const overlapInfo = css`
   color: ${errorShade(0)};
+`
+
+const buttonIconStyle = css`
+  margin-right: ${baseline(2)};
 `
 
 const fixtureTypeStyle = css`
@@ -227,6 +240,28 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
     icon: iconMemory,
     editor: MemoryEditor,
     newEntityFactory: newMemoryFactory,
+    onDelete: memory => {
+      removeEntity('memories', memory.id)
+      removeReferencesFromButtons('memory', memory.id)
+    },
+  },
+  buttons: {
+    name: 'Buttons',
+    icon: iconButton,
+    editor: ButtonEditor,
+    newEntityFactory: newButtonFactory,
+    listPreview: (entry, masterDataMaps) => {
+      const icon = masterDataMaps.buttons.get(entry.id)?.icon
+      return (
+        <>
+          {icon && <Icon icon={icon} inline className={buttonIconStyle} />}
+          {entry.label ?? entry.id}
+          <div className={smallInfo}>
+            {entry.down.length + entry.up.length} Actions
+          </div>
+        </>
+      )
+    },
   },
   dynamicPages: {
     name: 'Dynamic Pages',
@@ -310,6 +345,22 @@ function replaceMappingInEntities(
       }
     }
   }
+
+  // Buttons: replace fixture mappings, and remove deleted groups
+  const removedGroupIds = mappingsToReplace
+    .filter(it => it.startsWith(FixtureMappingPrefix.Group))
+    .map(it => it.slice(FixtureMappingPrefix.Group.length))
+  const removeGroups = removeIdsFromAction('fixture-group', removedGroupIds)
+
+  updateButtonActions(action => {
+    if (action.type === 'fixture-group') return removeGroups(action)
+    if (action.type !== 'fixture' || !overlaps(action.members ?? [])) {
+      return action
+    }
+    const members = replaceMappings(action.members)
+    // actions without members are removed
+    return members.length ? { ...action, members } : null
+  })
 
   const { liveChases, liveMemories, liveMovements } = apiState
 

@@ -28,6 +28,7 @@ import {
   getApiLiveMovementMessage,
   getApiDmxMasterMessage,
   getApiPauseMessage,
+  getApiButtonMessage,
   DmxMasterMessageArgs,
 } from './protocol'
 import { ApiWorkerCommand } from './worker/api.worker'
@@ -246,6 +247,21 @@ export function setDmxMaster(args: DmxMasterMessageArgs): void {
  */
 export function setPaused(paused: boolean): void {
   sendApiMessage(getApiPauseMessage(paused))
+}
+
+/**
+ * Presses a programmable button, executing its down actions.
+ */
+export function pressButton(id: IdType): void {
+  sendApiMessage(getApiButtonMessage(id, true))
+}
+
+/**
+ * Releases a programmable button, reverting its down actions (if configured)
+ * and executing its up actions.
+ */
+export function releaseButton(id: IdType): void {
+  sendApiMessage(getApiButtonMessage(id, false))
 }
 
 /**

@@ -22,6 +22,7 @@ function getEmptyState(): ApiState {
     dmxMaster: 255,
     dmxMasterFade: 0,
     paused: false,
+    buttons: {},
   }
 }
 

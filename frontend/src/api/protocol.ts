@@ -21,6 +21,7 @@ import {
   LiveMovement,
   ApiDmxMasterMessage,
   ApiPauseMessage,
+  ApiButtonMessage,
 } from '@vlight/types'
 
 export function getApiChannelMessage(
@@ -186,5 +187,16 @@ export function getApiPauseMessage(paused: boolean): ApiPauseMessage {
   return {
     type: 'pause',
     paused,
+  }
+}
+
+export function getApiButtonMessage(
+  id: IdType,
+  down: boolean
+): ApiButtonMessage {
+  return {
+    type: 'button',
+    id,
+    down,
   }
 }

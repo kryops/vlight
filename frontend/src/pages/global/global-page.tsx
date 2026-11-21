@@ -3,6 +3,7 @@ import { Header } from '../../ui/containers/header'
 import { DmxMasterWidget } from '../../widgets/global/dmx-master-widget'
 import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
 import { ControlsWidget } from '../../widgets/global/controls-widget'
+import { ButtonsSection } from '../../widgets/button/buttons-section'
 
 /**
  * Global page.
@@ -25,6 +26,8 @@ const GlobalPage = () => {
           hotkeysActive={activeHotkeyIndex === 1}
         />
       </div>
+      <br />
+      <ButtonsSection />
     </>
   )
 }

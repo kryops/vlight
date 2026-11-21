@@ -4,6 +4,7 @@ import {
   FixtureGroup,
   FixtureType,
   Memory,
+  ProgrammableButton,
 } from '@vlight/types'
 import { ChannelType } from '@vlight/controls'
 
@@ -65,5 +66,13 @@ export function newDynamicPageFactory(): WithoutId<DynamicPage> {
         ],
       },
     ],
+  }
+}
+
+export function newButtonFactory(): WithoutId<ProgrammableButton> {
+  return {
+    label: 'New Button',
+    down: [],
+    up: [],
   }
 }

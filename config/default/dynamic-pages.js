@@ -21,6 +21,10 @@ const dynamicPages = [
           {
             type: 'map',
           },
+          {
+            type: 'buttons',
+            ids: ['1'],
+          },
         ],
       },
       {
@@ -54,9 +58,7 @@ const dynamicPages = [
           },
           {
             type: 'live-chase',
-            id: [
-              '1',
-            ],
+            id: ['1'],
           },
           {
             type: 'live-movement',

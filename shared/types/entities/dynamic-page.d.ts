@@ -77,6 +77,19 @@ export interface LiveMovementWidgetConfig {
 }
 
 /**
+ * Widget to display one or multiple programmable buttons.
+ *
+ * Unlike other widgets, all buttons are displayed within a single widget.
+ */
+export interface ButtonsWidgetConfig {
+  type: 'buttons'
+  /** The IDs of the programmable buttons to display. */
+  ids: string[]
+  /** Display title of the widget. */
+  title?: string
+}
+
+/**
  * Widget to display the fixture map.
  */
 export interface MapWidgetConfig {
@@ -112,6 +125,7 @@ export type WidgetConfig =
   | LiveMovementWidgetConfig
   | DmxMasterWidgetConfig
   | ControlsWidgetConfig
+  | ButtonsWidgetConfig
 
 /**
  * A cell of a {@link DynamicPageRow}.

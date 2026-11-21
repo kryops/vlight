@@ -19,7 +19,7 @@ import { useDeepEqualMemo } from '../../hooks/performance'
 import { cx } from '../../util/styles'
 
 import { LiveChaseWidgetColorControls } from './live-chase-widget-color-controls'
-import { updateLiveChaseSpeed } from './utils'
+import { getLiveChaseSpeedChange } from './utils'
 import {
   liveChaseFaderQuadraticScale,
   liveChaseMaxSpeed,
@@ -43,6 +43,15 @@ export interface StatelessLiveChaseWidgetProps extends WidgetPassthrough {
   id: IdType
   state: LiveChase
   title?: string
+
+  /**
+   * If set, state changes are passed to this callback instead of being sent
+   * to the backend (e.g. to edit actions).
+   *
+   * Controls that cannot be expressed as state changes (e.g. step, speed burst, delete)
+   * are hidden, and the compact view is ignored.
+   */
+  onChange?: (newState: Partial<LiveChase>) => void
 }
 
 /**
@@ -52,12 +61,15 @@ export const StatelessLiveChaseWidget = ({
   id,
   state,
   title,
+  onChange,
   ...passThrough
 }: StatelessLiveChaseWidgetProps) => {
-  const update = (newState: Partial<LiveChase>) =>
-    setLiveChaseState(id, newState, true)
+  const update =
+    onChange ??
+    ((newState: Partial<LiveChase>) => setLiveChaseState(id, newState, true))
 
-  const changeSpeed = (speed: number) => updateLiveChaseSpeed(id, state, speed)
+  const changeSpeed = (speed: number) =>
+    update(getLiveChaseSpeedChange(state, speed))
 
   const changeValue = (value: number) => update({ value })
 
@@ -84,10 +96,12 @@ export const StatelessLiveChaseWidget = ({
       onTitleClick={onTitleClick}
       turnedOn={state.on}
       contentClassName={flexWrap}
-      titleSide={<LiveChaseWidgetTopControls id={id} state={state} />}
+      titleSide={
+        <LiveChaseWidgetTopControls id={id} state={state} onChange={onChange} />
+      }
       {...passThrough}
     >
-      {state.compact ? (
+      {state.compact && !onChange ? (
         <div className={compactContainer}>
           <Button
             icon={iconSpeedBurst}
@@ -102,7 +116,11 @@ export const StatelessLiveChaseWidget = ({
       ) : (
         <div className={flexAuto}>
           <div className={cx(faderContainer, container)}>
-            <LiveChaseWidgetColorControls id={id} state={state} />
+            <LiveChaseWidgetColorControls
+              id={id}
+              state={state}
+              onChange={onChange}
+            />
 
             <Fader
               max={255}
@@ -153,7 +171,12 @@ export const StatelessLiveChaseWidget = ({
             />
           </div>
 
-          <LiveChaseWidgetBottomControls id={id} state={state} title={title} />
+          <LiveChaseWidgetBottomControls
+            id={id}
+            state={state}
+            title={title}
+            onChange={onChange}
+          />
         </div>
       )}
     </Widget>

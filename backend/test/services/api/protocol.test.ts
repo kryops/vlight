@@ -28,6 +28,7 @@ function getMasterDataMock(): MasterData {
     memories: [],
     chaseColorPresets: [],
     memorySceneStatePresets: [],
+    buttons: [],
   }
 }
 
@@ -87,6 +88,7 @@ describe('api/protocol', () => {
         dmxMaster: 255,
         dmxMasterFade: 1,
         paused: false,
+        buttons: {},
       })
     ).toEqual({
       type: 'state',
@@ -103,6 +105,7 @@ describe('api/protocol', () => {
       dmxMaster: 255,
       dmxMasterFade: 1,
       paused: false,
+      buttons: {},
     })
   })
 

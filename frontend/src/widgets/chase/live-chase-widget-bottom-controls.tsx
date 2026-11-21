@@ -21,6 +21,7 @@ import {
 import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
 import { centeredText } from '../../ui/css/basic-styles'
 import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
+import { removeReferencesFromButtons } from '../../pages/config/entities/button-references'
 
 interface ColorModeDescriptor {
   mode: LiveChase['colorMode']
@@ -51,6 +52,9 @@ export interface LiveChaseWidgetBottomControlsProps {
   id: IdType
   state: LiveChase
   title: string | undefined
+
+  /** See `onChange` of the `StatelessLiveChaseWidget`. */
+  onChange?: (newState: Partial<LiveChase>) => void
 }
 
 /**
@@ -60,9 +64,11 @@ export const LiveChaseWidgetBottomControls = ({
   id,
   state,
   title,
+  onChange,
 }: LiveChaseWidgetBottomControlsProps) => {
-  const update = (newState: Partial<LiveChase>) =>
-    setLiveChaseState(id, newState, true)
+  const update =
+    onChange ??
+    ((newState: Partial<LiveChase>) => setLiveChaseState(id, newState, true))
 
   const editFixtureList = async () => {
     const result = await showDialogWithReturnValue<string[]>(
@@ -104,6 +110,7 @@ export const LiveChaseWidgetBottomControls = ({
   const promptDelete = async () => {
     if (await showDialog(`Delete Live Chase "${title}"?`, yesNo)) {
       deleteLiveChase(id)
+      removeReferencesFromButtons('live-chase', id)
     }
   }
 
@@ -131,19 +138,28 @@ export const LiveChaseWidgetBottomControls = ({
         transparent
         onClick={switchColorMode}
       />
-      <Button
-        icon={iconCompactView}
-        title="Compact view: Speed burst button only"
-        transparent
-        onClick={() => update({ compact: true })}
-      />
-      <Button icon={iconRename} title="Rename" transparent onClick={rename} />
-      <Button
-        icon={iconDelete}
-        title="Delete"
-        transparent
-        onClick={promptDelete}
-      />
+      {!onChange && (
+        <>
+          <Button
+            icon={iconCompactView}
+            title="Compact view: Speed burst button only"
+            transparent
+            onClick={() => update({ compact: true })}
+          />
+          <Button
+            icon={iconRename}
+            title="Rename"
+            transparent
+            onClick={rename}
+          />
+          <Button
+            icon={iconDelete}
+            title="Delete"
+            transparent
+            onClick={promptDelete}
+          />
+        </>
+      )}
     </div>
   )
 }

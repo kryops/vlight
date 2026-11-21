@@ -44,6 +44,13 @@ const colorStyle = css`
 export interface LiveChaseWidgetColorControlsProps {
   id: IdType
   state: LiveChase
+
+  /**
+   * See `onChange` of the `StatelessLiveChaseWidget`.
+   *
+   * Drafts are not supported in this mode.
+   */
+  onChange?: (newState: Partial<LiveChase>) => void
 }
 
 /**
@@ -52,9 +59,11 @@ export interface LiveChaseWidgetColorControlsProps {
 export const LiveChaseWidgetColorControls = ({
   id,
   state,
+  onChange,
 }: LiveChaseWidgetColorControlsProps) => {
-  const update = (newState: Partial<LiveChase>) =>
-    setLiveChaseState(id, newState, true)
+  const update =
+    onChange ??
+    ((newState: Partial<LiveChase>) => setLiveChaseState(id, newState, true))
 
   const applyDraft = (draft: ChaseColor[]) =>
     update({ colors: draft, colorsDraft: null })
@@ -87,17 +96,19 @@ export const LiveChaseWidgetColorControls = ({
       />,
       [
         buttonOk,
-        isDraft
-          ? ({
-              label: 'Apply instantly',
-              value: applyValue,
-              icon: iconSpeedBurst,
-            } as const)
-          : ({
-              label: 'Set as Draft',
-              value: draftValue,
-              icon: iconTime,
-            } as const),
+        onChange
+          ? undefined
+          : isDraft
+            ? ({
+                label: 'Apply instantly',
+                value: applyValue,
+                icon: iconSpeedBurst,
+              } as const)
+            : ({
+                label: 'Set as Draft',
+                value: draftValue,
+                icon: iconTime,
+              } as const),
         isDraft &&
           ({
             label: 'Delete Draft',
@@ -162,7 +173,7 @@ export const LiveChaseWidgetColorControls = ({
           onClick={addColor}
         />
       </div>
-      {state.colorsDraft && (
+      {state.colorsDraft && !onChange && (
         <div className={cx(colorContainer, draftContainer)}>
           {state.colorsDraft.map((color, index) => (
             <div

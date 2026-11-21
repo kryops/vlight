@@ -15,6 +15,7 @@ import { LiveChaseWidget } from './chase/live-chase-widget'
 import { LiveMovementWidget } from './movement/live-movement-widget'
 import { DmxMasterWidget } from './global/dmx-master-widget'
 import { ControlsWidget } from './global/controls-widget'
+import { ButtonsWidget } from './button/buttons-widget'
 
 export interface DynamicWidgetProps extends WidgetPassthrough {
   config: WidgetConfig
@@ -157,6 +158,15 @@ export const DynamicWidget = ({
 
     case 'controls':
       return <ControlsWidget {...passThrough} />
+
+    case 'buttons':
+      return (
+        <ButtonsWidget
+          ids={config.ids ?? []}
+          title={config.title}
+          {...passThrough}
+        />
+      )
 
     default:
       assertNever(config)

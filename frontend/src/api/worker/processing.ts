@@ -153,6 +153,11 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
       state.paused = message.paused
       break
 
+    case 'button-state':
+      // inactive buttons are kept as `false` so the partial update to the main thread contains them
+      state.buttons = { ...state.buttons, [message.id]: message.active }
+      break
+
     case 'heartbeat':
       break // handled outside
 

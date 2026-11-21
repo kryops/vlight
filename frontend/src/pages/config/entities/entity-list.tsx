@@ -18,6 +18,7 @@ import {
   entityUiMapping,
   removeEntityWithCustomLogic,
 } from './entity-ui-mapping'
+import { copyEntity, getEntityName } from '../../../util/entities'
 
 const padding = 3
 
@@ -73,7 +74,7 @@ export function EntityList<T extends EntityName>({
         >
           <Icon icon={iconDrag} inline />
           {entityUiMapping[type]?.listPreview?.(entry as any, masterDataMaps) ??
-            entry.name ??
+            getEntityName(entry) ??
             entry.id}
         </div>
         <Icon
@@ -81,13 +82,7 @@ export function EntityList<T extends EntityName>({
           icon={iconCopy}
           className={entryIcon}
           hoverable
-          onClick={() =>
-            openEntityEditor(type, {
-              ...entry,
-              id: '',
-              name: entry.name ? `${entry.name} (copy)` : entry.name,
-            })
-          }
+          onClick={() => openEntityEditor(type, copyEntity(entry))}
         />
         <Icon
           title="Delete"
@@ -96,7 +91,7 @@ export function EntityList<T extends EntityName>({
           hoverable
           onClick={async () => {
             const result = await showDialog<boolean | null>(
-              `Really delete "${entry.name}"?`,
+              `Really delete "${getEntityName(entry) ?? entry.id}"?`,
               yesNo,
               { closeOnBackDrop: true }
             )

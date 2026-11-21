@@ -1,0 +1,139 @@
+import { FixtureState } from './fixture'
+import { LiveChase } from './chase'
+import { LiveMemory, MemoryState } from './memory'
+import { LiveMovement } from './movement'
+import { Dictionary, EntityMembers, IdType } from './util'
+
+/**
+ * Base type for actions that change the state of one or multiple entities.
+ */
+interface EntityStateActionBase<TState> {
+  /**
+   * The state to apply.
+   *
+   * In {@link partial} mode, it contains only the changes to apply, e.g.
+   * `{ on: true }` or `{ channels: { r: 255 } }`.
+   */
+  state: Partial<TState>
+
+  /**
+   * If set, the {@link state} is merged onto the existing one, i.e.
+   * only the contained values are changed.
+   *
+   * Otherwise, the complete state is replaced.
+   *
+   * Defaults to `false`.
+   */
+  partial?: boolean
+}
+
+/** Sets one or multiple DMX channels. */
+export interface ChannelsAction {
+  type: 'channels'
+
+  /**
+   * The channels to set:
+   * - keys from 1-512
+   * - values from 0-255
+   */
+  channels: Dictionary<number>
+}
+
+/** Changes the global DMX master. */
+export interface DmxMasterAction {
+  type: 'dmx-master'
+
+  /** DMX master value from 0-255. */
+  value?: number
+
+  /** Fade time in seconds. */
+  fade?: number
+}
+
+/**
+ * A global control:
+ * - `all-off`: Turns all controls off
+ * - `stop-all`: Stops all chases, movements, and moving live memory gradients
+ * - `pause` / `resume` / `toggle-pause`: Changes the global pause state
+ */
+export type GlobalControl =
+  | 'all-off'
+  | 'stop-all'
+  | 'pause'
+  | 'resume'
+  | 'toggle-pause'
+
+/** Triggers a global control. */
+export interface GlobalControlAction {
+  type: 'global'
+  control: GlobalControl
+}
+
+/** Changes the state of one or multiple fixtures. */
+export interface FixtureAction extends EntityStateActionBase<FixtureState> {
+  type: 'fixture'
+
+  /** The affected fixtures. */
+  members: EntityMembers
+}
+
+/** Changes the state of one or multiple fixture groups. */
+export interface FixtureGroupAction extends EntityStateActionBase<FixtureState> {
+  type: 'fixture-group'
+  ids: IdType[]
+}
+
+/** Changes the state of one or multiple memories. */
+export interface MemoryAction extends EntityStateActionBase<MemoryState> {
+  type: 'memory'
+  ids: IdType[]
+}
+
+/**
+ * Changes the state of one or multiple live memories.
+ *
+ * In non-{@link EntityStateActionBase.partial partial} mode, the name of the live memory is kept.
+ */
+export interface LiveMemoryAction extends EntityStateActionBase<LiveMemory> {
+  type: 'live-memory'
+  ids: IdType[]
+}
+
+/**
+ * Changes the state of one or multiple live chases.
+ *
+ * In non-{@link EntityStateActionBase.partial partial} mode, the name of the live chase is kept.
+ */
+export interface LiveChaseAction extends EntityStateActionBase<LiveChase> {
+  type: 'live-chase'
+  ids: IdType[]
+}
+
+/**
+ * Changes the state of one or multiple live movements.
+ *
+ * In non-{@link EntityStateActionBase.partial partial} mode, the name of the live movement is kept.
+ */
+export interface LiveMovementAction extends EntityStateActionBase<LiveMovement> {
+  type: 'live-movement'
+  ids: IdType[]
+}
+
+/**
+ * An action that changes the application state, e.g. turning on a memory.
+ *
+ * Actions are independent from the controls that trigger them (e.g. programmable buttons).
+ */
+export type Action =
+  | ChannelsAction
+  | DmxMasterAction
+  | GlobalControlAction
+  | FixtureAction
+  | FixtureGroupAction
+  | MemoryAction
+  | LiveMemoryAction
+  | LiveChaseAction
+  | LiveMovementAction
+
+/** The type of an {@link Action}. */
+export type ActionType = Action['type']

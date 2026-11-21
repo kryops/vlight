@@ -40,25 +40,31 @@ export function getChasePreviewColor(color: ChaseColor): string {
   return `linear-gradient(to top in srgb-linear, ${low}, ${high})`
 }
 
+/**
+ * Returns the state changes to apply when changing the speed of a live chase,
+ * adjusting the fade time if it is locked to the speed.
+ */
+export function getLiveChaseSpeedChange(
+  state: LiveChase,
+  speed: number
+): Partial<LiveChase> {
+  if (state.fadeLockedToSpeed && state.fade) {
+    return {
+      speed,
+      fade: ensureBetween(
+        (speed * state.fade) / state.speed,
+        liveChaseMaxSpeed,
+        liveChaseMinSpeed
+      ),
+    }
+  }
+  return { speed }
+}
+
 export function updateLiveChaseSpeed(
   id: IdType,
   state: LiveChase,
   speed: number
 ): void {
-  if (state.fadeLockedToSpeed && state.fade) {
-    setLiveChaseState(
-      id,
-      {
-        speed,
-        fade: ensureBetween(
-          (speed * state.fade) / state.speed,
-          liveChaseMaxSpeed,
-          liveChaseMinSpeed
-        ),
-      },
-      true
-    )
-  } else {
-    setLiveChaseState(id, { speed }, true)
-  }
+  setLiveChaseState(id, getLiveChaseSpeedChange(state, speed), true)
 }

@@ -5,6 +5,7 @@ import { useApiState } from '../../hooks/api'
 import { useShallowEqualMemo } from '../../hooks/performance'
 
 import { Select, SelectEntry } from './select'
+import { getEntityName } from '../../util/entities'
 
 export interface EntityReferenceSelectProps {
   /** Name of the target entity type. */
@@ -56,9 +57,9 @@ export const EntityReferenceSelect = ({
   const displayEntries = useMemo(() => {
     const result: Array<SelectEntry<IdType> | undefined> = originalEntries
       .filter(({ id }) => !memoExcludeValues?.includes(id) || id === rest.value)
-      .map(({ id, name }) => ({
-        value: id,
-        label: name ?? id,
+      .map(entry => ({
+        value: entry.id,
+        label: getEntityName(entry) ?? entry.id,
       }))
       .sort((a, b) => {
         if (a.label === b.label) return 0

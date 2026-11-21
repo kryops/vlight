@@ -62,6 +62,8 @@ import {
   mdiImageFilterCenterFocus,
   mdiArrowCollapseAll,
   mdiArrowExpandAll,
+  mdiGestureTapButton,
+  mdiUndoVariant,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -127,6 +129,8 @@ export const iconExperiment = mdiFlaskOutline
 export const iconColorPicker = mdiPaletteOutline
 export const iconPositionPicker = mdiCursorMove
 export const iconDynamicPage = mdiFileAccount
+export const iconButton = mdiGestureTapButton
+export const iconRevert = mdiUndoVariant
 export const iconConfig = mdiCog
 export const iconList = mdiFormatListNumbered
 export const iconDrag = mdiDrag

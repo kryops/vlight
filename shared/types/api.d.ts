@@ -168,6 +168,18 @@ export interface ApiPauseMessage {
 
 // Incoming messages
 
+/**
+ * Presses or releases a programmable button, executing its actions
+ * depending on its mode.
+ */
+export interface ApiButtonMessage {
+  type: 'button'
+  id: IdType
+
+  /** `true` when the button is pressed, `false` when it is released. */
+  down: boolean
+}
+
 /** Overwrite the master data entities of a certain type. */
 export interface ApiEntityMessage<T extends EntityName> {
   type: 'entity'
@@ -229,9 +241,25 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiResetStateMessage
   | ApiDmxMasterMessage
   | ApiPauseMessage
+  | ApiButtonMessage
   | ApiUniverseSubscriptionMessage
 
 // Outgoing messages
+
+/**
+ * Notifies about a changed state of a programmable button.
+ */
+export interface ApiButtonStateMessage {
+  type: 'button-state'
+  id: IdType
+
+  /**
+   * Whether the button is currently active, i.e.
+   * - pressed in `flash` mode
+   * - toggled on in `toggle` mode
+   */
+  active: boolean
+}
 
 export interface ApiHeartBeatMessage {
   type: 'heartbeat'
@@ -282,6 +310,14 @@ export interface ApiStateMessage {
 
   /** Whether all continuously recomputing controls are globally paused. */
   paused: boolean
+
+  /**
+   * Dictionary of the active state of all programmable buttons
+   * (see {@link ApiButtonStateMessage.active}).
+   *
+   * Not persisted, as the changes to revert cannot be restored after a restart.
+   */
+  buttons: Dictionary<boolean>
 }
 
 /**
@@ -330,3 +366,4 @@ export type ApiOutMessage =
   | ApiLiveMovementMessage
   | ApiDmxMasterMessage
   | ApiPauseMessage
+  | ApiButtonStateMessage

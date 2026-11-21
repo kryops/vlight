@@ -11,9 +11,18 @@ import { flexWrap } from '../../ui/css/flex'
 import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
 import { Button } from '../../ui/buttons/button'
-import { iconConfig, iconDelete, iconLiveMemory } from '../../ui/icons'
-import { showDialog, showPromptDialog } from '../../ui/overlays/dialog'
-import { yesNo } from '../../ui/overlays/buttons'
+import {
+  iconConfig,
+  iconDelete,
+  iconList,
+  iconLiveMemory,
+} from '../../ui/icons'
+import {
+  showDialog,
+  showDialogWithReturnValue,
+  showPromptDialog,
+} from '../../ui/overlays/dialog'
+import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
 import { useDeepEqualMemo } from '../../hooks/performance'
 import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
 import { Checkbox } from '../../ui/forms/checkbox'
@@ -21,6 +30,7 @@ import { widgetTitleControls } from '../../ui/css/widget-controls'
 import { StartStopButton } from '../start-stop-button'
 
 import { MemoryPreview } from './memory-preview'
+import { removeReferencesFromButtons } from '../../pages/config/entities/button-references'
 
 const leftColumn = css`
   flex: 1 1 auto;
@@ -79,6 +89,15 @@ export interface StatelessLiveMemoryWidgetProps extends WidgetPassthrough {
   id: IdType
   state: LiveMemory
   title?: string
+
+  /**
+   * If set, state changes are passed to this callback instead of being sent
+   * to the backend (e.g. to edit actions).
+   *
+   * Controls that cannot be expressed as state changes (e.g. delete) are hidden,
+   * and the edit button only edits the members.
+   */
+  onChange?: (newState: Partial<LiveMemory>) => void
 }
 
 /**
@@ -88,8 +107,13 @@ export const StatelessLiveMemoryWidget = ({
   id,
   state,
   title,
+  onChange,
   ...passThrough
 }: StatelessLiveMemoryWidgetProps) => {
+  const update =
+    onChange ??
+    ((newState: Partial<LiveMemory>) => setLiveMemoryState(id, newState, true))
+
   const {
     on: _on,
     value: _value,
@@ -104,56 +128,57 @@ export const StatelessLiveMemoryWidget = ({
 
   const hasGradient = scene.states.some(state => Array.isArray(state))
 
-  const changeScene = (newState: MemoryScene) =>
-    setLiveMemoryState(id, newState, true)
+  const changeScene = (newState: MemoryScene) => update(newState)
 
-  const changeValue = (value: number) => setLiveMemoryState(id, { value }, true)
+  const changeValue = (value: number) => update({ value })
 
   const changeGradientSpeed = (newSpeed: number) =>
-    setLiveMemoryState(id, { gradientSpeed: newSpeed }, true)
+    update({ gradientSpeed: newSpeed })
 
-  const toggleOn = () => setLiveMemoryState(id, { on: !state.on }, true)
+  const toggleOn = () => update({ on: !state.on })
 
   const toggleMovement = () =>
-    setLiveMemoryState(
-      id,
-      {
-        gradientMovement: !state.gradientMovement,
-        on: state.on || !state.gradientMovement,
-      },
-      true
-    )
+    update({
+      gradientMovement: !state.gradientMovement,
+      on: state.on || !state.gradientMovement,
+    })
 
-  const startMovement = () =>
-    setLiveMemoryState(id, { gradientMovement: true, on: true }, true)
+  const startMovement = () => update({ gradientMovement: true, on: true })
 
   const toggleInverted = () =>
-    setLiveMemoryState(
-      id,
-      { gradientMovementInverted: !state.gradientMovementInverted },
-      true
-    )
+    update({ gradientMovementInverted: !state.gradientMovementInverted })
 
   const toggleIgnoreOffset = () =>
-    setLiveMemoryState(
-      id,
-      { gradientIgnoreFixtureOffset: !state.gradientIgnoreFixtureOffset },
-      true
-    )
+    update({ gradientIgnoreFixtureOffset: !state.gradientIgnoreFixtureOffset })
 
   const edit = async () => {
+    if (onChange) {
+      const members = await showDialogWithReturnValue<string[]>(
+        onMembersChange => (
+          <FixtureListEditor
+            value={scene.members}
+            onChange={onMembersChange}
+            ordering
+          />
+        ),
+        [buttonOk, buttonCancel],
+        { title: 'Members', showCloseButton: true }
+      )
+      if (members) update({ members })
+      return
+    }
+
     const result = await editLiveMemory({
       name: state.name,
       members: scene.members,
     })
-    if (result) {
-      setLiveMemoryState(id, result, true)
-    }
+    if (result) update(result)
   }
 
   const promptDelete = async () => {
     if (await showDialog(`Delete Live Memory "${title}"?`, yesNo)) {
       deleteLiveMemory(id)
+      removeReferencesFromButtons('live-memory', id)
     }
   }
 
@@ -175,13 +200,20 @@ export const StatelessLiveMemoryWidget = ({
       {...passThrough}
       titleSide={
         <div className={widgetTitleControls}>
-          <Button icon={iconConfig} title="Edit" transparent onClick={edit} />
           <Button
-            icon={iconDelete}
-            title="Delete"
+            icon={onChange ? iconList : iconConfig}
+            title={onChange ? 'Members' : 'Edit'}
             transparent
-            onClick={promptDelete}
+            onClick={edit}
           />
+          {!onChange && (
+            <Button
+              icon={iconDelete}
+              title="Delete"
+              transparent
+              onClick={promptDelete}
+            />
+          )}
           {hasGradient && (
             <StartStopButton
               started={!!gradientMovement}
@@ -191,6 +223,7 @@ export const StatelessLiveMemoryWidget = ({
               startTitle="Start movement"
               stopTitle="Stop movement"
               hotkey="m"
+              ignorePause={!!onChange}
             />
           )}
         </div>

@@ -5,6 +5,7 @@ import * as fixtureTypes from './fixture-types'
 import * as memories from './memories'
 import * as chaseColorPresets from './chase-color-presets'
 import * as memorySceneStatePresets from './memory-scene-state-presets'
+import * as buttons from './buttons'
 
 export async function initMasterDataEntities(): Promise<void> {
   ;[
@@ -15,5 +16,6 @@ export async function initMasterDataEntities(): Promise<void> {
     memories,
     chaseColorPresets,
     memorySceneStatePresets,
+    buttons,
   ].forEach(entity => entity.init())
 }

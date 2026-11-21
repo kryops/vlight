@@ -9,6 +9,7 @@ import { memoryStates, liveMemories } from '../../controls/memories'
 import { liveChases } from '../../controls/chases/live-chases'
 import { liveMovements } from '../../controls/movements/live-movements'
 import { isPaused } from '../../controls/pause'
+import { buttonStates } from '../../controls/buttons'
 import { masterData, rawMasterData } from '../masterdata'
 
 import { getApiStateMessage } from './protocol'
@@ -31,5 +32,6 @@ export function getFullState(): ApiStateMessage {
     dmxMaster: getDmxMaster(),
     dmxMasterFade: getDmxMasterFade(),
     paused: isPaused(),
+    buttons: mapToDictionary(buttonStates),
   })
 }

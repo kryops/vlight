@@ -46,6 +46,7 @@ import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
 
 import { LiveMovementPreview } from './live-movement-preview'
+import { removeReferencesFromButtons } from '../../pages/config/entities/button-references'
 
 /** Fastest speed (duration of a cycle in seconds). */
 export const liveMovementMaxSpeed = 0.5
@@ -120,6 +121,15 @@ export interface StatelessLiveMovementWidgetProps extends WidgetPassthrough {
   id: IdType
   state: LiveMovement
   title?: string
+
+  /**
+   * If set, state changes are passed to this callback instead of being sent
+   * to the backend (e.g. to edit actions).
+   *
+   * Controls that cannot be expressed as state changes (e.g. return to center, delete)
+   * are hidden.
+   */
+  onChange?: (newState: Partial<LiveMovement>) => void
 }
 
 /**
@@ -129,10 +139,13 @@ export const StatelessLiveMovementWidget = ({
   id,
   state,
   title,
+  onChange,
   ...passThrough
 }: StatelessLiveMovementWidgetProps) => {
-  const update = (newState: Partial<LiveMovement>) =>
-    setLiveMovementState(id, newState, true)
+  const update =
+    onChange ??
+    ((newState: Partial<LiveMovement>) =>
+      setLiveMovementState(id, newState, true))
 
   const onTitleClick = () => update({ on: !state.on })
 
@@ -170,6 +183,7 @@ export const StatelessLiveMovementWidget = ({
   const promptDelete = async () => {
     if (await showDialog(`Delete Movement "${title}"?`, yesNo)) {
       deleteLiveMovement(id)
+      removeReferencesFromButtons('live-movement', id)
     }
   }
 
@@ -182,19 +196,22 @@ export const StatelessLiveMovementWidget = ({
       contentClassName={flexWrap}
       titleSide={
         <div className={widgetTitleControls}>
-          <Button
-            icon={iconCenter}
-            title="Return to center"
-            transparent
-            onDown={returnToCenter}
-            hotkey="n"
-          />
+          {!onChange && (
+            <Button
+              icon={iconCenter}
+              title="Return to center"
+              transparent
+              onDown={returnToCenter}
+              hotkey="n"
+            />
+          )}
           <StartStopButton
             started={!state.stopped}
             on={state.on}
             onToggle={toggleStartStop}
             onStart={start}
             hotkey="m"
+            ignorePause={!!onChange}
           />
         </div>
       }
@@ -288,18 +305,22 @@ export const StatelessLiveMovementWidget = ({
             transparent
             onClick={resetCenter}
           />
-          <Button
-            icon={iconRename}
-            title="Rename"
-            transparent
-            onClick={rename}
-          />
-          <Button
-            icon={iconDelete}
-            title="Delete"
-            transparent
-            onClick={promptDelete}
-          />
+          {!onChange && (
+            <>
+              <Button
+                icon={iconRename}
+                title="Rename"
+                transparent
+                onClick={rename}
+              />
+              <Button
+                icon={iconDelete}
+                title="Delete"
+                transparent
+                onClick={promptDelete}
+              />
+            </>
+          )}
         </div>
       </div>
     </Widget>

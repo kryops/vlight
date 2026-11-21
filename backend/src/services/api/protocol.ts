@@ -35,6 +35,7 @@ export function getApiStateMessage({
   dmxMaster,
   dmxMasterFade,
   paused,
+  buttons,
 }: {
   masterData: MasterData
   rawMasterData: MasterData
@@ -49,6 +50,7 @@ export function getApiStateMessage({
   dmxMaster: number
   dmxMasterFade: number
   paused: boolean
+  buttons: Dictionary<boolean>
 }): ApiStateMessage {
   return {
     type: 'state',
@@ -65,6 +67,7 @@ export function getApiStateMessage({
     dmxMaster,
     dmxMasterFade,
     paused,
+    buttons,
   }
 }
 

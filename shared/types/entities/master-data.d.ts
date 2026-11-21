@@ -1,3 +1,4 @@
+import { ProgrammableButton } from './button'
 import { ChaseColorPreset } from './chase'
 import { DynamicPage } from './dynamic-page'
 import { Fixture } from './fixture'
@@ -15,6 +16,7 @@ interface MasterDataMapping {
   dynamicPages: DynamicPage
   chaseColorPresets: ChaseColorPreset
   memorySceneStatePresets: MemorySceneStatePreset
+  buttons: ProgrammableButton
 }
 
 /**
