@@ -6,6 +6,7 @@ import {
   GlobalControl,
   GlobalControlAction,
   IdType,
+  NamedActionsAction,
   SequenceAction,
   SequenceControl,
 } from '@vlight/types'
@@ -15,6 +16,8 @@ import { useCallback, useState } from 'react'
 import { useApiState, useMasterDataAndMaps } from '../../../../../hooks/api'
 import { useShallowEqualMemo } from '../../../../../hooks/performance'
 import { MultiToggleInput } from '../../../../../ui/forms/multi-toggle-input'
+import { ArrayInput } from '../../../../../ui/forms/array-input'
+import { EntityReferenceSelect } from '../../../../../ui/forms/entity-reference-select'
 import { TwoColumDialogContainer } from '../../../../../ui/containers/two-column-dialog'
 import { getUniverseIndex } from '../../../../../api/util'
 import { Widget } from '../../../../../ui/containers/widget'
@@ -30,6 +33,11 @@ import { baseline } from '../../../../../ui/styles'
 import { getChangedValues } from './action-utils'
 import { ActionEditorProps } from './entity-action-editors'
 import { StateChangesList } from './state-changes-list'
+
+const emptyHint = css`
+  opacity: 0.6;
+  font-style: italic;
+`
 
 const widgetContainer = css`
   display: flex;
@@ -282,6 +290,41 @@ export function ButtonActionEditor({
       }
       fullWidth
       preferSingleRow
+    />
+  )
+}
+
+/**
+ * Editor for actions that trigger named actions.
+ */
+export function NamedActionsActionEditor({
+  action,
+  onChange,
+}: ActionEditorProps<NamedActionsAction>) {
+  const hasNamedActions = useApiState('masterData').actions.length > 0
+
+  if (!hasNamedActions) {
+    return (
+      <div className={emptyHint}>
+        No named actions yet. Add them on the config page, or convert inline
+        actions.
+      </div>
+    )
+  }
+
+  return (
+    <ArrayInput
+      value={action.ids ?? []}
+      onChange={ids => onChange({ ...action, ids })}
+      renderInput={inputProps => (
+        <EntityReferenceSelect
+          entity="actions"
+          addUndefinedOption
+          {...inputProps}
+        />
+      )}
+      displayRemoveButtons
+      sortable
     />
   )
 }

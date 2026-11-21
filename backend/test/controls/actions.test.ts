@@ -2,14 +2,28 @@ import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { mergeObjects } from '@vlight/utils'
 
+import type { NamedAction } from '@vlight/types'
+
+import { masterDataMaps } from '../../src/services/masterdata'
 import {
+  applyAction,
   applyStateChange,
   revertStateChange,
   revertStateChanges,
 } from '../../src/controls/actions'
 import type { StateAdapter } from '../../src/controls/actions/adapters'
 
-vi.mock('../../src/controls/actions/adapters', () => ({}))
+const channels = vi.hoisted(() => new Map<string, number>())
+
+vi.mock('../../src/controls/actions/adapters', () => ({
+  channelsAdapter: {
+    name: 'channels',
+    getIds: () => [...channels.keys()],
+    get: (id: string) => ({ value: channels.get(id) ?? 0 }),
+    set: (id: string, state: { value?: number }) =>
+      channels.set(id, state.value ?? 0),
+  },
+}))
 vi.mock('../../src/services/masterdata', () => ({
   masterData: {},
   masterDataMaps: {},
@@ -148,5 +162,43 @@ describe('controls/actions with changing value types', () => {
 
     revertStateChange(change)
     expect(states.get('a')).toEqual({ on: true, channels: {}, speed: 1 })
+  })
+})
+
+describe('controls/actions with named actions', () => {
+  function setNamedActions(namedActions: NamedAction[]) {
+    ;(masterDataMaps as any).actions = new Map(
+      namedActions.map(it => [it.id, it])
+    )
+    channels.clear()
+  }
+
+  it('applies and reverts nested named actions', () => {
+    setNamedActions([
+      { id: 'a', type: 'action', ids: ['b', 'c'] },
+      { id: 'b', type: 'channels', channels: { 1: 255 } },
+      { id: 'c', type: 'action', ids: ['b', 'd'] },
+      { id: 'd', type: 'channels', channels: { 2: 100 } },
+    ])
+
+    const changes = applyAction({ type: 'action', ids: ['a'] })
+    expect(Object.fromEntries(channels)).toEqual({ '1': 255, '2': 100 })
+    // `b` is applied twice through different branches
+    expect(changes).toHaveLength(3)
+
+    revertStateChanges(changes)
+    expect(Object.fromEntries(channels)).toEqual({ '1': 0, '2': 0 })
+  })
+
+  it('skips named actions that trigger themselves', () => {
+    setNamedActions([
+      { id: 'a', type: 'action', ids: ['b', 'a', 'unknown'] },
+      { id: 'b', type: 'action', ids: ['a', 'c'] },
+      { id: 'c', type: 'channels', channels: { 1: 255 } },
+    ])
+
+    const changes = applyAction({ type: 'action', ids: ['a'] })
+    expect(changes).toHaveLength(1)
+    expect(channels.get('1')).toBe(255)
   })
 })

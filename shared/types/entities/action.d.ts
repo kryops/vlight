@@ -2,7 +2,7 @@ import { FixtureState } from './fixture'
 import { LiveChase } from './chase'
 import { LiveMemory, MemoryState } from './memory'
 import { LiveMovement } from './movement'
-import { Dictionary, EntityMembers, IdType } from './util'
+import { DbEntity, Dictionary, EntityMembers, IdType } from './util'
 
 /**
  * Base type for actions that change the state of one or multiple entities.
@@ -167,6 +167,17 @@ export interface ButtonAction {
 }
 
 /**
+ * Triggers one or multiple {@link NamedAction named actions}.
+ *
+ * Named actions can trigger other named actions, but not themselves
+ * (also indirectly through other named actions).
+ */
+export interface NamedActionsAction {
+  type: 'action'
+  ids: IdType[]
+}
+
+/**
  * An action that changes the application state, e.g. turning on a memory.
  *
  * Actions are independent from the controls that trigger them (e.g. programmable buttons).
@@ -183,6 +194,19 @@ export type Action =
   | LiveMovementAction
   | SequenceAction
   | ButtonAction
+  | NamedActionsAction
 
 /** The type of an {@link Action}. */
 export type ActionType = Action['type']
+
+/**
+ * An action with a name, so it can be reused by programmable buttons, sequences,
+ * and other named actions through a {@link NamedActionsAction}.
+ *
+ * Whether its changes are reverted is controlled where it is used.
+ */
+export type NamedAction = Action &
+  DbEntity & {
+    /** Display name. */
+    name?: string
+  }

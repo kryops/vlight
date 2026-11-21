@@ -66,6 +66,9 @@ import {
   mdiUndoVariant,
   mdiTimelineClockOutline,
   mdiSkipNext,
+  mdiLightningBoltOutline,
+  mdiLinkVariantPlus,
+  mdiLinkVariantOff,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -134,6 +137,9 @@ export const iconDynamicPage = mdiFileAccount
 export const iconButton = mdiGestureTapButton
 export const iconRevert = mdiUndoVariant
 export const iconSequence = mdiTimelineClockOutline
+export const iconAction = mdiLightningBoltOutline
+export const iconConvertToNamedAction = mdiLinkVariantPlus
+export const iconInlineAction = mdiLinkVariantOff
 export const iconNext = mdiSkipNext
 export const iconConfig = mdiCog
 export const iconList = mdiFormatListNumbered

@@ -1,3 +1,4 @@
+import { NamedAction } from './action'
 import { ProgrammableButton } from './button'
 import { ChaseColorPreset } from './chase'
 import { DynamicPage } from './dynamic-page'
@@ -19,6 +20,7 @@ interface MasterDataMapping {
   memorySceneStatePresets: MemorySceneStatePreset
   buttons: ProgrammableButton
   sequences: Sequence
+  actions: NamedAction
 }
 
 /**

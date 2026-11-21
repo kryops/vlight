@@ -39,6 +39,7 @@ const masterData: MasterData = {
   memorySceneStatePresets: [],
   buttons: [],
   sequences: [],
+  actions: [],
 }
 
 const masterDataMaps: MasterDataMaps = {
@@ -51,6 +52,7 @@ const masterDataMaps: MasterDataMaps = {
   memorySceneStatePresets: new Map(),
   buttons: new Map(),
   sequences: new Map(),
+  actions: new Map(),
 }
 
 function getMovement(overrides: Partial<LiveMovement> = {}): LiveMovement {

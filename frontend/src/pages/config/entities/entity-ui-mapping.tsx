@@ -11,6 +11,7 @@ import {
   iconDynamicPage,
   iconButton,
   iconSequence,
+  iconAction,
 } from '../../../ui/icons'
 import { baseline, errorShade } from '../../../ui/styles'
 import { cx } from '../../../util/styles'
@@ -38,6 +39,8 @@ import { MemoryEditor } from './editors/memory-editor'
 import { DynamicPageEditor } from './editors/dynamic-page-editor'
 import { ButtonEditor } from './editors/button-editor'
 import { SequenceEditor } from './editors/sequence-editor'
+import { NamedActionEditor } from './editors/named-action-editor'
+import { actionTypeNames } from './editors/actions/action-utils'
 import {
   newDynamicPageFactory,
   newFixtureFactory,
@@ -46,6 +49,7 @@ import {
   newMemoryFactory,
   newButtonFactory,
   newSequenceFactory,
+  newNamedActionFactory,
 } from './new-entity-factories'
 import { EntityEditorProps } from './types'
 import {
@@ -268,6 +272,24 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
       removeReferencesFromActions('sequence', sequence.id)
     },
   },
+  actions: {
+    name: 'Actions',
+    icon: iconAction,
+    editor: NamedActionEditor,
+    newEntityFactory: newNamedActionFactory,
+    listPreview: entry => (
+      <>
+        {entry.name ?? entry.id}
+        <div className={smallInfo}>{actionTypeNames[entry.type]}</div>
+      </>
+    ),
+    onDelete: action => {
+      // remove the references first, so editing the action itself
+      // (if it references itself) does not interfere with its removal
+      removeReferencesFromActions('action', action.id)
+      removeEntity('actions', action.id)
+    },
+  },
   buttons: {
     name: 'Buttons',
     icon: iconButton,
@@ -375,7 +397,7 @@ function replaceMappingInEntities(
     }
   }
 
-  // Buttons and sequences: replace fixture mappings, and remove deleted groups
+  // Buttons, sequences, and named actions: replace fixture mappings, and remove deleted groups
   const removedGroupIds = mappingsToReplace
     .filter(it => it.startsWith(FixtureMappingPrefix.Group))
     .map(it => it.slice(FixtureMappingPrefix.Group.length))

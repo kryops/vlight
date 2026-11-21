@@ -279,6 +279,38 @@ function applyControl<T extends object, K extends keyof T & string>(
 }
 
 /**
+ * IDs of the named actions that are currently being applied.
+ *
+ * Used to prevent endless recursion through named actions.
+ */
+const executingNamedActions = new Set<IdType>()
+
+/**
+ * Applies a named action.
+ *
+ * Skips named actions that are already being applied, i.e. that (indirectly) trigger themselves.
+ */
+function applyNamedAction(id: IdType): StateChange[] {
+  const namedAction = masterDataMaps.actions.get(id)
+  if (!namedAction) {
+    logger.warn('Action: no named action found for ID', id)
+    return []
+  }
+
+  if (executingNamedActions.has(id)) {
+    logger.warn('Action: named action cannot trigger itself, skipping', id)
+    return []
+  }
+
+  executingNamedActions.add(id)
+  try {
+    return applyAction(namedAction)
+  } finally {
+    executingNamedActions.delete(id)
+  }
+}
+
+/**
  * Applies the given action.
  *
  * Returns the applied changes, which can be reverted via {@link revertStateChanges}.
@@ -382,6 +414,9 @@ export function applyAction(action: Action): StateChange[] {
         )
         return change ? [change] : []
       })
+
+    case 'action':
+      return (action.ids ?? []).flatMap(applyNamedAction)
 
     default:
       assertNever(action)

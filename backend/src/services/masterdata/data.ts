@@ -11,6 +11,7 @@ const allEntities: { [key in EntityName]: true } = {
   memorySceneStatePresets: true,
   buttons: true,
   sequences: true,
+  actions: true,
 }
 
 /**

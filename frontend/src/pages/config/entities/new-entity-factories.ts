@@ -1,5 +1,7 @@
 import {
   DynamicPage,
+  FixtureAction,
+  NamedAction,
   Fixture,
   FixtureGroup,
   FixtureType,
@@ -84,4 +86,14 @@ export function newSequenceFactory(): WithoutId<Sequence> {
     steps: [{ delay: 0, actions: [] }],
     endDelay: 0,
   }
+}
+
+export function newNamedActionFactory(): WithoutId<NamedAction> {
+  const action: FixtureAction = {
+    type: 'fixture',
+    members: [],
+    state: {},
+    partial: true,
+  }
+  return { ...action, name: 'New Action' }
 }

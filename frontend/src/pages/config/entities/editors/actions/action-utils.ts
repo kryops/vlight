@@ -20,6 +20,7 @@ export const actionTypeNames: { [type in ActionType]: string } = {
   global: 'Global Controls',
   sequence: 'Sequences',
   button: 'Buttons',
+  action: 'Actions',
 }
 
 /**
@@ -37,6 +38,8 @@ export function createAction(type: ActionType): Action {
       return { type, ids: [], control: 'start' }
     case 'button':
       return { type, ids: [], down: true }
+    case 'action':
+      return { type, ids: [] }
     case 'fixture':
       return { type, members: [], state: {}, partial: true }
     case 'fixture-group':

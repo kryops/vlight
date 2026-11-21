@@ -30,6 +30,7 @@ function getMasterDataMock(): MasterData {
     memorySceneStatePresets: [],
     buttons: [],
     sequences: [],
+    actions: [],
   }
 }
 

@@ -1,14 +1,21 @@
 import { css } from '@linaria/core'
 import { useMemo } from 'react'
-import { Action, ActionType } from '@vlight/types'
+import { Action, ActionType, NamedActionsAction } from '@vlight/types'
 import { assertNever } from '@vlight/utils'
 
 import { Button } from '../../../../../ui/buttons/button'
 import { Checkbox } from '../../../../../ui/forms/checkbox'
 import { Select, SelectEntry } from '../../../../../ui/forms/select'
+import { showPromptDialog } from '../../../../../ui/overlays/dialog'
+import {
+  convertToNamedAction,
+  inlineNamedActions,
+} from '../../action-references'
 import {
   iconAdd,
+  iconConvertToNamedAction,
   iconDelete,
+  iconInlineAction,
   iconDown,
   iconRevert,
   iconUp,
@@ -31,6 +38,7 @@ import {
   GlobalControlActionEditor,
   SequenceActionEditor,
   ButtonActionEditor,
+  NamedActionsActionEditor,
 } from './global-action-editors'
 
 const actionContainer = css`
@@ -70,7 +78,10 @@ const emptyHint = css`
   margin: ${baseline(2)} 0;
 `
 
-const typeEntries: SelectEntry<ActionType>[] = Object.entries(actionTypeNames)
+/** Entries to select the type of an action, sorted by name. */
+export const actionTypeEntries: SelectEntry<ActionType>[] = Object.entries(
+  actionTypeNames
+)
   .map(([value, label]) => ({ value: value as ActionType, label }))
   .sort((a, b) => a.label.localeCompare(b.label))
 
@@ -79,7 +90,12 @@ const noop = () => undefined
 /** An action that can optionally be reverted. */
 type RevertableAction = Action & { revert?: boolean }
 
-function ActionContent({
+/**
+ * Editor for the content of a single action, depending on its type.
+ *
+ * Additional properties of the action are kept.
+ */
+export function ActionContent({
   action,
   onChange,
 }: {
@@ -109,6 +125,8 @@ function ActionContent({
       return <SequenceActionEditor action={action} onChange={onChange} />
     case 'button':
       return <ButtonActionEditor action={action} onChange={onChange} />
+    case 'action':
+      return <NamedActionsActionEditor action={action} onChange={onChange} />
     default:
       assertNever(action)
       return null
@@ -180,7 +198,25 @@ export function ActionsEditor<T extends RevertableAction>({
     onChange(newActions)
   }
 
-  const addAction = () => onChange([...actions, createAction('fixture') as T])
+  const addAction = () => onChange([...actions, createAction('action') as T])
+
+  const convertAction = async (index: number) => {
+    const action = actions[index]
+    const name = await showPromptDialog({
+      title: 'Convert to named action',
+      label: 'Name',
+      initialValue: actionTypeNames[action.type],
+    })
+    if (name === undefined) return
+    changeAction(index, convertToNamedAction(action, name))
+  }
+
+  const inlineAction = (index: number) =>
+    onChange(
+      actions.flatMap((it, i) =>
+        i === index ? inlineNamedActions<T>(it as NamedActionsAction & T) : [it]
+      )
+    )
 
   return (
     <>
@@ -194,7 +230,7 @@ export function ActionsEditor<T extends RevertableAction>({
             <div className={actionHeader}>
               <span className={actionIndex}>{index + 1}.</span>
               <Select
-                entries={typeEntries}
+                entries={actionTypeEntries}
                 value={action.type}
                 onChange={type => changeType(index, type)}
                 className={typeSelect}
@@ -223,6 +259,22 @@ export function ActionsEditor<T extends RevertableAction>({
                     target !== undefined && onMoveTo(index, target)
                   }
                   className={typeSelect}
+                />
+              )}
+              {action.type === 'action' ? (
+                <Button
+                  icon={iconInlineAction}
+                  title="Inline: replace with copies of the named actions"
+                  transparent
+                  disabled={!action.ids?.length}
+                  onClick={() => action.ids?.length && inlineAction(index)}
+                />
+              ) : (
+                <Button
+                  icon={iconConvertToNamedAction}
+                  title="Convert to named action"
+                  transparent
+                  onClick={() => void convertAction(index)}
                 />
               )}
               <Button

@@ -1,4 +1,11 @@
-import { Action, IdType, ProgrammableButton, Sequence } from '@vlight/types'
+import {
+  Action,
+  IdType,
+  NamedAction,
+  NamedActionsAction,
+  ProgrammableButton,
+  Sequence,
+} from '@vlight/types'
 
 import { editEntity } from '../../../api'
 import { apiState } from '../../../api/api-state'
@@ -7,16 +14,33 @@ import { apiState } from '../../../api/api-state'
 export type IdReferencingActionType = Extract<Action, { ids: IdType[] }>['type']
 
 /**
+ * Returns a copy of the action without references to other entities.
+ *
+ * Used for named actions, which are kept even if they do not affect anything any more,
+ * as other entities may still reference them.
+ */
+function clearReferences(action: NamedAction): NamedAction {
+  if ('ids' in action) return { ...action, ids: [] }
+  if (action.type === 'fixture') return { ...action, members: [] }
+  return action
+}
+
+/**
  * Updates the actions of all entities that contain actions
- * (programmable buttons and sequences).
+ * (programmable buttons, sequences, and named actions).
  *
  * @param mapAction returns the updated action, the same object if unchanged,
  *   or `null` to remove the action.
+ *   Named actions are not removed, but only cleared of their references.
  */
 export function updateActions(
   mapAction: (action: Action) => Action | null
 ): void {
-  const { buttons = [], sequences = [] } = apiState.rawMasterData ?? {}
+  const {
+    buttons = [],
+    sequences = [],
+    actions: namedActions = [],
+  } = apiState.rawMasterData ?? {}
 
   let changed = false
   const mapActions = <T extends Action>(actions: T[]): T[] =>
@@ -47,6 +71,15 @@ export function updateActions(
     }
     if (changed) editEntity('sequences', newSequence)
   }
+
+  for (const namedAction of namedActions) {
+    const result = mapAction(namedAction)
+    if (result === namedAction) continue
+    const newNamedAction: NamedAction = result
+      ? { ...result, id: namedAction.id, name: namedAction.name }
+      : clearReferences(namedAction)
+    editEntity('actions', newNamedAction)
+  }
 }
 
 /**
@@ -69,7 +102,7 @@ export function removeIdsFromAction(
 }
 
 /**
- * Removes the given entity from the actions of all buttons and sequences.
+ * Removes the given entity from the actions of all buttons, sequences, and named actions.
  *
  * Actions that do not reference any entities any more are removed.
  */
@@ -78,4 +111,61 @@ export function removeReferencesFromActions(
   id: IdType
 ): void {
   updateActions(removeIdsFromAction(type, [id]))
+}
+
+/** Returns an unused ID for a new named action. */
+function getNewNamedActionId(): IdType {
+  const ids = (apiState.rawMasterData?.actions ?? []).map(it => it.id)
+  const highestNumber = Math.max(
+    0,
+    ...ids.filter(id => /^\d+$/.test(id)).map(id => parseInt(id))
+  )
+  return String(highestNumber + 1)
+}
+
+/**
+ * Creates a new named action from the given inline action.
+ *
+ * Returns the action that replaces the inline action, triggering the new named action.
+ * Properties controlled at the place of usage (i.e. `revert`) are kept there.
+ */
+export function convertToNamedAction<T extends Action & { revert?: boolean }>(
+  action: T,
+  name: string | undefined
+): T {
+  const { revert, ...rest } = action
+  const id = getNewNamedActionId()
+  editEntity(
+    'actions',
+    { id, name: name || undefined, ...structuredClone(rest as Action) },
+    true
+  )
+  return {
+    type: 'action',
+    ids: [id],
+    ...(revert !== undefined && { revert }),
+  } as NamedActionsAction as T
+}
+
+/**
+ * Returns copies of all named actions triggered by the given action,
+ * to replace it with.
+ *
+ * Properties controlled at the place of usage (i.e. `revert`) are applied to all copies.
+ */
+export function inlineNamedActions<T extends Action & { revert?: boolean }>(
+  action: NamedActionsAction & { revert?: boolean }
+): T[] {
+  const namedActions = apiState.rawMasterData?.actions ?? []
+  return (action.ids ?? []).flatMap(id => {
+    const namedAction = namedActions.find(it => it.id === id)
+    if (!namedAction) return []
+    const { id: _id, name: _name, ...rest } = structuredClone(namedAction)
+    return [
+      {
+        ...rest,
+        ...(action.revert !== undefined && { revert: action.revert }),
+      } as T,
+    ]
+  })
 }
