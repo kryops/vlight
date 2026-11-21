@@ -7,7 +7,7 @@ import { useApiStateEntry } from '../../hooks/api'
 import { HotkeyContext, PageHotkeyContext, useHotkey } from '../../hooks/hotkey'
 import { Button } from '../../ui/buttons/button'
 import { Icon } from '../../ui/icons/icon'
-import { baseline } from '../../ui/styles'
+import { baseline, primaryShade } from '../../ui/styles'
 import { cx } from '../../util/styles'
 
 const buttonStyle = css`
@@ -25,6 +25,16 @@ const buttonStyle = css`
   overflow: hidden;
   line-height: 1.2;
   user-select: none;
+`
+
+/** Distinguishes toggle buttons from flash buttons. */
+const button_toggle = css`
+  border: 1px solid ${primaryShade(1)};
+`
+
+/** The active background has the same color as the regular border. */
+const button_toggle_active = css`
+  border-color: ${primaryShade(0)};
 `
 
 const labelStyle = css`
@@ -111,7 +121,12 @@ export const ProgrammableButtonControl = ({
 
   return (
     <Button
-      className={cx(buttonStyle, className)}
+      className={cx(
+        buttonStyle,
+        mode === 'toggle' && button_toggle,
+        mode === 'toggle' && active && button_toggle_active,
+        className
+      )}
       onDown={onDown}
       onUp={onUp}
       active={active || undefined}
