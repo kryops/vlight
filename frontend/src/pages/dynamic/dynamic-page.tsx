@@ -10,7 +10,11 @@ import { iconClose, iconConfig, iconOk } from '../../ui/icons'
 import { DynamicPageEditor } from '../config/entities/editors/dynamic-page-editor'
 import { Button } from '../../ui/buttons/button'
 import { centeredText } from '../../ui/css/basic-styles'
-import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
+import {
+  getHotkeyLabel,
+  PageHotkeyContext,
+  useNumberHotkey,
+} from '../../hooks/hotkey'
 import { editEntityWithCustomLogic } from '../config/entities/entity-ui-mapping'
 
 const widgetTypesWithoutHotkeys: Array<WidgetConfig['type']> = [
@@ -71,7 +75,7 @@ const DynamicPage = () => {
   const startEditing = () => setEditing(true)
 
   return (
-    <>
+    <PageHotkeyContext value={activeHotkeyIndex === null}>
       <Header
         rightContent={
           editing ? (
@@ -154,7 +158,7 @@ const DynamicPage = () => {
           />
         ))
       )}
-    </>
+    </PageHotkeyContext>
   )
 }
 

@@ -127,6 +127,7 @@ export const SequenceWidget = ({
                 iconColor={warnShade(0)}
                 transparent
                 onDown={() => setPaused(false)}
+                hotkey="m"
               />
             ) : running ? (
               <Button
@@ -135,6 +136,7 @@ export const SequenceWidget = ({
                 iconColor={warnShade(0)}
                 transparent
                 onDown={pause}
+                hotkey="m"
               />
             ) : (
               <Button
@@ -143,6 +145,7 @@ export const SequenceWidget = ({
                 iconColor={successShade(0)}
                 transparent
                 onDown={start}
+                hotkey="m"
               />
             )}
             <Button
@@ -157,6 +160,7 @@ export const SequenceWidget = ({
               transparent
               className={waiting ? activeButton : undefined}
               onDown={next}
+              hotkey="n"
             />
             {state && (
               <Button
@@ -164,6 +168,7 @@ export const SequenceWidget = ({
                 title="Stop (reset to start)"
                 transparent
                 onDown={stop}
+                hotkey="b"
               />
             )}
           </div>

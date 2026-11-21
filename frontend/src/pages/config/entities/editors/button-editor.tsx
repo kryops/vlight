@@ -90,6 +90,18 @@ export function ButtonEditor({
       />
 
       <Label
+        label="Hotkey"
+        input={<FormTextInput formState={formState} name="hotkey" />}
+        description={
+          <>
+            Key to press the button with, e.g. &quot;q&quot; or
+            &quot;Shift+a&quot;. Only active on pages displaying the button, and
+            only while no other widget is selected via the number keys.
+          </>
+        }
+      />
+
+      <Label
         label="Mode"
         input={
           <FormSelect

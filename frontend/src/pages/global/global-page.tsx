@@ -1,7 +1,11 @@
 import { pageWithWidgets } from '../../ui/css/page'
 import { Header } from '../../ui/containers/header'
 import { DmxMasterWidget } from '../../widgets/global/dmx-master-widget'
-import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
+import {
+  getHotkeyLabel,
+  PageHotkeyContext,
+  useNumberHotkey,
+} from '../../hooks/hotkey'
 import { ControlsWidget } from '../../widgets/global/controls-widget'
 import { ButtonsSection } from '../../widgets/button/buttons-section'
 
@@ -14,7 +18,7 @@ const GlobalPage = () => {
   const activeHotkeyIndex = useNumberHotkey(2)
 
   return (
-    <>
+    <PageHotkeyContext value={activeHotkeyIndex === null}>
       <Header>Global Controls</Header>
       <div className={pageWithWidgets}>
         <DmxMasterWidget
@@ -28,7 +32,7 @@ const GlobalPage = () => {
       </div>
       <br />
       <ButtonsSection />
-    </>
+    </PageHotkeyContext>
   )
 }
 

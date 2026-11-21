@@ -34,6 +34,7 @@ const buttons = [
     ],
     up: [],
     icon: 'mdiCastle',
+    hotkey: 'x',
   },
 ]
 

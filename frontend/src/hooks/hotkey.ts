@@ -5,6 +5,15 @@ import { useHotkeys } from 'react-hotkeys-hook'
 /** Context to indicate whether keyboard hotkeys should be active. */
 export const HotkeyContext = createContext(false)
 
+/**
+ * Context to indicate whether user-configured page-wide hotkeys
+ * (e.g. of programmable buttons) should be active.
+ *
+ * Pages with number hotkeys disable them while a widget is selected,
+ * so that they don't conflict with the widget's own hotkeys.
+ */
+export const PageHotkeyContext = createContext(true)
+
 export interface UseHotKeyOptions {
   /**
    * Force-control whether the hotkey should be active.
@@ -63,7 +72,6 @@ export function useNumberHotkey(itemCount: number): number | null {
   useHotkeys(
     numberHotkeys,
     (_event, hotkey) => {
-      console.log(hotkey.keys)
       const number = Number(hotkey.keys?.[0])
       const maxNumber = itemCount - 1
 

@@ -43,6 +43,14 @@ export interface ProgrammableButton extends DbEntity {
   icon?: string
 
   /**
+   * Keyboard hotkey to press the button with, e.g. `q` or `Shift+a`.
+   *
+   * It is only active on pages that display the button, and
+   * on pages with number hotkeys only while no other widget is selected.
+   */
+  hotkey?: string
+
+  /**
    * Controls when the actions are executed.
    *
    * Defaults to `flash`.

@@ -1,8 +1,10 @@
 import { css } from '@linaria/core'
-import { ProgrammableButton } from '@vlight/types'
+import { IdType, ProgrammableButton } from '@vlight/types'
+import { useContext } from 'react'
 
 import { pressButton, releaseButton } from '../../api'
 import { useApiStateEntry } from '../../hooks/api'
+import { HotkeyContext, PageHotkeyContext, useHotkey } from '../../hooks/hotkey'
 import { Button } from '../../ui/buttons/button'
 import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
@@ -46,6 +48,25 @@ const smallLabelThreshold = 10
 /** Labels longer than this are displayed in an even smaller font. */
 const tinyLabelThreshold = 20
 
+/**
+ * Keyboard events already handled per button.
+ *
+ * Prevents executing the actions multiple times if the same button
+ * is displayed more than once on a page.
+ */
+const handledHotkeyEvents = new WeakMap<KeyboardEvent, Set<IdType>>()
+
+function isHotkeyEventHandled(event: KeyboardEvent, id: IdType): boolean {
+  let ids = handledHotkeyEvents.get(event)
+  if (!ids) {
+    ids = new Set()
+    handledHotkeyEvents.set(event, ids)
+  }
+  if (ids.has(id)) return true
+  ids.add(id)
+  return false
+}
+
 export interface ProgrammableButtonControlProps {
   button: ProgrammableButton
 
@@ -59,12 +80,32 @@ export const ProgrammableButtonControl = ({
   button,
   className,
 }: ProgrammableButtonControlProps) => {
-  const { id, label, icon, mode = 'flash' } = button
+  const { id, label, icon, hotkey, mode = 'flash' } = button
   const active = useApiStateEntry('buttons', id) ?? false
+
+  // active if the surrounding widget is selected, or if no widget is selected at all
+  const widgetHotkeysActive = useContext(HotkeyContext)
+  const pageHotkeysActive = useContext(PageHotkeyContext)
 
   const onDown = () => pressButton(id)
   // releasing has no effect in toggle mode
   const onUp = mode === 'flash' ? () => releaseButton(id) : undefined
+
+  const hotkeyEnabled = useHotkey(
+    hotkey || undefined,
+    event => {
+      if (event.repeat || isHotkeyEventHandled(event, id)) return
+      if (event.type === 'keyup') {
+        onUp?.()
+      } else {
+        onDown()
+      }
+    },
+    { keyup: true, forceActive: widgetHotkeysActive || pageHotkeysActive }
+  )
+
+  const hotkeyLabel = hotkeyEnabled ? `(${hotkey!.toUpperCase()})` : undefined
+  const title = [label, hotkeyLabel].filter(Boolean).join(' ') || undefined
 
   const labelLength = label?.length ?? 0
 
@@ -74,7 +115,7 @@ export const ProgrammableButtonControl = ({
       onDown={onDown}
       onUp={onUp}
       active={active || undefined}
-      title={label}
+      title={title}
     >
       {icon && <Icon icon={icon} size={label ? 6 : 10} />}
       {label && (
