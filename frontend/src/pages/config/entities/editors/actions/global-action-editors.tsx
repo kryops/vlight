@@ -1,5 +1,6 @@
 import { css } from '@linaria/core'
 import {
+  ButtonAction,
   ChannelsAction,
   DmxMasterAction,
   GlobalControl,
@@ -228,6 +229,53 @@ export function SequenceActionEditor({
               entries={sequenceControlEntries}
               value={action.control}
               onChange={control => onChange({ ...action, control })}
+            />
+          }
+        />
+      }
+      fullWidth
+      preferSingleRow
+    />
+  )
+}
+
+const buttonDownEntries: SelectEntry<boolean>[] = [
+  { value: true, label: 'Press' },
+  { value: false, label: 'Release' },
+]
+
+/**
+ * Editor for actions that press or release programmable buttons.
+ */
+export function ButtonActionEditor({
+  action,
+  onChange,
+}: ActionEditorProps<ButtonAction>) {
+  const { masterData, masterDataMaps } = useMasterDataAndMaps()
+  const buttonIds = useShallowEqualMemo(masterData.buttons.map(it => it.id))
+  const getDisplayValue = useCallback(
+    (id: IdType) => masterDataMaps.buttons.get(id)?.label ?? id,
+    [masterDataMaps]
+  )
+
+  return (
+    <TwoColumDialogContainer
+      left={
+        <MultiToggleInput
+          value={action.ids ?? []}
+          entries={buttonIds}
+          onChange={ids => onChange({ ...action, ids })}
+          getDisplayValue={getDisplayValue}
+        />
+      }
+      right={
+        <Label
+          label="Control"
+          input={
+            <Select
+              entries={buttonDownEntries}
+              value={!!action.down}
+              onChange={down => onChange({ ...action, down })}
             />
           }
         />

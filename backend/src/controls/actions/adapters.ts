@@ -19,6 +19,7 @@ import { liveChases } from '../chases/live-chases'
 import { liveMovements } from '../movements/live-movements'
 import { isPaused } from '../pause'
 import { sequenceStates } from '../sequences/state'
+import { buttonStates } from '../buttons/state'
 import { masterDataMaps } from '../../services/masterdata'
 
 /**
@@ -190,5 +191,34 @@ export const sequencesAdapter: StateAdapter<SequenceStatusState> = {
       id,
       control: sequenceStatusControls[state.status],
     })
+  },
+}
+
+/**
+ * Active state of a programmable button.
+ *
+ * Changing it presses or releases the button so it ends up in the given state
+ * (toggle buttons are pressed to toggle them).
+ */
+export interface ButtonActiveState {
+  active: boolean
+}
+
+export const buttonsAdapter: StateAdapter<ButtonActiveState> = {
+  name: 'button',
+  getIds: () => [...masterDataMaps.buttons.keys()],
+  get: id =>
+    masterDataMaps.buttons.has(id)
+      ? { active: !!buttonStates.get(id) }
+      : undefined,
+  set: (id, state) => {
+    const button = masterDataMaps.buttons.get(id)
+    if (!button || state.active === undefined) return
+    if ((button.mode ?? 'flash') === 'toggle') {
+      if (!!buttonStates.get(id) === state.active) return
+      handleApiMessage({ type: 'button', id, down: true })
+    } else {
+      handleApiMessage({ type: 'button', id, down: state.active })
+    }
   },
 }

@@ -30,6 +30,8 @@ Controls
 - 🖼 Memories
 - 🎞 Live Chases
 - 🏃 Movement
+- 🖲️ Programmable buttons
+- 🎬 Timed sequences
 - 🗺 Map Overview
 - ✨ Universe Overview
 - 🌎 Global Master / Blackout

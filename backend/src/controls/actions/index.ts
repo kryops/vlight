@@ -1,4 +1,4 @@
-import { Action, IdType, SequenceControl } from '@vlight/types'
+import { Action, IdType } from '@vlight/types'
 import { mapFixtureList } from '@vlight/controls'
 import {
   assertNever,
@@ -13,6 +13,7 @@ import { masterData, masterDataMaps } from '../../services/masterdata'
 import { handleApiMessage } from '../../services/api'
 
 import {
+  buttonsAdapter,
   channelsAdapter,
   dmxMasterAdapter,
   dmxMasterId,
@@ -247,31 +248,33 @@ function setPaused(paused: boolean | ((current: boolean) => boolean)) {
 }
 
 /**
- * Applies a control to a sequence.
+ * Triggers a control on an entity via an API message, and records
+ * the resulting change of a single state value.
  *
- * The status change is recorded, so reverting it restores the previous status
- * (running/paused/stopped).
+ * Reverting the change restores the previous value through the adapter.
  */
-function controlSequence(
+function applyControl<T extends object, K extends keyof T & string>(
+  adapter: StateAdapter<T>,
   id: IdType,
-  control: SequenceControl
+  key: K,
+  control: () => void
 ): StateChange | undefined {
-  const before = sequencesAdapter.get(id)
+  const before = adapter.get(id)
   if (!before) {
-    logger.warn('Action: no sequence found for ID', id)
+    logger.warn(`Action: no ${adapter.name} found for ID`, id)
     return undefined
   }
 
-  handleApiMessage({ type: 'sequence', id, control })
+  control()
 
-  const after = sequencesAdapter.get(id)!
-  if (before.status === after.status) return undefined
+  const after = adapter.get(id)!
+  if (before[key] === after[key]) return undefined
   return {
-    adapter: sequencesAdapter,
+    adapter,
     id,
-    paths: [['status']],
-    before: [before.status],
-    after: [after.status],
+    paths: [[key]],
+    before: [before[key]],
+    after: [after[key]],
   }
 }
 
@@ -366,7 +369,17 @@ export function applyAction(action: Action): StateChange[] {
 
     case 'sequence':
       return (action.ids ?? []).flatMap(id => {
-        const change = controlSequence(id, action.control)
+        const change = applyControl(sequencesAdapter, id, 'status', () =>
+          handleApiMessage({ type: 'sequence', id, control: action.control })
+        )
+        return change ? [change] : []
+      })
+
+    case 'button':
+      return (action.ids ?? []).flatMap(id => {
+        const change = applyControl(buttonsAdapter, id, 'active', () =>
+          handleApiMessage({ type: 'button', id, down: !!action.down })
+        )
         return change ? [change] : []
       })
 

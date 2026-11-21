@@ -8,20 +8,20 @@ import { howLong } from '../../util/time'
 import { applyAction, revertStateChanges, StateChange } from '../actions'
 import { controlRegistry } from '../registry'
 
-/**
- * Active state of all buttons, i.e.
- * - pressed in `flash` mode
- * - toggled on in `toggle` mode
- *
- * Inactive buttons may be missing.
- */
-export const buttonStates = new Map<IdType, boolean>()
+import { buttonStates } from './state'
 
 /**
  * Changes of the down actions of active buttons that are reverted
  * when the button is deactivated.
  */
 const pendingReverts = new Map<IdType, StateChange[]>()
+
+/**
+ * IDs of the buttons whose actions are currently being executed.
+ *
+ * Used to prevent endless recursion through button actions.
+ */
+const executingButtons = new Set<IdType>()
 
 function setActive(id: IdType, active: boolean) {
   if (!!buttonStates.get(id) === active) return
@@ -67,8 +67,30 @@ function handleApiMessage({ id, down }: ApiButtonMessage): boolean {
     return false
   }
 
+  if (executingButtons.has(id)) {
+    logger.warn(
+      'Button cannot be pressed or released by its own actions, skipping',
+      id
+    )
+    return false
+  }
+
+  executingButtons.add(id)
+  try {
+    handleButton(button, down)
+  } finally {
+    executingButtons.delete(id)
+  }
+
+  // the incoming message is not broadcast; state changes are broadcast separately
+  return false
+}
+
+function handleButton(button: ProgrammableButton, down: boolean) {
+  const { id } = button
+
   if ((button.mode ?? 'flash') === 'toggle') {
-    if (!down) return false
+    if (!down) return
     if (buttonStates.get(id)) deactivate(button)
     else activate(button)
   } else if (down) {
@@ -76,9 +98,6 @@ function handleApiMessage({ id, down }: ApiButtonMessage): boolean {
   } else {
     deactivate(button)
   }
-
-  // the incoming message is not broadcast; state changes are broadcast separately
-  return false
 }
 
 function reload(reloadState?: boolean) {

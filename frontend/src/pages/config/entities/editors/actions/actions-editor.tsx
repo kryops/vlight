@@ -30,6 +30,7 @@ import {
   DmxMasterActionEditor,
   GlobalControlActionEditor,
   SequenceActionEditor,
+  ButtonActionEditor,
 } from './global-action-editors'
 
 const actionContainer = css`
@@ -106,6 +107,8 @@ function ActionContent({
       return <GlobalControlActionEditor action={action} onChange={onChange} />
     case 'sequence':
       return <SequenceActionEditor action={action} onChange={onChange} />
+    case 'button':
+      return <ButtonActionEditor action={action} onChange={onChange} />
     default:
       assertNever(action)
       return null

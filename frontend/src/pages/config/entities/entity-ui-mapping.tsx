@@ -285,6 +285,12 @@ export const entityUiMapping: { [key in EntityName]?: EntityEntry<key> } = {
         </>
       )
     },
+    onDelete: button => {
+      // remove the references first, so editing the button itself
+      // (if it references itself) does not interfere with its removal
+      removeReferencesFromActions('button', button.id)
+      removeEntity('buttons', button.id)
+    },
   },
   dynamicPages: {
     name: 'Dynamic Pages',

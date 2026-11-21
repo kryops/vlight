@@ -149,6 +149,24 @@ export interface SequenceAction {
 }
 
 /**
+ * Presses or releases one or multiple programmable buttons,
+ * as if done via the UI.
+ *
+ * Buttons in `toggle` mode are toggled when pressed, and ignore releases.
+ *
+ * When reverted, the previous active state of the buttons is restored.
+ *
+ * A button cannot press or release itself (also indirectly through other buttons).
+ */
+export interface ButtonAction {
+  type: 'button'
+  ids: IdType[]
+
+  /** If set, the buttons are pressed; otherwise, they are released. */
+  down: boolean
+}
+
+/**
  * An action that changes the application state, e.g. turning on a memory.
  *
  * Actions are independent from the controls that trigger them (e.g. programmable buttons).
@@ -164,6 +182,7 @@ export type Action =
   | LiveChaseAction
   | LiveMovementAction
   | SequenceAction
+  | ButtonAction
 
 /** The type of an {@link Action}. */
 export type ActionType = Action['type']
