@@ -2,14 +2,13 @@
 
 ## November 2026
 
-- Added movements for moving heads: Live pan/tilt patterns (line, sine, circle, square, eight) on the chases page and as dynamic page widget
+- Added movements for moving heads
 - Added programmable buttons
 - Added timed sequences
 - Added named actions that can be reused by buttons, sequences, and other named actions
 - Added mouse wheel input to faders (when a modifier key is pressed)
-- Dynamic pages: Removed cells - rows now contain widgets directly (existing cells are merged automatically)
-- Dynamic pages: Widgets are now edited directly in their rows and can be dragged within and between rows; rows can be reordered via drag handles
-- Added global PAUSE button to the Controls widget: Pauses all live chases, live memory gradient movements, movements and sequences, which resume from where they stopped. While paused, the affected widgets show a pause icon that resumes globally and starts the widget
+- Improved dynamic pages editing; removed row cells
+- Added global PAUSE button to the Controls widget
 - Added auto-select free channel button for fixture editor
 - Fixtures/groups: "Save into Memory" can now add the state as a new scene to an existing memory
 - Live chases: Added compact view that only displays a large speed burst button
