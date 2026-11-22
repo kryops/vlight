@@ -24,9 +24,7 @@
 - Speed/Fade control
   - Global vs local speed
 - Prepare changes before applying
-  - Chases, Memories, Fixture states...
   - Fade/transition
-  - Kick off multiple changes at once
 - Fixture Selection
   - Select by mapping (e.g. all color fixtures)
 - Memories

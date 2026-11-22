@@ -70,6 +70,15 @@ export const EntityReferenceSelect = ({
       result.unshift(undefined)
     }
 
+    // Keep references to entries that do not exist (yet), e.g. right after creating them,
+    // as the select would otherwise reset the value
+    if (
+      rest.value !== undefined &&
+      !result.some(entry => entry?.value === rest.value)
+    ) {
+      result.push({ value: rest.value, label: rest.value })
+    }
+
     return result
   }, [originalEntries, memoExcludeValues, rest.value, addUndefinedOption])
 

@@ -37,7 +37,10 @@ import { FixtureStateWidget } from '../../../../../widgets/fixture/fixture-state
 import { StatelessLiveMemoryWidget } from '../../../../../widgets/memory/stateless-live-memory-widget'
 import { StatelessLiveMovementWidget } from '../../../../../widgets/movement/stateless-live-movement-widget'
 
-import { EntityStateActionEditor } from './entity-state-action-editor'
+import {
+  ActionOptionToggle,
+  EntityStateActionEditor,
+} from './entity-state-action-editor'
 
 export interface ActionEditorProps<T> {
   action: T
@@ -315,6 +318,14 @@ export function LiveChaseActionEditor({
       currentState={firstState}
       ignoredKeys={ignoredLiveEntityKeys}
       onChange={(state, partial) => onChange({ ...action, state, partial })}
+      options={
+        <ActionOptionToggle
+          value={!!action.step}
+          onChange={step => onChange({ ...action, step: step || undefined })}
+          label="Step"
+          title="Moves the chases one step forward after applying the state"
+        />
+      }
       selection={
         <MultiToggleInput
           value={ids}
@@ -356,6 +367,14 @@ export function LiveMovementActionEditor({
       currentState={firstState}
       ignoredKeys={ignoredLiveEntityKeys}
       onChange={(state, partial) => onChange({ ...action, state, partial })}
+      options={
+        <ActionOptionToggle
+          value={!!action.reset}
+          onChange={reset => onChange({ ...action, reset: reset || undefined })}
+          label="Reset to center"
+          title="Resets the movements so that all members return to the center"
+        />
+      }
       selection={
         <MultiToggleInput
           value={ids}

@@ -1,4 +1,5 @@
 import {
+  Action,
   ApiInMessage,
   FixtureState,
   IdType,
@@ -42,12 +43,38 @@ export const apiWorker = new Worker(
 )
 
 /**
- * Sends a message to the backend through the web worker.
+ * Sends a message to the backend through the web worker,
+ * bypassing the {@link setApiMessageInterceptor interceptor}.
  */
-export function sendApiMessage(message: ApiInMessage): void {
+export function sendUnrecordedApiMessage(message: ApiInMessage): void {
   logger.trace('Sending WebSocket message', message)
   const command: ApiWorkerCommand = { type: 'message', message }
   apiWorker.postMessage(command)
+}
+
+let interceptor: ((message: ApiInMessage) => boolean) | undefined
+
+/**
+ * Sets a function that is called for each message before sending it.
+ * If it returns `true`, the message is not sent (e.g. when recording actions).
+ */
+export function setApiMessageInterceptor(
+  fn: ((message: ApiInMessage) => boolean) | undefined
+): void {
+  interceptor = fn
+}
+
+/**
+ * Sends a message to the backend through the web worker.
+ *
+ * While action recording is active, state changes are recorded instead.
+ */
+export function sendApiMessage(message: ApiInMessage): void {
+  if (interceptor?.(message)) {
+    logger.trace('Intercepted API message', message)
+    return
+  }
+  sendUnrecordedApiMessage(message)
 }
 
 /**
@@ -271,6 +298,13 @@ export function releaseButton(id: IdType): void {
  */
 export function controlSequence(id: IdType, control: SequenceControl): void {
   sendApiMessage(getApiSequenceMessage(id, control))
+}
+
+/**
+ * Executes the given actions immediately.
+ */
+export function executeActions(actions: Action[]): void {
+  sendUnrecordedApiMessage({ type: 'actions', actions })
 }
 
 /**

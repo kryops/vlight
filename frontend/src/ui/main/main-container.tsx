@@ -12,10 +12,20 @@ import { ErrorBoundary } from '../../util/error-boundary'
 
 import { LoadingScreen } from './loading-screen'
 import { CornerOverlay } from './corner-overlay'
+import { RecordingBar } from './recording-bar'
+import { useRecordingState } from '../../api/recording'
+
+const outerContainer = css`
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+`
 
 const mainContainer = css`
+  position: relative;
   display: flex;
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
 `
 
 const content = css`
@@ -50,6 +60,7 @@ const alwaysShowNav = window.innerWidth >= navBreakpoint
  * - the navigation, or a corner button on small viewports
  * - the routing outlet for the main content
  * - the corner overlay for the minimal and quick settings
+ * - the action recording bar
  */
 export const MainContainer = () => {
   const [nav, setNav] = useState(alwaysShowNav)
@@ -66,27 +77,32 @@ export const MainContainer = () => {
 
   const navOverlayed = nav && !alwaysShowNav
 
+  const { barVisible, active: recording } = useRecordingState()
+
   return (
-    <div className={mainContainer}>
-      {navOverlayed && <div className={overlay} onClick={toggleNav} />}
-      {nav && (
-        <Navigation showLabels={!alwaysShowNav} floating={!alwaysShowNav} />
-      )}
-      {!alwaysShowNav && (
-        <CornerButton
-          icon={nav ? iconClose : iconMenu}
-          shade={nav ? 1 : 2}
-          onClick={toggleNav}
-        />
-      )}
-      <div className={cx(content, navOverlayed && content_blurred)}>
-        <ErrorBoundary>
-          <Suspense fallback={<LoadingScreen />}>
-            <RoutesOutlet />
-          </Suspense>
-        </ErrorBoundary>
+    <div className={outerContainer}>
+      <div className={mainContainer}>
+        {navOverlayed && <div className={overlay} onClick={toggleNav} />}
+        {nav && (
+          <Navigation showLabels={!alwaysShowNav} floating={!alwaysShowNav} />
+        )}
+        {!alwaysShowNav && (
+          <CornerButton
+            icon={nav ? iconClose : iconMenu}
+            shade={nav ? 1 : 2}
+            onClick={toggleNav}
+          />
+        )}
+        <div className={cx(content, navOverlayed && content_blurred)}>
+          <ErrorBoundary>
+            <Suspense fallback={<LoadingScreen />}>
+              <RoutesOutlet />
+            </Suspense>
+          </ErrorBoundary>
+        </div>
+        <CornerOverlay />
       </div>
-      <CornerOverlay />
+      {(barVisible || recording) && <RecordingBar />}
     </div>
   )
 }

@@ -5,6 +5,7 @@ import { mergeObjects } from '@vlight/utils'
 import type { NamedAction } from '@vlight/types'
 
 import { masterDataMaps } from '../../src/services/masterdata'
+import { handleApiMessage } from '../../src/services/api'
 import {
   applyAction,
   applyStateChange,
@@ -14,6 +15,7 @@ import {
 import type { StateAdapter } from '../../src/controls/actions/adapters'
 
 const channels = vi.hoisted(() => new Map<string, number>())
+const liveEntities = vi.hoisted(() => new Map<string, Record<string, any>>())
 
 vi.mock('../../src/controls/actions/adapters', () => ({
   channelsAdapter: {
@@ -23,6 +25,21 @@ vi.mock('../../src/controls/actions/adapters', () => ({
     set: (id: string, state: { value?: number }) =>
       channels.set(id, state.value ?? 0),
   },
+  ...Object.fromEntries(
+    ['liveChasesAdapter', 'liveMovementsAdapter'].map(name => [
+      name,
+      {
+        name,
+        getIds: () => [...liveEntities.keys()],
+        get: (id: string) => liveEntities.get(id),
+        set: (id: string, state: Record<string, any>) =>
+          liveEntities.set(id, { ...liveEntities.get(id), ...state }),
+      },
+    ])
+  ),
+}))
+vi.mock('../../src/services/api', () => ({
+  handleApiMessage: vi.fn<(message: unknown) => void>(),
 }))
 vi.mock('../../src/services/masterdata', () => ({
   masterData: {},
@@ -200,5 +217,46 @@ describe('controls/actions with named actions', () => {
     const changes = applyAction({ type: 'action', ids: ['a'] })
     expect(changes).toHaveLength(1)
     expect(channels.get('1')).toBe(255)
+  })
+})
+
+describe('controls/actions with live chases and movements', () => {
+  it('steps live chases and resets live movements after applying the state', () => {
+    liveEntities.clear()
+    liveEntities.set('1', { on: false })
+    vi.mocked(handleApiMessage).mockClear()
+
+    const changes = applyAction({
+      type: 'live-chase',
+      ids: ['1', 'unknown'],
+      state: { on: true },
+      partial: true,
+      step: true,
+    })
+    expect(liveEntities.get('1')).toEqual({ on: true })
+    expect(changes).toHaveLength(1)
+    expect(handleApiMessage).toHaveBeenCalledExactlyOnceWith({
+      type: 'live-chase',
+      id: '1',
+      state: {},
+      merge: true,
+      step: true,
+    })
+
+    vi.mocked(handleApiMessage).mockClear()
+    applyAction({
+      type: 'live-movement',
+      ids: ['1'],
+      state: {},
+      partial: true,
+      reset: true,
+    })
+    expect(handleApiMessage).toHaveBeenCalledExactlyOnceWith({
+      type: 'live-movement',
+      id: '1',
+      state: {},
+      merge: true,
+      reset: true,
+    })
   })
 })

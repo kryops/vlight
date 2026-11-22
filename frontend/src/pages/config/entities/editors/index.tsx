@@ -32,19 +32,22 @@ export function openEntityEditorForId<T extends EntityName>(
  *
  * @param entry if given, an existing entry is edited;
  *   otherwise, a new one is created.
+ *   New entries can be passed with an empty ID.
+ *
+ * Returns whether the entry was saved.
  */
 export async function openEntityEditor<T extends EntityName>(
   type: T,
   entry?: EntityType<T>
-) {
+): Promise<boolean> {
   const Editor: ComponentType<EntityEditorProps<T>> | undefined =
     entityUiMapping[type]?.editor as any
 
-  if (!Editor) return
+  if (!Editor) return false
 
   const factory = entityUiMapping[type]?.newEntityFactory
 
-  if (!entry && !factory) return
+  if (!entry && !factory) return false
 
   const initialEntry = entry ?? ({ id: '', ...factory!() } as EntityType<T>)
 
@@ -62,4 +65,5 @@ export async function openEntityEditor<T extends EntityName>(
   if (result) {
     editEntityWithCustomLogic(type, newEntry)
   }
+  return !!result
 }

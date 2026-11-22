@@ -1,11 +1,14 @@
 import { css } from '@linaria/core'
 
+import { cx } from '../../util/styles'
+
 import { useSettings } from '../../hooks/settings'
 import { MapWidget } from '../../widgets/map/map-widget'
 import { useBreakpoint } from '../hooks/breakpoint'
-import { iconFullscreen, iconLight, iconMap } from '../icons'
+import { iconFullscreen, iconLight, iconMap, iconRecord } from '../icons'
 import { Icon } from '../icons/icon'
-import { zCornerOverlay, baseline } from '../styles'
+import { zCornerOverlay, baseline, errorShade } from '../styles'
+import { toggleRecordingBar, useRecordingState } from '../../api/recording'
 
 const cornerOverlay = css`
   position: absolute;
@@ -16,6 +19,11 @@ const cornerOverlay = css`
 
 const cornerIcon = css`
   padding: ${baseline(2)};
+`
+
+const cornerIcon_active = css`
+  opacity: 1;
+  cursor: default;
 `
 
 const miniMapOverlay = css`
@@ -47,6 +55,7 @@ function toggleFullScreen() {
 
 /**
  * Overlay in the bottom right corner to display
+ * - a toggle for the action recording bar
  * - a minimap and its toggle
  * - a light/dark mode toggle
  */
@@ -59,9 +68,21 @@ export const CornerOverlay = () => {
   const toggleMiniMap = () => updateSettings({ miniMap: !miniMap })
   const toggleLightMode = () => updateSettings({ lightMode: !lightMode })
 
+  const { barVisible, active: recording } = useRecordingState()
+
   return (
     <>
       <div className={cornerOverlay}>
+        <Icon
+          title={
+            recording ? 'Recording actions' : 'Toggle action recording bar'
+          }
+          className={cx(cornerIcon, recording && cornerIcon_active)}
+          icon={iconRecord}
+          color={recording || barVisible ? errorShade(0) : undefined}
+          hoverable={!recording}
+          onClick={toggleRecordingBar}
+        />
         {isLarge && (
           <Icon
             title="Toggle mini map"

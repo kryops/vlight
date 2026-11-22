@@ -1,4 +1,5 @@
 import {
+  Action,
   Dictionary,
   FixtureState,
   IdType,
@@ -191,6 +192,16 @@ export interface ApiSequenceMessage {
   control: SequenceControl
 }
 
+/**
+ * Executes the given actions immediately, in order.
+ *
+ * Their changes are not reverted.
+ */
+export interface ApiActionsMessage {
+  type: 'actions'
+  actions: Action[]
+}
+
 /** Overwrite the master data entities of a certain type. */
 export interface ApiEntityMessage<T extends EntityName> {
   type: 'entity'
@@ -254,6 +265,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiPauseMessage
   | ApiButtonMessage
   | ApiSequenceMessage
+  | ApiActionsMessage
   | ApiUniverseSubscriptionMessage
 
 // Outgoing messages

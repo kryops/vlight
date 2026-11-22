@@ -1,6 +1,10 @@
 // oxlint-disable-next-line no-restricted-imports
 import {
   mdiClose,
+  mdiRecordCircleOutline,
+  mdiContentSave,
+  mdiPencil,
+  mdiPlayCircleOutline,
   mdiFlaskOutline,
   mdiLightbulbOnOutline,
   mdiLoading,
@@ -144,3 +148,7 @@ export const iconNext = mdiSkipNext
 export const iconConfig = mdiCog
 export const iconList = mdiFormatListNumbered
 export const iconDrag = mdiDrag
+export const iconRecord = mdiRecordCircleOutline
+export const iconSave = mdiContentSave
+export const iconEdit = mdiPencil
+export const iconApply = mdiPlayCircleOutline

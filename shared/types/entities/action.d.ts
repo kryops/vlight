@@ -107,6 +107,12 @@ export interface LiveMemoryAction extends EntityStateActionBase<LiveMemory> {
 export interface LiveChaseAction extends EntityStateActionBase<LiveChase> {
   type: 'live-chase'
   ids: IdType[]
+
+  /**
+   * If set, the live chases are moved one step forward after applying the state
+   * (like the step button). Stepping is not reverted.
+   */
+  step?: boolean
 }
 
 /**
@@ -117,6 +123,13 @@ export interface LiveChaseAction extends EntityStateActionBase<LiveChase> {
 export interface LiveMovementAction extends EntityStateActionBase<LiveMovement> {
   type: 'live-movement'
   ids: IdType[]
+
+  /**
+   * If set, the phase of the live movements is reset after applying the state,
+   * so that all members return to the center (like the reset button).
+   * Resetting is not reverted.
+   */
+  reset?: boolean
 }
 
 /**

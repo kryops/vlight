@@ -6,6 +6,7 @@
 - Added programmable buttons
 - Added timed sequences
 - Added named actions that can be reused by buttons, sequences, and other named actions
+- Added action recording: Collect control changes as actions, then apply them or save them to a button/sequence
 - Added mouse wheel input to faders (when a modifier key is pressed)
 - Improved dynamic pages editing; removed row cells
 - Added global PAUSE button to the Controls widget

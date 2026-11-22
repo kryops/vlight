@@ -17,6 +17,34 @@ const partialToggle = css`
   cursor: pointer;
 `
 
+const optionToggle = css`
+  display: inline-block;
+  margin: 0 0 ${baseline(2)} ${baseline(4)};
+  cursor: pointer;
+`
+
+/**
+ * Toggle for an additional boolean option of an action.
+ */
+export function ActionOptionToggle({
+  value,
+  onChange,
+  label,
+  title,
+}: {
+  value: boolean
+  onChange: (value: boolean) => void
+  label: string
+  title?: string
+}) {
+  return (
+    <a className={optionToggle} onClick={() => onChange(!value)} title={title}>
+      {/* the click is handled by the surrounding element */}
+      <Checkbox value={value} onChange={noop} inline /> {label}
+    </a>
+  )
+}
+
 const hint = css`
   opacity: 0.6;
   font-style: italic;
@@ -48,6 +76,9 @@ export interface EntityStateActionEditorProps<T extends object> {
 
   /** Input to select the affected entities. */
   selection: ReactNode
+
+  /** Additional options to display next to the partial toggle. */
+  options?: ReactNode
 
   /**
    * Default state to display in non-partial mode.
@@ -84,6 +115,7 @@ export function EntityStateActionEditor<T extends object>({
   currentState,
   onChange,
   selection,
+  options,
   fullModeDefaults,
   ignoredKeys = [],
   renderWidget,
@@ -132,6 +164,7 @@ export function EntityStateActionEditor<T extends object>({
             <Checkbox value={partial} onChange={noop} inline /> Partial: Only
             apply changes
           </a>
+          {options}
           {displayedState ? (
             <div className={widgetContainer}>
               {renderWidget(displayedState, change)}

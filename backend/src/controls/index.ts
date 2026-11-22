@@ -8,6 +8,7 @@ import * as movements from './movements'
 import * as pause from './pause'
 import * as buttons from './buttons'
 import * as sequences from './sequences'
+import * as actions from './actions'
 
 /**
  * Initializes all controls in parallel.
@@ -15,6 +16,7 @@ import * as sequences from './sequences'
 export async function initControls(): Promise<void> {
   // the other controls depend on the pause state
   pause.init()
+  actions.init()
 
   await Promise.all(
     [

@@ -1,4 +1,4 @@
-import { Action, IdType } from '@vlight/types'
+import { Action, ApiActionsMessage, IdType } from '@vlight/types'
 import { mapFixtureList } from '@vlight/controls'
 import {
   assertNever,
@@ -11,6 +11,7 @@ import {
 
 import { masterData, masterDataMaps } from '../../services/masterdata'
 import { handleApiMessage } from '../../services/api'
+import { registerApiMessageHandler } from '../../services/api/registry'
 
 import {
   buttonsAdapter,
@@ -383,21 +384,49 @@ export function applyAction(action: Action): StateChange[] {
         !!action.partial
       )
 
-    case 'live-chase':
-      return applyToLiveEntities(
+    case 'live-chase': {
+      const changes = applyToLiveEntities(
         liveChasesAdapter,
         action.ids ?? [],
-        action.state,
+        action.state ?? {},
         !!action.partial
       )
+      if (action.step) {
+        for (const id of action.ids ?? []) {
+          if (!liveChasesAdapter.get(id)) continue
+          handleApiMessage({
+            type: 'live-chase',
+            id,
+            state: {},
+            merge: true,
+            step: true,
+          })
+        }
+      }
+      return changes
+    }
 
-    case 'live-movement':
-      return applyToLiveEntities(
+    case 'live-movement': {
+      const changes = applyToLiveEntities(
         liveMovementsAdapter,
         action.ids ?? [],
-        action.state,
+        action.state ?? {},
         !!action.partial
       )
+      if (action.reset) {
+        for (const id of action.ids ?? []) {
+          if (!liveMovementsAdapter.get(id)) continue
+          handleApiMessage({
+            type: 'live-movement',
+            id,
+            state: {},
+            merge: true,
+            reset: true,
+          })
+        }
+      }
+      return changes
+    }
 
     case 'sequence':
       return (action.ids ?? []).flatMap(id => {
@@ -432,4 +461,12 @@ export function applyAction(action: Action): StateChange[] {
  */
 export function applyActions(actions: Action[]): StateChange[] {
   return actions.flatMap(applyAction)
+}
+
+export function init(): void {
+  registerApiMessageHandler('actions', ({ actions }: ApiActionsMessage) => {
+    applyActions(actions ?? [])
+    // the incoming message is not broadcast; state changes are broadcast separately
+    return false
+  })
 }
