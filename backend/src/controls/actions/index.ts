@@ -482,8 +482,12 @@ export function applyAction(action: Action): StateChange[] {
 
     case 'button':
       return (action.ids ?? []).flatMap(id => {
+        const toggle = masterDataMaps.buttons.get(id)?.mode === 'toggle'
         const change = applyControl(buttonsAdapter, id, 'active', () =>
-          handleApiMessage({ type: 'button', id, down: !!action.down })
+          // releasing toggle buttons deactivates them
+          toggle && !action.down
+            ? buttonsAdapter.set(id, { active: false }, true)
+            : handleApiMessage({ type: 'button', id, down: !!action.down })
         )
         return change ? [change] : []
       })

@@ -449,10 +449,17 @@ export function recordApiMessage(message: ApiInMessage): boolean {
       return recordLiveEntityMessage(message, 'liveMovements')
 
     case 'button':
-      // While recording, buttons behave like toggles: Pressing again removes the action
+      // While recording, buttons behave like toggles: Pressing again removes the action.
+      // Pressing an active toggle button records releasing it.
       if (message.down) {
+        const toggle =
+          getMasterDataMaps().buttons.get(message.id)?.mode === 'toggle'
         recordAction<ButtonAction>(
-          { type: 'button', ids: [message.id], down: true },
+          {
+            type: 'button',
+            ids: [message.id],
+            down: !(toggle && apiState.buttons[message.id]),
+          },
           () => undefined
         )
       }
@@ -523,9 +530,9 @@ function overlayButtons(
     if (action.type !== 'button') continue
     for (const id of action.ids ?? []) {
       const toggle = buttons.get(id)?.mode === 'toggle'
-      if (toggle && !action.down) continue
       if (result === backendValue) result = { ...backendValue }
-      result[id] = toggle ? !result[id] : action.down
+      // releasing toggle buttons deactivates them
+      result[id] = toggle && action.down ? !result[id] : action.down
     }
   }
   return result

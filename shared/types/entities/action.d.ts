@@ -196,7 +196,8 @@ export interface SequenceAction {
  * Presses or releases one or multiple programmable buttons,
  * as if done via the UI.
  *
- * Buttons in `toggle` mode are toggled when pressed, and ignore releases.
+ * Buttons in `toggle` mode are toggled when pressed, and deactivated when released
+ * (unlike releasing them via the UI, which is ignored).
  *
  * When reverted, the previous active state of the buttons is restored.
  *
