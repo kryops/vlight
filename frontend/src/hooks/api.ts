@@ -111,6 +111,18 @@ export interface UseApiStateSelectorOptions {
   includeUniverse?: boolean
 }
 
+export interface UseApiStateSelectorWithEqualityOptions<
+  T,
+> extends UseApiStateSelectorOptions {
+  /**
+   * Custom equality check: While it returns `true`, the previous value is kept
+   * and the component does not re-render.
+   *
+   * Defaults to a shallow equality check.
+   */
+  isEqual?: (a: T, b: T) => boolean
+}
+
 /**
  * React Hook that subscribes to DMX universe updates from the backend
  * while the calling component is mounted.
@@ -124,14 +136,17 @@ export function useUniverseSubscription(enabled = true): void {
 
 /**
  * Wraps the selector so that it returns the previous value
- * as long as the new one is shallowly equal.
+ * as long as the new one is equal.
  */
-function createShallowEqualSelector<T>(selector: (apiState: ApiState) => T) {
+function createEqualitySelector<T>(
+  selector: (apiState: ApiState) => T,
+  isEqual: (a: T, b: T) => boolean = shallowEqual
+) {
   let hasValue = false
   let lastValue: T
   return () => {
     const newValue = selector(apiState)
-    if (hasValue && shallowEqual(newValue, lastValue)) return lastValue
+    if (hasValue && isEqual(newValue, lastValue)) return lastValue
     hasValue = true
     lastValue = newValue
     return newValue
@@ -142,14 +157,16 @@ function createShallowEqualSelector<T>(selector: (apiState: ApiState) => T) {
  * React Hook that returns the value selected from the API state,
  * only re-rendering on changes (except for the DMX universe).
  *
- * Does a shallow equality check on array and object values
+ * Does a shallow equality check on array and object values,
+ * unless a custom {@link UseApiStateSelectorWithEqualityOptions.isEqual} is given.
  */
 export function useApiStateSelector<T>(
   selector: (apiState: ApiState) => T,
-  options?: UseApiStateSelectorOptions
+  options?: UseApiStateSelectorWithEqualityOptions<T>
 ): T {
   const event = options?.event
   const includeUniverse = options?.includeUniverse ?? false
+  const isEqual = options?.isEqual
   useUniverseSubscription(includeUniverse)
 
   const subscribe = useMemo(() => {
@@ -162,8 +179,8 @@ export function useApiStateSelector<T>(
   }, [event, includeUniverse])
 
   const getSnapshot = useMemo(
-    () => createShallowEqualSelector(selector),
-    [selector]
+    () => createEqualitySelector(selector, isEqual),
+    [selector, isEqual]
   )
 
   return useSyncExternalStore(subscribe, getSnapshot)

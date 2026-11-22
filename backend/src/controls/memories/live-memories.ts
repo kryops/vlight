@@ -220,8 +220,12 @@ function processCrossfade(
     return
   }
 
-  // moving gradients are written by the gradient interval
-  if (crossfade.progress === 1 || !hasMovingGradient(id, liveMemory)) {
+  // moving gradients are written by the gradient interval (which does not run while paused)
+  if (
+    crossfade.progress === 1 ||
+    isPaused() ||
+    !hasMovingGradient(id, liveMemory)
+  ) {
     overwriteUniverse(universe, getOutputUniverse(id, liveMemory))
   }
 }

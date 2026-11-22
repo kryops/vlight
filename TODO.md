@@ -23,8 +23,6 @@
   - Change size
 - Speed/Fade control
   - Global vs local speed
-- Prepare changes before applying
-  - Fade/transition
 - Fixture Selection
   - Select by mapping (e.g. all color fixtures)
 - Memories

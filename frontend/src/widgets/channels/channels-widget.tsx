@@ -1,5 +1,4 @@
-import { apiState } from '../../api/api-state'
-import { getUniverseIndex } from '../../api/util'
+import { isChannelRangeEqual } from '../../api/util'
 import { useApiStateSelector } from '../../hooks/api'
 
 import { StatelessChannelsWidget } from './stateless-channels-widget'
@@ -15,18 +14,17 @@ export interface ChannelsWidgetProps {
  */
 export const ChannelsWidget = ({ from, to, title }: ChannelsWidgetProps) => {
   // only re-render if the displayed channels change
-  useApiStateSelector<number[] | undefined>(
-    currentApiState =>
-      currentApiState.channels?.slice(
-        getUniverseIndex(from),
-        getUniverseIndex(to) + 1
-      ),
-    { event: 'channels' }
+  const channels = useApiStateSelector(
+    currentApiState => currentApiState.channels,
+    {
+      event: 'channels',
+      isEqual: (a, b) => isChannelRangeEqual(a, b, from, to),
+    }
   )
 
   return (
     <StatelessChannelsWidget
-      channels={apiState.channels!}
+      channels={channels!}
       from={from}
       to={to}
       title={title}

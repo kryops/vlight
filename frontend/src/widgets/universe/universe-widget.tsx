@@ -1,5 +1,4 @@
-import { apiState } from '../../api/api-state'
-import { getUniverseIndex } from '../../api/util'
+import { isChannelRangeEqual } from '../../api/util'
 import { useApiStateSelector, useMasterData } from '../../hooks/api'
 
 import { StatelessUniverseWidget } from './stateless-universe-widget'
@@ -17,20 +16,20 @@ export interface UniverseWidgetProps {
  */
 export const UniverseWidget = ({ from, to, title }: UniverseWidgetProps) => {
   // only re-render if the displayed channels actually change
-  useApiStateSelector<number[] | undefined>(
-    currentApiState =>
-      currentApiState.universe?.slice(
-        getUniverseIndex(from),
-        getUniverseIndex(to) + 1
-      ),
-    { includeUniverse: true, event: 'universe' }
+  const universe = useApiStateSelector(
+    currentApiState => currentApiState.universe,
+    {
+      includeUniverse: true,
+      event: 'universe',
+      isEqual: (a, b) => isChannelRangeEqual(a, b, from, to),
+    }
   )
 
   const masterData = useMasterData()
 
   return (
     <StatelessUniverseWidget
-      universe={apiState.universe!}
+      universe={universe!}
       masterData={masterData}
       from={from}
       to={to}
