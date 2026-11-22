@@ -47,6 +47,35 @@ export interface StateChange {
 
   /** The values at the {@link paths} after the change. */
   after: unknown[]
+
+  /** Fade time in seconds when reverting the change. */
+  revertFade?: number
+}
+
+export interface ApplyStateChangeOptions {
+  /**
+   * If set, the state is merged onto the existing one, and only the
+   * leaf values of the state are recorded as changes.
+   * Otherwise, all top-level keys of the state are recorded as changes.
+   */
+  partial: boolean
+
+  /**
+   * If set, the state is merged even if not in partial mode.
+   *
+   * Defaults to {@link partial}.
+   */
+  merge?: boolean
+
+  /** Fade time in seconds (only supported by some entities). */
+  fade?: number
+
+  /**
+   * Fade time in seconds when reverting the change.
+   *
+   * Defaults to {@link fade}.
+   */
+  revertFade?: number
 }
 
 /** Keys of live entities that are never changed by non-partial actions. */
@@ -76,19 +105,12 @@ function getChangePaths(
 
 /**
  * Applies a change to the state of a single entity.
- *
- * @param partial if set, the state is merged onto the existing one, and only the
- *   leaf values of the state are recorded as changes.
- *   Otherwise, all top-level keys of the state are recorded as changes.
- * @param merge if set, the state is merged even if not in partial mode.
- *   Defaults to {@link partial}.
  */
 export function applyStateChange<T extends object>(
   adapter: StateAdapter<T>,
   id: IdType,
   state: Partial<T>,
-  partial: boolean,
-  merge = partial
+  { partial, merge = partial, fade, revertFade = fade }: ApplyStateChangeOptions
 ): StateChange | undefined {
   const beforeState = adapter.get(id)
   if (!beforeState) {
@@ -102,11 +124,11 @@ export function applyStateChange<T extends object>(
   if (paths.length === 0) return undefined
 
   const before = paths.map(path => getPathValue(beforeState, path))
-  adapter.set(id, state, merge)
+  adapter.set(id, state, merge, fade)
   const afterState = adapter.get(id)
   const after = paths.map(path => getPathValue(afterState, path))
 
-  return { adapter, id, paths, before, after }
+  return { adapter, id, paths, before, after, revertFade }
 }
 
 /**
@@ -118,7 +140,7 @@ export function applyStateChange<T extends object>(
  * Returns whether the change was reverted.
  */
 export function revertStateChange(change: StateChange): boolean {
-  const { adapter, id, paths, before, after } = change
+  const { adapter, id, paths, before, after, revertFade } = change
   const currentState = adapter.get(id)
   if (!currentState) return false
 
@@ -142,7 +164,7 @@ export function revertStateChange(change: StateChange): boolean {
     currentState as Record<string, any>
   )
 
-  adapter.set(id, restoredState, false)
+  adapter.set(id, restoredState, false, revertFade)
   return true
 }
 
@@ -159,12 +181,11 @@ function applyToEntities<T extends object>(
   adapter: StateAdapter<T>,
   ids: IdType[],
   state: Partial<T>,
-  partial: boolean,
-  merge = partial
+  options: ApplyStateChangeOptions
 ): StateChange[] {
   const changes: StateChange[] = []
   for (const id of ids) {
-    const change = applyStateChange(adapter, id, state, partial, merge)
+    const change = applyStateChange(adapter, id, state, options)
     if (change) changes.push(change)
   }
   return changes
@@ -179,16 +200,19 @@ function applyToLiveEntities<T extends object>(
   adapter: StateAdapter<T>,
   ids: IdType[],
   state: Partial<T>,
-  partial: boolean
+  options: ApplyStateChangeOptions
 ): StateChange[] {
-  const stateToApply = partial
+  const stateToApply = options.partial
     ? state
     : (Object.fromEntries(
         Object.entries(state).filter(
           ([key]) => !liveEntityKeysToKeep.includes(key)
         )
       ) as Partial<T>)
-  return applyToEntities(adapter, ids, stateToApply, partial, true)
+  return applyToEntities(adapter, ids, stateToApply, {
+    ...options,
+    merge: true,
+  })
 }
 
 /**
@@ -204,7 +228,7 @@ function applyToAllEntities<T extends object>(
     const entityState = adapter.get(id)
     return entityState !== undefined && filter(entityState)
   })
-  return applyToEntities(adapter, ids, state, true)
+  return applyToEntities(adapter, ids, state, { partial: true })
 }
 
 function turnAllOff(): StateChange[] {
@@ -244,8 +268,21 @@ function setPaused(paused: boolean | ((current: boolean) => boolean)) {
     pauseAdapter,
     [pauseId],
     { paused: typeof paused === 'function' ? paused(current) : paused },
-    true
+    { partial: true }
   )
+}
+
+/** Returns the options to apply the state of an action whose changes can be faded. */
+function getFadeableOptions(action: {
+  partial?: boolean
+  fade?: number
+  revertFade?: number
+}): ApplyStateChangeOptions {
+  return {
+    partial: !!action.partial,
+    fade: action.fade,
+    revertFade: action.revertFade,
+  }
 }
 
 /**
@@ -322,7 +359,12 @@ export function applyAction(action: Action): StateChange[] {
   switch (action.type) {
     case 'channels':
       return Object.entries(action.channels ?? {}).flatMap(([channel, value]) =>
-        applyToEntities(channelsAdapter, [channel], { value }, true)
+        applyToEntities(
+          channelsAdapter,
+          [channel],
+          { value },
+          getFadeableOptions({ ...action, partial: true })
+        )
       )
 
     case 'dmx-master': {
@@ -330,7 +372,9 @@ export function applyAction(action: Action): StateChange[] {
         ...(action.value !== undefined && { value: action.value }),
         ...(action.fade !== undefined && { fade: action.fade }),
       }
-      return applyToEntities(dmxMasterAdapter, [dmxMasterId], state, true)
+      return applyToEntities(dmxMasterAdapter, [dmxMasterId], state, {
+        partial: true,
+      })
     }
 
     case 'global': {
@@ -357,7 +401,7 @@ export function applyAction(action: Action): StateChange[] {
         fixturesAdapter,
         mapFixtureList(action.members ?? [], { masterData, masterDataMaps }),
         action.state,
-        !!action.partial
+        getFadeableOptions(action)
       )
 
     case 'fixture-group':
@@ -365,7 +409,7 @@ export function applyAction(action: Action): StateChange[] {
         fixtureGroupsAdapter,
         action.ids ?? [],
         action.state,
-        !!action.partial
+        getFadeableOptions(action)
       )
 
     case 'memory':
@@ -373,7 +417,7 @@ export function applyAction(action: Action): StateChange[] {
         memoriesAdapter,
         action.ids ?? [],
         action.state,
-        !!action.partial
+        getFadeableOptions(action)
       )
 
     case 'live-memory':
@@ -381,7 +425,7 @@ export function applyAction(action: Action): StateChange[] {
         liveMemoriesAdapter,
         action.ids ?? [],
         action.state,
-        !!action.partial
+        getFadeableOptions(action)
       )
 
     case 'live-chase': {
@@ -389,7 +433,7 @@ export function applyAction(action: Action): StateChange[] {
         liveChasesAdapter,
         action.ids ?? [],
         action.state ?? {},
-        !!action.partial
+        getFadeableOptions(action)
       )
       if (action.step) {
         for (const id of action.ids ?? []) {
@@ -411,7 +455,7 @@ export function applyAction(action: Action): StateChange[] {
         liveMovementsAdapter,
         action.ids ?? [],
         action.state ?? {},
-        !!action.partial
+        { partial: !!action.partial }
       )
       if (action.reset) {
         for (const id of action.ids ?? []) {

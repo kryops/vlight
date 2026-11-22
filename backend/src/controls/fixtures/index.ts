@@ -13,9 +13,11 @@ import { howLong } from '../../util/time'
 import {
   addUniverse,
   createUniverse,
-  setUniverseChannel,
+  isUniverseChannelFading,
   Universe,
   removeUniverse,
+  setUniverseChannels,
+  stopUniverseChannelFades,
 } from '../../services/universe'
 import { controlRegistry } from '../registry'
 import { registerApiMessageHandler } from '../../services/api/registry'
@@ -39,23 +41,32 @@ function isAnyFixtureOn() {
 /**
  * Sets the given state to the outgoing fixture DMX universe.
  *
- * Returns whether anything was changed.
+ * @param fade fade time in seconds
+ * @returns whether anything was changed.
  */
 function setFixtureStateToUniverse(
   fixture: Fixture,
-  state: FixtureState
+  state: FixtureState,
+  fade?: number
 ): boolean {
   const { type, channel } = fixture
   const fixtureType = masterDataMaps.fixtureTypes.get(type)
   if (!fixtureType || !state) return false
 
-  let changed = false
-  mapFixtureStateToChannels(fixtureType, state).forEach((value, index) => {
-    if (setUniverseChannel(fixtureUniverse, channel + index, value)) {
-      changed = true
-    }
+  const values = mapFixtureStateToChannels(fixtureType, state).map(
+    (value, index): [number, number] => [channel + index, value]
+  )
+  return setUniverseChannels(fixtureUniverse, values, {
+    fade,
+    onFinished: removeUniverseIfUnused,
   })
-  return changed
+}
+
+/** Removes the fixture universe if all fixtures are turned off and nothing is fading anymore. */
+function removeUniverseIfUnused() {
+  if (!isAnyFixtureOn() && !isUniverseChannelFading(fixtureUniverse)) {
+    removeUniverse(fixtureUniverse)
+  }
 }
 
 function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
@@ -76,10 +87,14 @@ function setFixtureStatesFrom(oldFixtureStates: Map<IdType, FixtureState>) {
   }
 }
 
+/**
+ * @param fade fade time in seconds
+ */
 function setFixtureState(
   id: IdType,
   state: Partial<FixtureState>,
-  merge = false
+  merge = false,
+  fade?: number
 ): boolean {
   const fixture = masterDataMaps.fixtures.get(id)
   if (!fixture) {
@@ -96,23 +111,24 @@ function setFixtureState(
   )
 
   fixtureStates.set(id, newState)
-  const changed = setFixtureStateToUniverse(fixture, newState)
 
-  if (state.on) {
-    addUniverse(fixtureUniverse)
-  } else if (state.on === false && !isAnyFixtureOn()) {
-    removeUniverse(fixtureUniverse)
-  }
+  // The universe is added first so that turning on can be faded
+  if (newState.on) addUniverse(fixtureUniverse)
+  const changed = setFixtureStateToUniverse(fixture, newState, fade)
+  if (!newState.on) removeUniverseIfUnused()
 
   return changed
 }
 
 function handleApiMessage(message: ApiFixtureStateMessage) {
-  forEach(message.id, id => setFixtureState(id, message.state, message.merge))
+  forEach(message.id, id =>
+    setFixtureState(id, message.state, message.merge, message.fade)
+  )
   return true
 }
 
 function reload(reloadState?: boolean) {
+  stopUniverseChannelFades(fixtureUniverse)
   removeUniverse(fixtureUniverse)
   fixtureUniverse.fill(0)
 

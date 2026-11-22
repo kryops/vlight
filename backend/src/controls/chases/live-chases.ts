@@ -7,12 +7,13 @@ import { registerApiMessageHandler } from '../../services/api/registry'
 import { masterData, masterDataMaps } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
 import {
-  addUniverse,
   createUniverse,
   fadeUniverse,
+  isUniverseActive,
   isUniverseEmpty,
   overwriteUniverse,
   removeUniverse,
+  setUniverseOutput,
   stopFading,
   Universe,
 } from '../../services/universe'
@@ -74,9 +75,13 @@ function recomputeLiveChase(id: IdType) {
 
   // We directly apply the new state if the chase
   // - does not fade
-  // - is turned off (so the new state will be visible when turning it on again)
+  // - is turned off and not fading out (so the new state will be visible when turning it on again)
   // - is newly created
-  if (liveChase.fade && liveChase.on && !isUniverseEmpty(universe)) {
+  if (
+    liveChase.fade &&
+    (liveChase.on || isUniverseActive(universe)) &&
+    !isUniverseEmpty(universe)
+  ) {
     fadeUniverse(universe, preparedState.fullUniverse, liveChase.fade * 1000)
   } else {
     stopFading(universe)
@@ -171,9 +176,20 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
   const universe = outgoingUniverses.get(id)!
 
   if (!liveChase.on) {
-    removeInterval(id)
-    removeUniverse(universe)
-    stopFading(universe)
+    const stop = () => {
+      removeInterval(id)
+      stopFading(universe)
+    }
+
+    // The chase keeps running while fading out
+    const fadingOut = setUniverseOutput(universe, {
+      on: false,
+      fade: message.fade,
+      onFadedOut: () => {
+        if (!liveChases.get(id)?.on) stop()
+      },
+    })
+    if (!fadingOut) stop()
 
     // we recompute the chase here on substantial changes so they will be reflected right when it is turned on again
     if (
@@ -190,7 +206,11 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
   // Only recompute the chase here when it's new or stepped manually,
   // otherwise we would flicker lots of colors when fading, changing speed or colors
   if (isUniverseEmpty(universe) || message.step) recomputeLiveChase(id)
-  addUniverse(universe, { masterValue: liveChase.value })
+  setUniverseOutput(universe, {
+    on: true,
+    masterValue: liveChase.value,
+    fade: message.fade,
+  })
 
   if (liveChase.stopped) {
     removeInterval(id)
@@ -238,7 +258,10 @@ function handlePauseChange(paused: boolean) {
 
   // If the next step is already due, it is applied immediately
   for (const [id, liveChase] of liveChases) {
-    if (isRunning(liveChase)) addInterval(id, liveChase)
+    const universe = outgoingUniverses.get(id)
+    const fadingOut = !!universe && isUniverseActive(universe)
+    if (isRunning(liveChase) || (fadingOut && !liveChase.stopped))
+      addInterval(id, liveChase)
   }
 }
 

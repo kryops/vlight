@@ -6,25 +6,47 @@ import { getPersistedState } from '../../services/state'
 import {
   addUniverse,
   createUniverse,
-  setUniverseChannel,
   Universe,
   removeUniverse,
   isUniverseEmpty,
+  isUniverseChannelFading,
+  setUniverseChannels,
+  setUniverseChannelsFrom,
+  stopUniverseChannelFades,
 } from '../../services/universe'
+import { getUniverseIndex } from '../../services/universe/utils'
 import { howLong } from '../../util/time'
 import { controlRegistry } from '../registry'
 import { registerApiMessageHandler } from '../../services/api/registry'
 
-/** The universe for the channel controls. */
+/**
+ * The state of the channel controls.
+ *
+ * Changes are applied immediately, while the {@link outgoingUniverse} may be faded.
+ */
 export let channelUniverse: Universe
+
+/** The outgoing DMX universe for the channel controls, which may be faded. */
+let outgoingUniverse: Universe
 
 function loadChannelsFromState() {
   for (const [index, value] of Object.entries(getPersistedState().channels)) {
     channelUniverse[+index] = value
   }
 
+  setUniverseChannelsFrom(outgoingUniverse, channelUniverse)
   if (!isUniverseEmpty(channelUniverse)) {
-    addUniverse(channelUniverse)
+    addUniverse(outgoingUniverse)
+  }
+}
+
+/** Removes the outgoing universe if all channels are 0 and nothing is fading anymore. */
+function removeUniverseIfUnused() {
+  if (
+    isUniverseEmpty(channelUniverse) &&
+    !isUniverseChannelFading(outgoingUniverse)
+  ) {
+    removeUniverse(outgoingUniverse)
   }
 }
 
@@ -53,18 +75,27 @@ function handleApiMessage(message: ApiChannelMessage): boolean {
   const setsValues = entries.some(([, value]) => value > 0)
 
   if (setsValues) {
-    addUniverse(channelUniverse)
+    addUniverse(outgoingUniverse)
   }
 
   for (const [channel, value] of entries) {
-    if (setUniverseChannel(channelUniverse, +channel, value)) {
+    const index = getUniverseIndex(+channel)
+    if (channelUniverse[index] !== value) {
+      channelUniverse[index] = value
       changed = true
     }
   }
 
-  if (!setsValues && isUniverseEmpty(channelUniverse)) {
-    removeUniverse(channelUniverse)
-  }
+  const values = entries.map(([channel, value]): [number, number] => [
+    +channel,
+    value,
+  ])
+  setUniverseChannels(outgoingUniverse, values, {
+    fade: message.fade,
+    onFinished: removeUniverseIfUnused,
+  })
+
+  if (!setsValues) removeUniverseIfUnused()
 
   return changed
 }
@@ -72,14 +103,17 @@ function handleApiMessage(message: ApiChannelMessage): boolean {
 function reload(reloadState?: boolean) {
   if (!reloadState) return
 
-  removeUniverse(channelUniverse)
+  stopUniverseChannelFades(outgoingUniverse)
+  removeUniverse(outgoingUniverse)
   channelUniverse.fill(0)
+  outgoingUniverse.fill(0)
   loadChannelsFromState()
 }
 
 export function init(): void {
   const start = Date.now()
   channelUniverse = createUniverse()
+  outgoingUniverse = createUniverse()
   loadChannelsFromState()
 
   controlRegistry.register({ reload })

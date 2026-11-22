@@ -19,8 +19,8 @@ import { getPersistedState } from '../../services/state'
 import {
   Universe,
   createUniverse,
-  addUniverse,
   removeUniverse,
+  setUniverseOutput,
 } from '../../services/universe'
 import { howLong } from '../../util/time'
 import { controlRegistry } from '../registry'
@@ -88,10 +88,14 @@ function initMemory(memory: Memory, oldMemoryStates: Map<IdType, MemoryState>) {
   memoryStates.set(id, initialState)
 }
 
+/**
+ * @param fade fade time in seconds for turning the memory on/off and changing its value
+ */
 function setMemoryState(
   id: IdType,
   state: Partial<MemoryState>,
-  merge = false
+  merge = false,
+  fade?: number
 ): void {
   const memory = masterDataMaps.memories.get(id)
   if (!memory) {
@@ -104,16 +108,18 @@ function setMemoryState(
 
   const universe = outgoingUniverses.get(id)!
 
-  if (newState.on)
-    addUniverse(universe, {
-      masterValue: newState.value,
-      forceMaster: newState.forceMaster,
-    })
-  else removeUniverse(universe)
+  setUniverseOutput(universe, {
+    on: newState.on,
+    masterValue: newState.value,
+    forceMaster: newState.forceMaster,
+    fade,
+  })
 }
 
 function handleApiMessage(message: ApiMemoryStateMessage) {
-  forEach(message.id, id => setMemoryState(id, message.state, true))
+  forEach(message.id, id =>
+    setMemoryState(id, message.state, true, message.fade)
+  )
   return true
 }
 

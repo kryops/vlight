@@ -44,8 +44,9 @@ export interface StateAdapter<T extends object = any> {
    *
    * @param merge if set, the given state is merged onto the existing one;
    *   otherwise, it replaces the existing state completely.
+   * @param fade fade time in seconds, ignored by entities that cannot be faded
    */
-  set: (id: IdType, state: Partial<T>, merge: boolean) => void
+  set: (id: IdType, state: Partial<T>, merge: boolean, fade?: number) => void
 }
 
 /** State of a single DMX channel. */
@@ -66,9 +67,13 @@ export const channelsAdapter: StateAdapter<ChannelState> = {
     const value = channelUniverse[getUniverseIndex(+id)]
     return value === undefined ? undefined : { value }
   },
-  set: (id, state) => {
+  set: (id, state, _merge, fade) => {
     if (state.value === undefined) return
-    handleApiMessage({ type: 'channels', channels: { [id]: state.value } })
+    handleApiMessage({
+      type: 'channels',
+      channels: { [id]: state.value },
+      fade,
+    })
   },
 }
 
@@ -115,16 +120,16 @@ export const fixturesAdapter: StateAdapter<FixtureState> = {
   name: 'fixture',
   getIds: () => [...fixtureStates.keys()],
   get: id => fixtureStates.get(id),
-  set: (id, state, merge) =>
-    handleApiMessage({ type: 'fixture', id, state, merge }),
+  set: (id, state, merge, fade) =>
+    handleApiMessage({ type: 'fixture', id, state, merge, fade }),
 }
 
 export const fixtureGroupsAdapter: StateAdapter<FixtureState> = {
   name: 'fixture group',
   getIds: () => [...fixtureGroupStates.keys()],
   get: id => fixtureGroupStates.get(id),
-  set: (id, state, merge) =>
-    handleApiMessage({ type: 'fixture-group', id, state, merge }),
+  set: (id, state, merge, fade) =>
+    handleApiMessage({ type: 'fixture-group', id, state, merge, fade }),
 }
 
 export const memoriesAdapter: StateAdapter<MemoryState> = {
@@ -132,24 +137,24 @@ export const memoriesAdapter: StateAdapter<MemoryState> = {
   getIds: () => [...memoryStates.keys()],
   get: id => memoryStates.get(id),
   // memory states are always merged in the backend
-  set: (id, state) =>
-    handleApiMessage({ type: 'memory', id, state, merge: true }),
+  set: (id, state, _merge, fade) =>
+    handleApiMessage({ type: 'memory', id, state, merge: true, fade }),
 }
 
 export const liveMemoriesAdapter: StateAdapter<LiveMemory> = {
   name: 'live memory',
   getIds: () => [...liveMemories.keys()],
   get: id => liveMemories.get(id),
-  set: (id, state, merge) =>
-    handleApiMessage({ type: 'live-memory', id, state, merge }),
+  set: (id, state, merge, fade) =>
+    handleApiMessage({ type: 'live-memory', id, state, merge, fade }),
 }
 
 export const liveChasesAdapter: StateAdapter<LiveChase> = {
   name: 'live chase',
   getIds: () => [...liveChases.keys()],
   get: id => liveChases.get(id),
-  set: (id, state, merge) =>
-    handleApiMessage({ type: 'live-chase', id, state, merge }),
+  set: (id, state, merge, fade) =>
+    handleApiMessage({ type: 'live-chase', id, state, merge, fade }),
 }
 
 export const liveMovementsAdapter: StateAdapter<LiveMovement> = {

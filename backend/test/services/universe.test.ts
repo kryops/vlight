@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vite-plus/test'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
 
 import { Fixture, FixtureChannels, FixtureType } from '@vlight/types'
 
@@ -13,6 +13,8 @@ import {
   overwriteUniverse,
   removeUniverse,
   setUniverseChannel,
+  setUniverseChannels,
+  setUniverseOutput,
   setUniverseState,
   Universe,
 } from '../../src/services/universe'
@@ -395,6 +397,193 @@ describe('services/universe', () => {
       overwriteUniverse(universe, universe)
       expect(broadcastUniverseChannelToDevices).not.toHaveBeenCalled()
       expect(broadcastUniverseChannelToApiClients).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('setUniverseOutput', () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      // finish all fades so the fade interval is not kept across tests
+      vi.advanceTimersByTime(5000)
+      vi.useRealTimers()
+    })
+
+    const masterChannelValue = () => getDmxUniverse()[0]
+
+    it('adds and removes the universe immediately without fade', () => {
+      const universe = universeWithFixtures(fullChannels, fullChannels)
+      expect(setUniverseOutput(universe, { on: true, masterValue: 127 })).toBe(
+        false
+      )
+      expect(getDmxUniverse()).toEqual(fadedUniverse)
+
+      expect(setUniverseOutput(universe, { on: false })).toBe(false)
+      expect(universes.has(universe)).toBe(false)
+      expect(getDmxUniverse()).toEqual(emptyUniverse)
+    })
+
+    it('fades the universe in', () => {
+      const universe = universeWithFixtures(fullChannels, fullChannels)
+      expect(setUniverseOutput(universe, { on: true, fade: 1 })).toBe(true)
+      expect(universes.has(universe)).toBe(true)
+      expect(masterChannelValue()).toBe(0)
+
+      vi.advanceTimersByTime(500)
+      expect(masterChannelValue()).toBeGreaterThan(110)
+      expect(masterChannelValue()).toBeLessThan(145)
+
+      vi.advanceTimersByTime(600)
+      expect(getDmxUniverse()).toEqual(fullUniverse)
+    })
+
+    it('fades the universe out and removes it afterwards', () => {
+      const universe = universeWithFixtures(fullChannels, fullChannels)
+      const onFadedOut = vi.fn<() => void>()
+      setUniverseOutput(universe, { on: true })
+      setUniverseOutput(universe, { on: false, fade: 1, onFadedOut })
+
+      vi.advanceTimersByTime(500)
+      expect(universes.has(universe)).toBe(true)
+      expect(onFadedOut).not.toHaveBeenCalled()
+
+      vi.advanceTimersByTime(600)
+      expect(universes.has(universe)).toBe(false)
+      expect(getDmxUniverse()).toEqual(emptyUniverse)
+      expect(onFadedOut).toHaveBeenCalledTimes(1)
+    })
+
+    it('fades the master value', () => {
+      const universe = universeWithFixtures(fullChannels, fullChannels)
+      setUniverseOutput(universe, { on: true })
+      setUniverseOutput(universe, { on: true, masterValue: 127, fade: 1 })
+
+      vi.advanceTimersByTime(500)
+      expect(masterChannelValue()).toBeGreaterThan(127)
+      expect(masterChannelValue()).toBeLessThan(255)
+
+      vi.advanceTimersByTime(600)
+      expect(getDmxUniverse()).toEqual(fadedUniverse)
+    })
+
+    it('reverses a running fade from its current value', () => {
+      const universe = universeWithFixtures(fullChannels, fullChannels)
+      setUniverseOutput(universe, { on: true, fade: 1 })
+      vi.advanceTimersByTime(300)
+
+      setUniverseOutput(universe, { on: false, fade: 1 })
+      expect(masterChannelValue()).toBeGreaterThan(50)
+
+      // only takes as long as the distance faded so far
+      vi.advanceTimersByTime(400)
+      expect(universes.has(universe)).toBe(false)
+    })
+
+    it('does not interrupt a running fade if the target does not change', () => {
+      const universe = universeWithFixtures(fullChannels, fullChannels)
+      setUniverseOutput(universe, { on: false })
+      setUniverseOutput(universe, { on: true, fade: 1 })
+      vi.advanceTimersByTime(500)
+
+      expect(setUniverseOutput(universe, { on: true })).toBe(true)
+      expect(masterChannelValue()).toBeLessThan(255)
+
+      vi.advanceTimersByTime(600)
+      expect(getDmxUniverse()).toEqual(fullUniverse)
+    })
+
+    it('stops the fade if the universe is removed elsewhere', () => {
+      const universe = universeWithFixtures(fullChannels, fullChannels)
+      const onFadedOut = vi.fn<() => void>()
+      setUniverseOutput(universe, { on: true })
+      setUniverseOutput(universe, { on: false, fade: 1, onFadedOut })
+      removeUniverse(universe)
+
+      vi.advanceTimersByTime(1100)
+      expect(universes.has(universe)).toBe(false)
+      expect(onFadedOut).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('setUniverseChannels', () => {
+    beforeEach(() => {
+      vi.useFakeTimers()
+    })
+
+    afterEach(() => {
+      // finish all fades so the fade interval is not kept across tests
+      vi.advanceTimersByTime(5000)
+      vi.useRealTimers()
+    })
+
+    const channel = 20
+    const dmxValue = () => getDmxUniverse()[channel - 1]
+
+    function activeUniverse() {
+      const universe = createUniverse()
+      addUniverse(universe)
+      return universe
+    }
+
+    it('sets the values immediately without fade', () => {
+      const universe = activeUniverse()
+      expect(setUniverseChannels(universe, [[channel, 200]])).toBe(true)
+      expect(dmxValue()).toBe(200)
+      expect(setUniverseChannels(universe, [[channel, 200]])).toBe(false)
+    })
+
+    it('does not fade inactive universes', () => {
+      const universe = createUniverse()
+      setUniverseChannels(universe, [[channel, 200]], { fade: 1 })
+      expect(universe[channel - 1]).toBe(200)
+    })
+
+    it('fades the values', () => {
+      const universe = activeUniverse()
+      const onFinished = vi.fn<() => void>()
+      setUniverseChannels(universe, [[channel, 200]], { fade: 1, onFinished })
+      expect(dmxValue()).toBe(0)
+
+      vi.advanceTimersByTime(500)
+      expect(dmxValue()).toBeGreaterThan(80)
+      expect(dmxValue()).toBeLessThan(120)
+      expect(onFinished).not.toHaveBeenCalled()
+
+      vi.advanceTimersByTime(600)
+      expect(dmxValue()).toBe(200)
+      expect(onFinished).toHaveBeenCalledTimes(1)
+    })
+
+    it('reverses a running fade from its current value', () => {
+      const universe = activeUniverse()
+      setUniverseChannels(universe, [[channel, 200]], { fade: 1 })
+      vi.advanceTimersByTime(300)
+
+      setUniverseChannels(universe, [[channel, 0]], { fade: 1 })
+      vi.advanceTimersByTime(400)
+      expect(dmxValue()).toBe(0)
+    })
+
+    it('does not interrupt a running fade if the target does not change', () => {
+      const universe = activeUniverse()
+      setUniverseChannels(universe, [[channel, 200]], { fade: 1 })
+      vi.advanceTimersByTime(500)
+
+      expect(setUniverseChannels(universe, [[channel, 200]])).toBe(false)
+      expect(dmxValue()).toBeLessThan(200)
+    })
+
+    it('interrupts a running fade when setting a new value without fade', () => {
+      const universe = activeUniverse()
+      setUniverseChannels(universe, [[channel, 200]], { fade: 1 })
+      vi.advanceTimersByTime(500)
+
+      setUniverseChannels(universe, [[channel, 50]])
+      expect(dmxValue()).toBe(50)
+      vi.advanceTimersByTime(600)
+      expect(dmxValue()).toBe(50)
     })
   })
 })

@@ -27,6 +27,13 @@ export interface ApiChannelMessage {
    * - values from 0-255
    */
   channels: Dictionary<number>
+
+  /**
+   * Fade time in seconds for all changes.
+   *
+   * Defaults to 0.
+   */
+  fade?: number
 }
 
 /** Change the state of one or multiple fixtures. */
@@ -42,6 +49,13 @@ export interface ApiFixtureStateMessage {
    * Defaults to `false`.
    */
   merge?: boolean
+
+  /**
+   * Fade time in seconds for all changes.
+   *
+   * Defaults to 0.
+   */
+  fade?: number
 }
 
 /** Change the state of one or multiple fixture groups. */
@@ -57,6 +71,13 @@ export interface ApiFixtureGroupStateMessage {
    * Defaults to `false`.
    */
   merge?: boolean
+
+  /**
+   * Fade time in seconds for all changes.
+   *
+   * Defaults to 0.
+   */
+  fade?: number
 }
 
 /** Change the state of one or multiple memories. */
@@ -72,6 +93,14 @@ export interface ApiMemoryStateMessage {
    * Defaults to `false`.
    */
   merge?: boolean
+
+  /**
+   * Fade time in seconds for turning the memories on/off and changing their value.
+   * Other changes are applied immediately.
+   *
+   * Defaults to 0.
+   */
+  fade?: number
 }
 
 /** Create/update a live memory. */
@@ -88,6 +117,14 @@ export interface ApiLiveMemoryMessage {
    * Defaults to `false`.
    */
   merge?: boolean
+
+  /**
+   * Fade time in seconds for all changes
+   * (a moving gradient continues to move while fading).
+   *
+   * Defaults to 0.
+   */
+  fade?: number
 }
 
 /** Create/update a live chase */
@@ -112,6 +149,16 @@ export interface ApiLiveChaseMessage {
    * Defaults to `false`.
    */
   merge?: boolean
+
+  /**
+   * Fade time in seconds for turning the live chase on/off and changing its value.
+   * Other changes are applied immediately.
+   *
+   * Independent of the fading between steps ({@link LiveChase.fade}).
+   *
+   * Defaults to 0.
+   */
+  fade?: number
 }
 
 /** Create/update a live movement */

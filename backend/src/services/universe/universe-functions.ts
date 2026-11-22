@@ -203,6 +203,25 @@ export function cloneUniverse(universe: Universe): Universe {
 }
 
 /**
+ * Returns a new universe that mixes the two given universes linearly.
+ *
+ * @param progress from 0 (only `from`) to 1 (only `to`)
+ */
+export function mixUniverses(
+  from: Universe,
+  to: Universe,
+  progress: number
+): Universe {
+  const result = Buffer.alloc(from.length)
+  for (let index = 0; index < from.length; index++) {
+    result[index] = Math.round(
+      from[index] + (to[index] - from[index]) * progress
+    )
+  }
+  return result
+}
+
+/**
  * Returns a set of channels whose values differ in the two given universes.
  */
 export function getDifferentChannels(

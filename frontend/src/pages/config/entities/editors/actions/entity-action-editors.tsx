@@ -38,13 +38,28 @@ import { StatelessLiveMemoryWidget } from '../../../../../widgets/memory/statele
 import { StatelessLiveMovementWidget } from '../../../../../widgets/movement/stateless-live-movement-widget'
 
 import {
+  ActionFadeOptions,
   ActionOptionToggle,
   EntityStateActionEditor,
+  FadeOptions,
 } from './entity-state-action-editor'
 
 export interface ActionEditorProps<T> {
   action: T
   onChange: (action: T) => void
+}
+
+/** Renders the fade options of the given action. */
+function renderFadeOptions<T extends FadeOptions>(
+  action: T,
+  onChange: (action: T) => void
+) {
+  return (
+    <ActionFadeOptions
+      value={action}
+      onChange={fadeOptions => onChange({ ...action, ...fadeOptions })}
+    />
+  )
 }
 
 const fixtureStateDefaults: FixtureState = { on: false, channels: {} }
@@ -85,6 +100,7 @@ export function FixtureActionEditor({
       partial={!!action.partial}
       currentState={fixtures.length ? commonState : undefined}
       fullModeDefaults={fixtures.length ? fixtureStateDefaults : undefined}
+      options={renderFadeOptions(action, onChange)}
       ignoredKeys={ignoredFixtureStateKeys}
       onChange={(state, partial) => onChange({ ...action, state, partial })}
       selection={
@@ -149,6 +165,7 @@ export function FixtureGroupActionEditor({
       partial={!!action.partial}
       currentState={groups.length ? commonState : undefined}
       fullModeDefaults={groups.length ? fixtureStateDefaults : undefined}
+      options={renderFadeOptions(action, onChange)}
       ignoredKeys={ignoredFixtureStateKeys}
       onChange={(state, partial) => onChange({ ...action, state, partial })}
       selection={
@@ -198,6 +215,7 @@ export function MemoryActionEditor({
       partial={!!action.partial}
       currentState={firstState}
       ignoredKeys={['initial', 'forceMaster']}
+      options={renderFadeOptions(action, onChange)}
       onChange={(state, partial) => onChange({ ...action, state, partial })}
       selection={
         <MultiToggleInput
@@ -276,6 +294,7 @@ export function LiveMemoryActionEditor({
       partial={!!action.partial}
       currentState={firstState}
       ignoredKeys={ignoredLiveEntityKeys}
+      options={renderFadeOptions(action, onChange)}
       onChange={(state, partial) => onChange({ ...action, state, partial })}
       selection={
         <MultiToggleInput
@@ -319,12 +338,15 @@ export function LiveChaseActionEditor({
       ignoredKeys={ignoredLiveEntityKeys}
       onChange={(state, partial) => onChange({ ...action, state, partial })}
       options={
-        <ActionOptionToggle
-          value={!!action.step}
-          onChange={step => onChange({ ...action, step: step || undefined })}
-          label="Step"
-          title="Moves the chases one step forward after applying the state"
-        />
+        <>
+          <ActionOptionToggle
+            value={!!action.step}
+            onChange={step => onChange({ ...action, step: step || undefined })}
+            label="Step"
+            title="Moves the chases one step forward after applying the state"
+          />
+          {renderFadeOptions(action, onChange)}
+        </>
       }
       selection={
         <MultiToggleInput

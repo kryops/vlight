@@ -4,6 +4,7 @@ import { ReactNode } from 'react'
 
 import { TwoColumDialogContainer } from '../../../../../ui/containers/two-column-dialog'
 import { Checkbox } from '../../../../../ui/forms/checkbox'
+import { NumberInput } from '../../../../../ui/forms/typed-input'
 import { baseline } from '../../../../../ui/styles'
 
 import { applyStateChange } from './action-utils'
@@ -42,6 +43,83 @@ export function ActionOptionToggle({
       {/* the click is handled by the surrounding element */}
       <Checkbox value={value} onChange={noop} inline /> {label}
     </a>
+  )
+}
+
+const fadeOptions = css`
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: ${baseline(2)};
+  margin: 0 0 ${baseline(2)} ${baseline(4)};
+`
+
+const fadeOption = css`
+  display: inline-flex;
+  align-items: center;
+  gap: ${baseline(1)};
+  white-space: nowrap;
+`
+
+const fadeInput = css`
+  width: ${baseline(16)};
+`
+
+export interface FadeOptions {
+  fade?: number
+  revertFade?: number
+}
+
+/**
+ * Inputs for the fade times of an action whose changes can be faded.
+ */
+export function ActionFadeOptions({
+  value,
+  onChange,
+}: {
+  value: FadeOptions
+  onChange: (value: FadeOptions) => void
+}) {
+  const change = (key: keyof FadeOptions, newValue: number | undefined) =>
+    onChange({
+      fade: value.fade,
+      revertFade: value.revertFade,
+      [key]: newValue === undefined || newValue < 0 ? undefined : newValue,
+    })
+
+  return (
+    <span className={fadeOptions}>
+      <label
+        className={fadeOption}
+        title="Fade time in seconds. Memories and live chases only fade turning on/off and their value, everything else fades all changes."
+      >
+        Fade
+        <NumberInput
+          value={value.fade}
+          onChange={newValue => change('fade', newValue)}
+          min={0}
+          step={0.1}
+          placeholder="0"
+          className={fadeInput}
+        />
+        s
+      </label>
+      <label
+        className={fadeOption}
+        title="Fade time in seconds when the changes are reverted. Defaults to the fade time."
+      >
+        Revert fade
+        <NumberInput
+          value={value.revertFade}
+          onChange={newValue => change('revertFade', newValue)}
+          min={0}
+          step={0.1}
+          placeholder={String(value.fade ?? 0)}
+          className={fadeInput}
+        />
+        s
+      </label>
+    </span>
   )
 }
 

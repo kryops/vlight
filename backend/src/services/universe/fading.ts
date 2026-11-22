@@ -23,10 +23,11 @@ export const fadeIntervalTime = 20
 let fadeInterval: any = null
 
 /**
- * Handler to fade a universe.
+ * Handlers that are called in each fading interval, by an arbitrary key
+ * (e.g. the faded universe).
  * Called with the current time in ms.
  */
-const fadeHandlers = new Map<Universe, (now: number) => void>()
+const fadeHandlers = new Map<object, (now: number) => void>()
 
 function processFadeHandlers() {
   const now = Date.now()
@@ -47,6 +48,22 @@ function refreshFadeInterval() {
     clearInterval(fadeInterval)
     fadeInterval = null
   }
+}
+
+/**
+ * Registers a handler that is called in each fading interval until it is removed.
+ *
+ * Replaces any existing handler with the same key.
+ */
+export function addFadeHandler(key: object, handler: (now: number) => void) {
+  fadeHandlers.set(key, handler)
+  refreshFadeInterval()
+}
+
+/** Removes the fade handler with the given key. */
+export function removeFadeHandler(key: object) {
+  fadeHandlers.delete(key)
+  refreshFadeInterval()
 }
 
 /**
@@ -72,7 +89,7 @@ export function fadeUniverse(
 
   if (!affectedChannels.size) return
 
-  fadeHandlers.set(universe, now => {
+  addFadeHandler(universe, now => {
     if (now >= end) {
       overwriteUniverse(universe, targetState)
       stopFading(universe)
@@ -91,11 +108,8 @@ export function fadeUniverse(
       setUniverseChannel(universe, channel, value)
     }
   })
-
-  refreshFadeInterval()
 }
 
 export function stopFading(universe: Universe): void {
-  fadeHandlers.delete(universe)
-  refreshFadeInterval()
+  removeFadeHandler(universe)
 }

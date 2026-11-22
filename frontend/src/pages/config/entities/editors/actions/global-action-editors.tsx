@@ -32,6 +32,7 @@ import { baseline } from '../../../../../ui/styles'
 
 import { getChangedValues } from './action-utils'
 import { ActionEditorProps } from './entity-action-editors'
+import { ActionFadeOptions } from './entity-state-action-editor'
 import { StateChangesList } from './state-changes-list'
 
 const emptyHint = css`
@@ -83,6 +84,10 @@ export function ChannelsActionEditor({
         input={
           <NumberInput value={from} onChange={changeFrom} min={1} max={512} />
         }
+      />
+      <ActionFadeOptions
+        value={action}
+        onChange={fadeOptions => onChange({ ...action, ...fadeOptions })}
       />
       <div className={widgetContainer}>
         <Widget icon={iconFader} title={`Channels ${from} - ${to}`}>

@@ -11,9 +11,11 @@ import {
 import { executeActions } from '../../api'
 import { apiState } from '../../api/api-state'
 import {
+  applyFadeToActions,
   endRecording,
   getRecordingState,
   setRecordedActions,
+  setRecordingFade,
   setRecordingPaused,
   startRecording,
   useRecordingState,
@@ -27,7 +29,9 @@ import {
 import { Button } from '../buttons/button'
 import { Label } from '../forms/label'
 import { Select, SelectEntry } from '../forms/select'
+import { NumberInput } from '../forms/typed-input'
 import {
+  iconAdd,
   iconApply,
   iconClose,
   iconEdit,
@@ -76,6 +80,17 @@ const status = css`
   gap: ${baseline(2)};
   flex: 1 1 auto;
   color: ${textShade(1)};
+`
+
+const fadeControl = css`
+  display: flex;
+  align-items: center;
+  gap: ${baseline(1)};
+  white-space: nowrap;
+`
+
+const fadeInput = css`
+  width: ${baseline(16)};
 `
 
 const editContainer = css`
@@ -231,22 +246,57 @@ async function saveActions(actions: Action[]): Promise<boolean> {
 const cancel = () => endRecording()
 
 const apply = () => {
+  const { fade } = getRecordingState()
   const actions = endRecording()
-  if (actions.length) executeActions(actions)
+  if (actions.length) executeActions(applyFadeToActions(actions, fade))
 }
 
 const save = async () => {
-  const { actions } = getRecordingState()
+  const { actions, fade } = getRecordingState()
   if (!actions.length) return
   // the recording is kept if the user cancels
-  if (await saveActions(actions)) endRecording()
+  if (await saveActions(applyFadeToActions(actions, fade))) endRecording()
+}
+
+/**
+ * Input for the fade time used when applying/saving the recorded actions.
+ */
+function FadeControl({ fade }: { fade: number }) {
+  return (
+    <div
+      className={fadeControl}
+      title="Fade time in seconds for applying or saving the actions (for actions without their own fade time)"
+    >
+      Fade
+      <NumberInput
+        value={fade || undefined}
+        onChange={value => setRecordingFade(value ?? 0)}
+        min={0}
+        step={0.1}
+        placeholder="0"
+        className={fadeInput}
+      />
+      s
+      <Button
+        icon={iconAdd}
+        onClick={() => setRecordingFade(Math.round((fade + 1) * 10) / 10)}
+        title="Increase fade time by 1 second"
+      />
+      <Button
+        icon={iconClose}
+        onClick={() => setRecordingFade(0)}
+        disabled={fade === 0}
+        title="Reset fade time"
+      />
+    </div>
+  )
 }
 
 /**
  * Bar at the bottom of the screen to control the action recording mode.
  */
 export function RecordingBar() {
-  const { active, paused, actions } = useRecordingState()
+  const { active, paused, actions, fade } = useRecordingState()
   const count = actions.length
   const countLabel = `${count} action${count === 1 ? '' : 's'}`
 
@@ -276,6 +326,7 @@ export function RecordingBar() {
         />
         {paused ? 'Paused' : 'Recording'} ({countLabel})
       </div>
+      <FadeControl fade={fade} />
       <Button
         icon={paused ? iconRecord : iconPause}
         onClick={() => setRecordingPaused(!paused)}

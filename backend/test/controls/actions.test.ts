@@ -77,7 +77,7 @@ describe('controls/actions', () => {
       adapter,
       'a',
       { on: true, channels: { r: 255 } },
-      true
+      { partial: true }
     )!
     expect(states.get('a')).toEqual({
       on: true,
@@ -102,7 +102,12 @@ describe('controls/actions', () => {
       a: { on: true, channels: {} },
     })
 
-    const change = applyStateChange(adapter, 'a', { speed: 5 }, true)!
+    const change = applyStateChange(
+      adapter,
+      'a',
+      { speed: 5 },
+      { partial: true }
+    )!
     expect(states.get('a')?.speed).toBe(5)
 
     revertStateChange(change)
@@ -118,7 +123,7 @@ describe('controls/actions', () => {
       adapter,
       'a',
       { on: true, channels: { r: 255 } },
-      true
+      { partial: true }
     )!
     adapter.set('a', { channels: { r: 100 } }, true)
 
@@ -135,7 +140,7 @@ describe('controls/actions', () => {
       adapter,
       'a',
       { on: true, channels: { b: 255 } },
-      false
+      { partial: false }
     )!
     expect(states.get('a')).toEqual({ on: true, channels: { b: 255 } })
 
@@ -149,8 +154,13 @@ describe('controls/actions', () => {
     })
 
     const changes = [
-      applyStateChange(adapter, 'a', { on: true }, true)!,
-      applyStateChange(adapter, 'a', { on: false, speed: 2 }, true)!,
+      applyStateChange(adapter, 'a', { on: true }, { partial: true })!,
+      applyStateChange(
+        adapter,
+        'a',
+        { on: false, speed: 2 },
+        { partial: true }
+      )!,
     ]
     expect(states.get('a')).toEqual({ on: false, speed: 2, channels: {} })
 
@@ -160,7 +170,9 @@ describe('controls/actions', () => {
 
   it('ignores unknown entities', () => {
     const { adapter } = createAdapter({})
-    expect(applyStateChange(adapter, 'x', { on: true }, true)).toBeUndefined()
+    expect(
+      applyStateChange(adapter, 'x', { on: true }, { partial: true })
+    ).toBeUndefined()
   })
 })
 
@@ -173,7 +185,7 @@ describe('controls/actions with changing value types', () => {
       adapter,
       'a',
       { speed: { from: 1, to: 2 } } as any,
-      true
+      { partial: true }
     )!
     expect(change.paths).toEqual([['speed']])
 

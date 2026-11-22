@@ -45,7 +45,20 @@ export {
   setUniverseChannel,
   setUniverseState,
   isUniverseEmpty,
+  mixUniverses,
 } from './universe-functions'
-export { fadeUniverse, stopFading } from './fading'
+export {
+  fadeUniverse,
+  stopFading,
+  addFadeHandler,
+  removeFadeHandler,
+} from './fading'
+export { setUniverseOutput, isUniverseActive } from './master-fading'
+export {
+  setUniverseChannels,
+  setUniverseChannelsFrom,
+  stopUniverseChannelFades,
+  isUniverseChannelFading,
+} from './channel-fading'
 
 export type { Universe, UniverseState } from './types'

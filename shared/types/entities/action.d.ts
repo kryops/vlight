@@ -27,8 +27,34 @@ interface EntityStateActionBase<TState> {
   partial?: boolean
 }
 
+/**
+ * Base type for actions whose changes can be faded.
+ *
+ * What is faded depends on the entity type:
+ * - Channels, fixtures, fixture groups, live memories: all changes
+ * - Memories, live chases: turning on/off and changing the value
+ *   (the steps of live chases are faded independently)
+ *
+ * Other changes are applied immediately.
+ */
+interface FadeableActionBase {
+  /**
+   * Fade time in seconds.
+   *
+   * Defaults to 0.
+   */
+  fade?: number
+
+  /**
+   * Fade time in seconds when the changes are reverted.
+   *
+   * Defaults to {@link fade}.
+   */
+  revertFade?: number
+}
+
 /** Sets one or multiple DMX channels. */
-export interface ChannelsAction {
+export interface ChannelsAction extends FadeableActionBase {
   type: 'channels'
 
   /**
@@ -70,7 +96,8 @@ export interface GlobalControlAction {
 }
 
 /** Changes the state of one or multiple fixtures. */
-export interface FixtureAction extends EntityStateActionBase<FixtureState> {
+export interface FixtureAction
+  extends EntityStateActionBase<FixtureState>, FadeableActionBase {
   type: 'fixture'
 
   /** The affected fixtures. */
@@ -78,13 +105,15 @@ export interface FixtureAction extends EntityStateActionBase<FixtureState> {
 }
 
 /** Changes the state of one or multiple fixture groups. */
-export interface FixtureGroupAction extends EntityStateActionBase<FixtureState> {
+export interface FixtureGroupAction
+  extends EntityStateActionBase<FixtureState>, FadeableActionBase {
   type: 'fixture-group'
   ids: IdType[]
 }
 
 /** Changes the state of one or multiple memories. */
-export interface MemoryAction extends EntityStateActionBase<MemoryState> {
+export interface MemoryAction
+  extends EntityStateActionBase<MemoryState>, FadeableActionBase {
   type: 'memory'
   ids: IdType[]
 }
@@ -94,7 +123,8 @@ export interface MemoryAction extends EntityStateActionBase<MemoryState> {
  *
  * In non-{@link EntityStateActionBase.partial partial} mode, the name of the live memory is kept.
  */
-export interface LiveMemoryAction extends EntityStateActionBase<LiveMemory> {
+export interface LiveMemoryAction
+  extends EntityStateActionBase<LiveMemory>, FadeableActionBase {
   type: 'live-memory'
   ids: IdType[]
 }
@@ -104,7 +134,8 @@ export interface LiveMemoryAction extends EntityStateActionBase<LiveMemory> {
  *
  * In non-{@link EntityStateActionBase.partial partial} mode, the name of the live chase is kept.
  */
-export interface LiveChaseAction extends EntityStateActionBase<LiveChase> {
+export interface LiveChaseAction
+  extends EntityStateActionBase<LiveChase>, FadeableActionBase {
   type: 'live-chase'
   ids: IdType[]
 

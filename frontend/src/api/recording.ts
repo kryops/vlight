@@ -46,6 +46,14 @@ export interface RecordingState {
 
   /** The recorded actions. */
   actions: Action[]
+
+  /**
+   * Fade time in seconds that is used for applying and saving the recorded actions
+   * (if they can be faded and do not have their own fade time).
+   *
+   * Kept across recordings.
+   */
+  fade: number
 }
 
 let state: RecordingState = {
@@ -53,6 +61,7 @@ let state: RecordingState = {
   active: false,
   paused: false,
   actions: [],
+  fade: 0,
 }
 
 const listeners = new Set<() => void>()
@@ -141,6 +150,34 @@ export function setRecordingPaused(paused: boolean): void {
 
 export function setRecordedActions(actions: Action[]): void {
   setState({ actions })
+}
+
+export function setRecordingFade(fade: number): void {
+  setState({ fade: Math.max(0, fade) })
+}
+
+/** Types of actions whose changes can be faded. */
+const fadeableActionTypes = new Set<Action['type']>([
+  'channels',
+  'fixture',
+  'fixture-group',
+  'memory',
+  'live-memory',
+  'live-chase',
+])
+
+/**
+ * Sets the given fade time for all actions that can be faded,
+ * unless they already have their own fade time.
+ */
+export function applyFadeToActions(actions: Action[], fade: number): Action[] {
+  if (!fade) return actions
+  return actions.map(action =>
+    fadeableActionTypes.has(action.type) &&
+    (action as { fade?: number }).fade === undefined
+      ? { ...action, fade }
+      : action
+  )
 }
 
 /**

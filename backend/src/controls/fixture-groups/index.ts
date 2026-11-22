@@ -19,9 +19,10 @@ import { getPersistedState } from '../../services/state'
 import {
   Universe,
   createUniverse,
-  addUniverse,
-  setUniverseChannel,
   removeUniverse,
+  setUniverseChannels,
+  setUniverseOutput,
+  stopUniverseChannelFades,
 } from '../../services/universe'
 import { howLong } from '../../util/time'
 import { getInitialFixtureState } from '../fixtures/mapping'
@@ -53,27 +54,31 @@ function getFixtureGroupMapping(fixtureGroup: FixtureGroup) {
 /**
  * Sets the given state to the group's outgoing DMX universe.
  *
+ * The state is always applied as if turned on, so the group can be faded out
+ * through the universe's master value.
+ *
  * Returns whether anything was changed.
  */
 function setFixtureGroupStateToUniverse(
   fixtureGroup: FixtureGroup,
-  state: FixtureState
+  state: FixtureState,
+  fade?: number
 ): boolean {
   const universe = universes.get(fixtureGroup.id)
   const fixtures = getAllFixturesOfGroup(fixtureGroup)
   if (!universe) return false
 
-  let changed = false
+  const stateTurnedOn = state.on ? state : { ...state, on: true }
+
+  const values: [number, number][] = []
   for (const { type, channel } of fixtures) {
     const fixtureType = masterDataMaps.fixtureTypes.get(type)
     if (!fixtureType) continue
-    mapFixtureStateToChannels(fixtureType, state).forEach((value, index) => {
-      if (setUniverseChannel(universe, channel + index, value)) {
-        changed = true
-      }
-    })
+    mapFixtureStateToChannels(fixtureType, stateTurnedOn).forEach(
+      (value, index) => values.push([channel + index, value])
+    )
   }
-  return changed
+  return setUniverseChannels(universe, values, { fade })
 }
 
 function initFixtureGroup(
@@ -89,16 +94,20 @@ function initFixtureGroup(
     oldFixtureGroupStates.get(id) ??
     getInitialFixtureState(getFixtureGroupMapping(fixtureGroup))
 
-  if (initialState.on) addUniverse(universe)
+  setUniverseOutput(universe, { on: initialState.on })
 
   fixtureGroupStates.set(id, initialState)
   setFixtureGroupStateToUniverse(fixtureGroup, initialState)
 }
 
+/**
+ * @param fade fade time in seconds
+ */
 function setFixtureGroupState(
   id: IdType,
   state: Partial<FixtureState>,
-  merge = false
+  merge = false,
+  fade?: number
 ): boolean {
   const fixtureGroup = masterDataMaps.fixtureGroups.get(id)
   if (!fixtureGroup) {
@@ -116,15 +125,14 @@ function setFixtureGroupState(
 
   const universe = universes.get(id)!
 
-  if (!oldState?.on && newState.on) addUniverse(universe)
-  else if (oldState?.on && !newState.on) removeUniverse(universe)
-
-  return setFixtureGroupStateToUniverse(fixtureGroup, newState)
+  const changed = setFixtureGroupStateToUniverse(fixtureGroup, newState, fade)
+  setUniverseOutput(universe, { on: newState.on, fade })
+  return changed || oldState?.on !== newState.on
 }
 
 function handleApiMessage(message: ApiFixtureGroupStateMessage) {
   forEach(message.id, id =>
-    setFixtureGroupState(id, message.state, message.merge)
+    setFixtureGroupState(id, message.state, message.merge, message.fade)
   )
   return true
 }
@@ -134,6 +142,7 @@ function reload(reloadState?: boolean) {
   fixtureGroupStates.clear()
 
   for (const universe of universes.values()) {
+    stopUniverseChannelFades(universe)
     removeUniverse(universe)
   }
   universes.clear()
