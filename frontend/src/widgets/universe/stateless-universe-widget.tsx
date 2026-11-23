@@ -103,6 +103,7 @@ export const StatelessUniverseWidget = ({
               value={value}
               max={255}
               label={(index + 1).toString()}
+              ariaLabel={`Channel ${index + 1}`}
               topCornerLabel={channelMapping?.toUpperCase()}
               bottomCornerLabel={fixtureName}
               color={fixtureColor}

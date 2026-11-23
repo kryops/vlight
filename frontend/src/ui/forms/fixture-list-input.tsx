@@ -257,6 +257,7 @@ export const FixtureListInput = ({
             iconColor={iconShade(0)}
             onClick={onCategoryClick}
             onClickArg={null}
+            title="Selection"
           />
         )}
         {availableCategories.map((category, index) => {

@@ -1,5 +1,11 @@
 import { css } from '@linaria/core'
-import { PropsWithChildren, ReactElement, useEffect, useRef } from 'react'
+import {
+  PropsWithChildren,
+  ReactElement,
+  useEffect,
+  useId,
+  useRef,
+} from 'react'
 
 import { Icon } from '../icons/icon'
 import {
@@ -166,6 +172,7 @@ export function Widget({
   )
 
   const ref = useRef<HTMLDivElement>(null)
+  const titleId = useId()
 
   useEffect(() => {
     if (hotkeysActive) {
@@ -177,6 +184,8 @@ export function Widget({
     <HotkeyContext value={!!hotkeysActive}>
       <div
         ref={ref}
+        role={title ? 'region' : undefined}
+        aria-labelledby={title ? titleId : undefined}
         className={cx(
           widget,
           className,
@@ -203,7 +212,7 @@ export function Widget({
                   />
                 )}
                 {icon && ' '}
-                {title}
+                {title && <span id={titleId}>{title}</span>}
                 {turnedOn !== undefined && icon === undefined && (
                   <Icon
                     icon={iconOn}

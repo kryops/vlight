@@ -39,6 +39,13 @@ export interface FaderProps {
   subLabel?: string
 
   /**
+   * Accessible name of the fader.
+   *
+   * Defaults to the {@link label}, or the {@link cornerLabel}.
+   */
+  ariaLabel?: string
+
+  /**
    * Label to display in the top-left corner.
    *
    * The display of long labels can be controlled via {@link cornerLabelOverflow}.
@@ -78,6 +85,7 @@ export const Fader = ({
   step,
   label,
   subLabel,
+  ariaLabel,
   onChange,
   ...passThrough
 }: FaderProps) => {
@@ -126,7 +134,21 @@ export const Fader = ({
   }
 
   return (
-    <FaderBase {...passThrough} onTouch={onTouch} onUp={onUp} onWheel={onWheel}>
+    <FaderBase
+      {...passThrough}
+      onTouch={onTouch}
+      onUp={onUp}
+      onWheel={onWheel}
+      aria={{
+        role: 'slider',
+        'aria-label': ariaLabel ?? label ?? passThrough.cornerLabel,
+        'aria-valuenow': roundToStep(valueToUse, step),
+        'aria-valuemin': min,
+        'aria-valuemax': max,
+        'aria-valuetext': subLabel,
+        'aria-orientation': 'vertical',
+      }}
+    >
       <FaderButton
         fraction={valueToFraction(valueToUse, min, max, quadraticScale)}
         label={label}

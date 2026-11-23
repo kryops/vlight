@@ -52,6 +52,7 @@ export const ChannelFader = ({
       max={255}
       step={1}
       label={channel.toString()}
+      ariaLabel={`Channel ${channel}`}
       subLabel={channelMapping?.toUpperCase()}
       cornerLabel={fixtureName}
       cornerLabelOverflow={fixtureType ? fixtureType.mapping.length > 1 : false}

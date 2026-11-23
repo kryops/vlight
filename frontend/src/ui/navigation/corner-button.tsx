@@ -36,7 +36,13 @@ export const CornerButton = ({
   shade,
   onClick,
 }: CornerButtonProps) => (
-  <div title={tooltip} className={cornerButton} onClick={onClick}>
+  <div
+    role="button"
+    title={tooltip}
+    aria-label={tooltip}
+    className={cornerButton}
+    onClick={onClick}
+  >
     <Icon icon={icon} shade={shade === undefined ? 2 : shade} />
   </div>
 )

@@ -69,6 +69,7 @@ export function EntityList<T extends EntityName>({
     (entry: EntityType<T>) => (
       <>
         <div
+          role="button"
           className={entryContent}
           onClick={() => openEntityEditor(type, entry)}
         >

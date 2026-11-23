@@ -5,7 +5,7 @@ import { format, FormatOptions } from 'oxfmt'
 import { EntityName, EntityArray, EntityType, IdType } from '@vlight/types'
 import { logger } from '@vlight/utils'
 
-import { configDirectoryPath, project } from '../../config'
+import { configDirectoryPath, project, readOnly } from '../../config'
 
 import { DatabaseBackend, DatabaseEntityOptions } from './database-backend'
 
@@ -95,6 +95,8 @@ export class JsDatabaseBackend implements DatabaseBackend {
     // build upon these entries even while the file is still being written
     const previousEntries = cache.get(entity)
     cache.set(entity, entries)
+
+    if (readOnly) return
 
     const filePath = getModulePath(entity, !!global) + '.js'
 

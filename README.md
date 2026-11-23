@@ -106,6 +106,16 @@ Start in development mode with hot reloading:
 > yarn dev
 ```
 
+### E2E Tests
+
+The Playwright tests in [`e2e`](./e2e) start a read-only server per test, using the config and seed project in `e2e/config`.
+
+```shellscript
+> yarn workspace @vlight/e2e install-browsers  # once
+> yarn e2e      # build + run
+> yarn e2e:run  # run against the existing build
+```
+
 ### Protocols
 
 [vLight Client Protocol via REST/WebSocket](./backend/src/services/api/README.md)

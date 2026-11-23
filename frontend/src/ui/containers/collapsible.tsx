@@ -37,7 +37,12 @@ export function Collapsible({ title, children }: CollapsibleProps) {
 
   return (
     <div className={container}>
-      <div className={header} onClick={toggle}>
+      <div
+        role="button"
+        aria-expanded={expanded}
+        className={header}
+        onClick={toggle}
+      >
         <Icon icon={expanded ? iconCollapse : iconExpand} inline />
         {title}
       </div>

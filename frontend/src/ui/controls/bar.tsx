@@ -60,6 +60,13 @@ export interface BarProps {
   /** Primary label. */
   label?: string
 
+  /**
+   * Accessible name of the bar.
+   *
+   * Defaults to the {@link label}.
+   */
+  ariaLabel?: string
+
   /** Secondary label displayed in the top right corner. */
   topCornerLabel?: string
 
@@ -86,6 +93,7 @@ export interface BarProps {
  */
 export const Bar = ({
   label,
+  ariaLabel,
   topCornerLabel,
   bottomCornerLabel,
   bottomCornerLabelOverflow = false,
@@ -99,6 +107,11 @@ export const Bar = ({
 
   return (
     <div
+      role="meter"
+      aria-label={ariaLabel ?? label}
+      aria-valuenow={value}
+      aria-valuemin={min}
+      aria-valuemax={max}
       className={cx(bar, className)}
       style={color ? { borderBottomColor: color } : undefined}
     >

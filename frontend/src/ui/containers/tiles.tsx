@@ -65,7 +65,11 @@ export const Tile = ({ icon, title, target, onClick }: TileProps) => {
   }
 
   return (
-    <div className={tile} onClick={clickHandler}>
+    <div
+      role={target ? 'link' : 'button'}
+      className={tile}
+      onClick={clickHandler}
+    >
       <Icon icon={icon} shade={1} className={tileIcon} />
       <div className={titleTitle}>{title}</div>
     </div>

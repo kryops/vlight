@@ -10,6 +10,7 @@
     "packages": [
       "backend",
       "frontend",
+      "e2e",
       "shared/*"
     ]
   },
@@ -27,15 +28,17 @@
     "frontend": "yarn workspace @vlight/frontend",
     "lint": "run-p --continue-on-error lint:oxlint lint:ts lint:format 'frontend lint:css'",
     "lint:oxlint": "vp lint",
-    "lint:ts": "tsc -b frontend backend",
-    "lint:ts:watch": "tsc -b frontend backend --watch",
+    "lint:ts": "tsc -b frontend backend e2e",
+    "lint:ts:watch": "tsc -b frontend backend e2e --watch",
     "lint:format": "vp fmt --check",
     "prepare": "vp config && rimraf node_modules/.cache .linaria-cache && yarn build",
     "format": "vp fmt",
     "prod": "run-s build start",
     "dev": "run-p 'backend dev' 'frontend dev' 'backend build --watch --preserveWatchOutput' 'frontend tsc:watch'",
     "start": "cross-env NODE_ENV=production && node .",
-    "test": "vp test run"
+    "test": "vp test run",
+    "e2e": "run-s build 'e2e:run'",
+    "e2e:run": "yarn workspace @vlight/e2e test"
   },
   "dependencies": {
     "@mdi/js": "^7.4.47",

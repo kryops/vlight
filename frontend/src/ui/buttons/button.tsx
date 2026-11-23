@@ -216,6 +216,15 @@ export const Button = <T extends any = undefined>({
       ? `${title} ${hotkeyTooltip}`
       : title || hotkeyTooltip
 
+  const aria = {
+    role: 'button',
+    // icon buttons are labeled by their title; text buttons by their content
+    'aria-label': icon || !children ? title : undefined,
+    'aria-pressed': active,
+    'aria-disabled': disabled || undefined,
+    'aria-keyshortcuts': hotkey && hotkeyEnabled ? hotkey : undefined,
+  }
+
   const content = (
     <>
       {icon && (
@@ -237,6 +246,7 @@ export const Button = <T extends any = undefined>({
     <Touchable
       className={classNames}
       title={titleToDisplay}
+      {...aria}
       onDown={onDown && (() => onDown(onClickArg as T))}
       onUp={
         (onUp && (() => onUp(onClickArg as T))) ??
@@ -249,6 +259,7 @@ export const Button = <T extends any = undefined>({
     <Clickable
       className={classNames}
       title={titleToDisplay}
+      {...aria}
       onClick={onClick && (event => onClick(event, onClickArg as T))}
     >
       {content}

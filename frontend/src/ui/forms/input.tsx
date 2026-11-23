@@ -4,6 +4,8 @@ import { InputHTMLAttributes } from 'react'
 import { cx } from '../../util/styles'
 import { backgroundColor, textShade, baseline, inputWidth } from '../styles'
 
+import { useLabelId } from './label-context'
+
 export interface InputProps extends InputHTMLAttributes<any> {
   type?: 'text' | 'number' | 'date' | 'time' | 'password'
   value: string
@@ -31,8 +33,11 @@ export const Input = ({
   className,
   ...rest
 }: InputProps) => {
+  const labelId = useLabelId()
+
   return (
     <input
+      aria-labelledby={rest['aria-label'] ? undefined : labelId}
       type={type}
       value={value}
       onChange={event => onChange(event.target.value)}

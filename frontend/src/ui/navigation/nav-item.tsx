@@ -84,6 +84,8 @@ export const NavItem = ({
     <NavLink
       to={to}
       title={title}
+      aria-label={label}
+      aria-keyshortcuts={hotkey}
       className={({ isActive }) =>
         cx(
           navItem,

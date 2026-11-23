@@ -89,17 +89,18 @@ export const MainContainer = () => {
         {!alwaysShowNav && (
           <CornerButton
             icon={nav ? iconClose : iconMenu}
+            tooltip={nav ? 'Close navigation' : 'Open navigation'}
             shade={nav ? 1 : 2}
             onClick={toggleNav}
           />
         )}
-        <div className={cx(content, navOverlayed && content_blurred)}>
+        <main className={cx(content, navOverlayed && content_blurred)}>
           <ErrorBoundary>
             <Suspense fallback={<LoadingScreen />}>
               <RoutesOutlet />
             </Suspense>
           </ErrorBoundary>
-        </div>
+        </main>
         <CornerOverlay />
       </div>
       {(barVisible || recording) && <RecordingBar />}

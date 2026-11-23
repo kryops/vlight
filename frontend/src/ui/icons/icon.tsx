@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { MouseEvent as ReactMouseEvent } from 'react'
+import { AriaAttributes, MouseEvent as ReactMouseEvent } from 'react'
 
 import { ColorShade } from '../../types'
 import { baseline, iconShade } from '../styles'
@@ -41,7 +41,7 @@ const icon_padding = css`
   padding: ${baseline(2)};
 `
 
-export interface IconProps {
+export interface IconProps extends AriaAttributes {
   /** SVG 24x24 icon path string. */
   icon: string
 
@@ -86,8 +86,18 @@ export interface IconProps {
    */
   hoverable?: boolean
 
-  /** Tooltip text, rendered as SVG title. */
+  /**
+   * Tooltip text, rendered as SVG title.
+   *
+   * Also used as accessible name. Icons without title are hidden from assistive technology.
+   */
   title?: string
+
+  /**
+   * ARIA role. Defaults to `button` for clickable icons with a title,
+   * and `img` for other icons with a title.
+   */
+  role?: string
 
   onClick?: (event: ReactMouseEvent<SVGSVGElement, MouseEvent>) => void
 }
@@ -106,11 +116,20 @@ export const Icon = ({
   padding,
   hoverable = false,
   title,
+  role,
   onClick,
+  ...aria
 }: IconProps) => {
+  const hasName = !!(title || aria['aria-label'] || aria['aria-labelledby'])
+  const roleToUse = role ?? (hasName ? (onClick ? 'button' : 'img') : undefined)
+
   return (
     <svg
       viewBox="0 0 24 24"
+      role={roleToUse}
+      aria-label={title}
+      aria-hidden={!roleToUse || undefined}
+      {...aria}
       className={cx(
         iconSvg,
         inline && icon_inline,

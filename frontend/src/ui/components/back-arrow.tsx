@@ -21,8 +21,12 @@ export function BackArrow({ to }: BackArrowProps) {
   const backArrow = <Icon icon={iconBack} inline shade={1} />
 
   if (!to) {
-    return <BackLink>{backArrow}</BackLink>
+    return <BackLink ariaLabel="Back">{backArrow}</BackLink>
   }
 
-  return <Link to={to}>{backArrow}</Link>
+  return (
+    <Link to={to} aria-label="Back">
+      {backArrow}
+    </Link>
+  )
 }

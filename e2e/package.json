@@ -1,0 +1,19 @@
+{
+  "name": "@vlight/e2e",
+  "version": "0.0.1",
+  "repository": "https://github.com/kryops/vlight",
+  "author": "Michael Manzinger <michael@kryops.de>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "install-browsers": "playwright install chromium",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
+  },
+  "dependencies": {
+    "@vlight/types": "*"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
+  }
+}

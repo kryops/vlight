@@ -1,4 +1,4 @@
-import { join } from 'path'
+import { join, resolve } from 'path'
 
 import { LogLevel } from '@vlight/utils'
 
@@ -6,7 +6,8 @@ import { isDevelopment } from './env'
 
 /**
  * Global application configuration.
- * Can be configured in `/config/vlight-config.js`.
+ * Can be configured in `/config/vlight-config.js`
+ * (or `vlight-config.js` in `VLIGHT_CONFIG_DIR`).
  */
 export interface VLightConfiguration {
   //
@@ -41,12 +42,24 @@ export interface VLightConfiguration {
    */
   statePersistenceFlushInterval: number
 
+  /**
+   * Controls whether changes to the master data and the application state
+   * are only kept in memory instead of being written to disk.
+   *
+   * Used for E2E tests.
+   *
+   * Defaults to `false`.
+   */
+  readOnly: boolean
+
   //
   // Clients
   //
 
   /**
    * The HTTP port the server listens on.
+   *
+   * Can be overridden with the `VLIGHT_HTTP_PORT` environment variable.
    *
    * Defaults to 8000.
    */
@@ -157,7 +170,14 @@ export interface VLightConfiguration {
   devicesFlushInterval: number
 }
 
-export const configDirectoryPath = join(__dirname, '../../../config')
+/**
+ * The directory containing the configuration and the projects.
+ *
+ * Can be overridden with the `VLIGHT_CONFIG_DIR` environment variable.
+ */
+export const configDirectoryPath = process.env.VLIGHT_CONFIG_DIR
+  ? resolve(process.env.VLIGHT_CONFIG_DIR)
+  : join(__dirname, '../../../config')
 
 const userConfig: Partial<VLightConfiguration> = require(
   join(configDirectoryPath, 'vlight-config')
@@ -183,10 +203,13 @@ export const statePersistenceFlushInterval = c(
   'statePersistenceFlushInterval',
   10000
 )
+export const readOnly = c('readOnly', false)
 
 // Clients
 
-export const httpPort = c('httpPort', 8000)
+export const httpPort = process.env.VLIGHT_HTTP_PORT
+  ? Number(process.env.VLIGHT_HTTP_PORT)
+  : c('httpPort', 8000)
 export const socketFlushInterval = c('socketFlushInterval', 50)
 export const multiChannelUniverseFlushThreshold = c(
   'multiChannelUniverseFlushThreshold',

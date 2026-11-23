@@ -1,4 +1,4 @@
-import { MouseEvent, ReactElement } from 'react'
+import { MouseEvent, ReactElement, useId } from 'react'
 import { css } from '@linaria/core'
 
 import { Icon } from '../icons/icon'
@@ -159,13 +159,21 @@ export function Modal<T>({
 
   const closeModal = () => onClose(null as any)
 
+  const titleId = useId()
+
   return (
     <div
       className={backDrop}
       onClick={closeOnBackDrop ? closeModal : undefined}
     >
       <div className={modalContainer}>
-        <div className={modal} onClick={stopClickPropagation}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={title ? titleId : undefined}
+          className={modal}
+          onClick={stopClickPropagation}
+        >
           {showCloseButton && (
             <Icon
               title="Close"
@@ -175,13 +183,18 @@ export function Modal<T>({
               onClick={closeModal}
             />
           )}
-          {title && <h2 className={titleStyle}>{title}</h2>}
+          {title && (
+            <h2 id={titleId} className={titleStyle}>
+              {title}
+            </h2>
+          )}
           <ErrorBoundary>{content}</ErrorBoundary>
           {buttons && (
             <div className={buttonContainer}>
               {buttons.map(({ icon, label, value }, index) => (
                 <a
                   key={index}
+                  role="button"
                   className={buttonStyle}
                   onClick={() => onClose?.(value)}
                 >

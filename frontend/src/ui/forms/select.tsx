@@ -4,6 +4,8 @@ import { css } from '@linaria/core'
 import { cx } from '../../util/styles'
 import { backgroundColor, textShade, baseline } from '../styles'
 
+import { useLabelId } from './label-context'
+
 export interface SelectEntry<T> {
   value: T
   label: string
@@ -14,6 +16,9 @@ export interface SelectProps<T = string | undefined> {
   value: T
   onChange: (value: T) => void
   className?: string
+
+  /** Accessible name, if the select is not inside a `Label`. */
+  'aria-label'?: string
 }
 
 export const undefinedSelectEntry: SelectEntry<undefined> = {
@@ -40,7 +45,10 @@ export const Select = <T extends any>({
   value,
   onChange,
   className,
+  'aria-label': ariaLabel,
 }: SelectProps<T>) => {
+  const labelId = useLabelId()
+
   const normalizedEntries = useMemo(
     () =>
       entries.map(entry => {
@@ -63,6 +71,8 @@ export const Select = <T extends any>({
 
   return (
     <select
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabel ? undefined : labelId}
       value={String(activeIndex)}
       onChange={event => {
         const newIndex = parseInt(event.target.value)

@@ -14,7 +14,7 @@ export default defineConfig({
   },
   test: {
     setupFiles: ['./shared/vitest.setup.ts'],
-    exclude: ['**/node_modules/**', '**/dist/**'],
+    exclude: ['**/node_modules/**', '**/dist/**', 'e2e/**'],
     coverage: {
       include: [
         'backend/src/**/*.ts',
@@ -56,6 +56,14 @@ export default defineConfig({
       {
         files: ['shared/**'],
         rules: { 'import/no-nodejs-modules': 'error' },
+      },
+      {
+        // Playwright fixtures use `use()` callbacks and empty destructuring
+        files: ['e2e/**'],
+        rules: {
+          'react-hooks/rules-of-hooks': 'off',
+          'no-empty-pattern': 'off',
+        },
       },
     ],
   },

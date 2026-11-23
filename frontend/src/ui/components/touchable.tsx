@@ -1,5 +1,6 @@
 import { css } from '@linaria/core'
 import {
+  AriaAttributes,
   PointerEvent,
   TouchEvent,
   useRef,
@@ -24,7 +25,7 @@ export type RawTouchEventListener = (
   e: PointerEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>
 ) => void
 
-export interface TouchableProps {
+export interface TouchableProps extends AriaAttributes {
   /** Listener for all touch or mouse events. */
   onTouch?: TouchEventListener
 
@@ -54,6 +55,8 @@ export interface TouchableProps {
   children?: ReactNode
 
   ref?: Ref<HTMLDivElement>
+
+  role?: string
 }
 
 /**
@@ -70,6 +73,7 @@ export const Touchable = ({
   title,
   preventScroll,
   ref,
+  ...aria
 }: TouchableProps) => {
   const pointerActive = useRef(false)
 
@@ -132,6 +136,7 @@ export const Touchable = ({
       style={style}
       title={title}
       ref={ref}
+      {...aria}
       onPointerDown={
         pointerEventSupport
           ? e => {

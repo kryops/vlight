@@ -72,7 +72,10 @@ export const Navigation = ({
   const { dynamicPages } = masterData
 
   return (
-    <div className={cx(navigation, floating && navigation_floating)}>
+    <nav
+      aria-label="Main"
+      className={cx(navigation, floating && navigation_floating)}
+    >
       {mainNavigationItems.map(({ route, icon, label }, index) => (
         <NavItem
           key={route}
@@ -94,6 +97,6 @@ export const Navigation = ({
           hotkey={navigationHotkeys[index + mainNavigationItems.length]}
         />
       ))}
-    </div>
+    </nav>
   )
 }

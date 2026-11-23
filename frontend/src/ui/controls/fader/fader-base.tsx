@@ -1,5 +1,11 @@
 import { css } from '@linaria/core'
-import { ReactNode, useEffect, useEffectEvent, useRef } from 'react'
+import {
+  AriaAttributes,
+  ReactNode,
+  useEffect,
+  useEffectEvent,
+  useRef,
+} from 'react'
 import { ensureBetween } from '@vlight/utils'
 
 import { Touchable } from '../../components/touchable'
@@ -94,6 +100,9 @@ export interface FaderBaseProps {
   onWheel?: (direction: 1 | -1) => void
 
   children?: ReactNode
+
+  /** ARIA attributes describing the fader as slider. */
+  aria?: AriaAttributes & { role?: string }
 }
 
 /**
@@ -112,6 +121,7 @@ export function FaderBase({
   onUp,
   onWheel,
   children,
+  aria,
 }: FaderBaseProps) {
   const trackRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -157,6 +167,7 @@ export function FaderBase({
       onUp={onUp}
       ref={containerRef}
       preventScroll
+      {...aria}
     >
       <div className={track} ref={trackRef} />
       {children}

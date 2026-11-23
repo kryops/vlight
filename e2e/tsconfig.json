@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "lib": ["esnext", "dom"],
+    "noEmit": true,
+    "incremental": true
+  },
+  "include": ["./playwright.config.ts", "./src", "./tests"],
+  "references": [{ "path": "../shared/types" }]
+}

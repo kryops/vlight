@@ -65,7 +65,8 @@ async function init() {
   )
 
   const networkIp = getLocalNetworkIp()
-  if (networkIp) {
+  // the QR code is only useful when someone is watching the console
+  if (networkIp && process.stdout.isTTY) {
     const networkAddress = `http://${networkIp}:${httpPort}`
     logger.info(`Network address: ${networkAddress}`)
 

@@ -1,8 +1,10 @@
 import { css } from '@linaria/core'
-import { ReactNode } from 'react'
+import { ReactNode, useId } from 'react'
 
 import { baseline, textShade } from '../styles'
 import { cx } from '../../util/styles'
+
+import { LabelIdContext } from './label-context'
 
 export interface LabelProps {
   /** Label to be displayed to the left (or above) the input. */
@@ -62,6 +64,8 @@ const descriptionStyle = css`
 
 /**
  * Component to wrap an input with a label.
+ *
+ * Input components inside are labeled with it via `useLabelId`.
  */
 export function Label({
   label,
@@ -69,10 +73,13 @@ export function Label({
   description,
   forceSmall = false,
 }: LabelProps) {
+  const labelId = useId()
+
   return (
     <>
       <div className={cx(container, !forceSmall && containerResponsive)}>
         <div
+          id={labelId}
           className={cx(
             labelContainer,
             !forceSmall && labelContainerResponsive
@@ -80,7 +87,9 @@ export function Label({
         >
           {label}
         </div>
-        <div className={inputContainer}>{input}</div>
+        <div className={inputContainer}>
+          <LabelIdContext value={labelId}>{input}</LabelIdContext>
+        </div>
       </div>
       {description && <div className={descriptionStyle}>{description}</div>}
     </>

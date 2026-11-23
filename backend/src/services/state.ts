@@ -26,6 +26,7 @@ import {
   statePersistenceFlushInterval,
   project,
   configDirectoryPath,
+  readOnly,
 } from './config'
 import { broadcastApplicationStateToApiClients } from './api'
 import { registerApiMessageHandler } from './api/registry'
@@ -163,6 +164,10 @@ export function initPersistedState(): void {
     return false
   })
 
-  setInterval(checkAndPersistCurrentState, statePersistenceFlushInterval)
+  if (readOnly) {
+    logger.warn('Read-only mode: Changes are not persisted to disk')
+  } else {
+    setInterval(checkAndPersistCurrentState, statePersistenceFlushInterval)
+  }
   howLong(start, 'initPersistedState')
 }
