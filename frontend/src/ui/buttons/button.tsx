@@ -158,6 +158,14 @@ export interface ButtonProps<T> {
   /** Title to be displayed as tooltip. */
   title?: string
 
+  /**
+   * Accessible name.
+   *
+   * Defaults to the {@link title} for buttons without content,
+   * and to the content otherwise.
+   */
+  ariaLabel?: string
+
   className?: string
 }
 
@@ -177,6 +185,7 @@ export const Button = <T extends any = undefined>({
   transparent = false,
   className,
   title,
+  ariaLabel,
 }: ButtonProps<T>) => {
   const [hotkeyPressed, setHotkeyPressed] = useState(false)
 
@@ -218,8 +227,7 @@ export const Button = <T extends any = undefined>({
 
   const aria = {
     role: 'button',
-    // icon buttons are labeled by their title; text buttons by their content
-    'aria-label': icon || !children ? title : undefined,
+    'aria-label': ariaLabel ?? (children ? undefined : title),
     'aria-pressed': active,
     'aria-disabled': disabled || undefined,
     'aria-keyshortcuts': hotkey && hotkeyEnabled ? hotkey : undefined,

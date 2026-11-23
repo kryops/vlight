@@ -98,11 +98,15 @@ export const ValueOrRandomFader = ({
         step={step}
         quadraticScale={quadraticScale}
         onChange={onChange}
+        aria={{ role: 'group', 'aria-label': label }}
       />
     )
   } else if (Array.isArray(value)) {
     fader = (
-      <FaderBase onUp={openEditor}>
+      <FaderBase
+        onUp={openEditor}
+        aria={{ role: 'button', 'aria-label': label }}
+      >
         {value.map((it, index) => (
           <FaderButton
             key={index}
@@ -121,6 +125,7 @@ export const ValueOrRandomFader = ({
         step={step}
         quadraticScale={quadraticScale}
         onChange={onChange}
+        ariaLabel={label}
       />
     )
   }

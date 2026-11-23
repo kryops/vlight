@@ -11,7 +11,7 @@ import { useFormState } from '../../../../hooks/form'
 import { useShallowEqualMemo } from '../../../../hooks/performance'
 import { Button } from '../../../../ui/buttons/button'
 import { editorTitle } from '../../../../ui/css/editor-styles'
-import { Checkbox } from '../../../../ui/forms/checkbox'
+import { CheckboxLabel } from '../../../../ui/forms/checkbox'
 import { FormTextInput } from '../../../../ui/forms/form-input'
 import { Label } from '../../../../ui/forms/label'
 import { Select, SelectEntry } from '../../../../ui/forms/select'
@@ -108,8 +108,6 @@ const emptyHint = css`
   font-style: italic;
   margin: ${baseline(2)} 0;
 `
-
-const noop = () => undefined
 
 type RepeatMode = 'stop' | 'repeat' | 'infinite'
 
@@ -248,15 +246,14 @@ const SequenceStepEditor = memo(function SequenceStepEditor({
             className={delayInput}
           />
         </label>
-        <a
+        <CheckboxLabel
           className={revertAllToggle}
-          onClick={toggleRevertAll}
+          value={allReverted}
+          onChange={toggleRevertAll}
           title="Reverts the changes of all actions at the end of the step"
         >
-          {/* the click is handled by the surrounding element */}
-          <Checkbox value={allReverted} onChange={noop} inline />{' '}
           <Icon icon={iconRevert} inline shade={1} /> Revert all
-        </a>
+        </CheckboxLabel>
         <div className={spacer} />
         <Button
           icon={iconUp}

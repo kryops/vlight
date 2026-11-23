@@ -182,6 +182,7 @@ export function ValueOrRandomFaderEditor({
     <div className={container}>
       {title && <h3 className={editorTitle}>{title}</h3>}
       <Select
+        aria-label="Value type"
         entries={selectEntries}
         value={type}
         onChange={newType =>

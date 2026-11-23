@@ -324,6 +324,7 @@ export function NamedActionsActionEditor({
       renderInput={inputProps => (
         <EntityReferenceSelect
           entity="actions"
+          aria-label="Named action"
           addUndefinedOption
           {...inputProps}
         />

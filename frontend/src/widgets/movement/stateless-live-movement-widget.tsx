@@ -221,16 +221,19 @@ export const StatelessLiveMovementWidget = ({
         <div className={cx(faderContainer, container)}>
           <div className={settingsColumn}>
             <Select
+              aria-label="Pattern"
               entries={patternEntries}
               value={state.pattern}
               onChange={pattern => update({ pattern })}
             />
             <Select
+              aria-label="Order"
               entries={orderEntries}
               value={state.order ?? 'members'}
               onChange={order => update({ order })}
             />
             <Select
+              aria-label="Invert"
               entries={invertEntries}
               value={state.invert ?? 'none'}
               onChange={invert => update({ invert })}

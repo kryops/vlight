@@ -13,6 +13,7 @@ import { iconShade } from '../../styles'
 import {
   faderWidth,
   FaderBase,
+  FaderBaseProps,
   trackMargin,
   trackWidth,
   trackHeight,
@@ -73,6 +74,9 @@ export interface RangeFaderProps {
 
   onChange: (value: ValueRange<number>) => void
   className?: string
+
+  /** ARIA attributes for the fader container. */
+  aria?: FaderBaseProps['aria']
 }
 
 /**

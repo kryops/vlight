@@ -271,6 +271,7 @@ export const FixtureListInput = ({
               onClick={onCategoryClick}
               onClickArg={category}
               title={category.label}
+              ariaLabel={category.label}
               icon={category.icon}
               iconColor={iconShade(0)}
             >

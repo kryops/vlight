@@ -82,6 +82,7 @@ export function MemoryEditor({
                   Scene {sceneIndex + 1}{' '}
                   <Button<MemoryScene>
                     icon={iconDelete}
+                    title="Remove scene"
                     transparent
                     onClick={removeScene}
                     onClickArg={scene}

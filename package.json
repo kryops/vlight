@@ -15,7 +15,7 @@
     ]
   },
   "scripts": {
-    "all": "yarn lint && yarn test && yarn build",
+    "all": "yarn lint && yarn test && yarn build && yarn e2e:run",
     "clean": "yarn workspaces foreach -A run clean && rimraf node_modules/.cache .linaria-cache tsconfig.tsbuildinfo",
     "backend": "yarn workspace @vlight/backend",
     "build": "yarn run clean && run-p 'backend build' 'frontend build'",

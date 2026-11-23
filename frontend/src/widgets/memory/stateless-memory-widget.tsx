@@ -99,6 +99,7 @@ export const StatelessMemoryWidget = ({
                 step={1}
                 value={state.value ?? 0}
                 onChange={changeValue}
+                ariaLabel="Value"
               />
             </div>
           )}

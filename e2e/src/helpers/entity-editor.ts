@@ -14,8 +14,24 @@ export class EntityEditor {
     await this.dialog.getByLabel(label, { exact: true }).selectOption(option)
   }
 
-  async toggle(name: string): Promise<void> {
+  async toggle(name: string | RegExp): Promise<void> {
     await this.dialog.getByRole('button', { name, exact: true }).click()
+  }
+
+  async check(name: string | RegExp): Promise<void> {
+    await this.dialog.getByRole('checkbox', { name }).click()
+  }
+
+  /**
+   * Selects entities in a fixture list input, e.g.
+   * `selectMembers('Fixture', 'Par 1')` or `selectMembers('Group', /^Pars/)`.
+   */
+  async selectMembers(
+    category: string,
+    ...entries: Array<string | RegExp>
+  ): Promise<void> {
+    await this.toggle(category)
+    for (const entry of entries) await this.toggle(entry)
   }
 
   async save(): Promise<void> {

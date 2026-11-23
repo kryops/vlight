@@ -154,6 +154,8 @@ export const LiveChaseWidgetColorControls = ({
         {state.colors.map((color, index) => (
           <div
             key={index}
+            role="button"
+            aria-label={`Color ${index + 1}`}
             className={colorStyle}
             style={{
               background: getChasePreviewColor(color),
@@ -178,6 +180,8 @@ export const LiveChaseWidgetColorControls = ({
           {state.colorsDraft.map((color, index) => (
             <div
               key={index}
+              role="button"
+              aria-label={`Draft color ${index + 1}`}
               className={colorStyle}
               style={{
                 background: getChasePreviewColor(color),

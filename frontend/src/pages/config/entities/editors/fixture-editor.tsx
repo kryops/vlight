@@ -8,7 +8,6 @@ import {
   FormTextInput,
   FormNumberInput,
   FormEntityReferenceSelect,
-  FormCheckbox,
 } from '../../../../ui/forms/form-input'
 import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
@@ -33,6 +32,7 @@ import {
   getFractionWithMargin,
   getTouchEventOffset,
 } from '../../../../util/touch'
+import { CheckboxLabel } from '../../../../ui/forms/checkbox'
 
 const checkboxLink = css`
   display: block;
@@ -198,6 +198,7 @@ export function FixtureEditor({
             />
             <h4>Multiple Fixtures</h4>
             <Select
+              aria-label="Multiple fixtures mode"
               entries={[
                 { value: false, label: 'Subsequent channels' },
                 { value: true, label: 'Sharing the same channel' },
@@ -283,10 +284,13 @@ export function FixtureEditor({
               />
             )}
             {!id && (
-              <a className={checkboxLink} onClick={toggleCreateGroup}>
-                <FormCheckbox formState={formState} name="createGroup" inline />{' '}
+              <CheckboxLabel
+                className={checkboxLink}
+                value={formState.values.createGroup}
+                onChange={toggleCreateGroup}
+              >
                 Create group containing the fixture
-              </a>
+              </CheckboxLabel>
             )}
             {overlappingChannels.length > 0 && (
               <div className={errorMessage}>

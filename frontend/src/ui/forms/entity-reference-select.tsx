@@ -36,6 +36,9 @@ export interface EntityReferenceSelectProps {
   excludeValues?: IdType[]
 
   className?: string
+
+  /** Accessible name, if the select is not inside a `Label`. */
+  'aria-label'?: string
 }
 
 /**

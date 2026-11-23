@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Icon } from '../icons/icon'
 import { iconCheckbox_checked, iconCheckbox } from '../icons'
 
@@ -39,3 +41,34 @@ export const Checkbox = ({
     />
   )
 }
+
+export interface CheckboxLabelProps {
+  value: boolean | undefined
+  onChange: (value: boolean) => void
+  /** The label, displayed next to the checkbox. */
+  children: ReactNode
+  title?: string
+  className?: string
+}
+
+/**
+ * Checkbox with a label, both of which can be clicked to toggle it.
+ */
+export const CheckboxLabel = ({
+  value,
+  onChange,
+  children,
+  title,
+  className,
+}: CheckboxLabelProps) => (
+  <a
+    role="checkbox"
+    aria-checked={!!value}
+    className={className}
+    title={title}
+    onClick={() => onChange(!value)}
+  >
+    <Icon icon={value ? iconCheckbox_checked : iconCheckbox} inline />{' '}
+    {children}
+  </a>
+)

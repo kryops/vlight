@@ -25,7 +25,7 @@ import {
 import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
 import { useDeepEqualMemo } from '../../hooks/performance'
 import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
-import { Checkbox } from '../../ui/forms/checkbox'
+import { CheckboxLabel } from '../../ui/forms/checkbox'
 import { widgetTitleControls } from '../../ui/css/widget-controls'
 import { StartStopButton } from '../start-stop-button'
 
@@ -242,29 +242,21 @@ export const StatelessLiveMemoryWidget = ({
 
         {hasGradient && (
           <>
-            <a
-              onClick={toggleInverted}
+            <CheckboxLabel
+              value={gradientMovementInverted}
+              onChange={toggleInverted}
               title="Changes the direction of gradient movement"
             >
-              <Checkbox
-                value={gradientMovementInverted ?? false}
-                onChange={toggleInverted}
-                inline
-              />
               Move inverted
-            </a>
+            </CheckboxLabel>
             <br />
-            <a
-              onClick={toggleIgnoreOffset}
+            <CheckboxLabel
+              value={gradientIgnoreFixtureOffset}
+              onChange={toggleIgnoreOffset}
               title="Applies the same gradient offset to all members"
             >
-              <Checkbox
-                value={gradientIgnoreFixtureOffset ?? false}
-                onChange={toggleIgnoreOffset}
-                inline
-              />
               Same offset
-            </a>
+            </CheckboxLabel>
           </>
         )}
       </div>
@@ -275,6 +267,7 @@ export const StatelessLiveMemoryWidget = ({
           step={1}
           value={state.value ?? 0}
           onChange={changeValue}
+          ariaLabel="Value"
         />
         {hasGradient && (
           <Fader

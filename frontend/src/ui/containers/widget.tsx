@@ -197,7 +197,11 @@ export function Widget({
         {(icon || title || titleSide || turnedOn !== undefined) && (
           <div className={cx(section, widgetTitle)}>
             <div>
-              <Clickable onClick={onTitleClick} className={titleLink}>
+              <Clickable
+                onClick={onTitleClick}
+                aria-pressed={onTitleClick ? turnedOn : undefined}
+                className={titleLink}
+              >
                 {icon && (
                   <Icon
                     icon={icon}

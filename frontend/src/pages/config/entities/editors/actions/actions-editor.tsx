@@ -4,7 +4,7 @@ import { Action, ActionType, NamedActionsAction } from '@vlight/types'
 import { assertNever } from '@vlight/utils'
 
 import { Button } from '../../../../../ui/buttons/button'
-import { Checkbox } from '../../../../../ui/forms/checkbox'
+import { CheckboxLabel } from '../../../../../ui/forms/checkbox'
 import { Select, SelectEntry } from '../../../../../ui/forms/select'
 import { showPromptDialog } from '../../../../../ui/overlays/dialog'
 import {
@@ -84,8 +84,6 @@ export const actionTypeEntries: SelectEntry<ActionType>[] = Object.entries(
 )
   .map(([value, label]) => ({ value: value as ActionType, label }))
   .sort((a, b) => a.label.localeCompare(b.label))
-
-const noop = () => undefined
 
 /** An action that can optionally be reverted. */
 type RevertableAction = Action & { revert?: boolean }
@@ -230,29 +228,26 @@ export function ActionsEditor<T extends RevertableAction>({
             <div className={actionHeader}>
               <span className={actionIndex}>{index + 1}.</span>
               <Select
+                aria-label="Action type"
                 entries={actionTypeEntries}
                 value={action.type}
                 onChange={type => changeType(index, type)}
                 className={typeSelect}
               />
               {revertable && (
-                <a
+                <CheckboxLabel
                   className={revertToggle}
-                  onClick={toggleRevert}
+                  value={action.revert}
+                  onChange={toggleRevert}
                   title="Reverts the changes of this action (if the affected state was not changed in the meantime)"
                 >
-                  {/* the click is handled by the surrounding element */}
-                  <Checkbox
-                    value={!!action.revert}
-                    onChange={noop}
-                    inline
-                  />{' '}
                   <Icon icon={iconRevert} inline shade={1} /> {revertLabel}
-                </a>
+                </CheckboxLabel>
               )}
               <div className={spacer} />
               {moveTargets && moveTargets.length > 0 && onMoveTo && (
                 <Select
+                  aria-label="Move to"
                   entries={moveTargetEntries}
                   value={undefined}
                   onChange={target =>

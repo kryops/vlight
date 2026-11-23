@@ -274,6 +274,7 @@ function FadeControl({ fade }: { fade: number }) {
         min={0}
         step={0.1}
         placeholder="0"
+        aria-label="Fade"
         className={fadeInput}
       />
       s

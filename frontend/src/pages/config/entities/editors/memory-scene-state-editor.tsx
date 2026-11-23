@@ -27,7 +27,7 @@ import { editorTitle } from '../../../../ui/css/editor-styles'
 import { flexContainer } from '../../../../ui/css/flex'
 import { useDeepEqualMemo } from '../../../../hooks/performance'
 import { Button } from '../../../../ui/buttons/button'
-import { Checkbox } from '../../../../ui/forms/checkbox'
+import { CheckboxLabel } from '../../../../ui/forms/checkbox'
 import { MemorySceneStatePresets } from '../../../../widgets/memory/memory-scene-state-presets'
 
 const widget = css`
@@ -242,6 +242,7 @@ export function MemorySceneStateEditor({
           <div className={cx(flexContainer, optionsContainer)}>
             <div className={positionContainer}>
               <Select
+                aria-label="Position mode"
                 entries={positionModes}
                 value={
                   activeGradientStop.position !== undefined
@@ -305,19 +306,17 @@ export function MemorySceneStateEditor({
     <>
       <h2 className={editorTitle}>Edit Memory Scene State</h2>
       <div className={cx(flexContainer, linkContainer)}>
-        <a onClick={toggleGradient}>
-          <Checkbox value={isGradient} onChange={changeType} inline /> Gradient
-        </a>
+        <CheckboxLabel value={isGradient} onChange={toggleGradient}>
+          Gradient
+        </CheckboxLabel>
         {Array.isArray(localState) && (
           <>
-            <a onClick={toggleMirrored}>
-              <Checkbox
-                value={localState.some(it => it.mirrored)}
-                onChange={toggleMirrored}
-                inline
-              />{' '}
+            <CheckboxLabel
+              value={localState.some(it => it.mirrored)}
+              onChange={toggleMirrored}
+            >
               Mirrored
-            </a>
+            </CheckboxLabel>
             <a
               onClick={() => {
                 const newState = [

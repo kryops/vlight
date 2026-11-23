@@ -133,17 +133,22 @@ export const MapShape = ({
     style: finalStyle,
     title: title,
     ref,
+    'aria-label': title,
   }
 
   if (onDown || onUp) {
     return (
-      <Touchable {...commonProps} onDown={onDown} onUp={onUp}>
+      <Touchable {...commonProps} role="button" onDown={onDown} onUp={onUp}>
         {children}
       </Touchable>
     )
   }
 
-  return <div {...commonProps}>{children}</div>
+  return (
+    <div role={title ? 'img' : undefined} {...commonProps}>
+      {children}
+    </div>
+  )
 }
 
 export type FixtureTypeMapShapeProps = Omit<

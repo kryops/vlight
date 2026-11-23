@@ -2,7 +2,7 @@ import { css } from '@linaria/core'
 
 import { useFormState } from '../../../../hooks/form'
 import { editorTitle } from '../../../../ui/css/editor-styles'
-import { Checkbox } from '../../../../ui/forms/checkbox'
+import { CheckboxLabel } from '../../../../ui/forms/checkbox'
 import { FormSelect, FormTextInput } from '../../../../ui/forms/form-input'
 import { Label } from '../../../../ui/forms/label'
 import { iconRevert } from '../../../../ui/icons'
@@ -38,8 +38,6 @@ const description = css`
   opacity: 0.8;
   margin: ${baseline(2)} 0;
 `
-
-const noop = () => undefined
 
 /**
  * Dialog content to edit a programmable button.
@@ -117,16 +115,15 @@ export function ButtonEditor({
 
       <div className={sectionHeader}>
         <h3>Press</h3>
-        <a
+        <CheckboxLabel
           className={revertAllToggle}
-          onClick={toggleRevertAll}
+          value={allReverted}
+          onChange={toggleRevertAll}
           title={`Reverts the changes of all actions on ${releaseName}`}
         >
-          {/* the click is handled by the surrounding element */}
-          <Checkbox value={allReverted} onChange={noop} inline />{' '}
           <Icon icon={iconRevert} inline shade={1} /> Revert all on{' '}
           {releaseName}
-        </a>
+        </CheckboxLabel>
       </div>
       <div className={description}>
         Executed when the button is pressed. Reverted changes are only restored

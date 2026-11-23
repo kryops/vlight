@@ -3,14 +3,12 @@ import { mergeObjects } from '@vlight/utils'
 import { ReactNode } from 'react'
 
 import { TwoColumDialogContainer } from '../../../../../ui/containers/two-column-dialog'
-import { Checkbox } from '../../../../../ui/forms/checkbox'
+import { CheckboxLabel } from '../../../../../ui/forms/checkbox'
 import { NumberInput } from '../../../../../ui/forms/typed-input'
 import { baseline } from '../../../../../ui/styles'
 
 import { applyStateChange } from './action-utils'
 import { StateChangesList } from './state-changes-list'
-
-const noop = () => undefined
 
 const partialToggle = css`
   display: inline-block;
@@ -39,10 +37,14 @@ export function ActionOptionToggle({
   title?: string
 }) {
   return (
-    <a className={optionToggle} onClick={() => onChange(!value)} title={title}>
-      {/* the click is handled by the surrounding element */}
-      <Checkbox value={value} onChange={noop} inline /> {label}
-    </a>
+    <CheckboxLabel
+      className={optionToggle}
+      value={value}
+      onChange={onChange}
+      title={title}
+    >
+      {label}
+    </CheckboxLabel>
   )
 }
 
@@ -233,15 +235,14 @@ export function EntityStateActionEditor<T extends object>({
       left={selection}
       right={
         <>
-          <a
+          <CheckboxLabel
             className={partialToggle}
-            onClick={togglePartial}
+            value={partial}
+            onChange={togglePartial}
             title="In partial mode, only the listed changes are applied, and everything else is left as-is. Otherwise, the complete state is applied."
           >
-            {/* the click is handled by the surrounding element */}
-            <Checkbox value={partial} onChange={noop} inline /> Partial: Only
-            apply changes
-          </a>
+            Partial: Only apply changes
+          </CheckboxLabel>
           {options}
           {displayedState ? (
             <div className={widgetContainer}>

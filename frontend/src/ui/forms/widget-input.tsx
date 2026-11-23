@@ -448,6 +448,7 @@ export const WidgetInput = ({
       <div className={cx(flexContainer, header)}>
         {headerPrefix}
         <Select
+          aria-label="Widget type"
           entries={typeSelectEntries}
           value={value?.type}
           onChange={onChangeType}

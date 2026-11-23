@@ -25,7 +25,13 @@ export const DmxMasterWidget = ({ ...passThrough }: DmxMasterWidgetProps) => {
 
   return (
     <Widget title="DMX Master" icon={iconGlobal} {...passThrough}>
-      <Fader max={255} step={1} value={dmxMaster} onChange={setMasterValue} />
+      <Fader
+        max={255}
+        step={1}
+        value={dmxMaster}
+        onChange={setMasterValue}
+        ariaLabel="DMX Master"
+      />
       <div className={buttonContainer}>
         <Button block onDown={setToFull} title="Set to full" hotkey="n">
           ON

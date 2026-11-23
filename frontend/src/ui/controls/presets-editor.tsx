@@ -80,7 +80,7 @@ const PresetContainer = ({
   }
 
   return (
-    <Clickable onClick={onClick} className={presetContainer}>
+    <Clickable onClick={onClick} aria-label={name} className={presetContainer}>
       <div className={presetColors}>
         {previewBackgrounds.map((background, index) => (
           <div key={index} className={presetColor} style={{ background }} />

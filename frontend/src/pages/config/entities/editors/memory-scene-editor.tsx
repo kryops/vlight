@@ -85,6 +85,8 @@ export const MemorySceneEditor = ({
   const renderEntryContent = (state: MemorySceneState) => (
     <>
       <div
+        role="button"
+        aria-label={`State ${scene.states.indexOf(state) + 1}`}
         className={flexAuto}
         style={{
           background: getMemorySceneStatePreviewBackground(state),
@@ -153,6 +155,7 @@ export const MemorySceneEditor = ({
         {scene.states.length >= 2 && (
           <div>
             <Select
+              aria-label="Pattern"
               entries={memoryScenePatternEntries}
               value={scene.pattern}
               onChange={changePattern}
@@ -162,6 +165,7 @@ export const MemorySceneEditor = ({
         <div>
           Order:{' '}
           <Select
+            aria-label="Order"
             entries={fixtureOrderEntries}
             value={scene.order}
             onChange={changeOrder}

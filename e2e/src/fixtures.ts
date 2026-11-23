@@ -3,6 +3,7 @@ import { ApiInMessage } from '@vlight/types'
 
 import { startServer, VLightServer } from './server'
 import { App } from './helpers/app'
+import { Universe } from './helpers/universe'
 
 export interface VLightApi {
   /** Sends a message to the backend via the REST API, e.g. to arrange state. */
@@ -13,6 +14,9 @@ interface Fixtures {
   server: VLightServer
   api: VLightApi
   app: App
+  universe: Universe
+  /** The app in a second, independent browser context. */
+  secondApp: App
 }
 
 /**
@@ -50,6 +54,20 @@ export const test = base.extend<Fixtures>({
     const app = new App(page)
     await app.open()
     await use(app)
+  },
+
+  secondApp: async ({ browser, server }, use) => {
+    const context = await browser.newContext({ baseURL: server.baseURL })
+    const app = new App(await context.newPage())
+    await app.open()
+    await use(app)
+    await context.close()
+  },
+
+  universe: async ({ context }, use) => {
+    const universe = new Universe(await context.newPage())
+    await universe.open()
+    await use(universe)
   },
 })
 
