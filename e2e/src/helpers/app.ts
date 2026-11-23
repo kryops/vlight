@@ -62,7 +62,7 @@ export class App {
   entityEntry(name: string): Locator {
     const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
     return this.main
-      .getByRole('button', { name: new RegExp(`^${escaped}\\b`) })
+      .getByRole('button', { name: new RegExp(`^${escaped}(?!\\w)`) })
       .filter({ hasNot: this.page.getByRole('button', { name: 'Copy' }) })
   }
 

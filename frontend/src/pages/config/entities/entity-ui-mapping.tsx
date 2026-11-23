@@ -1,5 +1,5 @@
 import { ComponentType, ReactNode } from 'react'
-import { EntityName, EntityType, MasterDataMaps } from '@vlight/types'
+import { EntityName, EntityType, IdType, MasterDataMaps } from '@vlight/types'
 import { css } from '@linaria/core'
 import { FixtureMappingPrefix, mapFixtureList } from '@vlight/controls'
 
@@ -374,6 +374,8 @@ function replaceMappingInEntities(
     }
   }
 
+  const removedMemoryIds: IdType[] = []
+
   for (const memory of memories) {
     if (memory.scenes.some(scene => overlaps(scene.members))) {
       const newScenes = memory.scenes
@@ -393,18 +395,22 @@ function replaceMappingInEntities(
         })
       } else {
         removeEntity('memories', memory.id)
+        removedMemoryIds.push(memory.id)
       }
     }
   }
 
-  // Buttons, sequences, and named actions: replace fixture mappings, and remove deleted groups
+  // Buttons, sequences, and named actions: replace fixture mappings, and remove deleted groups and memories
+  // (in a single update, as separate updates would overwrite each other)
   const removedGroupIds = mappingsToReplace
     .filter(it => it.startsWith(FixtureMappingPrefix.Group))
     .map(it => it.slice(FixtureMappingPrefix.Group.length))
   const removeGroups = removeIdsFromAction('fixture-group', removedGroupIds)
+  const removeMemories = removeIdsFromAction('memory', removedMemoryIds)
 
   updateActions(action => {
     if (action.type === 'fixture-group') return removeGroups(action)
+    if (action.type === 'memory') return removeMemories(action)
     if (action.type !== 'fixture' || !overlaps(action.members ?? [])) {
       return action
     }
