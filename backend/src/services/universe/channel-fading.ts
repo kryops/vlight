@@ -1,32 +1,18 @@
-import { addFadeHandler, removeFadeHandler } from './fading'
+import {
+  addFadeHandler,
+  removeFadeHandler,
+  startValueFade,
+  stepValueFade,
+  ValueFade,
+} from './fading'
 import { universes } from './state'
 import { Universe } from './types'
 import { setUniverseChannel } from './universe-functions'
 import { getChannelFromUniverseIndex, getUniverseIndex } from './utils'
 
-/** A running fade of a single channel. */
-interface ChannelFade {
-  /** The current (unrounded) value. */
-  current: number
-
-  /** The value to fade to. */
-  target: number
-
-  /**
-   * The largest difference since the fade started,
-   * which is used as baseline for the fade speed.
-   *
-   * This way, reversing a fade halfway through (e.g. when reverting a change) takes half the time.
-   */
-  span: number
-
-  /** Fade speed in DMX value units per ms. */
-  speed: number
-}
-
 /** All running channel fades of a universe. */
 interface UniverseChannelFades {
-  channels: Map<number, ChannelFade>
+  channels: Map<number, ValueFade>
 
   /** Time of the last fade step in ms. */
   lastTime: number
@@ -49,13 +35,9 @@ function processUniverseFades(
   const finish = !universes.has(universe)
 
   for (const [channel, fade] of fades.channels) {
-    const delta = finish ? Infinity : fade.speed * elapsed
-    fade.current =
-      fade.target > fade.current
-        ? Math.min(fade.current + delta, fade.target)
-        : Math.max(fade.current - delta, fade.target)
-
-    if (fade.current === fade.target) fades.channels.delete(channel)
+    if (stepValueFade(fade, finish ? Infinity : elapsed)) {
+      fades.channels.delete(channel)
+    }
     setUniverseChannel(universe, channel, Math.round(fade.current))
   }
 
@@ -102,6 +84,12 @@ export interface SetUniverseChannelsOptions {
    * Replaces the callback of previous calls for the same universe.
    */
   onFinished?: () => void
+
+  /**
+   * Start fresh fades taking the full fade time for channels that are already being faded,
+   * instead of keeping their speed baseline.
+   */
+  restart?: boolean
 }
 
 /**
@@ -116,7 +104,7 @@ export interface SetUniverseChannelsOptions {
 export function setUniverseChannels(
   universe: Universe,
   values: Iterable<[channel: number, value: number]>,
-  { fade = 0, onFinished }: SetUniverseChannelsOptions = {}
+  { fade = 0, onFinished, restart }: SetUniverseChannelsOptions = {}
 ): boolean {
   const canFade = fade > 0 && universes.has(universe)
   let fades = universeFades.get(universe)
@@ -130,9 +118,8 @@ export function setUniverseChannels(
     changed = true
 
     const current = existing?.current ?? currentValue
-    const distance = Math.abs(value - current)
 
-    if (!canFade || distance === 0) {
+    if (!canFade || value === current) {
       fades?.channels.delete(channel)
       setUniverseChannel(universe, channel, value)
       continue
@@ -147,13 +134,10 @@ export function setUniverseChannels(
       )
     }
 
-    const span = existing ? Math.max(existing.span, distance) : distance
-    fades.channels.set(channel, {
-      current,
-      target: value,
-      span,
-      speed: span / (fade * 1000),
-    })
+    fades.channels.set(
+      channel,
+      startValueFade(existing ?? current, value, fade, restart)
+    )
   }
 
   if (fades) {

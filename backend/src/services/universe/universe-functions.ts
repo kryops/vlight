@@ -196,13 +196,6 @@ export function setUniverseState(
 }
 
 /**
- * Creates a copy of the given universe.
- */
-export function cloneUniverse(universe: Universe): Universe {
-  return Buffer.from(universe)
-}
-
-/**
  * Returns a new universe that mixes the two given universes linearly.
  *
  * @param progress from 0 (only `from`) to 1 (only `to`)

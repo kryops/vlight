@@ -21,7 +21,7 @@ import {
   writeUniverseChannel,
   broadcastUniverseChannel,
 } from './utils'
-import { refreshOutgoingFadeInterval } from './outgoing-fading'
+import { refreshOutgoingFade } from './outgoing-fading'
 
 /**
  * A list of channels for each master channel that are affected by it.
@@ -96,7 +96,7 @@ export function handleDmxMasterApiMessage(
     dmxMasterState.fade = fade
     changed = true
 
-    refreshOutgoingFadeInterval()
+    refreshOutgoingFade()
   }
 
   if (value !== undefined && dmxMasterState.value !== value) {
@@ -160,7 +160,7 @@ export function initUniverseComputingData(isReload = false): void {
     )
   }
 
-  refreshOutgoingFadeInterval()
+  refreshOutgoingFade()
 
   if (!isReload) {
     registerApiMessageHandler('dmx-master', handleDmxMasterApiMessage)

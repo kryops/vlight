@@ -8,17 +8,20 @@ import { masterData, masterDataMaps } from '../../services/masterdata'
 import { getPersistedState } from '../../services/state'
 import {
   createUniverse,
-  fadeUniverse,
   isUniverseActive,
   isUniverseEmpty,
   overwriteUniverse,
   removeUniverse,
   setUniverseOutput,
-  stopFading,
   Universe,
+  setUniverseChannelsFrom,
+  stopUniverseChannelFades,
 } from '../../services/universe'
 import { controlRegistry } from '../registry'
 import { isPaused, registerPauseHandler } from '../pause'
+
+/** Time in seconds by which step fades finish early (1.5 fade intervals). */
+const stepFadeLeadTime = 0.03
 
 /** A map containing all defined live chases. */
 export const liveChases: Map<IdType, LiveChase> = new Map()
@@ -82,9 +85,14 @@ function recomputeLiveChase(id: IdType) {
     (liveChase.on || isUniverseActive(universe)) &&
     !isUniverseEmpty(universe)
   ) {
-    fadeUniverse(universe, preparedState.fullUniverse, liveChase.fade * 1000)
+    // Each step fades from the current values in the full fade time,
+    // finishing a bit early to reach the target when the fade time equals the step time
+    setUniverseChannelsFrom(universe, preparedState.fullUniverse, {
+      fade: liveChase.fade - stepFadeLeadTime,
+      restart: true,
+    })
   } else {
-    stopFading(universe)
+    stopUniverseChannelFades(universe)
     overwriteUniverse(universe, preparedState.fullUniverse)
   }
 }
@@ -150,7 +158,7 @@ function deleteLiveChase(id: IdType) {
   const universe = outgoingUniverses.get(id)
   if (universe) {
     removeUniverse(universe)
-    stopFading(universe)
+    stopUniverseChannelFades(universe)
   }
   outgoingUniverses.delete(id)
   preparedStates.delete(id)
@@ -178,7 +186,7 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
   if (!liveChase.on) {
     const stop = () => {
       removeInterval(id)
-      stopFading(universe)
+      stopUniverseChannelFades(universe)
     }
 
     // The chase keeps running while fading out
@@ -217,7 +225,7 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
     // We allow fading when stepping manually.
     // For the fade from a manual step to continue when other changes are made, we only actually stop
     // fading right when the chase is stopped.
-    if (!message.step && !existing?.stopped) stopFading(universe)
+    if (!message.step && !existing?.stopped) stopUniverseChannelFades(universe)
   } else if (
     !existing?.on ||
     existing?.stopped ||
@@ -271,7 +279,7 @@ function reload(reloadState?: boolean) {
   liveChases.clear()
   preparedStates.clear()
   ;[...outgoingUniverses.values()].forEach(universe => {
-    stopFading(universe)
+    stopUniverseChannelFades(universe)
     removeUniverse(universe)
   })
   outgoingUniverses.clear()

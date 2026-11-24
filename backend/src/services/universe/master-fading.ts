@@ -1,4 +1,10 @@
-import { addFadeHandler, removeFadeHandler } from './fading'
+import {
+  addFadeHandler,
+  removeFadeHandler,
+  startValueFade,
+  stepValueFade,
+  ValueFade,
+} from './fading'
 import { universes, universeStates } from './state'
 import { Universe } from './types'
 import {
@@ -8,24 +14,7 @@ import {
 } from './universe-functions'
 
 /** A running fade of a universe's master value. */
-interface MasterFade {
-  /** The current (unrounded) master value. */
-  current: number
-
-  /** The master value to fade to. */
-  target: number
-
-  /**
-   * The largest master value difference since the fade started,
-   * which is used as baseline for the fade speed.
-   *
-   * This way, reversing a fade halfway through (e.g. when reverting a change) takes half the time.
-   */
-  span: number
-
-  /** Fade speed in master value units per ms. */
-  speed: number
-
+interface MasterFade extends ValueFade {
   /** Time of the last fade step in ms. */
   lastTime: number
 
@@ -54,14 +43,10 @@ function processMasterFade(universe: Universe, fade: MasterFade, now: number) {
     return
   }
 
-  const delta = fade.speed * (now - fade.lastTime)
+  const finished = stepValueFade(fade, now - fade.lastTime)
   fade.lastTime = now
-  fade.current =
-    fade.target > fade.current
-      ? Math.min(fade.current + delta, fade.target)
-      : Math.max(fade.current - delta, fade.target)
 
-  if (fade.current !== fade.target) {
+  if (!finished) {
     setUniverseState(universe, {
       masterValue: Math.round(fade.current),
       forceMaster: fade.forceMaster,
@@ -159,21 +144,15 @@ export function setUniverseOutput(
 
   const current =
     existing?.current ?? universeStates.get(universe)?.masterValue ?? 255
-  const distance = Math.abs(target - current)
 
-  if (distance === 0) {
+  if (target === current) {
     if (on) addUniverse(universe, { masterValue, forceMaster })
     else removeUniverse(universe)
     return false
   }
 
-  const span = existing ? Math.max(existing.span, distance) : distance
-
   const masterFade: MasterFade = {
-    current,
-    target,
-    span,
-    speed: span / (fade * 1000),
+    ...startValueFade(existing ?? current, target, fade),
     lastTime: Date.now(),
     on,
     forceMaster,

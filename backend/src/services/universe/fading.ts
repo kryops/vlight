@@ -1,20 +1,11 @@
 import { logger } from '@vlight/utils'
 
-import { Universe } from './types'
-import {
-  cloneUniverse,
-  getDifferentChannels,
-  overwriteUniverse,
-  setUniverseChannel,
-} from './universe-functions'
-import { getUniverseIndex } from './utils'
-
 /**
  * Time in ms for the fading interval.
  *
  * 20ms = 50fps
  */
-export const fadeIntervalTime = 20
+const fadeIntervalTime = 20
 
 /**
  * The interval that processes all fade handlers.
@@ -67,49 +58,62 @@ export function removeFadeHandler(key: object) {
 }
 
 /**
- * Fades the given universe to the given target state in the given time.
+ * A running fade of a single value, moving at a constant speed.
  *
- * If there is already a fading in progress, it is aborted, and the new fading
- * will start from there.
+ * Reacts to target changes mid-fade by continuing from the current value.
  */
-export function fadeUniverse(
-  universe: Universe,
-  targetState: Universe,
-  durationMs: number
-): void {
-  stopFading(universe)
+export interface ValueFade {
+  /** The current (unrounded) value. */
+  current: number
 
-  const start = Date.now()
-  // We make sure that the fading should be finished 1 interval early
-  // to improve situations like fade speed = step speed
-  const end = start + durationMs - fadeIntervalTime * 1.5
+  /** The value to fade to. */
+  target: number
 
-  const startState = cloneUniverse(universe)
-  const affectedChannels = getDifferentChannels(startState, targetState)
+  /**
+   * The largest difference since the fade started,
+   * which is used as baseline for the fade speed.
+   *
+   * This way, reversing a fade halfway through (e.g. when reverting a change) takes half the time.
+   */
+  span: number
 
-  if (!affectedChannels.size) return
-
-  addFadeHandler(universe, now => {
-    if (now >= end) {
-      overwriteUniverse(universe, targetState)
-      stopFading(universe)
-      return
-    }
-
-    const progress = (now - start) / durationMs
-
-    for (const channel of affectedChannels) {
-      const index = getUniverseIndex(channel)
-      const startValue = startState[index]
-      const targetValue = targetState[index]
-      const value = Math.round(
-        startValue + progress * (targetValue - startValue)
-      )
-      setUniverseChannel(universe, channel, value)
-    }
-  })
+  /** Fade speed in value units per ms. */
+  speed: number
 }
 
-export function stopFading(universe: Universe): void {
-  removeFadeHandler(universe)
+/**
+ * Starts a fade to the given target.
+ *
+ * @param from the current value, or a running fade to continue from
+ *   (keeping its span unless `restart` is set)
+ * @param restart start a fresh fade taking the full fade time from the current value
+ */
+export function startValueFade(
+  from: number | ValueFade,
+  target: number,
+  fadeSeconds: number,
+  restart = false
+): ValueFade {
+  const current = typeof from === 'number' ? from : from.current
+  const distance = Math.abs(target - current)
+  const span =
+    typeof from === 'number' || restart
+      ? distance
+      : Math.max(from.span, distance)
+  return { current, target, span, speed: span / (fadeSeconds * 1000) }
+}
+
+/**
+ * Advances the given fade by the given time.
+ *
+ * @returns whether the target has been reached.
+ */
+export function stepValueFade(fade: ValueFade, elapsedMs: number): boolean {
+  if (fade.current === fade.target) return true
+  const delta = fade.speed * elapsedMs
+  fade.current =
+    fade.target > fade.current
+      ? Math.min(fade.current + delta, fade.target)
+      : Math.max(fade.current - delta, fade.target)
+  return fade.current === fade.target
 }
