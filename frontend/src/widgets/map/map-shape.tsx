@@ -26,21 +26,35 @@ const shapeStyle_circle = css`
   border-radius: 100%;
 `
 
+const markerSize = 25 // in percent of the shape
+
 const positionMarkerStyle = css`
   position: absolute;
-  width: 25%;
-  height: 25%;
+  left: 0;
+  top: 0;
+  width: ${markerSize}%;
+  height: ${markerSize}%;
   border-radius: 100%;
   background: ${iconShade(1)};
   border: 1px solid ${backgroundColor};
   box-sizing: border-box;
-  transform: translate(-50%, -50%);
   pointer-events: none;
 `
 
 // Marker moves within this area (in percent of the shape) to stay inside circles
 const markerRangeStart = 25
 const markerRangeSize = 50
+
+/**
+ * Positions the marker center at the given coordinates (in percent of the shape).
+ *
+ * Performance: Uses `transform` instead of `left`/`top` to avoid layout recalculation.
+ * Translate percentages refer to the marker's own size, so we scale accordingly.
+ */
+function getMarkerTransform(x: number, y: number) {
+  const toMarkerPercent = (value: number) => (value * 100) / markerSize - 50
+  return `translate(${toMarkerPercent(x)}%, ${toMarkerPercent(y)}%)`
+}
 
 export interface MapShapeProps {
   shape?: FixtureShape
@@ -202,9 +216,11 @@ export function FixtureTypeMapShape({
       const marker = markerRef.current
       if (marker && panOffset !== -1 && tiltOffset !== -1) {
         const toPercent = (value = 0) =>
-          `${markerRangeStart + (value / 255) * markerRangeSize}%`
-        marker.style.left = toPercent(values[panOffset])
-        marker.style.top = toPercent(255 - (values[tiltOffset] ?? 0))
+          markerRangeStart + (value / 255) * markerRangeSize
+        marker.style.transform = getMarkerTransform(
+          toPercent(values[panOffset]),
+          toPercent(255 - (values[tiltOffset] ?? 0))
+        )
       }
 
       const color =
@@ -238,7 +254,7 @@ export function FixtureTypeMapShape({
         <div
           ref={markerRef}
           className={positionMarkerStyle}
-          style={{ left: '50%', top: '50%' }}
+          style={{ transform: getMarkerTransform(50, 50) }}
         />
       )}
     </MapShape>
