@@ -64,7 +64,7 @@ export interface Memory extends DbEntity {
   display?: 'fader' | 'flash' | 'toggle' | 'both'
 
   /**
-   * Fade time in seconds for the fade button (only displayed for `both`).
+   * Fade time in seconds for the fade button (only displayed for `both` and `toggle`).
    *
    * Defaults to 1.
    */

@@ -101,6 +101,15 @@ export const StatelessMemoryWidget = ({
 
   const display = memory.display ?? 'both'
 
+  const fadeButton = (
+    <Button
+      icon={iconFade}
+      onClick={fade}
+      title={state.on && state.value > 0 ? 'Fade out' : 'Fade in'}
+      className={button}
+    />
+  )
+
   return (
     <Widget
       key={memory.id}
@@ -134,24 +143,20 @@ export const StatelessMemoryWidget = ({
                 hotkey="m"
                 className={button}
               />
-              {display === 'both' && (
-                <Button
-                  icon={iconFade}
-                  onClick={fade}
-                  title={state.on && state.value > 0 ? 'Fade out' : 'Fade in'}
-                  className={button}
-                />
-              )}
+              {display === 'both' && fadeButton}
             </div>
           )}
           {display === 'toggle' && (
-            <Button
-              icon={iconOn}
-              onClick={toggleOn}
-              title="Toggle on/off"
-              hotkey="m"
-              className={button}
-            />
+            <div className={verticalFlexContainer}>
+              <Button
+                icon={iconOn}
+                onClick={toggleOn}
+                title="Toggle on/off"
+                hotkey="m"
+                className={button}
+              />
+              {fadeButton}
+            </div>
           )}
         </div>
         <div className={configContainer}>

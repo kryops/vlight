@@ -80,7 +80,9 @@ export function MemoryEditor({
                 />
               }
             />
-            {(formState.values.display ?? 'both') === 'both' && (
+            {['both', 'toggle'].includes(
+              formState.values.display ?? 'both'
+            ) && (
               <Label
                 label="Fade time (s)"
                 input={
