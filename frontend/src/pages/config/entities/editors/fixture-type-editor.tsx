@@ -1,8 +1,17 @@
 import { useState } from 'react'
 import { css } from '@linaria/core'
-import { FixtureBorderStyle, FixtureShape } from '@vlight/types'
+import {
+  FixtureBorderStyle,
+  FixtureChannelState,
+  FixtureShape,
+} from '@vlight/types'
 import { commaStringToArray, isUnique } from '@vlight/utils'
-import { ChannelType, getMasterDependentChannels } from '@vlight/controls'
+import {
+  ChannelType,
+  formatChannelStates,
+  getMasterDependentChannels,
+  parseChannelStates,
+} from '@vlight/controls'
 
 import { useFormState } from '../../../../hooks/form'
 import {
@@ -13,7 +22,12 @@ import {
 import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
 import { TextInput } from '../../../../ui/forms/typed-input'
-import { SelectEntry } from '../../../../ui/forms/select'
+import {
+  Select,
+  SelectEntry,
+  undefinedSelectEntry,
+} from '../../../../ui/forms/select'
+import { TextArea } from '../../../../ui/forms/input'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 import {
   AdditionalMapShape,
@@ -33,6 +47,26 @@ const inlineToggleEntry = css`
   display: inline-block;
   margin-right: ${baseline()};
 `
+
+const channelStatesContainer = css`
+  flex: 1 1 auto;
+`
+
+const channelStatesEntry = css`
+  margin-bottom: ${baseline(2)};
+`
+
+const channelStatesTextArea = css`
+  && {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin-top: ${baseline()};
+    resize: vertical;
+  }
+`
+
+const specialChannelTypes = new Set<string>(Object.values(ChannelType))
 
 const fixtureShapeEntries: SelectEntry<FixtureShape>[] = [
   { value: 'circle', label: 'Circle' },
@@ -77,6 +111,40 @@ export function FixtureTypeEditor({
     formState.changeValue(
       'masterDependentChannels',
       custom ? effectiveMasterDependentChannels : undefined
+    )
+  }
+
+  const stateChannels = mappingChannels.filter(
+    channel => !specialChannelTypes.has(channel)
+  )
+  const [channelStatesTexts, setChannelStatesTexts] = useState<
+    Record<string, string>
+  >(() =>
+    Object.fromEntries(
+      Object.entries(formState.values.channelStates ?? {}).map(
+        ([channel, states]) => [channel, formatChannelStates(states)]
+      )
+    )
+  )
+  const visibleStateChannels = stateChannels.filter(
+    channel => channelStatesTexts[channel] !== undefined
+  )
+  const addableStateChannels = stateChannels.filter(
+    channel => channelStatesTexts[channel] === undefined
+  )
+
+  const changeChannelStatesText = (channel: string, text: string): void => {
+    const newTexts = { ...channelStatesTexts, [channel]: text }
+    setChannelStatesTexts(newTexts)
+
+    const channelStates: Record<string, FixtureChannelState[]> = {}
+    for (const stateChannel of stateChannels) {
+      const states = parseChannelStates(newTexts[stateChannel] ?? '')
+      if (states.length) channelStates[stateChannel] = states
+    }
+    formState.changeValue(
+      'channelStates',
+      Object.keys(channelStates).length ? channelStates : undefined
     )
   }
 
@@ -147,6 +215,48 @@ export function FixtureTypeEditor({
                 </div>
               }
             />
+            {stateChannels.length > 0 && (
+              <Label
+                label="Channel states"
+                description="One state per line: start value and name, e.g. '8 Red'"
+                input={
+                  <div className={channelStatesContainer}>
+                    {visibleStateChannels.map(channel => (
+                      <div key={channel} className={channelStatesEntry}>
+                        {channel.toUpperCase()}
+                        <TextArea
+                          aria-label={`States for channel ${channel}`}
+                          value={channelStatesTexts[channel] ?? ''}
+                          onChange={text =>
+                            changeChannelStatesText(channel, text)
+                          }
+                          placeholder={'0 Open\n8 Red\n16 Blue'}
+                          rows={Math.max(
+                            2,
+                            (channelStatesTexts[channel] ?? '').split('\n')
+                              .length + 1
+                          )}
+                          className={channelStatesTextArea}
+                        />
+                      </div>
+                    ))}
+                    {addableStateChannels.length > 0 && (
+                      <Select
+                        aria-label="Add channel states"
+                        entries={[
+                          { ...undefinedSelectEntry, label: 'Add channel…' },
+                          ...addableStateChannels,
+                        ]}
+                        value={undefined}
+                        onChange={channel => {
+                          if (channel) changeChannelStatesText(channel, '')
+                        }}
+                      />
+                    )}
+                  </div>
+                }
+              />
+            )}
             <Label
               label="Shape"
               input={

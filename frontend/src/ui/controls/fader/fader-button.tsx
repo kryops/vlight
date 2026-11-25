@@ -30,8 +30,12 @@ const subLabelStyle = css`
   bottom: ${baseline()};
   left: 0;
   right: 0;
+  padding: 0 2px;
   text-align: center;
   font-size: 0.65rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `
 
 export interface FaderButtonProps {
@@ -45,6 +49,9 @@ export interface FaderButtonProps {
 
   /** Secondary label on the button. */
   subLabel?: string
+
+  /** Tooltip for the secondary label. */
+  subLabelTitle?: string
 
   /**
    * Height in px.
@@ -65,6 +72,7 @@ export const FaderButton = ({
   fraction,
   label,
   subLabel,
+  subLabelTitle,
   height = defaultHeight,
   className,
 }: FaderButtonProps) => {
@@ -82,7 +90,11 @@ export const FaderButton = ({
       style={{ height: `${height}px`, transform: `translateY(${y}px)` }}
     >
       {label}
-      {subLabel && <div className={subLabelStyle}>{subLabel}</div>}
+      {subLabel && (
+        <div className={subLabelStyle} title={subLabelTitle ?? subLabel}>
+          {subLabel}
+        </div>
+      )}
     </div>
   )
 }

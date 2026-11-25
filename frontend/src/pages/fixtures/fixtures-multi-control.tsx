@@ -13,7 +13,10 @@ import {
   useMasterData,
   useMasterDataAndMaps,
 } from '../../hooks/api'
-import { useCommonFixtureMapping } from '../../hooks/fixtures'
+import {
+  useCommonChannelStates,
+  useCommonFixtureMapping,
+} from '../../hooks/fixtures'
 import { useDeepEqualMemo } from '../../hooks/performance'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
@@ -33,6 +36,7 @@ function FixturesMultiControlInner() {
   const masterDataAndMaps = useMasterDataAndMaps()
   const { masterDataMaps } = masterDataAndMaps
   const mapping = useCommonFixtureMapping(fixtureStrings)
+  const channelStates = useCommonChannelStates(fixtureStrings)
   const fixtureStates = useApiState('fixtures')
 
   const allFixtureIds = mapFixtureList(fixtureStrings, masterDataAndMaps)
@@ -88,6 +92,7 @@ function FixturesMultiControlInner() {
             icon={iconLights}
             title={`${allFixtureIds.length} Fixtures`}
             mapping={mapping}
+            channelStates={channelStates}
             fixtureState={commonFixtureState}
             onChange={changeFixtureState}
             onSave={onSave}

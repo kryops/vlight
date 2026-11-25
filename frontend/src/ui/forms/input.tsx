@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes, TextareaHTMLAttributes } from 'react'
 
 import { cx } from '../../util/styles'
 import { backgroundColor, textShade, baseline, inputWidth } from '../styles'
@@ -39,6 +39,37 @@ export const Input = ({
     <input
       aria-labelledby={rest['aria-label'] ? undefined : labelId}
       type={type}
+      value={value}
+      onChange={event => onChange(event.target.value)}
+      className={cx(input, className)}
+      {...rest}
+    />
+  )
+}
+
+export interface TextAreaProps extends Omit<
+  TextareaHTMLAttributes<HTMLTextAreaElement>,
+  'value' | 'onChange'
+> {
+  value: string
+  onChange: (value: string) => void
+  className?: string
+}
+
+/**
+ * Wrapper around HTML textarea to provide custom styling.
+ */
+export const TextArea = ({
+  value,
+  onChange,
+  className,
+  ...rest
+}: TextAreaProps) => {
+  const labelId = useLabelId()
+
+  return (
+    <textarea
+      aria-labelledby={rest['aria-label'] ? undefined : labelId}
       value={value}
       onChange={event => onChange(event.target.value)}
       className={cx(input, className)}

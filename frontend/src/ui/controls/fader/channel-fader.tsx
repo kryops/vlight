@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { css } from '@linaria/core'
+import { getChannelStateName } from '@vlight/controls'
 
 import { getFixtureAtChannel } from '../../../util/fixtures'
 import { useMasterDataAndMaps } from '../../../hooks/api'
@@ -21,7 +22,8 @@ export interface ChannelFaderProps {
  *
  * Displays
  * - the channel number as label
- * - the channel type from the fixture mapping as sub-label
+ * - the channel type from the fixture mapping as sub-label,
+ *   or the name of the current channel state if configured
  * - the fixture name in the corner if this channel is the start of a fixture
  */
 export const ChannelFader = ({
@@ -40,6 +42,12 @@ export const ChannelFader = ({
   const fixtureType = fixture ? fixtureTypes.get(fixture.type) : undefined
   const channelOffset = fixture ? channel - fixture.channel : -1
   const channelMapping = fixtureType?.mapping[channelOffset]
+  const channelStates = channelMapping
+    ? fixtureType?.channelStates?.[channelMapping]
+    : undefined
+  const stateName = channelStates
+    ? getChannelStateName(channelStates, value)
+    : undefined
 
   const fixtureName =
     fixture && fixtureType && fixture.channel === channel
@@ -53,7 +61,10 @@ export const ChannelFader = ({
       step={1}
       label={channel.toString()}
       ariaLabel={`Channel ${channel}`}
-      subLabel={channelMapping?.toUpperCase()}
+      subLabel={stateName ?? channelMapping?.toUpperCase()}
+      subLabelTitle={
+        stateName ? `${channelMapping?.toUpperCase()}: ${stateName}` : undefined
+      }
       cornerLabel={fixtureName}
       cornerLabelOverflow={fixtureType ? fixtureType.mapping.length > 1 : false}
       value={value}

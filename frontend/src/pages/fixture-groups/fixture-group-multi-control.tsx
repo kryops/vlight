@@ -14,7 +14,10 @@ import {
   useMasterData,
   useMasterDataAndMaps,
 } from '../../hooks/api'
-import { useCommonFixtureMapping } from '../../hooks/fixtures'
+import {
+  useCommonChannelStates,
+  useCommonFixtureMapping,
+} from '../../hooks/fixtures'
 import { useDeepEqualMemo, useShallowEqualMemo } from '../../hooks/performance'
 import { Collapsible } from '../../ui/containers/collapsible'
 import { TwoColumDialogContainer } from '../../ui/containers/two-column-dialog'
@@ -36,6 +39,7 @@ function FixtureGroupMultiControlInner() {
     .flatMap(group => group.fixtures)
     .filter(isUnique)
   const mapping = useCommonFixtureMapping(allFixtureIds)
+  const channelStates = useCommonChannelStates(allFixtureIds)
   const fixtureGroupStates = useApiState('fixtureGroups')
 
   const commonState = useDeepEqualMemo(
@@ -95,6 +99,7 @@ function FixtureGroupMultiControlInner() {
             icon={iconGroup}
             title={`${selectedGroupIds.length} Groups`}
             mapping={mapping}
+            channelStates={channelStates}
             fixtureState={commonState}
             onChange={changeFixtureGroupState}
             onSave={onSave}

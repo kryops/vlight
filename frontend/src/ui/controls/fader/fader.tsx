@@ -38,6 +38,9 @@ export interface FaderProps {
   /** Secondary label displayed below the primary one. */
   subLabel?: string
 
+  /** Tooltip for the secondary label. Defaults to the {@link subLabel}. */
+  subLabelTitle?: string
+
   /**
    * Accessible name of the fader.
    *
@@ -85,6 +88,7 @@ export const Fader = ({
   step,
   label,
   subLabel,
+  subLabelTitle,
   ariaLabel,
   onChange,
   ...passThrough
@@ -153,6 +157,7 @@ export const Fader = ({
         fraction={valueToFraction(valueToUse, min, max, quadraticScale)}
         label={label}
         subLabel={subLabel}
+        subLabelTitle={subLabelTitle}
       />
     </FaderBase>
   )

@@ -7,6 +7,21 @@ export type FixtureShape = 'square' | 'circle'
 export type FixtureBorderStyle = 'solid' | 'dotted' | 'dashed'
 
 /**
+ * A named state of a {@link FixtureType}'s channel, e.g. a color or gobo wheel position.
+ */
+export interface FixtureChannelState {
+  /**
+   * DMX value (0-255) at which the state starts.
+   *
+   * The state lasts until the next state's value (or 255).
+   */
+  value: number
+
+  /** The display name of the state. */
+  name: string
+}
+
+/**
  * A type of a fixture.
  *
  * Unlike most other entities, fixture types are persisted globally independent of the current configured project.
@@ -40,6 +55,15 @@ export interface FixtureType extends DbEntity {
    * An empty array means that no channels depend on the master (e.g. for fog machines).
    */
   masterDependentChannels?: string[]
+
+  /**
+   * Named states/ranges per channel type (from the {@link mapping}),
+   * e.g. for color wheels, gobos, or prism rotation.
+   *
+   * The states are sorted by their value.
+   * They are only used for display; the channels can still be set to any value.
+   */
+  channelStates?: Record<string, FixtureChannelState[]>
 
   /**
    * The shape of the fixture to display on the map.

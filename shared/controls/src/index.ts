@@ -9,6 +9,13 @@ export {
   getCommonFixtureMapping,
   cleanFixtureState,
 } from './fixtures'
+export {
+  getChannelStateName,
+  getChannelStateNames,
+  getCommonChannelStates,
+  parseChannelStates,
+  formatChannelStates,
+} from './channel-states'
 export { interpolateGradientPositions } from './gradient'
 export {
   ScenePattern,

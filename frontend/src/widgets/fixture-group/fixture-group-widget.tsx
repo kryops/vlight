@@ -3,7 +3,10 @@ import { FixtureMappingPrefix, mergeFixtureStates } from '@vlight/controls'
 
 import { setFixtureGroupState } from '../../api'
 import { useApiStateEntry } from '../../hooks/api'
-import { useCommonFixtureMapping } from '../../hooks/fixtures'
+import {
+  useCommonChannelStates,
+  useCommonFixtureMapping,
+} from '../../hooks/fixtures'
 import { FixtureStateWidget } from '../fixture/fixture-state-widget'
 import { Icon } from '../../ui/icons/icon'
 import { iconConfig, iconGroup } from '../../ui/icons'
@@ -26,6 +29,7 @@ export const FixtureGroupWidget = ({
 }: FixtureGroupWidgetProps) => {
   const groupState = useApiStateEntry('fixtureGroups', group.id)
   const groupMapping = useCommonFixtureMapping(group.fixtures, mapping)
+  const channelStates = useCommonChannelStates(group.fixtures)
 
   const onChange = (partialState: Partial<FixtureState>) =>
     setFixtureGroupState(group.id, mergeFixtureStates(groupState, partialState))
@@ -60,6 +64,7 @@ export const FixtureGroupWidget = ({
       }
       fixtureState={groupState}
       mapping={groupMapping}
+      channelStates={channelStates}
       {...passThrough}
       onChange={onChange}
       onSave={onSave}

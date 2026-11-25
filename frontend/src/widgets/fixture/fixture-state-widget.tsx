@@ -1,4 +1,4 @@
-import { FixtureState } from '@vlight/types'
+import { FixtureChannelState, FixtureState } from '@vlight/types'
 import { ReactNode, useReducer } from 'react'
 import { ChannelType } from '@vlight/controls'
 import { css } from '@linaria/core'
@@ -39,6 +39,9 @@ export interface FixtureStateWidgetProps extends WidgetPassthrough {
   /** Channel type mapping. */
   mapping: string[]
 
+  /** Named channel state tables per channel type (one per fixture type). */
+  channelStates?: Record<string, FixtureChannelState[][]>
+
   icon?: string
   title?: string
   titleSide?: ReactNode
@@ -65,6 +68,7 @@ const toggleFn: (x: boolean) => boolean = prev => !prev
 export const FixtureStateWidget = ({
   fixtureState,
   mapping,
+  channelStates,
   icon,
   title,
   titleSide,
@@ -100,6 +104,7 @@ export const FixtureStateWidget = ({
       channelType={channelType}
       value={fixtureState.channels[channelType] ?? 0}
       onChange={onChange}
+      states={channelStates?.[channelType]}
       colorPicker={
         colorPickerCapable &&
         !colorPicker &&

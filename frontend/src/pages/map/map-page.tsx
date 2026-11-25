@@ -10,7 +10,10 @@ import { useApiState, useMasterDataAndMaps } from '../../hooks/api'
 import { mergeFixtureStates } from '../../../../shared/controls/src'
 import { FixtureStateWidget } from '../../widgets/fixture/fixture-state-widget'
 import { setFixtureState } from '../../api'
-import { useCommonFixtureMapping } from '../../hooks/fixtures'
+import {
+  useCommonChannelStates,
+  useCommonFixtureMapping,
+} from '../../hooks/fixtures'
 import { showDialog } from '../../ui/overlays/dialog'
 import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
 import { FixtureTypeMapShape } from '../../widgets/map/map-shape'
@@ -89,9 +92,11 @@ const MapPage = () => {
   const changeFixtureTestState = (partialState: Partial<FixtureState>) =>
     setFixtureTestState(mergeFixtureStates(fixtureTestState, partialState))
 
-  const fixtureMapping = useCommonFixtureMapping(
-    masterDataAndMaps.masterData.fixtures.map(fixture => fixture.id)
+  const allFixtureIds = masterDataAndMaps.masterData.fixtures.map(
+    fixture => fixture.id
   )
+  const fixtureMapping = useCommonFixtureMapping(allFixtureIds)
+  const fixtureChannelStates = useCommonChannelStates(allFixtureIds)
 
   const fixtureTypeIds = new Set(
     masterDataAndMaps.masterData.fixtures.map(fixture => fixture.type)
@@ -150,6 +155,7 @@ const MapPage = () => {
             title="Fixture Test State"
             fixtureState={fixtureTestState}
             mapping={fixtureMapping}
+            channelStates={fixtureChannelStates}
             onChange={changeFixtureTestState}
           />
         )}

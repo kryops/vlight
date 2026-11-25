@@ -12,7 +12,10 @@ import {
   mergeFixtureStates,
 } from '@vlight/controls'
 
-import { useCommonFixtureMapping } from '../../../../hooks/fixtures'
+import {
+  useCommonChannelStates,
+  useCommonFixtureMapping,
+} from '../../../../hooks/fixtures'
 import { FixtureStateWidget } from '../../../../widgets/fixture/fixture-state-widget'
 import { Select } from '../../../../ui/forms/select'
 import { Icon } from '../../../../ui/icons/icon'
@@ -122,6 +125,7 @@ export function MemorySceneStateEditor({
   const [localState, setLocalState] = useState(initialState)
   const [currentStop, setCurrentStop] = useState(0)
   const mapping = useCommonFixtureMapping(scene.members)
+  const channelStates = useCommonChannelStates(scene.members)
 
   const updateState = (state: MemorySceneState) => {
     setLocalState(state)
@@ -235,6 +239,7 @@ export function MemorySceneStateEditor({
           <FixtureStateWidget
             fixtureState={fixtureState}
             mapping={mapping}
+            channelStates={channelStates}
             onChange={changeGradientStop}
             disableOn
             className={widget}
@@ -278,6 +283,7 @@ export function MemorySceneStateEditor({
     <FixtureStateWidget
       fixtureState={localState}
       mapping={mapping}
+      channelStates={channelStates}
       onChange={changeFixtureState}
       disableOn
       className={widget}

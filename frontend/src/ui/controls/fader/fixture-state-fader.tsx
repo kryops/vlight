@@ -1,4 +1,5 @@
-import { FixtureState } from '@vlight/types'
+import { FixtureChannelState, FixtureState } from '@vlight/types'
+import { getChannelStateNames } from '@vlight/controls'
 
 import { Fader } from './fader'
 
@@ -17,6 +18,13 @@ export interface FixtureStateFaderProps {
    */
   colorPicker: boolean
 
+  /**
+   * Named state tables for this channel (one per fixture type).
+   *
+   * If set, the name of the current state is displayed as sub-label.
+   */
+  states?: FixtureChannelState[][]
+
   onChange: (partialState: Partial<FixtureState>) => void
 }
 
@@ -27,8 +35,11 @@ export const FixtureStateFader = ({
   channelType,
   value,
   colorPicker,
+  states,
   onChange,
 }: FixtureStateFaderProps) => {
+  const stateNames = states ? getChannelStateNames(states, value ?? 0) : []
+
   const changeFn = (newValue: number) =>
     onChange({
       channels: {
@@ -40,6 +51,10 @@ export const FixtureStateFader = ({
       max={255}
       step={1}
       label={channelType.toUpperCase()}
+      subLabel={
+        stateNames.length > 1 ? '(mixed)' : (stateNames[0] ?? undefined)
+      }
+      subLabelTitle={stateNames.length > 1 ? stateNames.join(' / ') : undefined}
       value={value ?? 0}
       onChange={changeFn}
       colorPicker={colorPicker}

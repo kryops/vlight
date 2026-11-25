@@ -5,6 +5,7 @@ import { useMasterDataMaps, useApiStateEntry } from '../../hooks/api'
 import { setFixtureState } from '../../api'
 import { iconLight } from '../../ui/icons'
 import { useShallowEqualMemo } from '../../hooks/performance'
+import { useCommonChannelStates } from '../../hooks/fixtures'
 import { WidgetPassthrough } from '../../ui/containers/widget'
 import { addMemoryFromFixtureState } from '../../pages/memories/memories-actions'
 
@@ -50,6 +51,8 @@ export const FixtureWidget = ({
     })
   }
 
+  const channelStates = useCommonChannelStates([fixture.id])
+
   const typeMapping = fixtureType?.mapping ?? emptyMapping
   const activeMapping = useShallowEqualMemo(
     mapping
@@ -67,6 +70,7 @@ export const FixtureWidget = ({
       title={getFixtureName(fixture, fixtureType)}
       fixtureState={fixtureState}
       mapping={activeMapping}
+      channelStates={channelStates}
       {...passThrough}
       onChange={onChange}
       onSave={onSave}

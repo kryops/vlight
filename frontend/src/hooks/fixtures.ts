@@ -1,8 +1,12 @@
-import { mapFixtureList, getCommonFixtureMapping } from '@vlight/controls'
-import { IdType } from '@vlight/types'
+import {
+  mapFixtureList,
+  getCommonFixtureMapping,
+  getCommonChannelStates,
+} from '@vlight/controls'
+import { FixtureChannelState, IdType } from '@vlight/types'
 
 import { useMasterDataAndMaps } from './api'
-import { useShallowEqualMemo } from './performance'
+import { useDeepEqualMemo, useShallowEqualMemo } from './performance'
 
 /**
  * React Hook that returns the common channel mapping of the given fixture list strings.
@@ -20,6 +24,19 @@ export const useCommonFixtureMapping = (
     limitedTo
       ? commonFixtureMapping.filter(channel => limitedTo.includes(channel))
       : commonFixtureMapping
+  )
+}
+
+/**
+ * React Hook that returns the channel state tables of all fixture types
+ * of the given fixture list strings, grouped by channel type.
+ */
+export const useCommonChannelStates = (
+  fixtureStrings: string[]
+): Record<string, FixtureChannelState[][]> => {
+  const masterDataAndMaps = useMasterDataAndMaps()
+  return useDeepEqualMemo(
+    getCommonChannelStates(fixtureStrings, masterDataAndMaps)
   )
 }
 

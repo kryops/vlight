@@ -21,7 +21,10 @@ import { isTruthy, isUnique } from '@vlight/utils'
 import { useCallback } from 'react'
 
 import { useApiState, useMasterDataAndMaps } from '../../../../../hooks/api'
-import { useCommonFixtureMapping } from '../../../../../hooks/fixtures'
+import {
+  useCommonChannelStates,
+  useCommonFixtureMapping,
+} from '../../../../../hooks/fixtures'
 import {
   useDeepEqualMemo,
   useShallowEqualMemo,
@@ -80,6 +83,7 @@ export function FixtureActionEditor({
   const fixtureStates = useApiState('fixtures')
   const members = action.members ?? []
   const mapping = useCommonFixtureMapping(members)
+  const channelStates = useCommonChannelStates(members)
 
   const fixtures = mapFixtureList(members, masterDataAndMaps)
     .map(id => masterDataMaps.fixtures.get(id))
@@ -115,6 +119,7 @@ export function FixtureActionEditor({
           icon={iconLights}
           title={`${fixtures.length} Fixtures`}
           mapping={mapping}
+          channelStates={channelStates}
           fixtureState={displayedState}
           onChange={change}
         />
@@ -138,9 +143,9 @@ export function FixtureGroupActionEditor({
   const groups = ids
     .map(id => masterDataMaps.fixtureGroups.get(id))
     .filter(isTruthy)
-  const mapping = useCommonFixtureMapping(
-    groups.flatMap(group => group.fixtures).filter(isUnique)
-  )
+  const groupFixtures = groups.flatMap(group => group.fixtures).filter(isUnique)
+  const mapping = useCommonFixtureMapping(groupFixtures)
+  const channelStates = useCommonChannelStates(groupFixtures)
 
   const commonState = useDeepEqualMemo(
     getCommonFixtureState(
@@ -181,6 +186,7 @@ export function FixtureGroupActionEditor({
           icon={iconGroup}
           title={`${groups.length} Groups`}
           mapping={mapping}
+          channelStates={channelStates}
           fixtureState={displayedState}
           onChange={change}
         />
