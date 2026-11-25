@@ -10,7 +10,13 @@ import {
   colorPickerColors,
   fixtureStateToColor,
 } from '../../ui/controls/colorpicker/util'
-import { iconColorPicker, iconMemory, iconPositionPicker } from '../../ui/icons'
+import {
+  iconColorPicker,
+  iconLight,
+  iconMemory,
+  iconPositionPicker,
+} from '../../ui/icons'
+import { Touchable } from '../../ui/components/touchable'
 import { Icon } from '../../ui/icons/icon'
 import { faderContainer } from '../../ui/css/fader-container'
 import { getFixtureStateColor } from '../../util/fixtures'
@@ -24,6 +30,11 @@ import {
 } from '../../ui/controls/position-picker/utils'
 
 const colorPickerIconStyle = css`
+  margin-left: ${baseline(2)};
+`
+
+const flashStyle = css`
+  display: inline-block;
   margin-left: ${baseline(2)};
 `
 
@@ -47,6 +58,9 @@ export interface FixtureStateWidgetProps extends WidgetPassthrough {
   titleSide?: ReactNode
   onChange: (newState: Partial<FixtureState>) => void
   onSave?: () => void
+
+  /** Displays a flash (instant on/off) button if set. */
+  onFlash?: (on: boolean) => void
 
   /**
    * Controls whether to disable the on button in the widget.
@@ -74,6 +88,7 @@ export const FixtureStateWidget = ({
   titleSide,
   onChange,
   onSave,
+  onFlash,
   disableOn = false,
   limitedWidth = false,
   className,
@@ -133,6 +148,7 @@ export const FixtureStateWidget = ({
       }
       titleSide={
         titleSide ||
+        onFlash ||
         colorPickerCapable ||
         positionPickerCapable ||
         (onSave && !fixtureState.initial) ? (
@@ -168,6 +184,18 @@ export const FixtureStateWidget = ({
                 inline
                 className={colorPickerIconStyle}
               />
+            )}
+            {onFlash && (
+              <Touchable
+                className={flashStyle}
+                title="Instant on/off"
+                role="button"
+                aria-label="Instant on/off"
+                onDown={() => onFlash(true)}
+                onUp={() => onFlash(false)}
+              >
+                <Icon icon={iconLight} shade={1} hoverable inline />
+              </Touchable>
             )}
           </>
         ) : undefined

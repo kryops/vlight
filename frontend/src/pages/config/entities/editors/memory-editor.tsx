@@ -3,7 +3,11 @@ import { MemoryScene } from '@vlight/types'
 import { useState } from 'react'
 
 import { useFormState, useFormStateArray } from '../../../../hooks/form'
-import { FormSelect, FormTextInput } from '../../../../ui/forms/form-input'
+import {
+  FormNumberInput,
+  FormSelect,
+  FormTextInput,
+} from '../../../../ui/forms/form-input'
 import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
 import { iconAdd, iconDelete, iconLight } from '../../../../ui/icons'
@@ -68,7 +72,7 @@ export function MemoryEditor({
                   formState={formState}
                   name="display"
                   entries={[
-                    { value: 'both', label: 'Fader and button' },
+                    { value: 'both', label: 'Fader and buttons' },
                     { value: 'fader', label: 'Fader' },
                     { value: 'flash', label: 'Flash button' },
                     { value: 'toggle', label: 'Toggle button' },
@@ -76,6 +80,20 @@ export function MemoryEditor({
                 />
               }
             />
+            {(formState.values.display ?? 'both') === 'both' && (
+              <Label
+                label="Fade time (s)"
+                input={
+                  <FormNumberInput
+                    formState={formState}
+                    name="fade"
+                    min={0}
+                    step={0.1}
+                    placeholder="1"
+                  />
+                }
+              />
+            )}
             {scenes.value.map((scene, sceneIndex) => (
               <div key={sceneIndex} className={sceneStyle}>
                 <h3>

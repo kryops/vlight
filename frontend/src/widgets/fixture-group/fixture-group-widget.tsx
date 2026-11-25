@@ -44,6 +44,8 @@ export const FixtureGroupWidget = ({
 
   const openEditor = () => openEntityEditorForId('fixtureGroups', group.id)
 
+  const onFlash = (on: boolean) => setFixtureGroupState(group.id, { on }, true)
+
   if (!groupState) {
     return null
   }
@@ -68,6 +70,7 @@ export const FixtureGroupWidget = ({
       {...passThrough}
       onChange={onChange}
       onSave={onSave}
+      onFlash={onFlash}
       limitedWidth
     />
   )

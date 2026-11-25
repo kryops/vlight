@@ -51,6 +51,8 @@ export const FixtureWidget = ({
     })
   }
 
+  const onFlash = (on: boolean) => setFixtureState(fixture.id, { on }, true)
+
   const channelStates = useCommonChannelStates([fixture.id])
 
   const typeMapping = fixtureType?.mapping ?? emptyMapping
@@ -74,6 +76,7 @@ export const FixtureWidget = ({
       {...passThrough}
       onChange={onChange}
       onSave={onSave}
+      onFlash={onFlash}
       limitedWidth
     />
   )

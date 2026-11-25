@@ -147,9 +147,10 @@ export function setFixtureGroupState(
 export function setMemoryState(
   id: IdType | IdType[],
   state: Partial<MemoryState>,
-  merge = false
+  merge = false,
+  fade?: number
 ): void {
-  sendApiMessage(getApiMemoryStateMessage(id, state, merge))
+  sendApiMessage(getApiMemoryStateMessage(id, state, merge, fade))
 }
 
 /**

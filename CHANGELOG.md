@@ -12,6 +12,8 @@
 - Added global PAUSE button to the Controls widget
 - Added auto-select free channel button for fixture editor
 - Fixtures/groups: "Save into Memory" can now add the state as a new scene to an existing memory
+- Fixtures/groups: Added flash (instant on/off) button
+- Memories: Added fade in/out button with configurable fade time
 - Live chases: Added compact view that only displays a large speed burst button
 - Fixture types: Configurable master-dependent channels; memory/chase values and the DMX master no longer dim independent channels (e.g. pan/tilt) of fixtures without a master channel
 - Fixture types: Named channel states (e.g. color wheels, gobos), displayed on the faders

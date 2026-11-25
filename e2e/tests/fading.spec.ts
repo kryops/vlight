@@ -121,6 +121,39 @@ test('memory', async ({ api, app, universe }) => {
   await expectFadeOut(universe, 2)
 })
 
+async function setMemoryFadeTime(app: App, name: string) {
+  await app.navigate('Memories')
+  await app.button('Edit memory', app.widget(name)).click()
+  const editor = app.entityEditor()
+  await editor.fill('Fade time (s)', String(fade))
+  await editor.save()
+}
+
+test('memory fade button', async ({ app, universe }) => {
+  await setMemoryFadeTime(app, 'Red Pars')
+  const widget = app.widget('Red Pars')
+
+  await app.button('Fade in', widget).click()
+  await expectFadeIn(universe, 2)
+
+  await app.button('Fade out', widget).click()
+  await expectFadeOut(universe, 2)
+})
+
+test('memory fade button with the master at 0', async ({
+  api,
+  app,
+  universe,
+}) => {
+  await api.send({ type: 'memory', id: '1', state: { on: true, value: 0 } })
+  await setMemoryFadeTime(app, 'Red Pars')
+  await universe.expectChannels({ 2: 0 })
+
+  // fades in the master to full
+  await app.button('Fade in', app.widget('Red Pars')).click()
+  await expectFadeIn(universe, 2)
+})
+
 test('live memory', async ({ api, app, universe }) => {
   await addButton(api, {
     type: 'live-memory',

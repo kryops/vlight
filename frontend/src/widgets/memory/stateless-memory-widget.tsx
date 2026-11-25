@@ -6,8 +6,15 @@ import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { Button } from '../../ui/buttons/button'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
 import { Fader } from '../../ui/controls/fader/fader'
+import { verticalFlexContainer } from '../../ui/css/flex'
 import { faderContainer } from '../../ui/css/fader-container'
-import { iconConfig, iconLight, iconMemory, iconOn } from '../../ui/icons'
+import {
+  iconConfig,
+  iconFade,
+  iconLight,
+  iconMemory,
+  iconOn,
+} from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
 
@@ -78,6 +85,20 @@ export const StatelessMemoryWidget = ({
 
   const instantOff = () => setMemoryState(memory.id, { on: false }, true)
 
+  const fade = () => {
+    const fadeTime = memory.fade ?? 1
+    if (state.on && state.value > 0) {
+      setMemoryState(memory.id, { on: false }, true, fadeTime)
+    } else {
+      setMemoryState(
+        memory.id,
+        { on: true, value: state.value > 0 ? state.value : 255 },
+        true,
+        fadeTime
+      )
+    }
+  }
+
   const display = memory.display ?? 'both'
 
   return (
@@ -104,14 +125,24 @@ export const StatelessMemoryWidget = ({
             </div>
           )}
           {(display === 'flash' || display === 'both') && (
-            <Button
-              icon={iconLight}
-              onDown={instantOn}
-              onUp={instantOff}
-              title="Instant on/off"
-              hotkey="m"
-              className={button}
-            />
+            <div className={verticalFlexContainer}>
+              <Button
+                icon={iconLight}
+                onDown={instantOn}
+                onUp={instantOff}
+                title="Instant on/off"
+                hotkey="m"
+                className={button}
+              />
+              {display === 'both' && (
+                <Button
+                  icon={iconFade}
+                  onClick={fade}
+                  title={state.on && state.value > 0 ? 'Fade out' : 'Fade in'}
+                  className={button}
+                />
+              )}
+            </div>
           )}
           {display === 'toggle' && (
             <Button

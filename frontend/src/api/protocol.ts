@@ -67,13 +67,15 @@ export function getApiFixtureGroupStateMessage(
 export function getApiMemoryStateMessage(
   id: IdType | IdType[],
   state: Partial<MemoryState>,
-  merge: boolean
+  merge: boolean,
+  fade?: number
 ): ApiMemoryStateMessage {
   return {
     type: 'memory',
     id,
     state,
     merge,
+    fade,
   }
 }
 
