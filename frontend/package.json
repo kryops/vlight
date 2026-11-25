@@ -10,8 +10,7 @@
     "build:dev": "vp build --mode development",
     "clean": "rimraf dist",
     "lint:css": "stylelint '**/*.@(ts|tsx)'",
-    "dev": "vp dev",
-    "tsc:watch": "tsc -b --watch"
+    "dev": "vp dev"
   },
   "dependencies": {
     "@vlight/controls": "*",
