@@ -32,8 +32,8 @@ const positionMarkerStyle = css`
   position: absolute;
   left: 0;
   top: 0;
-  width: ${markerSize}%;
-  height: ${markerSize}%;
+  width: ${`${markerSize}%`};
+  height: ${`${markerSize}%`};
   border-radius: 100%;
   background: ${iconShade(1)};
   border: 1px solid ${backgroundColor};
