@@ -13,6 +13,7 @@
 - Added auto-select free channel button for fixture editor
 - Fixtures/groups: "Save into Memory" can now add the state as a new scene to an existing memory
 - Live chases: Added compact view that only displays a large speed burst button
+- Fixture types: Configurable master-dependent channels; memory/chase values and the DMX master no longer dim independent channels (e.g. pan/tilt) of fixtures without a master channel
 - Long labels on fader buttons now wrap
 - Added tooltips to icon buttons
 - Color preview now includes amber and UV channels

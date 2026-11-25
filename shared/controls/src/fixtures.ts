@@ -16,18 +16,56 @@ import {
 import { ChannelType, FixtureMappingPrefix } from './enums'
 
 /**
- * Channel mappings that are usually affected by the fixture's master channel.
- *
- * TODO make this configurable in the fixture type
+ * Channel mappings that are affected by the fixture's master channel by default,
+ * if the fixture type does not configure `masterDependentChannels`.
  */
-export const channelMappingsAffectedByMaster = new Set<ChannelType | string>([
+export const defaultMasterDependentChannels: ReadonlyArray<ChannelType> = [
   ChannelType.Red,
   ChannelType.Green,
   ChannelType.Blue,
   ChannelType.White,
   ChannelType.Amber,
   ChannelType.UV,
-])
+]
+
+const masterDependentChannelsCache = new WeakMap<FixtureType, Set<string>>()
+
+function getConfiguredOrDefaultMasterDependentChannels({
+  mapping,
+  masterDependentChannels,
+}: FixtureType): ReadonlyArray<string> {
+  if (masterDependentChannels) return masterDependentChannels
+
+  // Fixtures without a master channel and without any of the default channels
+  // (e.g. single dimmer channels): all channels depend on the virtual master
+  if (
+    !mapping.includes(ChannelType.Master) &&
+    !mapping.some(channel =>
+      defaultMasterDependentChannels.includes(channel as ChannelType)
+    )
+  ) {
+    return mapping
+  }
+
+  return defaultMasterDependentChannels
+}
+
+/**
+ * Returns the channel mappings of the given fixture type that depend on the fixture's master.
+ *
+ * See `FixtureType.masterDependentChannels`.
+ */
+export function getMasterDependentChannels(
+  fixtureType: FixtureType
+): Set<string> {
+  let result = masterDependentChannelsCache.get(fixtureType)
+  if (!result) {
+    result = new Set(getConfiguredOrDefaultMasterDependentChannels(fixtureType))
+    result.delete(ChannelType.Master)
+    masterDependentChannelsCache.set(fixtureType, result)
+  }
+  return result
+}
 
 /**
  * Maps the following to a list of plain unique fixture IDs:
@@ -101,6 +139,8 @@ export function cleanFixtureState(
   if (!mapping) return state
 
   for (const channel of Object.keys(state.channels)) {
+    // All fixtures have a (virtual) master channel
+    if (channel === ChannelType.Master) continue
     if (!mapping.includes(channel)) delete state.channels[channel]
   }
 
@@ -138,6 +178,7 @@ export function mapFixtureStateToChannels(
 
   const hasMasterChannel = mapping.includes(ChannelType.Master)
   const masterChannelValue = state.channels[ChannelType.Master] ?? 255
+  const masterDependentChannels = getMasterDependentChannels(type)
 
   return mapping.map(channelType => {
     if (!state.on) {
@@ -148,7 +189,7 @@ export function mapFixtureStateToChannels(
 
     const rawValue = state.channels[channelType] ?? 0
 
-    if (hasMasterChannel || !channelMappingsAffectedByMaster.has(channelType))
+    if (hasMasterChannel || !masterDependentChannels.has(channelType))
       return rawValue
 
     if (masterChannelValue === 255) return rawValue

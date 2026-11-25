@@ -1,4 +1,4 @@
-import { ChannelType, channelMappingsAffectedByMaster } from '@vlight/controls'
+import { ChannelType, getMasterDependentChannels } from '@vlight/controls'
 import { ApiDmxMasterMessage } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'
 
@@ -34,9 +34,8 @@ const affectedChannelsByMasterChannel = new Map<number, number[]>()
 const masterChannelByChannel = new Map<number, number>()
 
 /**
- * Channels that are faded independently of the fixture's master channel. Contains
- * - All channels of fixtures without a master channel
- * - Non-color channels of fixtures with a master channel
+ * Channels that are faded by a universe's master value and the global DMX master. Contains
+ * - The master-dependent channels of fixtures without a master channel
  * - The master channel itself
  */
 const fadedChannels = new Set<number>()
@@ -133,17 +132,7 @@ export function initUniverseComputingData(isReload = false): void {
     if (!fixtureType) continue
 
     const masterIndex = fixtureType.mapping.indexOf(ChannelType.Master)
-
-    // Fixture has no master -> all channels are faded by the universe's master
-    if (masterIndex === -1) {
-      for (let offset = 0; offset < fixtureType.mapping.length; offset++) {
-        fadedChannels.add(fixture.channel + offset)
-      }
-      continue
-    }
-
-    const masterChannel = fixture.channel + masterIndex
-    fadedChannels.add(masterChannel)
+    const masterDependentChannels = getMasterDependentChannels(fixtureType)
 
     const affectedChannels = createRangeArray(
       fixture.channel,
@@ -151,8 +140,17 @@ export function initUniverseComputingData(isReload = false): void {
     ).filter(channel => {
       const index = channel - fixture.channel
       const mapping = fixtureType.mapping[index]
-      return channelMappingsAffectedByMaster.has(mapping)
+      return masterDependentChannels.has(mapping)
     })
+
+    // Fixture has no master -> master-dependent channels are faded by the universe's master
+    if (masterIndex === -1) {
+      affectedChannels.forEach(channel => fadedChannels.add(channel))
+      continue
+    }
+
+    const masterChannel = fixture.channel + masterIndex
+    fadedChannels.add(masterChannel)
 
     affectedChannelsByMasterChannel.set(masterChannel, affectedChannels)
     affectedChannels.forEach(channel =>

@@ -1,7 +1,8 @@
 import { useState } from 'react'
+import { css } from '@linaria/core'
 import { FixtureBorderStyle, FixtureShape } from '@vlight/types'
-import { commaStringToArray } from '@vlight/utils'
-import { ChannelType } from '@vlight/controls'
+import { commaStringToArray, isUnique } from '@vlight/utils'
+import { ChannelType, getMasterDependentChannels } from '@vlight/controls'
 
 import { useFormState } from '../../../../hooks/form'
 import {
@@ -24,6 +25,14 @@ import {
   editorTitle,
 } from '../../../../ui/css/editor-styles'
 import { useDeepEqualMemo } from '../../../../hooks/performance'
+import { CheckboxLabel } from '../../../../ui/forms/checkbox'
+import { MultiToggleInput } from '../../../../ui/forms/multi-toggle-input'
+import { baseline } from '../../../../ui/styles'
+
+const inlineToggleEntry = css`
+  display: inline-block;
+  margin-right: ${baseline()};
+`
 
 const fixtureShapeEntries: SelectEntry<FixtureShape>[] = [
   { value: 'circle', label: 'Circle' },
@@ -53,6 +62,22 @@ export function FixtureTypeEditor({
   const changeMapping = (newMappingString: string | undefined): void => {
     setMappingString(newMappingString)
     formState.changeValue('mapping', commaStringToArray(newMappingString))
+  }
+
+  const mappingChannels = formState.values.mapping
+    .filter(isUnique)
+    .filter(channel => channel !== ChannelType.Master)
+  const effectiveMasterDependentChannels = mappingChannels.filter(channel =>
+    getMasterDependentChannels(formState.values).has(channel)
+  )
+  const customMasterDependentChannels =
+    formState.values.masterDependentChannels !== undefined
+
+  const toggleCustomMasterDependentChannels = (custom: boolean): void => {
+    formState.changeValue(
+      'masterDependentChannels',
+      custom ? effectiveMasterDependentChannels : undefined
+    )
   }
 
   const shapePreview: AdditionalMapShape[] = useDeepEqualMemo([
@@ -89,6 +114,37 @@ export function FixtureTypeEditor({
               ).join(', ')}`}
               input={
                 <TextInput value={mappingString} onChange={changeMapping} />
+              }
+            />
+            <Label
+              label="Master-dependent channels"
+              description={
+                customMasterDependentChannels
+                  ? undefined
+                  : `Default: ${effectiveMasterDependentChannels.join(', ') || 'none'}`
+              }
+              input={
+                <div>
+                  <CheckboxLabel
+                    value={customMasterDependentChannels}
+                    onChange={toggleCustomMasterDependentChannels}
+                  >
+                    Custom
+                  </CheckboxLabel>
+                  {customMasterDependentChannels && (
+                    <MultiToggleInput
+                      value={formState.values.masterDependentChannels ?? []}
+                      entries={mappingChannels}
+                      onChange={channels =>
+                        formState.changeValue(
+                          'masterDependentChannels',
+                          channels
+                        )
+                      }
+                      entryClassName={inlineToggleEntry}
+                    />
+                  )}
+                </div>
               }
             />
             <Label

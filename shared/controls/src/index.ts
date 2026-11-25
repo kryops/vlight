@@ -1,6 +1,7 @@
 export * from './enums'
 export {
-  channelMappingsAffectedByMaster,
+  defaultMasterDependentChannels,
+  getMasterDependentChannels,
   mapFixtureList,
   mergeFixtureStates,
   mapFixtureStateToChannels,

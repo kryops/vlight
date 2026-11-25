@@ -20,6 +20,13 @@ const fixtureTypes = [
     shape: 'square',
     border: 'solid',
   },
+  {
+    id: 'mover',
+    name: 'Mover (no master)',
+    mapping: ['pan', 'r', 'g'],
+    shape: 'square',
+    border: 'dotted',
+  },
 ]
 
 module.exports = fixtureTypes

@@ -10,8 +10,11 @@ export enum ChannelType {
    * For fixtures without an actual master channel, the dependent channels are
    * dimmed down accordingly.
    *
-   * For fixtures without a master channel, the dependent channels are dimmed down
+   * For fixtures with a master channel, the dependent channels are dimmed down
    * if another control sets the master channel to a higher value.
+   *
+   * The dependent channels can be configured per fixture type
+   * (`masterDependentChannels`).
    */
   Master = 'm',
 

@@ -9,7 +9,6 @@
   - Complete fixture override/reservation (e.g. when controlled by a chase)
 - Fixture types
   - Add different mappings to the same fixture type?
-  - Control which channels should be tied to the fixture's master
   - Channels with discrete states
   - Fixtures with multiple light sources
   - Moving heads
