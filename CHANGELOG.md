@@ -15,6 +15,7 @@
 - Live chases: Added compact view that only displays a large speed burst button
 - Long labels on fader buttons now wrap
 - Added tooltips to icon buttons
+- Color preview now includes amber and UV channels
 - Added Playwright E2E tests and a read-only server mode (`readOnly` config option)
 - Improved accessibility (ARIA roles and labels)
 

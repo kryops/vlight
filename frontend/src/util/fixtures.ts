@@ -10,10 +10,22 @@ import { createRangeArray, createZeroArray } from '@vlight/utils'
 
 import { getMasterDataMaps } from '../api/masterdata'
 
-const rgbwMapping = [
-  ChannelType.Red,
-  ChannelType.Green,
-  ChannelType.Blue,
+type RgbColor = [r: number, g: number, b: number]
+
+/**
+ * Colored light sources and the RGB color they contribute to the preview.
+ * They are mixed additively.
+ */
+const coloredEmitters: Array<[ChannelType, RgbColor]> = [
+  [ChannelType.Red, [255, 0, 0]],
+  [ChannelType.Green, [0, 255, 0]],
+  [ChannelType.Blue, [0, 0, 255]],
+  [ChannelType.Amber, [255, 150, 0]],
+  [ChannelType.UV, [130, 0, 255]],
+]
+
+const previewMapping = [
+  ...coloredEmitters.map(([channelType]) => channelType),
   ChannelType.White,
 ]
 
@@ -25,25 +37,34 @@ function applyMinOpacity(masterValue: number) {
 
 function getColor(
   masterValue: number,
-  values: Array<number | undefined>
+  getValue: (channelType: ChannelType) => number | undefined
 ): string | undefined {
   if (masterValue === 0) return undefined
 
+  const values = new Map(
+    previewMapping.map(channelType => [channelType, getValue(channelType)])
+  )
+
   // no mapping - fall back to white
-  if (values.every(value => value === undefined)) {
+  if ([...values.values()].every(value => value === undefined)) {
     return `rgba(255, 255, 255, ${applyMinOpacity(masterValue)})`
   }
 
-  // Normalize values and shift difference to opacity
-  const rgb = values.slice(0, 3)
-  const w = values[3]
+  const w = values.get(ChannelType.White)
 
-  const highestRgbValue = Math.max(
-    0,
-    ...(rgb.filter(value => value !== undefined) as number[])
-  )
+  // Mix colored emitters additively
+  const rgb: RgbColor = [0, 0, 0]
+  let highestColorValue = 0
+  for (const [channelType, emitterColor] of coloredEmitters) {
+    const value = values.get(channelType)
+    if (!value) continue
+    highestColorValue = Math.max(highestColorValue, value)
+    emitterColor.forEach(
+      (component, index) => (rgb[index] += (component * value) / 255)
+    )
+  }
 
-  if (highestRgbValue === 0) {
+  if (highestColorValue === 0) {
     if (w) {
       return `rgba(255, 255, 255, ${applyMinOpacity(masterValue * (w / 255))})`
     } else {
@@ -51,30 +72,27 @@ function getColor(
     }
   }
 
-  if (highestRgbValue > 0 && highestRgbValue < 255) {
-    rgb.forEach(
-      (value, index) => (rgb[index] = ((value ?? 0) * 255) / highestRgbValue)
-    )
-  }
+  // Normalize color and shift intensity to opacity
+  const highestComponent = Math.max(...rgb)
+  rgb.forEach((value, index) => (rgb[index] = (value * 255) / highestComponent))
 
   // Merge in white channel
 
   if (w) {
     const whiteFactor =
-      highestRgbValue >= w
-        ? (w / highestRgbValue) * 0.75
-        : 1 - (highestRgbValue / w) * 0.25
+      highestColorValue >= w
+        ? (w / highestColorValue) * 0.75
+        : 1 - (highestColorValue / w) * 0.25
     rgb.forEach(
-      (value, index) =>
-        (rgb[index] = (value ?? 0) + (255 - (value ?? 0)) * whiteFactor)
+      (value, index) => (rgb[index] = value + (255 - value) * whiteFactor)
     )
   }
 
-  const [r, g, b] = rgb
+  const [r, g, b] = rgb.map(Math.round)
   const opacity = applyMinOpacity(
-    (masterValue * Math.max(highestRgbValue, w ?? 0)) / 255
+    (masterValue * Math.max(highestColorValue, w ?? 0)) / 255
   )
-  return `rgba(${r ?? 0}, ${g ?? 0}, ${b ?? 0}, ${opacity})`
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`
 }
 
 /**
@@ -86,9 +104,10 @@ export function getFixtureStateColor(
   if (!fixtureState.on) return undefined
 
   const masterValue = fixtureState.channels[ChannelType.Master] ?? 255
-  const values = rgbwMapping.map(mapping => fixtureState.channels[mapping])
-
-  return getColor(masterValue, values)
+  return getColor(
+    masterValue,
+    channelType => fixtureState.channels[channelType]
+  )
 }
 
 /**
@@ -109,9 +128,7 @@ export function getEffectiveFixtureColor(
 
   const hasMaster = fixtureType.mapping.includes(ChannelType.Master)
   const masterValue = hasMaster ? getMappingValue(ChannelType.Master)! : 255
-  const values = rgbwMapping.map(getMappingValue)
-
-  return getColor(masterValue, values)
+  return getColor(masterValue, getMappingValue)
 }
 
 /**

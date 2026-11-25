@@ -13,7 +13,6 @@
   - Channels with discrete states
   - Fixtures with multiple light sources
   - Moving heads
-  - Special colors preview (amber, UV)
 - Fixtures
   - Search box
 - Groups

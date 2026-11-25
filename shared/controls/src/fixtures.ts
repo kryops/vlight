@@ -25,6 +25,7 @@ export const channelMappingsAffectedByMaster = new Set<ChannelType | string>([
   ChannelType.Green,
   ChannelType.Blue,
   ChannelType.White,
+  ChannelType.Amber,
   ChannelType.UV,
 ])
 

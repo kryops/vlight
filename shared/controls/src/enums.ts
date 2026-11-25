@@ -43,6 +43,12 @@ export enum ChannelType {
   White = 'w',
 
   /**
+   * Amber channel
+   * - Depends on the fixture's master channel
+   */
+  Amber = 'a',
+
+  /**
    * UV channel
    * - Depends on the fixture's master channel
    */
