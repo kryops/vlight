@@ -1,4 +1,4 @@
-import { mapFixtureStateToChannels } from '@vlight/controls'
+import { writeFixtureStatesToUniverse } from '@vlight/controls'
 import { Dictionary, FixtureState } from '@vlight/types'
 
 import { universeSize } from '../config'
@@ -19,6 +19,8 @@ import {
 
 /**
  * Creates a DMX universe, optionally filling it with the values of the given fixture states.
+ *
+ * The fixture states may also be keyed by segment IDs (`foobar@2`).
  */
 export function createUniverse(
   fixtureStates?: Dictionary<FixtureState>
@@ -26,20 +28,7 @@ export function createUniverse(
   const universe = Buffer.alloc(universeSize)
 
   if (fixtureStates) {
-    Object.entries(fixtureStates).forEach(([fixtureId, state]) => {
-      const fixture = masterDataMaps.fixtures.get(fixtureId)
-      if (!fixture) return
-      const { channel } = fixture
-      const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
-      if (!fixtureType) return
-
-      mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
-        const index = getUniverseIndex(channel) + offset
-        if (universe[index] < value) {
-          universe[index] = value
-        }
-      })
-    })
+    writeFixtureStatesToUniverse(universe, fixtureStates, masterDataMaps)
   }
 
   return universe

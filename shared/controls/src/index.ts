@@ -16,6 +16,28 @@ export {
   parseChannelStates,
   formatChannelStates,
 } from './channel-states'
+export {
+  segmentSeparator,
+  getSegmentMemberId,
+  parseSegmentMemberId,
+  splitSegmentsPrefix,
+} from './segment-ids'
+export {
+  foreignSegmentChannel,
+  type FixtureTypeSegments,
+  getFixtureTypeSegments,
+  getSegmentFixtureType,
+  type SegmentLayoutEntry,
+  getFixtureTypeSegmentLayout,
+  getSegmentFixtures,
+  type ResolvedMember,
+  resolveMember,
+  getMemberFixture,
+  mapFixtureMemberList,
+  hasFixtureMappingSegments,
+  toggleFixtureMappingSegments,
+  writeFixtureStatesToUniverse,
+} from './segments'
 export { interpolateGradientPositions } from './gradient'
 export {
   ScenePattern,

@@ -16,6 +16,7 @@
 - Live chases: Added compact view that only displays a large speed burst button
 - Fixture types: Configurable master-dependent channels; memory/chase values and the DMX master no longer dim independent channels (e.g. pan/tilt) of fixtures without a master channel
 - Fixture types: Named channel states (e.g. color wheels, gobos), displayed on the faders
+- Fixture types: Multiple light sources (segments) are detected automatically and displayed on the map and channels page; memories and live chases can split fixtures into their segments (supports both shared and per-segment master channels)
 - Improved dynamic pages editing; removed row cells
 - Color preview now includes amber and UV channels
 - Added mouse wheel input to faders (when a modifier key is pressed)

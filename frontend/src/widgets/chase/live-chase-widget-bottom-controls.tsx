@@ -73,7 +73,12 @@ export const LiveChaseWidgetBottomControls = ({
   const editFixtureList = async () => {
     const result = await showDialogWithReturnValue<string[]>(
       onChange => (
-        <FixtureListEditor value={state.members} onChange={onChange} ordering />
+        <FixtureListEditor
+          value={state.members}
+          onChange={onChange}
+          ordering
+          segments
+        />
       ),
       [buttonOk, buttonCancel],
       {

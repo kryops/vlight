@@ -58,6 +58,7 @@ const addLiveChase = async () => {
           value={[]}
           onChange={newValue => (members = newValue)}
           ordering
+          segments
         />
       </>
     ),

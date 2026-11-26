@@ -19,6 +19,7 @@ const fixtures = [
     y: 10,
   },
   { id: 'mover', name: 'Mover', type: 'mover', channel: 30, x: 80, y: 40 },
+  { id: 'bar', name: 'Bar', type: 'bar3', channel: 40, x: 50, y: 70 },
 ]
 
 module.exports = fixtures

@@ -12,6 +12,7 @@ import {
   getFixtureStateForMemoryScene,
   mergeMemoryStates,
   getMemorySceneStateInfo,
+  getMemberFixture,
 } from '@vlight/controls'
 
 import { masterDataMaps, masterData } from '../../services/masterdata'
@@ -60,7 +61,7 @@ function createMemoryUniverse(memory: Memory): Universe {
   const fixtureStates: Dictionary<FixtureState> = {}
   for (const scene of memory.scenes) {
     const memberFixtures = scene.members.map(member =>
-      masterDataMaps.fixtures.get(member)!
+      getMemberFixture(member, masterDataMaps)!
     )
     const stateInfo = getMemorySceneStateInfo(scene, memberFixtures)
 

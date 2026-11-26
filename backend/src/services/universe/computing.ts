@@ -1,4 +1,8 @@
-import { ChannelType, getMasterDependentChannels } from '@vlight/controls'
+import {
+  ChannelType,
+  getFixtureTypeSegments,
+  getMasterDependentChannels,
+} from '@vlight/controls'
 import { ApiDmxMasterMessage } from '@vlight/types'
 import { createRangeArray } from '@vlight/utils'
 
@@ -149,13 +153,28 @@ export function initUniverseComputingData(isReload = false): void {
       continue
     }
 
-    const masterChannel = fixture.channel + masterIndex
-    fadedChannels.add(masterChannel)
+    // Fixtures with segments may have a separate master channel for each segment
+    const segments = getFixtureTypeSegments(fixtureType)
+    const getMasterIndex = (index: number) => {
+      const segment = segments?.segmentByMappingIndex[index]
+      return segments?.masterPerSegment && segment !== undefined
+        ? segments.masterIndexBySegment[segment]
+        : masterIndex
+    }
 
-    affectedChannelsByMasterChannel.set(masterChannel, affectedChannels)
-    affectedChannels.forEach(channel =>
+    fixtureType.mapping.forEach((channelType, index) => {
+      if (channelType !== ChannelType.Master) return
+      const masterChannel = fixture.channel + index
+      fadedChannels.add(masterChannel)
+      affectedChannelsByMasterChannel.set(masterChannel, [])
+    })
+
+    for (const channel of affectedChannels) {
+      const masterChannel =
+        fixture.channel + getMasterIndex(channel - fixture.channel)
+      affectedChannelsByMasterChannel.get(masterChannel)?.push(channel)
       masterChannelByChannel.set(channel, masterChannel)
-    )
+    }
   }
 
   refreshOutgoingFade()

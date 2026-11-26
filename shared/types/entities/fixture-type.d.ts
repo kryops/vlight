@@ -66,6 +66,30 @@ export interface FixtureType extends DbEntity {
   channelStates?: Record<string, FixtureChannelState[]>
 
   /**
+   * Controls whether the fixture is split into multiple segments (light sources)
+   * if its mapping contains repeated channel types.
+   *
+   * Segments are detected automatically: the channel types that appear most often
+   * (at least twice) form the segments in order of their occurrence,
+   * all other channels are shared between them (e.g. the master channel).
+   * Master channels that appear once per segment are used as separate master
+   * channels for each segment.
+   *
+   * Memories and chases can address the segments as separate members.
+   *
+   * Defaults to `true`.
+   */
+  segments?: boolean
+
+  /**
+   * The number of columns to arrange the segments in on the map.
+   *
+   * Defaults to all segments in a single row,
+   * or to a ring for circle shapes.
+   */
+  segmentColumns?: number
+
+  /**
    * The shape of the fixture to display on the map.
    */
   shape?: FixtureShape

@@ -96,4 +96,11 @@ export enum FixtureMappingPrefix {
    * Groups fixtures together by linking to a fixture group.
    */
   Group = 'group:',
+
+  /**
+   * Splits the fixtures of the following mapping into their segments.
+   *
+   * Can be combined with the other prefixes, e.g. `segments:group:foo`.
+   */
+  Segments = 'segments:',
 }

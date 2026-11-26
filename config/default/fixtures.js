@@ -23,8 +23,8 @@ const fixtures = [
   {
     id: 'blinder',
     name: 'Blinder',
-    type: 'blinder6',
-    channel: 73,
+    type: 'blinder19',
+    channel: 229,
     count: 2,
     x: 10,
     y: 10,

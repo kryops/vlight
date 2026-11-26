@@ -74,6 +74,7 @@ import {
   mdiLinkVariantPlus,
   mdiLinkVariantOff,
   mdiMagnify,
+  mdiDotsHorizontalCircleOutline,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -130,6 +131,7 @@ export const iconFixtureType = mdiShape
 export const iconLight = mdiLightbulbOnOutline
 export const iconLights = mdiLightbulbGroupOutline
 export const iconLightOff = mdiLightbulbOffOutline
+export const iconSegments = mdiDotsHorizontalCircleOutline
 export const iconGroup = mdiGroup
 export const iconMemory = mdiImageFrame
 export const iconLiveMemory = mdiImageSync

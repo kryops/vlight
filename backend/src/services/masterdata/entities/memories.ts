@@ -1,18 +1,18 @@
 import { Memory } from '@vlight/types'
-import { mapFixtureList } from '@vlight/controls'
+import { mapFixtureMemberList } from '@vlight/controls'
 
 import { masterData, masterDataMaps } from '../data'
 import { registerMasterDataEntity } from '../registry'
 
 /**
- * Resolves the memory's members of each scene to an actual fixture list.
+ * Resolves the memory's members of each scene to an actual fixture/segment list.
  */
 function processMemory({ scenes, ...memoryRest }: Memory): Memory {
   return {
     ...memoryRest,
     scenes: scenes.map(({ members, ...sceneRest }) => ({
       ...sceneRest,
-      members: mapFixtureList(members, { masterData, masterDataMaps }),
+      members: mapFixtureMemberList(members, { masterData, masterDataMaps }),
     })),
   }
 }

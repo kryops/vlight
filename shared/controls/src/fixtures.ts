@@ -14,6 +14,7 @@ import {
 } from '@vlight/utils'
 
 import { ChannelType, FixtureMappingPrefix } from './enums'
+import { parseSegmentMemberId, splitSegmentsPrefix } from './segment-ids'
 
 /**
  * Channel mappings that are affected by the fixture's master channel by default,
@@ -73,13 +74,24 @@ export function getMasterDependentChannels(
  * - `all:foobar` -> maps all fixtures from this original ID
  * - `type:foobar` -> maps all fixtures of type `foobar`
  * - `group:foobar` -> maps all fixtures of group `foobar`
+ *
+ * Segments are mapped to their fixtures:
+ * - `segments:<any of the above>` -> the prefix is ignored
+ * - `foobar@2` -> maps to fixture `foobar`
+ *
+ * To resolve segments separately, use `mapFixtureMemberList` instead.
  */
 export function mapFixtureList(
   fixtureList: string[],
   { masterData, masterDataMaps }: MasterDataWithMaps
 ): string[] {
   return fixtureList
-    .flatMap(fixture => {
+    .flatMap((fixture): string | string[] => {
+      // `segments:foobar`
+      const { segments, base } = splitSegmentsPrefix(fixture)
+      if (segments) {
+        return mapFixtureList([base], { masterData, masterDataMaps })
+      }
       // `type:foobar`
       if (fixture.startsWith(FixtureMappingPrefix.Type)) {
         const type = fixture.slice(FixtureMappingPrefix.Type.length)
@@ -113,6 +125,13 @@ export function mapFixtureList(
           )
         }
         return mappedFixtures
+      }
+      // 'foobar1@2'
+      if (!masterDataMaps.fixtures.has(fixture)) {
+        const parsed = parseSegmentMemberId(fixture)
+        if (parsed && masterDataMaps.fixtures.has(parsed.fixtureId)) {
+          return parsed.fixtureId
+        }
       }
       // 'foobar1'
       return fixture

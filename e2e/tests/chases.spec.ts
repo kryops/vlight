@@ -119,7 +119,9 @@ test('speed controls', async ({ app }) => {
   await app.button('Double speed', widget).click()
   await expect(speed.locator).toHaveAttribute('aria-valuetext', '0.50s')
 
+  // Each click is relative to the server state, so we need to wait in between
   await app.button('Half speed', widget).click()
+  await expect(speed.locator).toHaveAttribute('aria-valuetext', '1.00s')
   await app.button('Half speed', widget).click()
   await expect(speed.locator).toHaveAttribute('aria-valuetext', '2.00s')
 

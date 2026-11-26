@@ -1,4 +1,10 @@
-import { FixtureMappingPrefix, mapFixtureList } from '@vlight/controls'
+import {
+  FixtureMappingPrefix,
+  hasFixtureMappingSegments,
+  mapFixtureList,
+  splitSegmentsPrefix,
+  toggleFixtureMappingSegments,
+} from '@vlight/controls'
 import { EntityName, Fixture, FixtureGroup, FixtureType } from '@vlight/types'
 import { css } from '@linaria/core'
 import { useState } from 'react'
@@ -13,6 +19,7 @@ import {
   iconGroup,
   iconLight,
   iconLights,
+  iconSegments,
 } from '../icons'
 import { baseline, iconShade } from '../styles'
 import { useDelayedState } from '../../hooks/delayed-state'
@@ -99,7 +106,10 @@ const categories: FixtureListCategory[] = [
   groupCategory,
 ]
 
-function getCountByCategory(value: string[]): Map<FixtureListCategory, number> {
+function getCountByCategory(
+  fullValue: string[]
+): Map<FixtureListCategory, number> {
+  const value = fullValue.map(entry => splitSegmentsPrefix(entry).base)
   return new Map(
     categories
       .map(category => {
@@ -149,6 +159,14 @@ export interface FixtureListInputProps {
    * whose type has all of the given channels.
    */
   requiredChannels?: string[]
+
+  /**
+   * Controls whether entries containing fixtures with segments
+   * can be split into their segments.
+   *
+   * Defaults to `false`.
+   */
+  segments?: boolean
 }
 
 /**
@@ -161,6 +179,7 @@ export const FixtureListInput = ({
   ordering = false,
   compact = false,
   requiredChannels,
+  segments = false,
 }: FixtureListInputProps) => {
   // We apply the changed value immediately, as otherwise the list might flicker
   const [localValue, setLocalValue] = useDelayedState<string[] | null>(null)
@@ -239,11 +258,42 @@ export const FixtureListInput = ({
   const onCategoryClick = (_event: any, category: FixtureListCategory | null) =>
     setActiveCategory(category)
 
+  const masterDataAndMaps = { masterData, masterDataMaps }
+  const splittableEntries = segments
+    ? valueToDisplay.filter(entry =>
+        hasFixtureMappingSegments(
+          splitSegmentsPrefix(entry).base,
+          masterDataAndMaps
+        )
+      )
+    : []
+  const allSplit =
+    splittableEntries.length > 0 &&
+    splittableEntries.every(entry => splitSegmentsPrefix(entry).segments)
+
+  const toggleAllSegments = () =>
+    onChangeWrapper(
+      valueToDisplay.map(entry =>
+        splittableEntries.includes(entry)
+          ? toggleFixtureMappingSegments(entry, !allSplit)
+          : entry
+      )
+    )
+
+  const isEntrySelected = (entry: string) =>
+    valueToDisplay.some(it => splitSegmentsPrefix(it).base === entry)
+
   const onEntryClick = (_event: any, entry: string) =>
     onChangeWrapper(
-      valueToDisplay.includes(entry)
-        ? valueToDisplay.filter(it => it !== entry)
-        : [...valueToDisplay, entry]
+      isEntrySelected(entry)
+        ? valueToDisplay.filter(it => splitSegmentsPrefix(it).base !== entry)
+        : [
+            ...valueToDisplay,
+            // new entries follow the "split all" state
+            allSplit && hasFixtureMappingSegments(entry, masterDataAndMaps)
+              ? toggleFixtureMappingSegments(entry, true)
+              : entry,
+          ]
     )
 
   return (
@@ -279,12 +329,28 @@ export const FixtureListInput = ({
             </Button>
           )
         })}
+        {splittableEntries.length > 0 && (
+          <Button
+            className={categoryEntry}
+            active={allSplit}
+            icon={iconSegments}
+            iconColor={iconShade(0)}
+            onClick={toggleAllSegments}
+            title={
+              allSplit
+                ? 'Merge all fixture segments'
+                : 'Split all fixtures into segments'
+            }
+            ariaLabel="Split all fixtures into segments"
+          />
+        )}
       </div>
       {activeCategory === null && (
         <SortableFixtureMapping
           value={valueToDisplay}
           onChange={onChangeWrapper}
           compact={compact}
+          segments={segments}
         />
       )}
       {activeCategory && (
@@ -293,7 +359,7 @@ export const FixtureListInput = ({
         >
           {entities.map(entity => {
             const entry = activeCategory?.prefix + entity.id
-            const active = valueToDisplay.includes(entry)
+            const active = isEntrySelected(entry)
             const text =
               entity.name +
               (activeCategory !== fixtureCategory

@@ -1,7 +1,13 @@
 import { ComponentType, ReactNode } from 'react'
 import { EntityName, EntityType, IdType, MasterDataMaps } from '@vlight/types'
 import { css } from '@linaria/core'
-import { FixtureMappingPrefix, mapFixtureList } from '@vlight/controls'
+import {
+  FixtureMappingPrefix,
+  mapFixtureList,
+  parseSegmentMemberId,
+  splitSegmentsPrefix,
+  toggleFixtureMappingSegments,
+} from '@vlight/controls'
 
 import {
   iconFixtureType,
@@ -344,16 +350,32 @@ function replaceMappingInEntities(
   mappingsToReplace: string[],
   newMappings: string[] = []
 ): void {
+  // Ignores the `segments:` prefix, and maps segment IDs to their fixture
+  const getBaseMapping = (mappingString: string) => {
+    const { base } = splitSegmentsPrefix(mappingString)
+    const segmentMember = parseSegmentMemberId(base)
+    return segmentMember && mappingsToReplace.includes(segmentMember.fixtureId)
+      ? segmentMember.fixtureId
+      : base
+  }
+
+  const shouldReplace = (mappingString: string) =>
+    mappingsToReplace.includes(getBaseMapping(mappingString))
+
   const overlaps = (originalMappings: string[]) =>
-    originalMappings.some(it => mappingsToReplace.includes(it))
+    originalMappings.some(shouldReplace)
 
   const replaceMappings = (originalMappings: string[]) =>
     overlaps(originalMappings)
-      ? originalMappings.flatMap(mappingString =>
-          mappingsToReplace.includes(mappingString)
-            ? newMappings
-            : [mappingString]
-        )
+      ? originalMappings.flatMap(mappingString => {
+          if (!shouldReplace(mappingString)) return [mappingString]
+          const { segments, base } = splitSegmentsPrefix(mappingString)
+          // single segments of a removed fixture cannot be replaced
+          if (getBaseMapping(mappingString) !== base) return []
+          return segments
+            ? newMappings.map(it => toggleFixtureMappingSegments(it, true))
+            : newMappings
+        })
       : originalMappings
 
   const { fixtureGroups, memories } = apiState.rawMasterData!

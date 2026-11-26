@@ -1,11 +1,18 @@
 import {
-  mapFixtureList,
   getFixtureStateForMemoryScene,
-  mapFixtureStateToChannels,
   getMemorySceneStateInfo,
+  getMemberFixture,
+  mapFixtureMemberList,
+  writeFixtureStatesToUniverse,
 } from '@vlight/controls'
-import { MasterData, MasterDataMaps, MemoryScene } from '@vlight/types'
-import { createZeroArray } from '@vlight/utils'
+import {
+  Dictionary,
+  FixtureState,
+  MasterData,
+  MasterDataMaps,
+  MemoryScene,
+} from '@vlight/types'
+import { createZeroArray, isTruthy } from '@vlight/utils'
 
 import { useMasterDataAndMaps } from '../../hooks/api'
 import { StatelessMapWidget } from '../map/stateless-map-widget'
@@ -31,37 +38,28 @@ function getMemoryUniverse(
   const universe = createZeroArray(512)
 
   for (const scene of scenes) {
-    const members = mapFixtureList(scene.members, {
+    const members = mapFixtureMemberList(scene.members, {
       masterData,
       masterDataMaps,
-    })
+    }).filter(member => getMemberFixture(member, masterDataMaps))
 
-    const memberFixtures = members.map(member =>
-      masterDataMaps.fixtures.get(member)!
-    )
+    const memberFixtures = members
+      .map(member => getMemberFixture(member, masterDataMaps))
+      .filter(isTruthy)
 
     const stateInfo = getMemorySceneStateInfo(scene, memberFixtures)
 
+    const fixtureStates: Dictionary<FixtureState> = {}
     members.forEach((member, memberIndex) => {
-      const fixture = masterDataMaps.fixtures.get(member)
-      if (!fixture) return
-      const fixtureType = masterDataMaps.fixtureTypes.get(fixture.type)
-      if (!fixtureType) return
-
-      const state = getFixtureStateForMemoryScene({
+      fixtureStates[member] = getFixtureStateForMemoryScene({
         scene: { ...scene, members },
         memberIndex,
         memberFixtures,
         stateInfo,
       })
-
-      mapFixtureStateToChannels(fixtureType, state).forEach((value, offset) => {
-        const universeIndex = fixture.channel - 1 + offset
-        if (universe[universeIndex] < value) {
-          universe[universeIndex] = value
-        }
-      })
     })
+
+    writeFixtureStatesToUniverse(universe, fixtureStates, masterDataMaps)
   }
 
   return universe
@@ -86,7 +84,10 @@ export const MemoryPreview = ({
       className={className}
       highlightedFixtures={
         displayFixtureOrder && scenes.length === 1
-          ? mapFixtureList(scenes[0].members, { masterData, masterDataMaps })
+          ? mapFixtureMemberList(scenes[0].members, {
+              masterData,
+              masterDataMaps,
+            })
           : undefined
       }
     />

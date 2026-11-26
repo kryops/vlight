@@ -27,6 +27,15 @@ const fixtureTypes = [
     shape: 'square',
     border: 'dotted',
   },
+  {
+    id: 'bar3',
+    name: 'LED Bar (3 segments)',
+    mapping: ['m', 'r', 'g', 'b', 'r', 'g', 'b', 'r', 'g', 'b'],
+    shape: 'square',
+    border: 'solid',
+    xSize: 9,
+    ySize: 3,
+  },
 ]
 
 module.exports = fixtureTypes

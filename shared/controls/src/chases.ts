@@ -11,7 +11,7 @@ import {
   randomArrayIndex,
 } from '@vlight/utils'
 
-import { mapFixtureList } from './fixtures'
+import { mapFixtureMemberList } from './segments'
 
 /**
  * Creates the fixture states for a live chase,
@@ -25,7 +25,7 @@ export function getLiveChaseFixtureStates(
 
   if (!liveChase.colors.length) return fixtureStates
 
-  const members = mapFixtureList(liveChase.members, {
+  const members = mapFixtureMemberList(liveChase.members, {
     masterData,
     masterDataMaps,
   })

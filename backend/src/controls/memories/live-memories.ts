@@ -1,6 +1,7 @@
 import {
   getFixtureStateForMemoryScene,
-  mapFixtureList,
+  mapFixtureMemberList,
+  getMemberFixture,
   getMemorySceneStateInfo,
   defaultLiveMemoryGradientSpeed,
 } from '@vlight/controls'
@@ -158,12 +159,12 @@ function getUniverseForLiveMemory(
 ): Universe {
   const fixtureStates: Dictionary<FixtureState> = {}
 
-  const members = mapFixtureList(liveMemory.members, {
+  const members = mapFixtureMemberList(liveMemory.members, {
     masterData,
     masterDataMaps,
   })
   const memberFixtures = members.map(member =>
-    masterDataMaps.fixtures.get(member)!
+    getMemberFixture(member, masterDataMaps)!
   )
   const stateInfo = getMemorySceneStateInfo(liveMemory, memberFixtures)
   const gradientOffset = gradientMovementOffsets.get(id)

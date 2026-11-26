@@ -77,6 +77,7 @@ export async function editLiveMemory(
           onChange={newValue => (members = newValue)}
           ordering
           compact
+          segments
         />
       </>
     ),
@@ -159,6 +160,7 @@ export const StatelessLiveMemoryWidget = ({
             value={scene.members}
             onChange={onMembersChange}
             ordering
+            segments
           />
         ),
         [buttonOk, buttonCancel],

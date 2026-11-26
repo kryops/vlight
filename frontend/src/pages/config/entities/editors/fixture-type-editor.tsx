@@ -9,6 +9,7 @@ import { commaStringToArray, isUnique } from '@vlight/utils'
 import {
   ChannelType,
   formatChannelStates,
+  getFixtureTypeSegments,
   getMasterDependentChannels,
   parseChannelStates,
 } from '@vlight/controls'
@@ -148,6 +149,13 @@ export function FixtureTypeEditor({
     )
   }
 
+  const detectedSegments = getFixtureTypeSegments({
+    ...formState.values,
+    segments: true,
+  })
+  const segmentsEnabled =
+    !!detectedSegments && formState.values.segments !== false
+
   const shapePreview: AdditionalMapShape[] = useDeepEqualMemo([
     {
       x: Math.round(51 - (formState.values.xSize ?? 5) / 2),
@@ -156,6 +164,7 @@ export function FixtureTypeEditor({
       ySize: formState.values.ySize,
       border: formState.values.border,
       shape: formState.values.shape ?? 'circle',
+      fixtureType: segmentsEnabled ? formState.values : undefined,
     },
   ])
 
@@ -254,6 +263,43 @@ export function FixtureTypeEditor({
                       />
                     )}
                   </div>
+                }
+              />
+            )}
+            {detectedSegments && (
+              <Label
+                label="Segments"
+                input={
+                  <CheckboxLabel
+                    value={segmentsEnabled}
+                    onChange={value =>
+                      formState.changeValue(
+                        'segments',
+                        value ? undefined : false
+                      )
+                    }
+                  >
+                    Split into {detectedSegments.count} segments
+                  </CheckboxLabel>
+                }
+              />
+            )}
+            {detectedSegments && segmentsEnabled && (
+              <Label
+                label="Segment columns"
+                description="Arrangement on the map (Default: single row, ring for circles)"
+                input={
+                  <FormNumberInput
+                    formState={formState}
+                    name="segmentColumns"
+                    min={1}
+                    max={detectedSegments.count}
+                    placeholder={
+                      formState.values.shape === 'square'
+                        ? String(detectedSegments.count)
+                        : 'Ring'
+                    }
+                  />
                 }
               />
             )}

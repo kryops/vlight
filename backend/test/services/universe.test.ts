@@ -38,6 +38,12 @@ const fixtureTypeWithoutMaster: FixtureType = {
   mapping: ['r', 'g', 'b', 'x'],
 }
 
+const fixtureTypeWithSegmentMasters: FixtureType = {
+  id: '3',
+  name: 'with a master per segment',
+  mapping: ['m', 'r', 'm', 'r'],
+}
+
 const fixture1: Fixture = {
   id: '1',
   type: fixtureTypeWithMaster.id,
@@ -50,11 +56,21 @@ const fixture2: Fixture = {
   channel: 6,
 }
 
-masterData.fixtureTypes = [fixtureTypeWithMaster, fixtureTypeWithoutMaster]
+const fixture3: Fixture = {
+  id: '3',
+  type: fixtureTypeWithSegmentMasters.id,
+  channel: 20,
+}
+
+masterData.fixtureTypes = [
+  fixtureTypeWithMaster,
+  fixtureTypeWithoutMaster,
+  fixtureTypeWithSegmentMasters,
+]
 masterData.fixtureTypes.forEach(fixtureType =>
   masterDataMaps.fixtureTypes.set(fixtureType.id, fixtureType)
 )
-masterData.fixtures = [fixture1, fixture2]
+masterData.fixtures = [fixture1, fixture2, fixture3]
 masterData.fixtures.forEach(fixture =>
   masterDataMaps.fixtures.set(fixture.id, fixture)
 )
@@ -143,6 +159,30 @@ describe('services/universe', () => {
       )
     })
 
+    it('handles a separate master channel per segment', () => {
+      addUniverse(
+        createUniverse({ '3@1': { on: true, channels: { m: 127, r: 255 } } })
+      )
+      addUniverse(
+        createUniverse({ '3@2': { on: true, channels: { m: 255, r: 255 } } })
+      )
+      expect(getDmxUniverse().slice(19, 23)).toEqual(
+        Buffer.from([127, 255, 255, 255])
+      )
+    })
+
+    it('handles different master values of the same segment', () => {
+      addUniverse(
+        createUniverse({ '3@2': { on: true, channels: { m: 127, r: 255 } } })
+      )
+      addUniverse(
+        createUniverse({ '3@2': { on: true, channels: { m: 255, r: 100 } } })
+      )
+      expect(getDmxUniverse().slice(19, 23)).toEqual(
+        Buffer.from([0, 0, 255, 127])
+      )
+    })
+
     it('broadcasts changes', () => {
       const universe = universeWithFixtures({ m: 127 })
       addUniverse(universe)
@@ -208,6 +248,30 @@ describe('services/universe', () => {
       addUniverse(universe2)
       removeUniverse(universe2)
       expect(getDmxUniverse()).toEqual(universe1)
+    })
+
+    it('handles a separate master channel per segment', () => {
+      addUniverse(
+        createUniverse({ '3@1': { on: true, channels: { m: 127, r: 255 } } })
+      )
+      addUniverse(
+        createUniverse({ '3@2': { on: true, channels: { m: 255, r: 255 } } })
+      )
+      expect(getDmxUniverse().slice(19, 23)).toEqual(
+        Buffer.from([127, 255, 255, 255])
+      )
+    })
+
+    it('handles different master values of the same segment', () => {
+      addUniverse(
+        createUniverse({ '3@2': { on: true, channels: { m: 127, r: 255 } } })
+      )
+      addUniverse(
+        createUniverse({ '3@2': { on: true, channels: { m: 255, r: 100 } } })
+      )
+      expect(getDmxUniverse().slice(19, 23)).toEqual(
+        Buffer.from([0, 0, 255, 127])
+      )
     })
 
     it('broadcasts changes', () => {

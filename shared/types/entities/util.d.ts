@@ -19,5 +19,9 @@ export interface Dictionary<T> {
  *    (with this ID originally configured)
  * - `type:foobar` -> maps all fixtures of type `foobar`
  * - `group:foobar` -> maps all fixtures of group `foobar`
+ * - `segments:<any of the above>` -> maps all segments of the fixtures separately
+ *   (only supported by memories and live chases, only affects fixture types with segments)
+ * - `foobar@2` -> maps a single segment of fixture `foobar` (1-based)
+ *   (only supported by memories and live chases)
  */
 export type EntityMembers = string[]

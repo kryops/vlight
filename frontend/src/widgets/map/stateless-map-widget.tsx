@@ -3,9 +3,15 @@ import {
   Fixture,
   FixtureBorderStyle,
   FixtureShape,
+  FixtureType,
   IdType,
 } from '@vlight/types'
 import { arrayRange } from '@vlight/utils'
+import {
+  getFixtureTypeSegments,
+  getSegmentFixtureType,
+  getSegmentMemberId,
+} from '@vlight/controls'
 import { useMemo, Ref } from 'react'
 
 import { backgroundColor, baseline, iconShade } from '../../ui/styles'
@@ -13,7 +19,7 @@ import { getEffectiveFixtureColor } from '../../util/fixtures'
 import { useMasterDataMaps } from '../../hooks/api'
 import { cx } from '../../util/styles'
 
-import { FixtureTypeMapShape, MapShape } from './map-shape'
+import { FixtureTypeMapShape, MapShape, mapContainerName } from './map-shape'
 
 // We use separate styles from the standard widget component because this one looks very different
 const widget = css`
@@ -27,6 +33,7 @@ const widget = css`
   border: 1px solid ${iconShade(1)};
   overflow: hidden;
   background: ${iconShade(3)};
+  container: ${mapContainerName} / inline-size;
 
   &:before {
     content: '';
@@ -83,6 +90,8 @@ const fixtureStyle_names = css`
 `
 
 export interface AdditionalMapShape {
+  /** If set, the shape is rendered for this fixture type, including its segments. */
+  fixtureType?: FixtureType
   shape: FixtureShape
   border?: FixtureBorderStyle
   x: number
@@ -190,7 +199,43 @@ export const StatelessMapWidget = ({
 
           const highlightedIndex =
             highlightedFixtures?.indexOf(fixture.id) ?? -1
-          const highlighted = highlightedIndex !== -1
+
+          const segmentCount = getFixtureTypeSegments(fixtureType)?.count ?? 0
+          const segmentIndices = arrayRange(0, segmentCount - 1, it => it)
+          const segmentHighlightedIndices = segmentIndices.map(
+            index =>
+              highlightedFixtures?.indexOf(
+                getSegmentMemberId(fixture.id, index + 1)
+              ) ?? -1
+          )
+          const highlightedSegments = segmentIndices.filter(
+            index => segmentHighlightedIndices[index] !== -1
+          )
+          const highlighted =
+            highlightedIndex !== -1 || highlightedSegments.length > 0
+
+          const displayHighlightOrder =
+            highlightedFixtures?.length !== undefined &&
+            highlightedFixtures.length > 1 &&
+            displayChannels !== 'highlighted'
+
+          const segmentColors =
+            universe && segmentCount
+              ? segmentIndices.map(index =>
+                  getEffectiveFixtureColor(
+                    fixture,
+                    getSegmentFixtureType(fixtureType, index),
+                    universe
+                  )
+                )
+              : undefined
+
+          const segmentLabels =
+            displayHighlightOrder && highlightedSegments.length
+              ? segmentHighlightedIndices.map(index =>
+                  index === -1 ? undefined : index + 1
+                )
+              : undefined
 
           return arrayRange(
             1,
@@ -212,9 +257,14 @@ export const StatelessMapWidget = ({
                     : undefined
                 }
                 color={
-                  universe &&
-                  getEffectiveFixtureColor(fixture, fixtureType, universe)
+                  universe && !segmentCount
+                    ? getEffectiveFixtureColor(fixture, fixtureType, universe)
+                    : undefined
                 }
+                segmentColors={segmentColors}
+                segmentLabels={segmentLabels}
+                highlightedSegments={highlightedSegments}
+                rotateSegments180={rotate180}
                 channel={enableDmxUniverse ? fixture.channel : undefined}
                 highlighted={highlighted}
                 title={fixture.name}
@@ -226,10 +276,8 @@ export const StatelessMapWidget = ({
                 onUp={onFixtureUp ? () => onFixtureUp(fixture) : undefined}
                 rotation={fixture.rotation}
               >
-                {highlighted &&
-                  highlightedFixtures?.length !== undefined &&
-                  highlightedFixtures?.length > 1 &&
-                  displayChannels !== 'highlighted' &&
+                {highlightedIndex !== -1 &&
+                  displayHighlightOrder &&
                   highlightedIndex + 1}
                 {(displayChannels === true ||
                   (displayChannels === 'highlighted' && highlighted)) &&
@@ -238,16 +286,27 @@ export const StatelessMapWidget = ({
             )
           })
         })}
-        {additionalShapes?.map((shape, index) => (
-          <MapShape
-            key={index}
-            {...shape}
-            x={adjustCoord(shape.x)}
-            y={adjustCoord(shape.y)}
-            className={fixtureStyle}
-            percentages
-          />
-        ))}
+        {additionalShapes?.map(({ fixtureType, ...shape }, index) =>
+          fixtureType ? (
+            <FixtureTypeMapShape
+              key={index}
+              fixtureType={fixtureType}
+              x={adjustCoord(shape.x)}
+              y={adjustCoord(shape.y)}
+              className={fixtureStyle}
+              percentages
+            />
+          ) : (
+            <MapShape
+              key={index}
+              {...shape}
+              x={adjustCoord(shape.x)}
+              y={adjustCoord(shape.y)}
+              className={fixtureStyle}
+              percentages
+            />
+          )
+        )}
       </div>
     </div>
   )

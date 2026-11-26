@@ -7,8 +7,6 @@
 - Universe features
   - Swop (single chase active, rest blackout)
   - Complete fixture override/reservation (e.g. when controlled by a chase)
-- Fixture types
-  - Fixtures with multiple light sources
 - Map
   - Change size
 - Speed/Fade control

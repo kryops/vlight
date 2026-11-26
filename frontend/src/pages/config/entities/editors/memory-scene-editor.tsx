@@ -133,6 +133,7 @@ export const MemorySceneEditor = ({
           onChange={changeMembers}
           ordering
           compact
+          segments
         />
       )}
       <div
