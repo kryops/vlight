@@ -102,3 +102,15 @@ export function filterArrayRandomly<T>(arr: T[], keep: number): T[] {
 
   return newArr
 }
+
+/**
+ * Returns a shuffled copy of the given array (Fisher-Yates).
+ */
+export function shuffleArray<T>(arr: T[]): T[] {
+  const newArr = [...arr]
+  for (let i = newArr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[newArr[i], newArr[j]] = [newArr[j], newArr[i]]
+  }
+  return newArr
+}

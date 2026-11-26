@@ -1,4 +1,4 @@
-import { getLiveChaseFixtureStates } from '@vlight/controls'
+import { getLiveChaseFixtureStates, LiveChaseProgress } from '@vlight/controls'
 import { ApiLiveChaseMessage, IdType, LiveChase } from '@vlight/types'
 import { dictionaryToMap, logger, mergeObjects } from '@vlight/utils'
 
@@ -35,7 +35,21 @@ interface LiveChasePreparedState {
    * Used to improve the behavior when the speed is changed.
    */
   computedTime: number
+
+  /** The progress of the chase, to be carried over to the next step. */
+  progress: LiveChaseProgress
 }
+
+/** Changes to these properties are applied directly when the chase is turned off. */
+const recomputeWhenOffKeys: (keyof LiveChase)[] = [
+  'colors',
+  'light',
+  'colorMode',
+  'colorSelection',
+  'order',
+  'orderDirection',
+  'orderAdvance',
+]
 
 const preparedStates: Map<IdType, LiveChasePreparedState> = new Map()
 
@@ -54,26 +68,43 @@ const intervals: Map<IdType, any> = new Map()
  */
 const timeouts: Map<IdType, any> = new Map()
 
-function prepareLiveChase(liveChase: LiveChase): LiveChasePreparedState {
-  const fixtureStates = getLiveChaseFixtureStates(liveChase, {
-    masterData,
-    masterDataMaps,
-  })
+function prepareLiveChase(
+  liveChase: LiveChase,
+  previousState: LiveChasePreparedState | undefined,
+  advance: boolean
+): LiveChasePreparedState {
+  const { fixtureStates, progress } = getLiveChaseFixtureStates(
+    liveChase,
+    { masterData, masterDataMaps },
+    previousState?.progress,
+    advance
+  )
 
   return {
     fullUniverse: createUniverse(fixtureStates),
     computedTime: Date.now(),
+    progress,
   }
 }
 
-function recomputeLiveChase(id: IdType) {
+/**
+ * Computes the chase's state for the next step.
+ *
+ * @param advance `false` to recompute the current step after changes to the chase
+ *   (only relevant for ordered selection and sequential colors)
+ */
+function recomputeLiveChase(id: IdType, advance = true) {
   logger.debug('recomputing live chase', id)
 
   const liveChase = liveChases.get(id)
   if (!liveChase) return
 
   const universe = outgoingUniverses.get(id)!
-  const preparedState = prepareLiveChase(liveChase)!
+  const preparedState = prepareLiveChase(
+    liveChase,
+    preparedStates.get(id),
+    advance
+  )
   preparedStates.set(id, preparedState)
 
   // We directly apply the new state if the chase
@@ -202,10 +233,9 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
     // we recompute the chase here on substantial changes so they will be reflected right when it is turned on again
     if (
       message.step ||
-      message.state.colors !== undefined ||
-      message.state.light !== undefined
+      recomputeWhenOffKeys.some(key => message.state?.[key] !== undefined)
     ) {
-      recomputeLiveChase(id)
+      recomputeLiveChase(id, !!message.step)
     }
 
     return true
@@ -213,7 +243,8 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
 
   // Only recompute the chase here when it's new or stepped manually,
   // otherwise we would flicker lots of colors when fading, changing speed or colors
-  if (isUniverseEmpty(universe) || message.step) recomputeLiveChase(id)
+  if (isUniverseEmpty(universe) || message.step)
+    recomputeLiveChase(id, !!message.step)
   setUniverseOutput(universe, {
     on: true,
     masterValue: liveChase.value,

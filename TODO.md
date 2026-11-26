@@ -17,9 +17,6 @@
   - In a row: repeat n times
   - Alternating: alternate after n fixtures
 - Chases
-  - Color distribution: equal, relative
-  - Fixture selection mode: by index, by coordinates
-  - State selection mode by index
   - Persist as entities, not state?
   - Flash step frequency on tap to sync button
 - Dynamic Pages

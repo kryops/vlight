@@ -1,5 +1,7 @@
 import { IdType, LiveChase, ValueOrRandom } from '@vlight/types'
 import { css } from '@linaria/core'
+import { useMemo } from 'react'
+import { getLiveChaseActiveCount, mapFixtureMemberList } from '@vlight/controls'
 
 import { setLiveChaseState } from '../../api'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
@@ -16,6 +18,7 @@ import { Button } from '../../ui/buttons/button'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
 import { useDeepEqualMemo } from '../../hooks/performance'
+import { useMasterDataAndMaps } from '../../hooks/api'
 import { cx } from '../../util/styles'
 
 import { LiveChaseWidgetColorControls } from './live-chase-widget-color-controls'
@@ -82,6 +85,16 @@ export const StatelessLiveChaseWidget = ({
     update({ fadeLockedToSpeed: !state.fadeLockedToSpeed })
 
   const light = useDeepEqualMemo(state.light)
+
+  const masterDataAndMaps = useMasterDataAndMaps()
+  const memberCount = useMemo(
+    () => mapFixtureMemberList(state.members, masterDataAndMaps).length,
+    [state.members, masterDataAndMaps]
+  )
+  const lightSubLabel =
+    typeof light === 'number'
+      ? `${getLiveChaseActiveCount(memberCount, light)}/${memberCount}`
+      : undefined
 
   const changeLight = (light: ValueOrRandom<number>) => update({ light })
 
@@ -168,6 +181,7 @@ export const StatelessLiveChaseWidget = ({
               value={light}
               onChange={changeLight}
               label="Light"
+              subLabel={lightSubLabel}
             />
           </div>
 

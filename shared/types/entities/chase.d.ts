@@ -1,5 +1,6 @@
 import { ValueOrRandom } from '../util'
 
+import { FixtureOrder } from './fixture'
 import { DbEntity, Dictionary, EntityMembers } from './util'
 
 /**
@@ -29,6 +30,40 @@ export interface ChaseColorPreset extends DbEntity {
   /** The persisted chase colors. */
   colors: ChaseColor[]
 }
+
+/**
+ * Controls which members of a {@link LiveChase} are selected for each step:
+ * - `random`: random members
+ * - otherwise: a window of consecutive members in the given order that moves with each step
+ */
+export type LiveChaseOrder = 'random' | FixtureOrder
+
+/**
+ * The direction in which the selection window of an ordered {@link LiveChase} moves:
+ * - `forward`: from the first to the last member, then starting over
+ * - `backward`: from the last to the first member, then starting over
+ * - `ping-pong`: back and forth between the first and the last member
+ */
+export type LiveChaseOrderDirection = 'forward' | 'backward' | 'ping-pong'
+
+/**
+ * How far the selection window of an ordered {@link LiveChase} moves with each step:
+ * - `member`: by one member
+ * - `selection`: by the size of the selection, so consecutive steps do not overlap
+ */
+export type LiveChaseOrderAdvance = 'member' | 'selection'
+
+/**
+ * Controls how colors are chosen for each step of a {@link LiveChase}:
+ * - `random`: randomly
+ * - `equal`: (only for the `random` color mode) the selected members are distributed
+ *   equally across all colors, in random order
+ * - `sequential`:
+ *   - for the `random` color mode: colors are applied in order of the members,
+ *     shifting by one with each step
+ *   - otherwise: each step applies the next color
+ */
+export type LiveChaseColorSelection = 'random' | 'equal' | 'sequential'
 
 /**
  * A live chase steps through partially random states of one or more *colors*.
@@ -130,6 +165,34 @@ export interface LiveChase {
    * Defaults to `random`.
    */
   colorMode?: 'random' | 'same-color' | 'same-state'
+
+  /**
+   * Controls how colors are chosen for each step.
+   *
+   * Defaults to `random`.
+   */
+  colorSelection?: LiveChaseColorSelection
+
+  /**
+   * Controls which members are selected for each step.
+   *
+   * Defaults to `random`.
+   */
+  order?: LiveChaseOrder
+
+  /**
+   * The direction in which the selection moves for ordered chases.
+   *
+   * Defaults to `forward`.
+   */
+  orderDirection?: LiveChaseOrderDirection
+
+  /**
+   * How far the selection moves with each step for ordered chases.
+   *
+   * Defaults to `member`.
+   */
+  orderAdvance?: LiveChaseOrderAdvance
 
   /**
    * Displays the chase's widget in compact mode,

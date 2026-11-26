@@ -13,6 +13,7 @@
 - Fixtures/groups: Added flash (instant on/off) button
 - Fixtures/groups: "Save into Memory" can now add the state as a new scene to an existing memory
 - Memories: Added fade in/out button with configurable fade time
+- Live chases: Ordered member selection (by index/coordinates, forward/backward/ping-pong), sequential and equal color selection via new mode dialog
 - Live chases: Added compact view that only displays a large speed burst button
 - Fixture types: Configurable master-dependent channels; memory/chase values and the DMX master no longer dim independent channels (e.g. pan/tilt) of fixtures without a master channel
 - Fixture types: Named channel states (e.g. color wheels, gobos), displayed on the faders

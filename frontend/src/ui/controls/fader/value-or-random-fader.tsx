@@ -37,6 +37,10 @@ export interface ValueOrRandomFaderProps {
   quadraticScale?: number
 
   label?: string
+
+  /** Secondary label to display on the fader button (only for single values). */
+  subLabel?: string
+
   onChange: (value: ValueOrRandom<number>) => void
 }
 
@@ -53,6 +57,7 @@ export const ValueOrRandomFader = ({
   step,
   quadraticScale = 1,
   label,
+  subLabel,
   onChange,
 }: ValueOrRandomFaderProps) => {
   let fader: JSX.Element
@@ -126,6 +131,7 @@ export const ValueOrRandomFader = ({
         quadraticScale={quadraticScale}
         onChange={onChange}
         ariaLabel={label}
+        subLabel={subLabel}
       />
     )
   }

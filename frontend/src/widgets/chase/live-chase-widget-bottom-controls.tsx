@@ -1,52 +1,45 @@
 import { IdType, LiveChase } from '@vlight/types'
+import { css } from '@linaria/core'
 
 import { deleteLiveChase, setLiveChaseState } from '../../api'
 import {
   iconCompactView,
   iconDelete,
-  iconList,
+  iconEdit,
   iconMultiple,
-  iconRandom,
-  iconRename,
-  iconSameColor,
-  iconSameState,
   iconSingle,
 } from '../../ui/icons'
 import { Button } from '../../ui/buttons/button'
-import {
-  showDialog,
-  showDialogWithReturnValue,
-  showPromptDialog,
-} from '../../ui/overlays/dialog'
-import { buttonCancel, buttonOk, yesNo } from '../../ui/overlays/buttons'
+import { showDialog } from '../../ui/overlays/dialog'
+import { yesNo } from '../../ui/overlays/buttons'
 import { centeredText } from '../../ui/css/basic-styles'
-import { FixtureListEditor } from '../../ui/forms/fixture-list-input'
+import { primaryShade } from '../../ui/styles'
 import { removeReferencesFromActions } from '../../pages/config/entities/action-references'
 
-interface ColorModeDescriptor {
-  mode: LiveChase['colorMode']
-  description: string
-  icon: string
-}
+import {
+  colorModeEntries,
+  getLiveChaseModeDescription,
+  hasCustomLiveChaseMode,
+  showLiveChaseEditDialog,
+  showLiveChaseModeDialog,
+} from './live-chase-dialogs'
 
-const colorModes: ColorModeDescriptor[] = [
-  {
-    mode: 'random',
-    description: 'Colors are applied randomly',
-    icon: iconRandom,
-  },
-  {
-    mode: 'same-color',
-    description:
-      'The same color (but not state) is applied to all active members',
-    icon: iconSameColor,
-  },
-  {
-    mode: 'same-state',
-    description: 'The same state is applied to all active members',
-    icon: iconSameState,
-  },
-]
+const modeButtonContainer = css`
+  position: relative;
+  display: inline-block;
+`
+
+/** Small dot to indicate non-default mode options. */
+const customModeIndicator = css`
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: ${primaryShade(0)};
+  pointer-events: none;
+`
 
 export interface LiveChaseWidgetBottomControlsProps {
   id: IdType
@@ -70,47 +63,23 @@ export const LiveChaseWidgetBottomControls = ({
     onChange ??
     ((newState: Partial<LiveChase>) => setLiveChaseState(id, newState, true))
 
-  const editFixtureList = async () => {
-    const result = await showDialogWithReturnValue<string[]>(
-      onChange => (
-        <FixtureListEditor
-          value={state.members}
-          onChange={onChange}
-          ordering
-          segments
-        />
-      ),
-      [buttonOk, buttonCancel],
-      {
-        title: `Members for chase ${state.name ?? id}`,
-        showCloseButton: true,
-      }
-    )
-    if (result) update({ members: result })
+  const edit = async () => {
+    const changes = await showLiveChaseEditDialog({
+      state,
+      title: onChange ? 'Members' : `Edit ${title ?? 'Live Chase'}`,
+      showName: !onChange,
+    })
+    if (changes) update(changes)
   }
 
   const colorMode =
-    colorModes.find(it => it.mode === state.colorMode) ?? colorModes[0]
+    colorModeEntries.find(it => it.value === state.colorMode) ??
+    colorModeEntries[0]
 
-  const switchColorMode = () => {
-    const index = colorModes.indexOf(colorMode)
-    const nextMode = colorModes[index === colorModes.length - 1 ? 0 : index + 1]
-
-    update({ colorMode: nextMode.mode })
-  }
+  const openModeDialog = () =>
+    showLiveChaseModeDialog(id, state, update, { isAction: !!onChange })
 
   const toggleSingle = () => update({ single: !state.single })
-
-  const rename = async () => {
-    const name = await showPromptDialog({
-      title: 'Rename Live Chase',
-      label: 'Name',
-      initialValue: state.name,
-    })
-    if (name) {
-      update({ name })
-    }
-  }
 
   const promptDelete = async () => {
     if (await showDialog(`Delete Live Chase "${title}"?`, yesNo)) {
@@ -122,10 +91,10 @@ export const LiveChaseWidgetBottomControls = ({
   return (
     <div className={centeredText}>
       <Button
-        icon={iconList}
-        title="Toggle fixture list"
+        icon={iconEdit}
+        title={onChange ? 'Edit members' : 'Edit name and members'}
         transparent
-        onClick={editFixtureList}
+        onClick={edit}
       />
       <Button
         icon={state.single ? iconSingle : iconMultiple}
@@ -137,12 +106,17 @@ export const LiveChaseWidgetBottomControls = ({
         transparent
         onClick={toggleSingle}
       />
-      <Button
-        icon={colorMode.icon}
-        title={colorMode.description}
-        transparent
-        onClick={switchColorMode}
-      />
+      <span className={modeButtonContainer}>
+        <Button
+          icon={colorMode.icon}
+          title={getLiveChaseModeDescription(state)}
+          transparent
+          onClick={openModeDialog}
+        />
+        {hasCustomLiveChaseMode(state) && (
+          <span className={customModeIndicator} />
+        )}
+      </span>
       {!onChange && (
         <>
           <Button
@@ -150,12 +124,6 @@ export const LiveChaseWidgetBottomControls = ({
             title="Compact view: Speed burst button only"
             transparent
             onClick={() => update({ compact: true })}
-          />
-          <Button
-            icon={iconRename}
-            title="Rename"
-            transparent
-            onClick={rename}
           />
           <Button
             icon={iconDelete}

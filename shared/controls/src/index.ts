@@ -49,7 +49,12 @@ export {
   defaultLiveMemoryGradientSpeed,
 } from './memories'
 export { isOrderedByCoords, getOrderValue, orderFixtures } from './order'
-export { getLiveChaseFixtureStates } from './chases'
+export {
+  getLiveChaseFixtureStates,
+  getLiveChaseActiveCount,
+  type LiveChaseProgress,
+  type LiveChaseStepResult,
+} from './chases'
 export {
   defaultLiveMovementCenter,
   defaultLiveMovementSpeed,

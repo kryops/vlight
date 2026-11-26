@@ -1,4 +1,6 @@
 import { test, expect } from '../src/fixtures'
+import { Locator } from '@playwright/test'
+
 import { App } from '../src/helpers/app'
 
 const chase = 'Red/Blue Chase'
@@ -16,6 +18,12 @@ async function addChase(app: App, name: string) {
   await expect(app.widget(name)).toBeVisible()
 }
 
+/** Opens the mode dialog of the given chase widget. */
+async function openModeDialog(app: App, widget: Locator) {
+  await app.button(/^Mode: /, widget).click()
+  await expect(app.dialog).toContainText('Chase Mode')
+}
+
 /** The color list entries are drag handles that contain the remove button. */
 async function removeFirstColor(app: App) {
   await app.dialog
@@ -29,7 +37,7 @@ test('creating, renaming and deleting a live chase', async ({ app }) => {
   await addChase(app, 'Chase')
 
   const widget = app.widget('Chase')
-  await app.button('Rename', widget).click()
+  await app.button('Edit name and members', widget).click()
   await app.dialog.getByRole('textbox').fill('Renamed')
   await app.button('Ok', app.dialog).click()
   await expect(app.widget('Renamed')).toBeVisible()
@@ -163,12 +171,19 @@ test('same-color mode applies the same color to all members', async ({
   universe,
 }) => {
   const widget = app.widget(chase)
-  await app.button('Colors are applied randomly', widget).click()
-  const sameColor = app.button(
-    'The same color (but not state) is applied to all active members',
-    widget
+  await openModeDialog(app, widget)
+  await app.button('Same color', app.dialog).click()
+  await expect(app.button('Same color', app.dialog)).toHaveAttribute(
+    'aria-pressed',
+    'true'
   )
-  await expect(sameColor).toBeVisible()
+  await app.button('Ok', app.dialog).click()
+  await expect(
+    app.button(
+      /The same color \(but not state\) is applied to all active members/,
+      widget
+    )
+  ).toBeVisible()
 
   await app.toggleWidget(chase)
   for (let i = 0; i < 5; i++) {
@@ -182,11 +197,84 @@ test('same-color mode applies the same color to all members', async ({
       })
       .toBe(true)
   }
+})
 
-  await sameColor.click()
+test('sequential colors apply the next color with each step', async ({
+  app,
+  universe,
+}) => {
+  const widget = app.widget(chase)
+  await openModeDialog(app, widget)
+  await app.button('Same color', app.dialog).click()
+  // equal distribution is only available for per-member colors
+  await expect(app.button('Equal', app.dialog)).toBeHidden()
+  await app.button('Sequential', app.dialog).click()
+  await app.button('Ok', app.dialog).click()
+
+  await app.toggleWidget(chase)
+  await universe.expectChannels({ 2: 255 })
+  let previousRed = await universe.value(3)
+  for (let i = 0; i < 4; i++) {
+    await app.button('Step', widget).click()
+    await universe.expectChannel(
+      3,
+      value => value === 255 - previousRed,
+      'red alternates'
+    )
+    previousRed = await universe.value(3)
+    await universe.expectChannels({ 7: previousRed })
+  }
+})
+
+test('equal color distribution applies each color once', async ({
+  app,
+  universe,
+}) => {
+  const widget = app.widget(chase)
+  await openModeDialog(app, widget)
+  await app.button('Equal', app.dialog).click()
+  await app.button('Ok', app.dialog).click()
+
+  await app.toggleWidget(chase)
+  for (let i = 0; i < 5; i++) {
+    await app.button('Step', widget).click()
+    await expect
+      .poll(async () => {
+        const [r1, r2] = await Promise.all([3, 7].map(it => universe.value(it)))
+        return r1 + r2
+      })
+      .toBe(255)
+  }
+})
+
+test('ordered selection moves through the members', async ({
+  app,
+  universe,
+}) => {
+  const widget = app.widget(chase)
+  await openModeDialog(app, widget)
+  // direction options are only displayed for ordered selection
+  await expect(app.button('Ping-pong', app.dialog)).toBeHidden()
+  await app.button('X coord', app.dialog).click()
+  await expect(app.button('Ping-pong', app.dialog)).toBeVisible()
+  await app.button('Ok', app.dialog).click()
   await expect(
-    app.button('The same state is applied to all active members', widget)
+    app.button(/^Mode: Members ordered by X coord/, widget)
   ).toBeVisible()
+
+  await app.fader('Light', widget).dragTo(0.5)
+  await expect(app.fader('Light', widget).locator).toHaveAttribute(
+    'aria-valuetext',
+    '1/2'
+  )
+
+  // starting with the leftmost par, each step selects the next one
+  await app.toggleWidget(chase)
+  await universe.expectChannels({ 2: 255, 6: 0 })
+  await app.button('Step', widget).click()
+  await universe.expectChannels({ 2: 0, 6: 255 })
+  await app.button('Step', widget).click()
+  await universe.expectChannels({ 2: 255, 6: 0 })
 })
 
 test('single mode turns off other single-mode chases', async ({ app }) => {
@@ -209,8 +297,8 @@ test('single mode turns off other single-mode chases', async ({ app }) => {
 
 test('editing the members', async ({ app, universe }) => {
   const widget = app.widget(chase)
-  await app.button('Toggle fixture list', widget).click()
-  await expect(app.dialog).toContainText(`Members for chase ${chase}`)
+  await app.button('Edit name and members', widget).click()
+  await expect(app.dialog).toContainText(`Edit ${chase}`)
   // replace the group with a single fixture
   await app.button('Remove', app.dialog).click()
   await app.button('Fixture', app.dialog).click()
