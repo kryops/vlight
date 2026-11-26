@@ -47,6 +47,13 @@ const entryIcon = css`
 export interface EntityListProps<T extends EntityName> {
   type: T
   entries: EntityType<T>[]
+
+  /**
+   * Disables reordering via drag & drop, e.g. while the list is filtered.
+   *
+   * Defaults to `false`.
+   */
+  sortingDisabled?: boolean
 }
 
 /**
@@ -55,6 +62,7 @@ export interface EntityListProps<T extends EntityName> {
 export function EntityList<T extends EntityName>({
   type,
   entries,
+  sortingDisabled = false,
 }: EntityListProps<T>) {
   const masterDataMaps = useMasterDataMaps()
 
@@ -73,7 +81,7 @@ export function EntityList<T extends EntityName>({
           className={entryContent}
           onClick={() => openEntityEditor(type, entry)}
         >
-          <Icon icon={iconDrag} inline />
+          {!sortingDisabled && <Icon icon={iconDrag} inline />}
           {entityUiMapping[type]?.listPreview?.(entry as any, masterDataMaps) ??
             getEntityName(entry) ??
             entry.id}
@@ -103,7 +111,7 @@ export function EntityList<T extends EntityName>({
         />
       </>
     ),
-    [type, masterDataMaps]
+    [type, masterDataMaps, sortingDisabled]
   )
 
   return (
@@ -113,6 +121,7 @@ export function EntityList<T extends EntityName>({
       entryClassName={listEntry}
       getKey={getId}
       renderEntryContent={renderEntryContent}
+      disabled={sortingDisabled}
     />
   )
 }

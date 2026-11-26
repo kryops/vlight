@@ -295,3 +295,20 @@ test('creating and deleting a movement', async ({ app }) => {
   await app.confirm()
   await expect(widget).toBeHidden()
 })
+
+test('search filters live chases and movements by name', async ({ app }) => {
+  const noMatches = app.main.getByText('No matches')
+
+  // each section displays its own hint
+  await app.search('circle')
+  await expect(app.widget('Head Circle')).toBeVisible()
+  await expect(app.widget(chase)).toBeHidden()
+  await expect(noMatches).toHaveCount(1)
+
+  await app.search('red blue')
+  await expect(app.widget(chase)).toBeVisible()
+  await expect(app.widget('Head Circle')).toBeHidden()
+
+  await app.search('nothing')
+  await expect(noMatches).toHaveCount(2)
+})

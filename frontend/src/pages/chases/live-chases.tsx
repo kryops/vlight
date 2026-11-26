@@ -10,6 +10,9 @@ import { iconAdd } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
+import { SearchState } from '../../hooks/search'
+import { NoSearchResults } from '../../ui/components/no-search-results'
+import { getLiveChaseTitle } from '../../util/entities'
 import { StatelessLiveChaseWidget } from '../../widgets/chase/stateless-live-chase-widget'
 import { showPromptDialog } from '../../ui/overlays/dialog'
 import { apiState } from '../../api/api-state'
@@ -74,6 +77,8 @@ const addLiveChase = async () => {
 export interface LiveChasesProps {
   startHotkeyIndex?: number
   activeHotkeyIndex?: number | null
+  /** Search to filter the widgets by title. */
+  search?: Pick<SearchState, 'active' | 'matches'>
 }
 
 /**
@@ -82,8 +87,13 @@ export interface LiveChasesProps {
 export const LiveChases = ({
   startHotkeyIndex,
   activeHotkeyIndex,
+  search,
 }: LiveChasesProps) => {
   const liveChases = useApiState('liveChases')
+  const entries = Object.entries(liveChases).filter(
+    ([id, liveChase]) =>
+      !search?.active || search.matches(getLiveChaseTitle(id, liveChase))
+  )
 
   return (
     <div className={container}>
@@ -103,10 +113,10 @@ export const LiveChases = ({
         Live Chases
       </Header>
       <div className={cx(pageWithWidgets, widgetContainer)}>
-        {Object.entries(liveChases).map(([id, liveChase], index) => (
+        {entries.map(([id, liveChase], index) => (
           <StatelessLiveChaseWidget
             key={id}
-            title={liveChase.name ?? `Live Chase ${id}`}
+            title={getLiveChaseTitle(id, liveChase)}
             id={id}
             state={liveChase}
             hotkeysActive={activeHotkeyIndex === index}
@@ -118,6 +128,7 @@ export const LiveChases = ({
           />
         ))}
       </div>
+      {search?.active && entries.length === 0 && <NoSearchResults />}
     </div>
   )
 }

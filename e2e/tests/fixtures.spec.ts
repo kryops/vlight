@@ -69,3 +69,54 @@ test('position picker controls pan and tilt of the moving head', async ({
   await app.fader('TILT', widget).dragTo(0)
   await universe.expectChannels({ 10: 255, 11: 0 })
 })
+
+test('search filters fixtures by name', async ({ app }) => {
+  await app.search('par')
+  await expect(app.widget('2 Par 1')).toBeVisible()
+  await expect(app.widget('6 Par 2')).toBeVisible()
+  await expect(app.widget('1 Dimmer')).toBeHidden()
+
+  // all terms must match, case-insensitive
+  await app.search('PAR 1')
+  await expect(app.widget('2 Par 1')).toBeVisible()
+  await expect(app.widget('6 Par 2')).toBeHidden()
+
+  await app.search('nothing')
+  await expect(app.main).toContainText('No matches')
+
+  // Escape clears and closes the search
+  await app.searchInput.press('Escape')
+  await expect(app.searchInput).toBeHidden()
+  await expect(app.widget('1 Dimmer')).toBeVisible()
+  await expect(app.widget('2 Par 1')).toBeVisible()
+})
+
+test('search can be opened with Ctrl+F and does not trigger hotkeys', async ({
+  app,
+  page,
+  universe,
+}) => {
+  await page.keyboard.press('ControlOrMeta+f')
+  await expect(app.searchInput).toBeFocused()
+
+  // "o" would turn all fixtures on, "1" would select a widget
+  await page.keyboard.type('mo1')
+  await expect(app.searchInput).toHaveValue('mo1')
+  await universe.expectChannels({ 1: 0, 2: 0 })
+  await expect(app.main).toContainText('No matches')
+})
+
+test('number hotkeys address the filtered fixtures', async ({
+  app,
+  page,
+  universe,
+}) => {
+  await app.search('par')
+  // blurring keeps the search open as long as it has a query
+  await app.heading.click()
+  await expect(app.searchInput).toHaveValue('par')
+
+  await page.keyboard.press('2')
+  await page.keyboard.press('Space')
+  await universe.expectChannels({ 6: 255, 2: 0, 1: 0 })
+})

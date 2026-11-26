@@ -10,6 +10,9 @@ import { iconAdd } from '../../ui/icons'
 import { Icon } from '../../ui/icons/icon'
 import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
+import { SearchState } from '../../hooks/search'
+import { NoSearchResults } from '../../ui/components/no-search-results'
+import { getLiveMemoryTitle } from '../../util/entities'
 import {
   StatelessLiveMemoryWidget,
   editLiveMemory,
@@ -47,6 +50,8 @@ const addLiveMemory = async () => {
 export interface LiveMemoriesProps {
   startHotkeyIndex?: number
   activeHotkeyIndex?: number | null
+  /** Search to filter the widgets by title. */
+  search?: Pick<SearchState, 'active' | 'matches'>
 }
 
 /**
@@ -58,8 +63,13 @@ export interface LiveMemoriesProps {
 export const LiveMemories = ({
   startHotkeyIndex,
   activeHotkeyIndex,
+  search,
 }: LiveMemoriesProps) => {
   const liveMemories = useApiState('liveMemories')
+  const entries = Object.entries(liveMemories).filter(
+    ([id, memory]) =>
+      !search?.active || search.matches(getLiveMemoryTitle(id, memory))
+  )
 
   return (
     <div className={container}>
@@ -82,10 +92,10 @@ export const LiveMemories = ({
       <LiveMemoriesMultiControl />
 
       <div className={cx(pageWithWidgets, widgetContainer)}>
-        {Object.entries(liveMemories).map(([id, memory], index) => (
+        {entries.map(([id, memory], index) => (
           <StatelessLiveMemoryWidget
             key={id}
-            title={memory.name ?? `Live Memory ${id}`}
+            title={getLiveMemoryTitle(id, memory)}
             id={id}
             state={memory}
             hotkeysActive={index === activeHotkeyIndex}
@@ -97,6 +107,7 @@ export const LiveMemories = ({
           />
         ))}
       </div>
+      {search?.active && entries.length === 0 && <NoSearchResults />}
     </div>
   )
 }

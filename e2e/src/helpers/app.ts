@@ -73,6 +73,19 @@ export class App {
       .getByRole('button', { name: action, exact: true })
   }
 
+  /** Text input of the page's search, visible after opening it. */
+  get searchInput(): Locator {
+    return this.main.getByRole('textbox', { name: 'Search', exact: true })
+  }
+
+  /** Opens the page's search and filters the widgets/entries by the given query. */
+  async search(query: string): Promise<void> {
+    if (!(await this.searchInput.isVisible())) {
+      await this.button('Search').click()
+    }
+    await this.searchInput.fill(query)
+  }
+
   button(name: string | RegExp, container: Locator = this.main): Locator {
     return container.getByRole('button', { name, exact: true })
   }

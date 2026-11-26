@@ -1,8 +1,14 @@
 import { pageWithWidgets } from '../../ui/css/page'
-import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
+import {
+  FixtureWidget,
+  getFixtureName,
+} from '../../widgets/fixture/fixture-widget'
 import { Header } from '../../ui/containers/header'
-import { useMasterData } from '../../hooks/api'
+import { useMasterData, useMasterDataMaps } from '../../hooks/api'
 import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
+import { useSearch } from '../../hooks/search'
+import { SearchToggle } from '../../ui/components/search-toggle'
+import { NoSearchResults } from '../../ui/components/no-search-results'
 
 import { FixturesActions } from './fixtures-actions'
 import { FixturesMultiControl } from './fixtures-multi-control'
@@ -16,15 +22,38 @@ import { FixturesMultiControl } from './fixtures-multi-control'
  */
 const FixturesPage = () => {
   const { fixtures } = useMasterData()
+  const { fixtureTypes } = useMasterDataMaps()
+  const search = useSearch()
 
-  const activeHotkeyIndex = useNumberHotkey(fixtures.length)
+  const filteredFixtures = search.active
+    ? fixtures.filter(fixture => {
+        const fixtureType = fixtureTypes.get(fixture.type)
+        return search.matches(
+          fixtureType ? getFixtureName(fixture, fixtureType) : fixture.name
+        )
+      })
+    : fixtures
+
+  const activeHotkeyIndex = useNumberHotkey(
+    filteredFixtures.length,
+    search.query
+  )
 
   return (
     <>
-      <Header rightContent={<FixturesActions />}>Fixtures</Header>
+      <Header
+        rightContent={
+          <>
+            <SearchToggle {...search} />
+            <FixturesActions />
+          </>
+        }
+      >
+        Fixtures
+      </Header>
       <FixturesMultiControl />
       <div className={pageWithWidgets}>
-        {fixtures.map((fixture, index) => (
+        {filteredFixtures.map((fixture, index) => (
           <FixtureWidget
             key={fixture.id}
             fixture={fixture}
@@ -33,6 +62,7 @@ const FixturesPage = () => {
           />
         ))}
       </div>
+      {search.active && filteredFixtures.length === 0 && <NoSearchResults />}
     </>
   )
 }

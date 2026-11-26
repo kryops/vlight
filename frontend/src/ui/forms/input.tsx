@@ -1,5 +1,5 @@
 import { css } from '@linaria/core'
-import { InputHTMLAttributes, TextareaHTMLAttributes } from 'react'
+import { InputHTMLAttributes, Ref, TextareaHTMLAttributes } from 'react'
 
 import { cx } from '../../util/styles'
 import { backgroundColor, textShade, baseline, inputWidth } from '../styles'
@@ -11,6 +11,7 @@ export interface InputProps extends InputHTMLAttributes<any> {
   value: string
   onChange: (value: any) => void
   className?: string
+  ref?: Ref<HTMLInputElement>
 }
 
 const input = css`

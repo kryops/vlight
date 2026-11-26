@@ -65,9 +65,20 @@ const numberHotkeys = [...createRangeArray(1, 9).map(String), '0', 'Shift+0']
  * - 0 increments the number
  * - Shift+0 decrements the number
  * - Pressing the currently active key again resets the item
+ *
+ * Changing the `resetKey` (e.g. a search query) resets the active item.
  */
-export function useNumberHotkey(itemCount: number): number | null {
+export function useNumberHotkey(
+  itemCount: number,
+  resetKey?: unknown
+): number | null {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
+
+  const [prevResetKey, setPrevResetKey] = useState(resetKey)
+  if (resetKey !== prevResetKey) {
+    setPrevResetKey(resetKey)
+    setActiveIndex(null)
+  }
 
   useHotkeys(
     numberHotkeys,
@@ -94,7 +105,7 @@ export function useNumberHotkey(itemCount: number): number | null {
     },
     [itemCount]
   )
-  return activeIndex
+  return activeIndex !== null && activeIndex < itemCount ? activeIndex : null
 }
 
 export function getHotkeyLabel(index: number): string | undefined {

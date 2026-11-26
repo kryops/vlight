@@ -8,6 +8,7 @@
 - Added named actions that can be reused by buttons, sequences, and other named actions
 - Added action recording: Collect control changes as actions, then apply them or save them to a button/sequence
 - Added global PAUSE button to the Controls widget
+- Added search to filter fixtures, groups, memories, chases, sequences and config lists by name (Ctrl+F)
 - Added auto-select free channel button for fixture editor
 - Fixtures/groups: Added flash (instant on/off) button
 - Fixtures/groups: "Save into Memory" can now add the state as a new scene to an existing memory

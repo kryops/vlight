@@ -223,3 +223,13 @@ test('editing the steps of a sequence', async ({ app }) => {
   await app.button('Start', widget).click()
   await expect(widget).toContainText('Run 1/3')
 })
+
+test('search filters sequences by name', async ({ app }) => {
+  await app.search('memory')
+  await expect(app.widget('Memory Sequence')).toBeVisible()
+
+  await app.search('nothing')
+  await expect(app.widget('Memory Sequence')).toBeHidden()
+  await expect(app.main).toContainText('No matches')
+  await expect(app.main).not.toContainText('No sequences configured yet')
+})

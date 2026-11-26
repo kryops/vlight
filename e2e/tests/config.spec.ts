@@ -119,6 +119,29 @@ test('editing, copying and deleting entries', async ({ app }) => {
   await expect(app.entityEntry('Front Pars')).toBeVisible()
 })
 
+test('filtering entity lists', async ({ app }) => {
+  await app.openEntityConfig('Fixtures')
+  await app.search('par')
+  await expect(app.entityEntry('Par #')).toBeVisible()
+  await expect(app.entityEntry('Dimmer')).toBeHidden()
+
+  // entries can still be edited while filtered
+  await app.entityEntry('Par #').click()
+  const editor = app.entityEditor()
+  await editor.fill('Name', 'Front Par #')
+  await editor.save()
+  await expect(app.entityEntry('Front Par #')).toBeVisible()
+  await expect(app.searchInput).toHaveValue('par')
+
+  await app.search('nothing')
+  await expect(app.main).toContainText('No matches')
+
+  // the search is reset when leaving the page
+  await app.openEntityConfig('Fixture Groups')
+  await expect(app.searchInput).toBeHidden()
+  await expect(app.entityEntry('Pars')).toBeVisible()
+})
+
 test('creating a memory', async ({ app, universe }) => {
   await app.openEntityConfig('Memories')
   await app.button('Add').click()

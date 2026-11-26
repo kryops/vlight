@@ -1,4 +1,5 @@
 import { EntityType } from '@vlight/types'
+import { LiveChase, LiveMemory, LiveMovement } from '@vlight/types/entities'
 
 /**
  * Returns the display name of a master data entry
@@ -19,4 +20,22 @@ export function copyEntity<T extends EntityType>(entry: T): T {
   if ('name' in copy && copy.name) copy.name = `${copy.name} (copy)`
   else if ('label' in copy && copy.label) copy.label = `${copy.label} (copy)`
   return copy
+}
+
+/** Returns the display title of a live memory. */
+export function getLiveMemoryTitle(id: string, liveMemory: LiveMemory): string {
+  return liveMemory.name ?? `Live Memory ${id}`
+}
+
+/** Returns the display title of a live chase. */
+export function getLiveChaseTitle(id: string, liveChase: LiveChase): string {
+  return liveChase.name ?? `Live Chase ${id}`
+}
+
+/** Returns the display title of a live movement. */
+export function getLiveMovementTitle(
+  id: string,
+  liveMovement: LiveMovement
+): string {
+  return liveMovement.name ?? `Movement ${id}`
 }

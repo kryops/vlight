@@ -73,6 +73,7 @@ import {
   mdiLightningBoltOutline,
   mdiLinkVariantPlus,
   mdiLinkVariantOff,
+  mdiMagnify,
 } from '@mdi/js'
 
 export const iconLoading = mdiLoading
@@ -152,3 +153,4 @@ export const iconRecord = mdiRecordCircleOutline
 export const iconSave = mdiContentSave
 export const iconEdit = mdiPencil
 export const iconApply = mdiPlayCircleOutline
+export const iconSearch = mdiMagnify

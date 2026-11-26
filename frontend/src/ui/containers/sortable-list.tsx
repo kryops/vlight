@@ -40,6 +40,13 @@ export interface SortableListProps<T> {
    * Defaults to vertical.
    */
   direction?: 'vertical' | 'horizontal'
+
+  /**
+   * Disables reordering, e.g. while the list is filtered.
+   *
+   * Defaults to `false`.
+   */
+  disabled?: boolean
 }
 
 /**
@@ -51,6 +58,7 @@ const InnerSortableList = ({
   entryClassName,
   renderEntryContent,
   getKey,
+  disabled,
 }: Omit<SortableListProps<any>, 'containerClassName' | 'onChange'>) => {
   return (
     <>
@@ -59,7 +67,7 @@ const InnerSortableList = ({
           key={getKey?.(entry) ?? index}
           draggableId={String(getKey?.(entry) ?? index)}
           index={index}
-          isDragDisabled={entries.length < 2}
+          isDragDisabled={disabled || entries.length < 2}
         >
           {provided => (
             <div
@@ -88,6 +96,7 @@ export const SortableList = <T extends any>({
   renderEntryContent,
   getKey,
   direction,
+  disabled,
 }: SortableListProps<T>) => {
   const droppableId = useId()
 
@@ -105,7 +114,7 @@ export const SortableList = <T extends any>({
     >
       <Droppable
         droppableId={droppableId}
-        isDropDisabled={entries.length < 2}
+        isDropDisabled={disabled || entries.length < 2}
         direction={direction}
       >
         {provided => (
@@ -119,6 +128,7 @@ export const SortableList = <T extends any>({
               renderEntryContent={renderEntryContent}
               entryClassName={entryClassName}
               getKey={getKey}
+              disabled={disabled}
             />
             {provided.placeholder}
           </div>

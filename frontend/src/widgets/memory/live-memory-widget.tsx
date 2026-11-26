@@ -2,6 +2,7 @@ import { IdType } from '@vlight/types'
 
 import { useApiStateEntry } from '../../hooks/api'
 import { WidgetPassthrough } from '../../ui/containers/widget'
+import { getLiveMemoryTitle } from '../../util/entities'
 
 import { StatelessLiveMemoryWidget } from './stateless-live-memory-widget'
 
@@ -28,7 +29,7 @@ export const LiveMemoryWidget = ({
     <StatelessLiveMemoryWidget
       id={id}
       state={liveMemoryState}
-      title={title ?? liveMemoryState.name ?? `Live Memory ${id}`}
+      title={title ?? getLiveMemoryTitle(id, liveMemoryState)}
       {...passThrough}
     />
   )

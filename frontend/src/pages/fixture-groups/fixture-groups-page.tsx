@@ -3,6 +3,9 @@ import { FixtureGroupWidget } from '../../widgets/fixture-group/fixture-group-wi
 import { pageWithWidgets } from '../../ui/css/page'
 import { Header } from '../../ui/containers/header'
 import { getHotkeyLabel, useNumberHotkey } from '../../hooks/hotkey'
+import { useSearch } from '../../hooks/search'
+import { SearchToggle } from '../../ui/components/search-toggle'
+import { NoSearchResults } from '../../ui/components/no-search-results'
 
 import { FixtureGroupsActions } from './fixture-group-actions'
 import { FixtureGroupMultiControl } from './fixture-group-multi-control'
@@ -16,15 +19,29 @@ import { FixtureGroupMultiControl } from './fixture-group-multi-control'
  */
 const FixtureGroupsPage = () => {
   const { fixtureGroups } = useMasterData()
+  const search = useSearch()
 
-  const activeHotkeyIndex = useNumberHotkey(fixtureGroups.length)
+  const filteredGroups = search.active
+    ? fixtureGroups.filter(group => search.matches(group.name ?? group.id))
+    : fixtureGroups
+
+  const activeHotkeyIndex = useNumberHotkey(filteredGroups.length, search.query)
 
   return (
     <>
-      <Header rightContent={<FixtureGroupsActions />}>Groups</Header>
+      <Header
+        rightContent={
+          <>
+            <SearchToggle {...search} />
+            <FixtureGroupsActions />
+          </>
+        }
+      >
+        Groups
+      </Header>
       <FixtureGroupMultiControl />
       <div className={pageWithWidgets}>
-        {fixtureGroups.map((group, index) => (
+        {filteredGroups.map((group, index) => (
           <FixtureGroupWidget
             key={group.id}
             group={group}
@@ -33,6 +50,7 @@ const FixtureGroupsPage = () => {
           />
         ))}
       </div>
+      {search.active && filteredGroups.length === 0 && <NoSearchResults />}
     </>
   )
 }

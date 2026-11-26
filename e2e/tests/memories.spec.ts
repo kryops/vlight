@@ -155,3 +155,22 @@ test('editing a live memory', async ({ app, universe }) => {
   await app.button('Ok', app.dialog).click()
   await universe.expectChannels({ 2: 0, 6: 255 })
 })
+
+test('search filters memories and live memories by name', async ({ app }) => {
+  await app.search('pars')
+  await expect(app.widget('Red Pars')).toBeVisible()
+  await expect(app.widget('Green Pars')).toBeVisible()
+
+  const noMatches = app.main.getByText('No matches')
+  await expect(noMatches).toHaveCount(0)
+
+  // each section displays its own hint
+  await app.search('green')
+  await expect(app.widget('Red Pars')).toBeHidden()
+  await expect(app.widget('Green Pars')).toBeVisible()
+  await expect(noMatches).toHaveCount(1)
+
+  await app.search('blue')
+  await expect(app.widget('Green Pars')).toBeHidden()
+  await expect(noMatches).toHaveCount(2)
+})

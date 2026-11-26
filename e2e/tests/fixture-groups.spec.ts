@@ -41,3 +41,16 @@ test('adding a group from the page', async ({ app }) => {
 
   await expect(app.widget('Dimmers')).toBeVisible()
 })
+
+test('search filters groups by name', async ({ app }) => {
+  await app.search('pa')
+  await expect(app.widget('Pars')).toBeVisible()
+
+  await app.search('movers')
+  await expect(app.widget('Pars')).toBeHidden()
+  await expect(app.main).toContainText('No matches')
+
+  await app.button('Clear search').click()
+  await expect(app.searchInput).toBeHidden()
+  await expect(app.widget('Pars')).toBeVisible()
+})

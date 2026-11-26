@@ -18,6 +18,9 @@ import { Icon } from '../../ui/icons/icon'
 import { showPromptDialog } from '../../ui/overlays/dialog'
 import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
+import { SearchState } from '../../hooks/search'
+import { NoSearchResults } from '../../ui/components/no-search-results'
+import { getLiveMovementTitle } from '../../util/entities'
 import { StatelessLiveMovementWidget } from '../../widgets/movement/stateless-live-movement-widget'
 
 const container = css`
@@ -81,6 +84,8 @@ const addLiveMovement = async () => {
 export interface LiveMovementsProps {
   startHotkeyIndex?: number
   activeHotkeyIndex?: number | null
+  /** Search to filter the widgets by title. */
+  search?: Pick<SearchState, 'active' | 'matches'>
 }
 
 /**
@@ -89,8 +94,13 @@ export interface LiveMovementsProps {
 export const LiveMovements = ({
   startHotkeyIndex,
   activeHotkeyIndex,
+  search,
 }: LiveMovementsProps) => {
   const liveMovements = useApiState('liveMovements')
+  const entries = Object.entries(liveMovements).filter(
+    ([id, liveMovement]) =>
+      !search?.active || search.matches(getLiveMovementTitle(id, liveMovement))
+  )
 
   return (
     <div className={container}>
@@ -110,10 +120,10 @@ export const LiveMovements = ({
         Movements
       </Header>
       <div className={cx(pageWithWidgets, widgetContainer)}>
-        {Object.entries(liveMovements).map(([id, liveMovement], index) => (
+        {entries.map(([id, liveMovement], index) => (
           <StatelessLiveMovementWidget
             key={id}
-            title={liveMovement.name ?? `Movement ${id}`}
+            title={getLiveMovementTitle(id, liveMovement)}
             id={id}
             state={liveMovement}
             hotkeysActive={
@@ -128,6 +138,7 @@ export const LiveMovements = ({
           />
         ))}
       </div>
+      {search?.active && entries.length === 0 && <NoSearchResults />}
     </div>
   )
 }
