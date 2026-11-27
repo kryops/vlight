@@ -5,9 +5,11 @@ import {
   stepValueFade,
   ValueFade,
 } from './fading'
-import { universes } from './state'
 import { Universe } from './types'
-import { setUniverseChannel } from './universe-functions'
+import {
+  isUniverseOrOwnerActive,
+  setUniverseChannel,
+} from './universe-functions'
 import { getChannelFromUniverseIndex, getUniverseIndex } from './utils'
 
 /** All running channel fades of a universe. */
@@ -32,7 +34,7 @@ function processUniverseFades(
   fades.lastTime = now
 
   // Inactive universes are not faded, e.g. after being removed while fading
-  const finish = !universes.has(universe)
+  const finish = !isUniverseOrOwnerActive(universe)
 
   for (const [channel, fade] of fades.channels) {
     if (stepValueFade(fade, finish ? Infinity : elapsed)) {
@@ -70,6 +72,7 @@ export interface SetUniverseChannelsOptions {
    * Fades are not interrupted if the target value of the channel does not change.
    *
    * Universes that are not active are never faded.
+   * Override weights universes are faded while their owner is active.
    *
    * Defaults to 0.
    */
@@ -106,7 +109,7 @@ export function setUniverseChannels(
   values: Iterable<[channel: number, value: number]>,
   { fade = 0, onFinished, restart }: SetUniverseChannelsOptions = {}
 ): boolean {
-  const canFade = fade > 0 && universes.has(universe)
+  const canFade = fade > 0 && isUniverseOrOwnerActive(universe)
   let fades = universeFades.get(universe)
   let changed = false
 

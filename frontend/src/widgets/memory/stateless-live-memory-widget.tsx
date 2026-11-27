@@ -42,6 +42,12 @@ const leftColumn = css`
   }
 `
 
+const checkboxes = css`
+  > * {
+    display: block;
+  }
+`
+
 const rightColumn = css`
   align-items: flex-start;
 `
@@ -122,6 +128,7 @@ export const StatelessLiveMemoryWidget = ({
     gradientMovement,
     gradientMovementInverted,
     gradientIgnoreFixtureOffset,
+    override,
     ...rawScene
   } = state
   const scene = useDeepEqualMemo(rawScene)
@@ -148,6 +155,8 @@ export const StatelessLiveMemoryWidget = ({
 
   const toggleInverted = () =>
     update({ gradientMovementInverted: !state.gradientMovementInverted })
+
+  const toggleOverride = () => update({ override: !state.override })
 
   const toggleIgnoreOffset = () =>
     update({ gradientIgnoreFixtureOffset: !state.gradientIgnoreFixtureOffset })
@@ -242,25 +251,34 @@ export const StatelessLiveMemoryWidget = ({
           Preview
         </Button>
 
-        {hasGradient && (
-          <>
-            <CheckboxLabel
-              value={gradientMovementInverted}
-              onChange={toggleInverted}
-              title="Changes the direction of gradient movement"
-            >
-              Move inverted
-            </CheckboxLabel>
-            <br />
-            <CheckboxLabel
-              value={gradientIgnoreFixtureOffset}
-              onChange={toggleIgnoreOffset}
-              title="Applies the same gradient offset to all members"
-            >
-              Same offset
-            </CheckboxLabel>
-          </>
-        )}
+        <div className={checkboxes}>
+          <CheckboxLabel
+            value={override}
+            onChange={toggleOverride}
+            title="Replaces other controls on the members instead of merging with them (highest value wins)"
+          >
+            Override
+          </CheckboxLabel>
+
+          {hasGradient && (
+            <>
+              <CheckboxLabel
+                value={gradientMovementInverted}
+                onChange={toggleInverted}
+                title="Changes the direction of gradient movement"
+              >
+                Move inverted
+              </CheckboxLabel>
+              <CheckboxLabel
+                value={gradientIgnoreFixtureOffset}
+                onChange={toggleIgnoreOffset}
+                title="Applies the same gradient offset to all members"
+              >
+                Same offset
+              </CheckboxLabel>
+            </>
+          )}
+        </div>
       </div>
       <div className={cx(flexWrap, rightColumn)}>
         <Fader

@@ -1,4 +1,4 @@
-import { IdType, LiveChase } from '@vlight/types'
+import { IdType, LiveChase, LiveChaseMixing } from '@vlight/types'
 import { css } from '@linaria/core'
 
 import { deleteLiveChase, setLiveChaseState } from '../../api'
@@ -6,8 +6,11 @@ import {
   iconCompactView,
   iconDelete,
   iconEdit,
+  iconMerge,
   iconMultiple,
+  iconOverride,
   iconSingle,
+  iconSwop,
 } from '../../ui/icons'
 import { Button } from '../../ui/buttons/button'
 import { showDialog } from '../../ui/overlays/dialog'
@@ -40,6 +43,30 @@ const customModeIndicator = css`
   background: ${primaryShade(0)};
   pointer-events: none;
 `
+
+const mixingEntries: {
+  value: LiveChaseMixing
+  icon: string
+  title: string
+}[] = [
+  {
+    value: 'merge',
+    icon: iconMerge,
+    title: 'Merge: Highest values of all controls win (click for Override)',
+  },
+  {
+    value: 'override',
+    icon: iconOverride,
+    title:
+      'Override: Replaces other controls on the active members (click for Swop)',
+  },
+  {
+    value: 'swop',
+    icon: iconSwop,
+    title:
+      'Swop: Replaces all other controls on all fixtures (click for Merge)',
+  },
+]
 
 export interface LiveChaseWidgetBottomControlsProps {
   id: IdType
@@ -81,6 +108,16 @@ export const LiveChaseWidgetBottomControls = ({
 
   const toggleSingle = () => update({ single: !state.single })
 
+  const mixingIndex = Math.max(
+    mixingEntries.findIndex(it => it.value === (state.mixing ?? 'merge')),
+    0
+  )
+  const mixing = mixingEntries[mixingIndex]
+  const cycleMixing = () =>
+    update({
+      mixing: mixingEntries[(mixingIndex + 1) % mixingEntries.length].value,
+    })
+
   const promptDelete = async () => {
     if (await showDialog(`Delete Live Chase "${title}"?`, yesNo)) {
       deleteLiveChase(id)
@@ -105,6 +142,12 @@ export const LiveChaseWidgetBottomControls = ({
         }
         transparent
         onClick={toggleSingle}
+      />
+      <Button
+        icon={mixing.icon}
+        title={mixing.title}
+        transparent
+        onClick={cycleMixing}
       />
       <span className={modeButtonContainer}>
         <Button

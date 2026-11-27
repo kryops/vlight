@@ -9,6 +9,7 @@ import { universes, universeStates } from './state'
 import { Universe } from './types'
 import {
   addUniverse,
+  bringUniverseToFront,
   removeUniverse,
   setUniverseState,
 } from './universe-functions'
@@ -118,6 +119,9 @@ export function setUniverseOutput(
   const active = universes.has(universe)
   const existing = masterFades.get(universe)
   const target = on ? masterValue : 0
+
+  // Turning an overriding universe on again while fading out moves it on top again
+  if (on && active && existing && !existing.on) bringUniverseToFront(universe)
 
   // Changes that do not affect the output (e.g. other state changes of the control)
   // should not interrupt a running fade

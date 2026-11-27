@@ -4,9 +4,6 @@
 
 - Control improvements
   - keyboard input for faders?
-- Universe features
-  - Swop (single chase active, rest blackout)
-  - Complete fixture override/reservation (e.g. when controlled by a chase)
 - Map
   - Change size
 - Speed/Fade control

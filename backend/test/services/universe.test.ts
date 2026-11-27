@@ -15,6 +15,7 @@ import {
   setUniverseChannel,
   setUniverseChannels,
   setUniverseOutput,
+  setUniverseOverride,
   setUniverseState,
   Universe,
 } from '../../src/services/universe'
@@ -647,6 +648,148 @@ describe('services/universe', () => {
       expect(dmxValue()).toBe(50)
       vi.advanceTimersByTime(600)
       expect(dmxValue()).toBe(50)
+    })
+  })
+
+  describe('overrides', () => {
+    /** Creates a weights universe that fully overrides the given channels. */
+    function weightsFor(...channels: number[]) {
+      const weights = createUniverse()
+      channels.forEach(channel => (weights[channel - 1] = 255))
+      return weights
+    }
+
+    const fixture1Channels = [1, 2, 3, 4, 5]
+    const fixture2Channels = [6, 7, 8, 9]
+    const dmx = (from: number, to: number) =>
+      Array.from(getDmxUniverse().subarray(from - 1, to))
+
+    function overridingUniverse(
+      channels1: FixtureChannels | null,
+      channels2: FixtureChannels | null,
+      weightedChannels: number[]
+    ) {
+      const universe = universeWithFixtures(channels1, channels2)
+      setUniverseOverride(universe, weightsFor(...weightedChannels))
+      return universe
+    }
+
+    it('replaces the values of the weighted channels', () => {
+      addUniverse(universeWithFixtures({ m: 255, b: 255 }, { b: 255 }))
+      addUniverse(overridingUniverse(null, { r: 255 }, fixture2Channels))
+      // fixture 1 is merged as usual
+      expect(dmx(1, 4)).toEqual([255, 0, 0, 255])
+      expect(dmx(6, 8)).toEqual([255, 0, 0])
+    })
+
+    it('restores the merged values when removed', () => {
+      addUniverse(universeWithFixtures(null, { b: 255 }))
+      const universe = overridingUniverse(null, { r: 255 }, fixture2Channels)
+      addUniverse(universe)
+      removeUniverse(universe)
+      expect(dmx(6, 8)).toEqual([0, 0, 255])
+    })
+
+    it('crossfades by the master value', () => {
+      addUniverse(universeWithFixtures(null, { b: 255 }))
+      addUniverse(overridingUniverse(null, { r: 255 }, fixture2Channels), {
+        masterValue: 51,
+      })
+      expect(dmx(6, 8)).toEqual([51, 0, 204])
+    })
+
+    it('blends the effective brightness of fixtures with a master channel', () => {
+      const base = universeWithFixtures({ m: 255, b: 255 })
+      addUniverse(base)
+      const universe = overridingUniverse({ m: 255, r: 255 }, null, [
+        ...fixture1Channels,
+      ])
+      addUniverse(universe, { masterValue: 51 })
+      expect(dmx(1, 4)).toEqual([255, 51, 0, 204])
+
+      // fading in over a dark fixture only fades the master channel
+      removeUniverse(base)
+      expect(dmx(1, 4)).toEqual([51, 255, 0, 0])
+    })
+
+    it('keeps the effective brightness when only overriding the master channel', () => {
+      addUniverse(universeWithFixtures({ m: 51, b: 255 }))
+      addUniverse(overridingUniverse({ m: 255 }, null, [1]))
+      expect(dmx(1, 4)).toEqual([255, 0, 0, 51])
+    })
+
+    it('applies the overriding universe activated last on top', () => {
+      const red = overridingUniverse(null, { r: 255 }, fixture2Channels)
+      const green = overridingUniverse(null, { g: 255 }, fixture2Channels)
+      addUniverse(red)
+      addUniverse(green)
+      expect(dmx(6, 8)).toEqual([0, 255, 0])
+
+      removeUniverse(green)
+      expect(dmx(6, 8)).toEqual([255, 0, 0])
+    })
+
+    it('moves a universe on top when turned on while fading out', () => {
+      vi.useFakeTimers()
+      const red = overridingUniverse(null, { r: 255 }, fixture2Channels)
+      const green = overridingUniverse(null, { g: 255 }, fixture2Channels)
+      setUniverseOutput(red, { on: true })
+      setUniverseOutput(green, { on: true })
+      setUniverseOutput(red, { on: false, fade: 1 })
+      setUniverseOutput(red, { on: true, fade: 1 })
+      vi.advanceTimersByTime(1100)
+      expect(dmx(6, 8)).toEqual([255, 0, 0])
+      vi.useRealTimers()
+    })
+
+    it('fades the weights', () => {
+      vi.useFakeTimers()
+      addUniverse(universeWithFixtures(null, { b: 255 }))
+      const universe = universeWithFixtures(null, { r: 255 })
+      const weights = createUniverse()
+      setUniverseOverride(universe, weights)
+      addUniverse(universe)
+      // without weights, the universe is not visible at all
+      expect(dmx(6, 8)).toEqual([0, 0, 255])
+
+      setUniverseChannels(
+        weights,
+        fixture2Channels.map(channel => [channel, 255]),
+        { fade: 1 }
+      )
+      vi.advanceTimersByTime(500)
+      expect(getDmxUniverse()[7]).toBeGreaterThan(80)
+      expect(getDmxUniverse()[7]).toBeLessThan(180)
+
+      vi.advanceTimersByTime(600)
+      expect(dmx(6, 8)).toEqual([255, 0, 0])
+      vi.useRealTimers()
+    })
+
+    it('dims its own values by the master value if configured', () => {
+      addUniverse(universeWithFixtures({ m: 255, b: 255 }, { b: 255 }))
+      const universe = universeWithFixtures({ m: 255, r: 255 }, { r: 255 })
+      setUniverseOverride(
+        universe,
+        weightsFor(...fixture1Channels, ...fixture2Channels),
+        true
+      )
+      addUniverse(universe, { masterValue: 51 })
+      expect(dmx(1, 4)).toEqual([51, 255, 0, 0])
+      expect(dmx(6, 8)).toEqual([51, 0, 0])
+
+      setUniverseState(universe, { masterValue: 0 })
+      // the fixture with master is dark through its master channel
+      expect(dmx(1, 1)).toEqual([0])
+      expect(dmx(6, 8)).toEqual([0, 0, 0])
+    })
+
+    it('merges again after removing the override', () => {
+      addUniverse(universeWithFixtures(null, { b: 255 }))
+      const universe = overridingUniverse(null, { r: 255 }, fixture2Channels)
+      addUniverse(universe)
+      setUniverseOverride(universe, null)
+      expect(dmx(6, 8)).toEqual([255, 0, 255])
     })
   })
 })

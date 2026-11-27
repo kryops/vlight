@@ -44,6 +44,7 @@ export {
   overwriteUniverse,
   setUniverseChannel,
   setUniverseState,
+  setUniverseOverride,
   isUniverseEmpty,
   mixUniverses,
 } from './universe-functions'

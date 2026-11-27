@@ -49,6 +49,9 @@ import {
   mdiStepForward,
   mdiCircle,
   mdiCircleMultiple,
+  mdiSetMerge,
+  mdiArrangeBringToFront,
+  mdiFlipToFront,
   mdiArrowExpandHorizontal,
   mdiPercent,
   mdiClockOutline,
@@ -107,6 +110,9 @@ export const iconSlow = mdiSpeedometerSlow
 export const iconFast = mdiSpeedometer
 export const iconSingle = mdiCircle
 export const iconMultiple = mdiCircleMultiple
+export const iconMerge = mdiSetMerge
+export const iconOverride = mdiArrangeBringToFront
+export const iconSwop = mdiFlipToFront
 export const iconRange = mdiArrowExpandHorizontal
 export const iconSpeedBurst = mdiBomb
 export const iconLocked = mdiLockOutline

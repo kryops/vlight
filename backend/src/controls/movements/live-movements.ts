@@ -10,17 +10,26 @@ import {
   createUniverse,
   overwriteUniverse,
   removeUniverse,
+  setUniverseOverride,
   Universe,
 } from '../../services/universe'
 import { getUniverseIndex } from '../../services/universe/utils'
 import { controlRegistry } from '../registry'
 import { isPaused, registerPauseHandler } from '../pause'
+import { createOverrideWeights } from '../override'
 
 /** A map containing all live movements. */
 export const liveMovements = new Map<IdType, LiveMovement>()
 
-/** The outgoing DMX universes for all live movements. */
+/**
+ * The outgoing DMX universes for all live movements.
+ *
+ * Live movements always override the position channels of their members.
+ */
 const outgoingUniverses = new Map<IdType, Universe>()
+
+/** The override weights of the {@link outgoingUniverses}. */
+const overrideWeights = new Map<IdType, Universe>()
 
 /**
  * Current phase (0-1) per live movement.
@@ -80,6 +89,30 @@ function getUniverseForLiveMovement(
   return universe
 }
 
+/** Overrides the position channels of all members. */
+function updateOverrideWeights(id: IdType, liveMovement: LiveMovement) {
+  const weights = overrideWeights.get(id)
+  if (!weights) return
+  const positions = getLiveMovementFixturePositions(liveMovement, null, {
+    masterData,
+    masterDataMaps,
+  })
+  overwriteUniverse(
+    weights,
+    createOverrideWeights(Object.keys(positions), 'position')
+  )
+}
+
+function removeOutgoingUniverse(id: IdType) {
+  const universe = outgoingUniverses.get(id)
+  if (universe) {
+    removeUniverse(universe)
+    setUniverseOverride(universe, null)
+  }
+  outgoingUniverses.delete(id)
+  overrideWeights.delete(id)
+}
+
 function recomputeLiveMovement(id: IdType, liveMovement: LiveMovement) {
   const universe = outgoingUniverses.get(id)
   if (universe) {
@@ -119,9 +152,7 @@ function refreshMovementInterval() {
 
 function deleteLiveMovement(id: IdType) {
   liveMovements.delete(id)
-  const universe = outgoingUniverses.get(id)
-  if (universe) removeUniverse(universe)
-  outgoingUniverses.delete(id)
+  removeOutgoingUniverse(id)
   phases.delete(id)
   refreshMovementInterval()
 }
@@ -146,8 +177,15 @@ function handleApiMessage(message: ApiLiveMovementMessage): boolean {
 
   refreshMovementInterval()
 
-  if (!existing) outgoingUniverses.set(id, createUniverse())
+  if (!existing) {
+    const universe = createUniverse()
+    const weights = createUniverse()
+    setUniverseOverride(universe, weights)
+    outgoingUniverses.set(id, universe)
+    overrideWeights.set(id, weights)
+  }
   const universe = outgoingUniverses.get(id)!
+  updateOverrideWeights(id, liveMovement)
 
   // We always recompute so changes are reflected immediately,
   // and when turning the movement on again
@@ -163,14 +201,14 @@ function reload(reloadState?: boolean) {
   if (!reloadState) {
     // master data may have changed
     for (const [id, liveMovement] of liveMovements) {
+      updateOverrideWeights(id, liveMovement)
       recomputeLiveMovement(id, liveMovement)
     }
     return
   }
 
   liveMovements.clear()
-  ;[...outgoingUniverses.values()].forEach(removeUniverse)
-  outgoingUniverses.clear()
+  ;[...outgoingUniverses.keys()].forEach(removeOutgoingUniverse)
   phases.clear()
 
   refreshMovementInterval()

@@ -131,6 +131,15 @@ export interface LiveMemory extends MemoryScene {
   value: number
 
   /**
+   * Replaces the other controls on the memory's members instead of being merged with them
+   * (where the highest value wins).
+   *
+   * Only the look channels (all but pan/tilt) are overridden,
+   * unless the memory also sets pan/tilt channels.
+   */
+  override?: boolean
+
+  /**
    * Controls whether the gradient movement is active.
    */
   gradientMovement?: boolean

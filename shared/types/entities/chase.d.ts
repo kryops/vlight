@@ -66,6 +66,19 @@ export type LiveChaseOrderAdvance = 'member' | 'selection'
 export type LiveChaseColorSelection = 'random' | 'equal' | 'sequential'
 
 /**
+ * Controls how a {@link LiveChase} is combined with other controls:
+ * - `merge`: the highest value of all controls wins
+ * - `override`: the chase replaces the other controls on its active members
+ *   (inactive members show the other controls)
+ * - `swop`: the chase replaces the other controls on all fixtures,
+ *   so only the chase is visible
+ *
+ * Only the look channels (all but pan/tilt) are overridden,
+ * unless the chase's colors also set pan/tilt channels.
+ */
+export type LiveChaseMixing = 'merge' | 'override' | 'swop'
+
+/**
  * A live chase steps through partially random states of one or more *colors*.
  *
  * The randomness saves the effort of having to program every single step, when all
@@ -150,6 +163,13 @@ export interface LiveChase {
    * are stopped and turned off.
    */
   single?: boolean
+
+  /**
+   * Controls how the chase is combined with other controls.
+   *
+   * Defaults to `merge`.
+   */
+  mixing?: LiveChaseMixing
 
   /**
    * Burst mode - the chase is temporarily set to step very fast.

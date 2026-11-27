@@ -295,6 +295,89 @@ test('single mode turns off other single-mode chases', async ({ app }) => {
   await expect(app.button('Start', app.widget('Other'))).toBeHidden()
 })
 
+const mergeTitle =
+  'Merge: Highest values of all controls win (click for Override)'
+const overrideTitle =
+  'Override: Replaces other controls on the active members (click for Swop)'
+const swopTitle =
+  'Swop: Replaces all other controls on all fixtures (click for Merge)'
+
+test('override mode replaces other controls on the active members', async ({
+  app,
+  api,
+  universe,
+}) => {
+  const widget = app.widget(chase)
+  // green live memory on both pars, only the first par active in the chase
+  await api.send({
+    type: 'live-memory',
+    id: '1',
+    state: { on: true },
+    merge: true,
+  })
+  await api.send({
+    type: 'live-chase',
+    id: '1',
+    state: { order: 'xcoord', light: 0.5 },
+    merge: true,
+  })
+  await universe.expectChannels({ 4: 255, 8: 255 })
+
+  await app.button(mergeTitle, widget).click()
+  await expect(app.button(overrideTitle, widget)).toBeVisible()
+
+  // the active par is red or blue without green, the other one stays green
+  await app.toggleWidget(chase)
+  await universe.expectChannels({ 2: 255, 4: 0, 6: 255, 7: 0, 8: 255, 9: 0 })
+  await expect
+    .poll(async () => (await universe.value(3)) + (await universe.value(5)))
+    .toBe(255)
+
+  // the selection moves to the second par
+  await app.button('Step', widget).click()
+  await universe.expectChannels({ 3: 0, 4: 255, 5: 0, 8: 0 })
+
+  // turning the chase off shows the live memory again
+  await app.toggleWidget(chase)
+  await universe.expectChannels({ 3: 0, 4: 255, 5: 0, 7: 0, 8: 255, 9: 0 })
+})
+
+test('swop mode replaces other controls on all fixtures', async ({
+  app,
+  api,
+  universe,
+}) => {
+  const widget = app.widget(chase)
+  await api.send({ type: 'fixture', id: 'dimmer', state: { on: true } })
+  await api.send({
+    type: 'live-memory',
+    id: '1',
+    state: { on: true },
+    merge: true,
+  })
+  await universe.expectChannels({ 1: 255, 4: 255 })
+
+  await app.button(mergeTitle, widget).click()
+  await app.button(overrideTitle, widget).click()
+  await expect(app.button(swopTitle, widget)).toBeVisible()
+
+  // only the chase is visible
+  await app.toggleWidget(chase)
+  await universe.expectChannels({ 1: 0, 2: 255, 4: 0, 6: 255, 8: 0 })
+
+  // the value fader only dims the chase, everything else stays black
+  await app.fader('Value', widget).dragTo(0)
+  await universe.expectChannels({ 1: 0, 2: 0, 4: 0, 6: 0, 8: 0 })
+  await app.fader('Value', widget).dragTo(1)
+
+  await app.toggleWidget(chase)
+  await universe.expectChannels({ 1: 255, 4: 255, 8: 255 })
+
+  // back to merge mode
+  await app.button(swopTitle, widget).click()
+  await expect(app.button(mergeTitle, widget)).toBeVisible()
+})
+
 test('editing the members', async ({ app, universe }) => {
   const widget = app.widget(chase)
   await app.button('Edit name and members', widget).click()
@@ -370,6 +453,33 @@ test('movements move the moving head', async ({ app, universe }) => {
   const first = await universe.value(10)
   await universe.expectChannel(10, value => value !== first, 'pan changes')
   await universe.expectChannel(11, value => value > 0, 'tilt is set')
+})
+
+test('movements override the position of other controls', async ({
+  app,
+  api,
+  universe,
+}) => {
+  await api.send({
+    type: 'fixture',
+    id: 'mh',
+    state: { on: true, channels: { pan: 255, tilt: 255 } },
+    merge: true,
+  })
+  await universe.expectChannels({ 10: 255, 11: 255 })
+
+  // the circle around the center does not reach the fixture's position
+  await app.button('Start', app.widget('Head Circle')).click()
+  await universe.expectChannel(10, value => value < 255, 'pan is overridden')
+  await universe.expectChannel(11, value => value < 255, 'tilt is overridden')
+
+  await api.send({
+    type: 'live-movement',
+    id: '1',
+    state: { on: false },
+    merge: true,
+  })
+  await universe.expectChannels({ 10: 255, 11: 255 })
 })
 
 test('creating and deleting a movement', async ({ app }) => {

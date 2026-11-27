@@ -1,4 +1,8 @@
-import { getLiveChaseFixtureStates, LiveChaseProgress } from '@vlight/controls'
+import {
+  getLiveChaseFixtureStates,
+  LiveChaseProgress,
+  mapFixtureMemberList,
+} from '@vlight/controls'
 import { ApiLiveChaseMessage, IdType, LiveChase } from '@vlight/types'
 import { dictionaryToMap, logger, mergeObjects } from '@vlight/utils'
 
@@ -14,11 +18,19 @@ import {
   removeUniverse,
   setUniverseOutput,
   Universe,
+  setUniverseChannels,
   setUniverseChannelsFrom,
+  setUniverseOverride,
   stopUniverseChannelFades,
 } from '../../services/universe'
+import { getChannelFromUniverseIndex } from '../../services/universe/utils'
 import { controlRegistry } from '../registry'
 import { isPaused, registerPauseHandler } from '../pause'
+import {
+  addAllFixturesToOverrideWeights,
+  createOverrideWeights,
+  getOverrideScope,
+} from '../override'
 
 /** Time in seconds by which step fades finish early (1.5 fade intervals). */
 const stepFadeLeadTime = 0.03
@@ -38,6 +50,9 @@ interface LiveChasePreparedState {
 
   /** The progress of the chase, to be carried over to the next step. */
   progress: LiveChaseProgress
+
+  /** The members that are active in the current step. */
+  activeMembers: string[]
 }
 
 /** Changes to these properties are applied directly when the chase is turned off. */
@@ -58,6 +73,12 @@ const preparedStates: Map<IdType, LiveChasePreparedState> = new Map()
  * Unlike the {@link LiveChasePreparedState.fullUniverse}, these universes may be faded.
  */
 const outgoingUniverses: Map<IdType, Universe> = new Map()
+
+/**
+ * The override weights of the {@link outgoingUniverses}.
+ * Only applied if the chase does not merge with other controls (see {@link LiveChase.mixing}).
+ */
+const overrideWeights: Map<IdType, Universe> = new Map()
 
 /** Intervals to step through the chases. */
 const intervals: Map<IdType, any> = new Map()
@@ -84,7 +105,67 @@ function prepareLiveChase(
     fullUniverse: createUniverse(fixtureStates),
     computedTime: Date.now(),
     progress,
+    activeMembers: Object.keys(fixtureStates),
   }
+}
+
+/**
+ * Computes the override weights for the given active members,
+ * or `null` if the chase merges with other controls.
+ */
+function getTargetOverrideWeights(
+  liveChase: LiveChase,
+  activeMembers: string[]
+): Universe | null {
+  const mixing = liveChase.mixing ?? 'merge'
+  if (mixing === 'merge') return null
+
+  const scope = getOverrideScope(
+    liveChase.colors.flatMap(color => Object.keys(color.channels))
+  )
+
+  if (mixing === 'override') return createOverrideWeights(activeMembers, scope)
+
+  // swop: override all fixtures, so only the chase is visible
+  const members = mapFixtureMemberList(liveChase.members, {
+    masterData,
+    masterDataMaps,
+  })
+  const weights = createOverrideWeights(members, scope)
+  addAllFixturesToOverrideWeights(weights, 'look')
+  return weights
+}
+
+/**
+ * Applies the chase's mixing mode, and directly applies the override weights
+ * for the current step.
+ */
+function applyMixing(id: IdType) {
+  const liveChase = liveChases.get(id)
+  const universe = outgoingUniverses.get(id)
+  const weights = overrideWeights.get(id)
+  if (!liveChase || !universe || !weights) return
+
+  const targetWeights = getTargetOverrideWeights(
+    liveChase,
+    preparedStates.get(id)?.activeMembers ?? []
+  )
+  stopUniverseChannelFades(weights)
+  if (targetWeights) overwriteUniverse(weights, targetWeights)
+  // swop always blacks out everything else, independent of the chase's value
+  setUniverseOverride(
+    universe,
+    targetWeights ? weights : null,
+    liveChase.mixing === 'swop'
+  )
+}
+
+/** Stops all running fades of the chase's universes. */
+function stopFades(id: IdType) {
+  const universe = outgoingUniverses.get(id)
+  if (universe) stopUniverseChannelFades(universe)
+  const weights = overrideWeights.get(id)
+  if (weights) stopUniverseChannelFades(weights)
 }
 
 /**
@@ -100,12 +181,15 @@ function recomputeLiveChase(id: IdType, advance = true) {
   if (!liveChase) return
 
   const universe = outgoingUniverses.get(id)!
+  const weights = overrideWeights.get(id)!
   const preparedState = prepareLiveChase(
     liveChase,
     preparedStates.get(id),
     advance
   )
   preparedStates.set(id, preparedState)
+  const { fullUniverse, activeMembers } = preparedState
+  const targetWeights = getTargetOverrideWeights(liveChase, activeMembers)
 
   // We directly apply the new state if the chase
   // - does not fade
@@ -118,13 +202,39 @@ function recomputeLiveChase(id: IdType, advance = true) {
   ) {
     // Each step fades from the current values in the full fade time,
     // finishing a bit early to reach the target when the fade time equals the step time
-    setUniverseChannelsFrom(universe, preparedState.fullUniverse, {
+    const fadeOptions = {
       fade: liveChase.fade - stepFadeLeadTime,
       restart: true,
-    })
+    }
+
+    if (liveChase.mixing === 'override' && targetWeights) {
+      // Inactive members keep their values while their weights fade out, so the
+      // other controls show through. Members that are not visible yet jump to
+      // their new values directly while their weights fade in.
+      const instantValues: [number, number][] = []
+      const fadedValues: [number, number][] = []
+      targetWeights.forEach((weight, index) => {
+        if (weight === 0) return
+        const entry: [number, number] = [
+          getChannelFromUniverseIndex(index),
+          fullUniverse[index],
+        ]
+        if (weights[index] === 0) instantValues.push(entry)
+        else fadedValues.push(entry)
+      })
+      setUniverseChannels(universe, instantValues)
+      setUniverseChannels(universe, fadedValues, fadeOptions)
+    } else {
+      setUniverseChannelsFrom(universe, fullUniverse, fadeOptions)
+    }
+
+    if (targetWeights) {
+      setUniverseChannelsFrom(weights, targetWeights, fadeOptions)
+    }
   } else {
-    stopUniverseChannelFades(universe)
-    overwriteUniverse(universe, preparedState.fullUniverse)
+    stopFades(id)
+    overwriteUniverse(universe, fullUniverse)
+    if (targetWeights) overwriteUniverse(weights, targetWeights)
   }
 }
 
@@ -186,13 +296,19 @@ function stopAndturnOffLiveChase(id: string) {
 function deleteLiveChase(id: IdType) {
   liveChases.delete(id)
   removeInterval(id)
+  removeOutgoingUniverse(id)
+  preparedStates.delete(id)
+}
+
+function removeOutgoingUniverse(id: IdType) {
   const universe = outgoingUniverses.get(id)
   if (universe) {
     removeUniverse(universe)
-    stopUniverseChannelFades(universe)
+    setUniverseOverride(universe, null)
   }
+  stopFades(id)
   outgoingUniverses.delete(id)
-  preparedStates.delete(id)
+  overrideWeights.delete(id)
 }
 
 function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
@@ -211,13 +327,18 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
 
   liveChases.set(id, liveChase)
 
-  if (!existing) outgoingUniverses.set(id, createUniverse())
+  if (!existing) {
+    outgoingUniverses.set(id, createUniverse())
+    overrideWeights.set(id, createUniverse())
+  }
   const universe = outgoingUniverses.get(id)!
+
+  if (!existing || message.state.mixing !== undefined) applyMixing(id)
 
   if (!liveChase.on) {
     const stop = () => {
       removeInterval(id)
-      stopUniverseChannelFades(universe)
+      stopFades(id)
     }
 
     // The chase keeps running while fading out
@@ -256,7 +377,7 @@ function handleLiveChaseApiMessage(message: ApiLiveChaseMessage): boolean {
     // We allow fading when stepping manually.
     // For the fade from a manual step to continue when other changes are made, we only actually stop
     // fading right when the chase is stopped.
-    if (!message.step && !existing?.stopped) stopUniverseChannelFades(universe)
+    if (!message.step && !existing?.stopped) stopFades(id)
   } else if (
     !existing?.on ||
     existing?.stopped ||
@@ -309,11 +430,7 @@ function reload(reloadState?: boolean) {
 
   liveChases.clear()
   preparedStates.clear()
-  ;[...outgoingUniverses.values()].forEach(universe => {
-    stopUniverseChannelFades(universe)
-    removeUniverse(universe)
-  })
-  outgoingUniverses.clear()
+  ;[...outgoingUniverses.keys()].forEach(removeOutgoingUniverse)
   ;[...intervals.keys()].forEach(removeInterval)
   ;[...timeouts.keys()].forEach(removeInterval)
 }

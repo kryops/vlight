@@ -12,7 +12,11 @@ import { getPersistedState } from '../state'
 
 import {
   universeStates,
+  baseDmxUniverse,
   rawDmxUniverse,
+  overrideWeights,
+  overridesDimmedByMaster,
+  activeOverrides,
   universes,
   dmxUniverse,
   dmxUniverseAfterMaster,
@@ -87,6 +91,119 @@ function setRawDmxValue(channel: number, value: number): boolean {
     broadcastUniverseChannel(channel)
   }
   return changedDmx
+}
+
+/**
+ * Returns the blend factor (0-1) of an overriding universe for the given universe index.
+ */
+function getOverrideFactor(universe: Universe, index: number): number {
+  const weight = overrideWeights.get(universe)?.[index] ?? 0
+  if (weight === 0) return 0
+  if (overridesDimmedByMaster.has(universe)) return weight / 255
+  const masterValue = universeStates.get(universe)?.masterValue ?? 255
+  return (weight / 255) * (masterValue / 255)
+}
+
+/**
+ * Returns the value of an overriding universe for the given channel.
+ *
+ * Universes dimmed by their master value apply it like merged universes do.
+ */
+function getOverrideValue(universe: Universe, channel: number): number {
+  const value = universe[getUniverseIndex(channel)]
+  if (!overridesDimmedByMaster.has(universe)) return value
+  const state = universeStates.get(universe)
+  return fadedChannels.has(channel) || state?.forceMaster
+    ? applyMasterValue(value, state?.masterValue ?? 255)
+    : value
+}
+
+/**
+ * Blends all active overriding universes on top of the given base value of a channel.
+ *
+ * Master-dependent channels of fixtures with a master channel are blended by their
+ * effective brightness (value * master), so that
+ * - fading in an override over a dark fixture does not dim it twice
+ * - overriding only the shared master channel of a fixture keeps the effective
+ *   brightness of its other channels
+ */
+function applyOverrides(channel: number, baseValue: number): number {
+  if (activeOverrides.length === 0) return baseValue
+
+  const index = getUniverseIndex(channel)
+  const masterChannel = masterChannelByChannel.get(channel)
+
+  // simple linear blending
+  let linearValue = baseValue
+  let changed = false
+  for (const universe of activeOverrides) {
+    const factor = getOverrideFactor(universe, index)
+    if (factor === 0) continue
+    changed = true
+    linearValue += (getOverrideValue(universe, channel) - linearValue) * factor
+  }
+
+  if (masterChannel === undefined) {
+    return changed ? Math.round(linearValue) : baseValue
+  }
+
+  const masterIndex = getUniverseIndex(masterChannel)
+  let master = baseDmxUniverse[masterIndex]
+  let effective = (baseValue * master) / 255
+
+  for (const universe of activeOverrides) {
+    const factor = getOverrideFactor(universe, index)
+    const masterFactor = getOverrideFactor(universe, masterIndex)
+    if (factor === 0 && masterFactor === 0) continue
+    changed = true
+    const overrideMaster = getOverrideValue(universe, masterChannel)
+    master += (overrideMaster - master) * masterFactor
+    effective +=
+      ((getOverrideValue(universe, channel) * overrideMaster) / 255 -
+        effective) *
+      factor
+  }
+
+  if (!changed) return baseValue
+
+  const roundedMaster = Math.round(master)
+  if (roundedMaster === 0) return Math.round(linearValue)
+  return Math.min(255, Math.round((effective * 255) / roundedMaster))
+}
+
+/**
+ * Applies the given value to the base DMX universe, then applies all overrides
+ * to compute the raw DMX value.
+ *
+ * @returns whether the final outgoing DMX universe changed.
+ */
+function setBaseDmxValue(channel: number, value: number): boolean {
+  writeUniverseChannel(baseDmxUniverse, channel, value)
+  return setRawDmxValue(channel, applyOverrides(channel, value))
+}
+
+/**
+ * Recomputes the given channel after a change of an overriding universe
+ * (values, weights, or master value).
+ *
+ * Also recomputes the channels affected by it if it is a master channel.
+ */
+export function recomputeOverriddenChannel(channel: number): void {
+  setRawDmxValue(
+    channel,
+    applyOverrides(channel, baseDmxUniverse[getUniverseIndex(channel)])
+  )
+  affectedChannelsByMasterChannel
+    .get(channel)
+    ?.forEach(affectedChannel =>
+      setRawDmxValue(
+        affectedChannel,
+        applyOverrides(
+          affectedChannel,
+          baseDmxUniverse[getUniverseIndex(affectedChannel)]
+        )
+      )
+    )
 }
 
 export function handleDmxMasterApiMessage(
@@ -224,7 +341,7 @@ export function getFinalChannelValue(
     const affectingMasterChannel = masterChannelByChannel.get(channel)
     if (affectingMasterChannel && !universeForceMaster) {
       const highestMaster =
-        rawDmxUniverse[getUniverseIndex(affectingMasterChannel)]
+        baseDmxUniverse[getUniverseIndex(affectingMasterChannel)]
       const sameUniverseMaster = getFinalChannelValue(
         universe,
         affectingMasterChannel
@@ -241,7 +358,7 @@ export function getFinalChannelValue(
 
 /**
  * Recomputes the outgoing DMX value for the given channel by iterating over all
- * universes and finding the highest value.
+ * non-overriding universes and finding the highest value, then applying all overrides.
  *
  * Broadcasts the channel to all devices and API clients if changed.
  *
@@ -253,17 +370,19 @@ export function recomputeAndBroadcastDmxChannel(channel: number): boolean {
   let newValue = 0
 
   for (const universe of universes) {
+    if (overrideWeights.has(universe)) continue
     const value = getFinalChannelValue(universe, channel)
     if (value > newValue) newValue = value
 
     if (value === 255) break
   }
 
-  return setRawDmxValue(channel, newValue)
+  return setBaseDmxValue(channel, newValue)
 }
 
 /**
- * Recomputes the final outgoing DMX value of the given channel after a value change.
+ * Recomputes the final outgoing DMX value of the given channel after a value change
+ * of a non-overriding universe.
  *
  * Takes many shortcuts if it can determine that the outgoing DMX value will not change.
  *
@@ -282,9 +401,9 @@ function computeDmxChannelChange(
   }
 
   const index = getUniverseIndex(channel)
-  const currentDmxValue = rawDmxUniverse[index]
+  const currentDmxValue = baseDmxUniverse[index]
 
-  // If the new value is identical to the current outgoing DMX value, it cannot change
+  // If the new value is identical to the current base value, it cannot change
   if (finalNewUniverseValue === currentDmxValue) {
     return false
   }
@@ -300,7 +419,7 @@ function computeDmxChannelChange(
 
   // If the new value is higher than the current outgoing value, it is the new outgoing value
   if (finalNewUniverseValue > currentDmxValue) {
-    return setRawDmxValue(channel, finalNewUniverseValue)
+    return setBaseDmxValue(channel, finalNewUniverseValue)
   }
 
   // Now, the only thing we can do is to iterate over all universes and find the highest value.

@@ -86,6 +86,26 @@ test('live memories', async ({ app, universe }) => {
   await expect(widget).toBeHidden()
 })
 
+test('live memories can override other controls', async ({ app, universe }) => {
+  // red memory and green live memory on the same pars
+  await app.toggleWidget('Red Pars')
+  await app.toggleWidget('Green Pars')
+  await universe.expectChannels({ 3: 255, 4: 255, 7: 255, 8: 255 })
+
+  const widget = app.widget('Green Pars')
+  await widget.getByRole('checkbox', { name: 'Override' }).click()
+  await universe.expectChannels({ 2: 255, 3: 0, 4: 255, 7: 0, 8: 255 })
+
+  // the overriding live memory's value crossfades to the other controls
+  await app.fader('Value', widget).dragTo(0)
+  await universe.expectChannels({ 2: 255, 3: 255, 4: 0, 7: 255, 8: 0 })
+  await app.fader('Value', widget).dragTo(1)
+  await universe.expectChannels({ 3: 0, 4: 255 })
+
+  await widget.getByRole('checkbox', { name: 'Override' }).click()
+  await universe.expectChannels({ 3: 255, 4: 255, 7: 255, 8: 255 })
+})
+
 test('editing the scene states of a memory', async ({ app, universe }) => {
   await app.button('Edit memory', app.widget('Red Pars')).click()
   const dialog = app.dialog

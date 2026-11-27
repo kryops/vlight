@@ -8,8 +8,16 @@ import {
   computeAndBroadcastDmxChannelChange,
   computeUniverseChannelRawValueChange,
   getFinalChannelValue,
+  recomputeOverriddenChannel,
 } from './computing'
-import { universes, universeStates } from './state'
+import {
+  activeOverrides,
+  overridesDimmedByMaster,
+  overrideWeightOwners,
+  overrideWeights,
+  universes,
+  universeStates,
+} from './state'
 import { Universe, UniverseState } from './types'
 import {
   getUniverseIndex,
@@ -35,7 +43,26 @@ export function createUniverse(
 }
 
 /**
+ * Returns whether the given universe is active, i.e. part of the outgoing DMX universe.
+ *
+ * For override weights universes, returns whether their owner is active.
+ */
+export function isUniverseOrOwnerActive(universe: Universe): boolean {
+  return universes.has(overrideWeightOwners.get(universe) ?? universe)
+}
+
+/** Recomputes all channels that the given overriding universe has a weight for. */
+function recomputeOverrideChannels(weights: Universe) {
+  weights.forEach((weight, index) => {
+    if (weight !== 0)
+      recomputeOverriddenChannel(getChannelFromUniverseIndex(index))
+  })
+}
+
+/**
  * Sets the DMX value of the given channel in the given universe.
+ *
+ * Also supports override weights universes (see {@link setUniverseOverride}).
  *
  * Triggers a recomputation of the channel itself and all affected channels.
  */
@@ -48,7 +75,19 @@ export function setUniverseChannel(
   const oldValue = universe[index]
   if (!writeUniverseChannel(universe, channel, value)) return false
 
+  const weightOwner = overrideWeightOwners.get(universe)
+  if (weightOwner) {
+    if (universes.has(weightOwner)) recomputeOverriddenChannel(channel)
+    return true
+  }
+
   if (!universes.has(universe)) return true
+
+  const weights = overrideWeights.get(universe)
+  if (weights) {
+    if (weights[index] !== 0) recomputeOverriddenChannel(channel)
+    return true
+  }
 
   computeUniverseChannelRawValueChange({
     universe,
@@ -75,6 +114,13 @@ export function addUniverse(universe: Universe, state?: UniverseState): void {
   universes.add(universe)
   if (state) universeStates.set(universe, state)
 
+  const weights = overrideWeights.get(universe)
+  if (weights) {
+    activeOverrides.push(universe)
+    recomputeOverrideChannels(weights)
+    return
+  }
+
   const skipAffectedChannels = universes.size === 1
 
   universe.forEach((value, index) => {
@@ -99,6 +145,13 @@ export function removeUniverse(universe: Universe): void {
 
   universes.delete(universe)
   universeStates.delete(universe)
+
+  const weights = overrideWeights.get(universe)
+  if (weights) {
+    activeOverrides.splice(activeOverrides.indexOf(universe), 1)
+    recomputeOverrideChannels(weights)
+    return
+  }
 
   const skipAffectedChannels = universes.size === 0
 
@@ -151,6 +204,13 @@ export function setUniverseState(
   const masterValueChanged =
     'masterValue' in state && oldState?.masterValue !== state.masterValue
 
+  const weights = overrideWeights.get(universe)
+  if (weights) {
+    universeStates.set(universe, { ...oldState, ...state })
+    if (masterValueChanged) recomputeOverrideChannels(weights)
+    return
+  }
+
   // to do an efficient diff, we first have to generate the final values for the old masterValue
   const oldFinalChannelValues = new Map<number, number>()
   if (masterValueChanged) {
@@ -182,6 +242,69 @@ export function setUniverseState(
       }
     })
   }
+}
+
+/**
+ * Makes the given universe override all other universes instead of being merged with them,
+ * or reverts it to being merged again (`null`).
+ *
+ * The weights universe defines the blend factor (0-255) for each channel:
+ * - 0: the channel is not overridden
+ * - 255: the channel is completely overridden (if the universe's master value is 255)
+ *
+ * Overriding universes are applied in the order of their activation, i.e. the universe
+ * activated last overrides the others.
+ *
+ * The weights can be changed (and faded) like regular universes afterwards, e.g. through
+ * {@link setUniverseChannel} or `setUniverseChannels`.
+ *
+ * @param dimByMaster the universe's master value dims its own values like for merged universes,
+ *   instead of crossfading with the universes below (i.e. they stay overridden at master value 0)
+ */
+export function setUniverseOverride(
+  universe: Universe,
+  weights: Universe | null,
+  dimByMaster = false
+): void {
+  const existing = overrideWeights.get(universe)
+  const dimByMasterChanged =
+    !!weights && overridesDimmedByMaster.has(universe) !== dimByMaster
+  if (
+    !dimByMasterChanged &&
+    (existing === weights || (!existing && !weights))
+  ) {
+    return
+  }
+
+  const active = universes.has(universe)
+  const state = universeStates.get(universe)
+  if (active) removeUniverse(universe)
+
+  if (existing) overrideWeightOwners.delete(existing)
+  if (weights) {
+    overrideWeights.set(universe, weights)
+    overrideWeightOwners.set(weights, universe)
+  } else {
+    overrideWeights.delete(universe)
+  }
+  if (weights && dimByMaster) overridesDimmedByMaster.add(universe)
+  else overridesDimmedByMaster.delete(universe)
+
+  if (active) addUniverse(universe, state)
+}
+
+/**
+ * Moves the given overriding universe on top of all other overriding universes,
+ * as if it had just been activated.
+ */
+export function bringUniverseToFront(universe: Universe): void {
+  const weights = overrideWeights.get(universe)
+  const index = activeOverrides.indexOf(universe)
+  if (!weights || index === -1 || index === activeOverrides.length - 1) return
+
+  activeOverrides.splice(index, 1)
+  activeOverrides.push(universe)
+  recomputeOverrideChannels(weights)
 }
 
 /**

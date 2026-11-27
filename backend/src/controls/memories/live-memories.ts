@@ -30,17 +30,27 @@ import {
   overwriteUniverse,
   removeFadeHandler,
   removeUniverse,
+  setUniverseChannelsFrom,
   setUniverseOutput,
+  setUniverseOverride,
+  stopUniverseChannelFades,
   Universe,
 } from '../../services/universe'
 import { controlRegistry } from '../registry'
 import { isPaused, registerPauseHandler } from '../pause'
+import { createOverrideWeights, getOverrideScope } from '../override'
 
 /** A map containing all live memories. */
 export const liveMemories = new Map<IdType, LiveMemory>()
 
 /** The outgoing DMX universes for all live memories. */
 const outgoingUniverses = new Map<IdType, Universe>()
+
+/**
+ * The override weights of the {@link outgoingUniverses}.
+ * Only applied if {@link LiveMemory.override} is set.
+ */
+const overrideWeights = new Map<IdType, Universe>()
 
 /** Current gradient movement offsets (0-1) per live memory. */
 const gradientMovementOffsets = new Map<IdType, number>()
@@ -151,6 +161,44 @@ function refreshGradientInterval() {
     clearInterval(gradientInterval)
     gradientInterval = null
   }
+}
+
+/** Returns all channel types that the live memory's states set. */
+function getChannelTypes(liveMemory: LiveMemory): string[] {
+  return liveMemory.states.flatMap(state =>
+    Array.isArray(state)
+      ? state.flatMap(gradient => Object.keys(gradient.channels))
+      : Object.keys(state.channels)
+  )
+}
+
+/**
+ * Applies the live memory's override setting and weights.
+ *
+ * @param fade fade time in seconds for changes of the weights
+ */
+function applyOverride(id: IdType, liveMemory: LiveMemory, fade?: number) {
+  const universe = outgoingUniverses.get(id)
+  const weights = overrideWeights.get(id)
+  if (!universe || !weights) return
+
+  if (!liveMemory.override) {
+    stopUniverseChannelFades(weights)
+    setUniverseOverride(universe, null)
+    return
+  }
+
+  const members = mapFixtureMemberList(liveMemory.members, {
+    masterData,
+    masterDataMaps,
+  })
+  const targetWeights = createOverrideWeights(
+    members,
+    getOverrideScope(getChannelTypes(liveMemory))
+  )
+
+  setUniverseOverride(universe, weights)
+  setUniverseChannelsFrom(weights, targetWeights, { fade })
 }
 
 function getUniverseForLiveMemory(
@@ -286,11 +334,21 @@ function startCrossfade(id: IdType, previous: LiveMemory, fade: number) {
 function deleteLiveMemory(id: IdType) {
   liveMemories.delete(id)
   stopCrossfade(id)
-  const universe = outgoingUniverses.get(id)
-  if (universe) removeUniverse(universe)
-  outgoingUniverses.delete(id)
+  removeOutgoingUniverse(id)
   gradientMovementOffsets.delete(id)
   refreshGradientInterval()
+}
+
+function removeOutgoingUniverse(id: IdType) {
+  const universe = outgoingUniverses.get(id)
+  if (universe) {
+    removeUniverse(universe)
+    setUniverseOverride(universe, null)
+  }
+  const weights = overrideWeights.get(id)
+  if (weights) stopUniverseChannelFades(weights)
+  outgoingUniverses.delete(id)
+  overrideWeights.delete(id)
 }
 
 function handleApiMessage(message: ApiLiveMemoryMessage): boolean {
@@ -319,8 +377,13 @@ function handleApiMessage(message: ApiLiveMemoryMessage): boolean {
 
   if (!existing) {
     outgoingUniverses.set(id, getUniverseForLiveMemory(id, liveMemory))
+    overrideWeights.set(id, createUniverse())
   }
   const universe = outgoingUniverses.get(id)!
+
+  if (!existing || updatingBaseState || message.state.override !== undefined) {
+    applyOverride(id, liveMemory, message.fade)
+  }
 
   if (existing && updatingBaseState) {
     // also faded while turned off, as it might still be fading out
@@ -362,8 +425,7 @@ function reload(reloadState?: boolean) {
 
   liveMemories.clear()
   ;[...crossfades.keys()].forEach(stopCrossfade)
-  ;[...outgoingUniverses.values()].forEach(removeUniverse)
-  outgoingUniverses.clear()
+  ;[...outgoingUniverses.keys()].forEach(removeOutgoingUniverse)
 
   refreshGradientInterval()
 }
