@@ -5,6 +5,7 @@ import {
   LiveMemory,
   LiveMovement,
   MasterData,
+  ProjectSettings,
   SequenceState,
 } from '@vlight/types'
 import { logger, assertNever, forEach, mergeObjects } from '@vlight/utils'
@@ -53,6 +54,11 @@ function processApiMessage(message: ApiOutMessage, state: Partial<ApiState>) {
     case 'masterdata':
       state.masterData = message.masterData
       state.rawMasterData = message.rawMasterData
+      break
+
+    case 'project-settings':
+      // the backend always broadcasts the complete settings
+      state.projectSettings = message.settings as ProjectSettings
       break
 
     case 'universe':

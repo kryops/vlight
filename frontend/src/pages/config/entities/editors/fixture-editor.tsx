@@ -12,7 +12,8 @@ import {
 import { EntityEditorProps } from '../types'
 import { Label } from '../../../../ui/forms/label'
 import { StatelessMapWidget } from '../../../../widgets/map/stateless-map-widget'
-import { useMasterDataAndMaps } from '../../../../hooks/api'
+import { getMapCoordinates } from '../../../../widgets/map/map-size'
+import { useMapSettings, useMasterDataAndMaps } from '../../../../hooks/api'
 import { TwoColumDialogContainer } from '../../../../ui/containers/two-column-dialog'
 import {
   autoWidthInput,
@@ -28,10 +29,7 @@ import {
 } from '../../../../util/fixtures'
 import { Button } from '../../../../ui/buttons/button'
 import { Touchable } from '../../../../ui/components/touchable'
-import {
-  getFractionWithMargin,
-  getTouchEventOffset,
-} from '../../../../util/touch'
+import { getTouchEventOffset } from '../../../../util/touch'
 import { CheckboxLabel } from '../../../../ui/forms/checkbox'
 
 const checkboxLink = css`
@@ -56,6 +54,7 @@ export function FixtureEditor({
   const id = entry.id
   const formState = useFormState(entry, { onChange })
   const { masterData, masterDataMaps } = useMasterDataAndMaps()
+  const mapSize = useMapSettings()
   const [sharing, setSharing] = useState(!!entry.fixturesSharingChannel)
   const touchRef = useRef<HTMLDivElement>(null)
   const toggleCreateGroup = () =>
@@ -164,13 +163,14 @@ export function FixtureEditor({
             />
             <Label
               label="Position"
+              description={`X/Y - map size: ${mapSize.width}x${mapSize.height}`}
               input={
                 <>
                   <FormNumberInput
                     formState={formState}
                     name="x"
                     min={0}
-                    max={100}
+                    max={mapSize.width}
                     className={autoWidthInput}
                   />
                   {' / '}
@@ -178,7 +178,7 @@ export function FixtureEditor({
                     formState={formState}
                     name="y"
                     min={0}
-                    max={100}
+                    max={mapSize.height}
                     className={autoWidthInput}
                   />
                 </>
@@ -253,16 +253,16 @@ export function FixtureEditor({
                     <FormNumberInput
                       formState={formState}
                       name="xOffset"
-                      min={-100}
-                      max={100}
+                      min={-mapSize.width}
+                      max={mapSize.width}
                       className={autoWidthInput}
                     />
                     {' / '}
                     <FormNumberInput
                       formState={formState}
                       name="yOffset"
-                      min={-100}
-                      max={100}
+                      min={-mapSize.height}
+                      max={mapSize.height}
                       className={autoWidthInput}
                     />
                   </>
@@ -307,12 +307,14 @@ export function FixtureEditor({
               if (!offset) {
                 return
               }
-              const { x, y } = getFractionWithMargin(offset, 4)
+              const { x, y } = getMapCoordinates(
+                offset.xFraction,
+                offset.yFraction,
+                mapSize
+              )
 
-              const roundTo100 = (value: number) => Math.round(value * 100)
-
-              formState.changeValue('x', roundTo100(x))
-              formState.changeValue('y', roundTo100(y))
+              formState.changeValue('x', x)
+              formState.changeValue('y', y)
             }}
             preventScroll
           >

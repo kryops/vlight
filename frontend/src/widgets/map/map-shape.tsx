@@ -1,4 +1,9 @@
-import { FixtureBorderStyle, FixtureShape, FixtureType } from '@vlight/types'
+import {
+  FixtureBorderStyle,
+  FixtureShape,
+  FixtureType,
+  MapSettings,
+} from '@vlight/types'
 import { css, cx } from '@linaria/core'
 import { CSSProperties, ReactNode, useEffect, useRef, Ref } from 'react'
 
@@ -135,11 +140,20 @@ export interface MapShapeProps {
   style?: CSSProperties
 
   /**
-   * Controls whether to apply the size as percentage.
+   * Controls whether to apply the position and size as percentage
+   * of the {@link mapSize}.
    *
    * Defaults to `false`.
    */
   percentages?: boolean
+
+  /**
+   * The dimensions of the map that the position and size refer to
+   * when using {@link percentages}.
+   *
+   * Defaults to 100x100.
+   */
+  mapSize?: MapSettings
 
   onDown?: () => void
   onUp?: () => void
@@ -165,6 +179,7 @@ export const MapShape = ({
   className,
   style,
   percentages,
+  mapSize,
   onDown,
   onUp,
   children,
@@ -172,17 +187,19 @@ export const MapShape = ({
   ref,
 }: MapShapeProps) => {
   const defaultSize = 5
+  const toXPercent = (value: number) => (value / (mapSize?.width ?? 100)) * 100
+  const toYPercent = (value: number) => (value / (mapSize?.height ?? 100)) * 100
 
   const finalStyle: CSSProperties = {
     ...style,
     background: color,
-    left: x !== undefined ? `${x}%` : undefined,
-    top: y !== undefined ? `${y}%` : undefined,
+    left: x !== undefined ? `${toXPercent(x)}%` : undefined,
+    top: y !== undefined ? `${toYPercent(y)}%` : undefined,
     width: percentages
-      ? `${xSize ?? defaultSize}%`
+      ? `${toXPercent(xSize ?? defaultSize)}%`
       : baselinePx * (xSize ?? defaultSize),
     height: percentages
-      ? `${ySize ?? defaultSize}%`
+      ? `${toYPercent(ySize ?? defaultSize)}%`
       : baselinePx * (ySize ?? defaultSize),
     borderStyle: border,
     borderWidth: highlighted ? '2px' : undefined,

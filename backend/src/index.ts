@@ -14,6 +14,7 @@ import { isDevelopment } from './services/env'
 import { initHttpServer } from './services/http'
 import { initMasterData } from './services/masterdata'
 import { initPersistedState } from './services/state'
+import { initProjectSettings } from './services/project-settings'
 import { initUniverse } from './services/universe'
 import { getLocalNetworkIp } from './util/network'
 
@@ -46,6 +47,7 @@ async function init() {
   await initDatabase()
 
   initPersistedState()
+  await initProjectSettings()
   await initMasterData()
 
   await initUniverse()

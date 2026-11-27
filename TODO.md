@@ -2,8 +2,6 @@
 
 ## Roadmap
 
-- Map
-  - Change size
 - Speed/Fade control
   - Global vs local speed
 - Fixture Selection

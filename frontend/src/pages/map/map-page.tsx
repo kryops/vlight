@@ -1,5 +1,6 @@
 import { css } from '@linaria/core'
 import { useReducer, useRef, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { Dictionary, Fixture, FixtureState } from '@vlight/types'
 
 import { Header } from '../../ui/containers/header'
@@ -18,6 +19,8 @@ import { showDialog } from '../../ui/overlays/dialog'
 import { FixtureWidget } from '../../widgets/fixture/fixture-widget'
 import { FixtureTypeMapShape } from '../../widgets/map/map-shape'
 import { flexWrap } from '../../ui/css/flex'
+import { iconConfig } from '../../ui/icons'
+import { settingsPageRoute } from '../routes'
 
 const page = css`
   margin: -${baseline(1)};
@@ -71,6 +74,7 @@ const MapPage = () => {
   const [mapRotated, toggleMapRotated] = useReducer(it => !it, false)
 
   const masterDataAndMaps = useMasterDataAndMaps()
+  const navigate = useNavigate()
   const fixtureStates = useApiState('fixtures')
 
   const backupStateRef = useRef<Dictionary<FixtureState>>({})
@@ -147,6 +151,14 @@ const MapPage = () => {
 
           <Button active={mapRotated} onClick={toggleMapRotated}>
             Rotate
+          </Button>
+
+          <Button
+            icon={iconConfig}
+            title="Change the map size in the settings"
+            onClick={() => navigate(settingsPageRoute)}
+          >
+            Map Size
           </Button>
         </div>
         {fixtureTestMode && (

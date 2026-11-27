@@ -5,6 +5,7 @@ import {
   FixtureShape,
   FixtureType,
   IdType,
+  MapSettings,
 } from '@vlight/types'
 import { arrayRange } from '@vlight/utils'
 import {
@@ -12,14 +13,15 @@ import {
   getSegmentFixtureType,
   getSegmentMemberId,
 } from '@vlight/controls'
-import { useMemo, Ref } from 'react'
+import { useMemo, Ref, CSSProperties } from 'react'
 
 import { backgroundColor, baseline, iconShade } from '../../ui/styles'
 import { getEffectiveFixtureColor } from '../../util/fixtures'
-import { useMasterDataMaps } from '../../hooks/api'
+import { useMapSettings, useMasterDataMaps } from '../../hooks/api'
 import { cx } from '../../util/styles'
 
 import { FixtureTypeMapShape, MapShape, mapContainerName } from './map-shape'
+import { fitMapWidth, mapInsetPercent, mapRatioVariable } from './map-size'
 
 // We use separate styles from the standard widget component because this one looks very different
 const widget = css`
@@ -27,8 +29,8 @@ const widget = css`
   position: relative;
   display: inline-block;
   width: 100%;
-  min-width: ${baseline(64)};
-  max-width: ${baseline(96)};
+  min-width: ${fitMapWidth(baseline(64))};
+  max-width: ${fitMapWidth(baseline(96))};
   margin: ${baseline()};
   border: 1px solid ${iconShade(1)};
   overflow: hidden;
@@ -38,20 +40,21 @@ const widget = css`
   &:before {
     content: '';
     display: block;
-    padding-top: 100%; /* initial ratio of 1:1*/
+    padding-top: calc(100% / var(${mapRatioVariable}, 1));
   }
 `
 
 const widget_standalone = css`
-  max-width: 90vh;
+  max-width: calc(90vh * var(${mapRatioVariable}, 1));
 `
 
+// Percentages refer to the widget's width/height respectively, which retains the aspect ratio
 const container = css`
   position: absolute;
-  top: 3%;
-  left: 3%;
-  right: 3%;
-  bottom: 3%;
+  top: ${`${mapInsetPercent}%`};
+  left: ${`${mapInsetPercent}%`};
+  right: ${`${mapInsetPercent}%`};
+  bottom: ${`${mapInsetPercent}%`};
 `
 
 const fixtureStyle = css`
@@ -122,6 +125,13 @@ export interface StatelessMapWidgetProps {
   additionalShapes?: AdditionalMapShape[]
 
   /**
+   * The dimensions of the map.
+   *
+   * Defaults to the project's map settings.
+   */
+  mapSize?: MapSettings
+
+  /**
    * Controls whether to display the widget as stand-alone,
    * increasing its width.
    *
@@ -166,6 +176,7 @@ export const StatelessMapWidget = ({
   fixtures,
   highlightedFixtures,
   additionalShapes,
+  mapSize: mapSizeFromProps,
   standalone = false,
   displayChannels = false,
   displayNames = false,
@@ -177,6 +188,8 @@ export const StatelessMapWidget = ({
   ref,
 }: StatelessMapWidgetProps) => {
   const { fixtureTypes } = useMasterDataMaps()
+  const projectMapSize = useMapSettings()
+  const mapSize = mapSizeFromProps ?? projectMapSize
   const positionedFixtures = useMemo(
     () =>
       (fixtures ?? []).filter(
@@ -185,11 +198,18 @@ export const StatelessMapWidget = ({
     [fixtures]
   )
 
-  const adjustCoord = (coord: number) => (rotate180 ? 100 - coord : coord)
+  const adjustX = (coord: number) => (rotate180 ? mapSize.width - coord : coord)
+  const adjustY = (coord: number) =>
+    rotate180 ? mapSize.height - coord : coord
+
+  const style = {
+    [mapRatioVariable]: mapSize.width / mapSize.height,
+  } as CSSProperties
 
   return (
     <div
       className={cx(widget, standalone && widget_standalone, className)}
+      style={style}
       ref={ref}
     >
       <div className={container}>
@@ -248,12 +268,12 @@ export const StatelessMapWidget = ({
                 fixtureType={fixtureType}
                 x={
                   fixture.x !== undefined
-                    ? adjustCoord(fixture.x + offset * (fixture.xOffset ?? 8))
+                    ? adjustX(fixture.x + offset * (fixture.xOffset ?? 8))
                     : undefined
                 }
                 y={
                   fixture.y !== undefined
-                    ? adjustCoord(fixture.y + offset * (fixture.yOffset ?? 0))
+                    ? adjustY(fixture.y + offset * (fixture.yOffset ?? 0))
                     : undefined
                 }
                 color={
@@ -270,6 +290,7 @@ export const StatelessMapWidget = ({
                 title={fixture.name}
                 className={cx(fixtureStyle, displayNames && fixtureStyle_names)}
                 percentages
+                mapSize={mapSize}
                 onDown={
                   onFixtureDown ? () => onFixtureDown(fixture) : undefined
                 }
@@ -291,19 +312,21 @@ export const StatelessMapWidget = ({
             <FixtureTypeMapShape
               key={index}
               fixtureType={fixtureType}
-              x={adjustCoord(shape.x)}
-              y={adjustCoord(shape.y)}
+              x={adjustX(shape.x)}
+              y={adjustY(shape.y)}
               className={fixtureStyle}
               percentages
+              mapSize={mapSize}
             />
           ) : (
             <MapShape
               key={index}
               {...shape}
-              x={adjustCoord(shape.x)}
-              y={adjustCoord(shape.y)}
+              x={adjustX(shape.x)}
+              y={adjustY(shape.y)}
               className={fixtureStyle}
               percentages
+              mapSize={mapSize}
             />
           )
         )}

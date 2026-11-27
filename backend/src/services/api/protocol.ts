@@ -14,6 +14,7 @@ import {
   LiveMovement,
   ApiHeartBeatMessage,
   SequenceState,
+  ProjectSettings,
 } from '@vlight/types'
 
 import { getUniverseIndex } from '../universe/utils'
@@ -25,6 +26,7 @@ export function getApiHeartBeatMessage(): ApiHeartBeatMessage {
 export function getApiStateMessage({
   masterData,
   rawMasterData,
+  projectSettings,
   universe,
   channels,
   fixtures,
@@ -41,6 +43,7 @@ export function getApiStateMessage({
 }: {
   masterData: MasterData
   rawMasterData: MasterData
+  projectSettings: ProjectSettings
   universe: Buffer
   channels: Buffer
   fixtures: Dictionary<FixtureState>
@@ -59,6 +62,7 @@ export function getApiStateMessage({
     type: 'state',
     masterData,
     rawMasterData,
+    projectSettings,
     universe: Array.from(universe),
     channels: Array.from(channels),
     fixtures,

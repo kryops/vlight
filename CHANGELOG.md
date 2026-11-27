@@ -10,6 +10,7 @@
 - Added global PAUSE button to the Controls widget
 - Added search to filter fixtures, groups, memories, chases, sequences and config lists by name (Ctrl+F)
 - Added auto-select free channel button for fixture editor
+- Map: Configurable map size (aspect ratio) in the settings
 - Fixtures/groups: Added flash (instant on/off) button
 - Fixtures/groups: "Save into Memory" can now add the state as a new scene to an existing memory
 - Memories: Added fade in/out button with configurable fade time

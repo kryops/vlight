@@ -79,6 +79,7 @@ describe('api/protocol', () => {
       getApiStateMessage({
         masterData: getMasterDataMock(),
         rawMasterData: getMasterDataMock(),
+        projectSettings: { map: { width: 100, height: 60 } },
         universe,
         channels,
         fixtures,
@@ -97,6 +98,7 @@ describe('api/protocol', () => {
       type: 'state',
       masterData: getMasterDataMock(),
       rawMasterData: getMasterDataMock(),
+      projectSettings: { map: { width: 100, height: 60 } },
       universe: Array.from(universe),
       channels: Array.from(channels),
       fixtures,

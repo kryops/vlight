@@ -10,6 +10,7 @@ import {
   LiveChase,
   LiveMovement,
   SequenceControl,
+  ProjectSettings,
 } from '@vlight/types'
 import { logger } from '@vlight/utils'
 
@@ -24,6 +25,7 @@ import {
   getApiEditEntityMessage,
   getApiSetEntitiesMessage,
   getResetStateMessage,
+  getApiProjectSettingsMessage,
   getApiLiveMemoryMessage,
   getApiLiveChaseMessage,
   getApiLiveChaseStepMessage,
@@ -255,6 +257,13 @@ export function setEntities<T extends EntityName>(
   entries: EntityType<T>[]
 ): void {
   sendApiMessage(getApiSetEntitiesMessage(entity, entries))
+}
+
+/**
+ * Changes the project settings at the backend.
+ */
+export function setProjectSettings(settings: Partial<ProjectSettings>): void {
+  sendApiMessage(getApiProjectSettingsMessage(settings))
 }
 
 /**

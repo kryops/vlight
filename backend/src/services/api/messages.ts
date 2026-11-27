@@ -12,6 +12,7 @@ import { isPaused } from '../../controls/pause'
 import { buttonStates } from '../../controls/buttons/state'
 import { sequenceStates } from '../../controls/sequences/state'
 import { masterData, rawMasterData } from '../masterdata'
+import { getProjectSettings } from '../project-settings'
 
 import { getApiStateMessage } from './protocol'
 
@@ -22,6 +23,7 @@ export function getFullState(): ApiStateMessage {
   return getApiStateMessage({
     masterData,
     rawMasterData,
+    projectSettings: getProjectSettings(),
     universe: getDmxUniverse(),
     channels: channelUniverse,
     fixtures: mapToDictionary(fixtureStates),

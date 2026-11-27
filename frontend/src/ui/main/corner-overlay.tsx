@@ -4,6 +4,7 @@ import { cx } from '../../util/styles'
 
 import { useSettings } from '../../hooks/settings'
 import { MapWidget } from '../../widgets/map/map-widget'
+import { fitMapWidth } from '../../widgets/map/map-size'
 import { useBreakpoint } from '../hooks/breakpoint'
 import { iconFullscreen, iconLight, iconMap, iconRecord } from '../icons'
 import { Icon } from '../icons/icon'
@@ -31,8 +32,8 @@ const miniMapOverlay = css`
   z-index: ${zCornerOverlay};
   bottom: 0;
   right: ${baseline(10)};
-  width: ${baseline(40)};
-  min-width: ${baseline(40)};
+  width: ${fitMapWidth(baseline(40))};
+  min-width: ${fitMapWidth(baseline(40))};
   pointer-events: none;
   opacity: 0.85;
 `

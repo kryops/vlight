@@ -11,6 +11,7 @@ function getEmptyState(): ApiState {
   return {
     masterData: undefined,
     rawMasterData: undefined,
+    projectSettings: { map: { width: 100, height: 100 } },
     universe: undefined,
     channels: undefined,
     fixtures: {},

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useSyncExternalStore } from 'react'
-import { MasterData, MasterDataMaps } from '@vlight/types'
+import { MapSettings, MasterData, MasterDataMaps } from '@vlight/types'
 import { shallowEqual } from '@vlight/utils'
 
 import { subscribeToUniverse } from '../api'
@@ -84,6 +84,13 @@ export const useRawMasterData = (): MasterData => useApiState('rawMasterData')
  */
 export function useMasterDataMaps(): MasterDataMaps {
   return useSyncExternalStore(subscribeTo('masterData'), getMasterDataMaps)
+}
+
+/**
+ * React Hook that returns the map settings of the project and re-renders on updates.
+ */
+export function useMapSettings(): MapSettings {
+  return useApiState('projectSettings').map
 }
 
 interface MasterDataWithMaps {

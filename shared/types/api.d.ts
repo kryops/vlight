@@ -14,6 +14,7 @@ import {
   SequenceControl,
   SequenceState,
 } from './entities'
+import { ProjectSettings } from './project-settings'
 
 // Both ingoing + outgoing
 
@@ -283,6 +284,17 @@ export interface ApiResetStateMessage {
 }
 
 /**
+ * Changes the project settings.
+ *
+ * Sent by the client with the changed settings (merged into the existing ones),
+ * broadcast by the server with the complete settings.
+ */
+export interface ApiProjectSettingsMessage {
+  type: 'project-settings'
+  settings: Partial<ProjectSettings>
+}
+
+/**
  * Subscribes or unsubscribes the sending client to DMX universe updates.
  *
  * Only subscribed clients receive `universe-delta` messages.
@@ -313,6 +325,7 @@ export type ApiInMessage<T extends EntityName = any> =
   | ApiButtonMessage
   | ApiSequenceMessage
   | ApiActionsMessage
+  | ApiProjectSettingsMessage
   | ApiUniverseSubscriptionMessage
 
 // Outgoing messages
@@ -362,6 +375,9 @@ export interface ApiStateMessage {
 
   /** Dictionary of all raw (non pre-processed) master data entities as arrays. */
   rawMasterData: MasterData
+
+  /** Project-wide settings. */
+  projectSettings: ProjectSettings
 
   /** The complete DMX512 universe. */
   universe: number[]
@@ -460,3 +476,4 @@ export type ApiOutMessage =
   | ApiPauseMessage
   | ApiButtonStateMessage
   | ApiSequenceStateMessage
+  | ApiProjectSettingsMessage

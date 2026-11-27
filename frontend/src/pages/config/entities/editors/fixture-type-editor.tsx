@@ -80,6 +80,9 @@ const fixtureBorderStyleEntries: SelectEntry<FixtureBorderStyle>[] = [
   { value: 'dashed', label: 'Dashed' },
 ]
 
+// The preview is not affected by the project's map size
+const previewMapSize = { width: 100, height: 100 }
+
 /**
  * Dialog content to edit a fixture type.
  *
@@ -325,7 +328,7 @@ export function FixtureTypeEditor({
             />
             <Label
               label="Size"
-              description="X/Y - 0-100 (Default: 5x5)"
+              description="X/Y - in map units, 0-100 (Default: 5x5)"
               input={
                 <>
                   <FormNumberInput
@@ -348,7 +351,12 @@ export function FixtureTypeEditor({
             />
           </>
         }
-        right={<StatelessMapWidget additionalShapes={shapePreview} />}
+        right={
+          <StatelessMapWidget
+            additionalShapes={shapePreview}
+            mapSize={previewMapSize}
+          />
+        }
         rightClassName={editorPreviewColumn}
       />
     </>

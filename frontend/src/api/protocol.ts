@@ -13,6 +13,8 @@ import {
   EntityName,
   EntityType,
   ApiResetStateMessage,
+  ApiProjectSettingsMessage,
+  ProjectSettings,
   LiveMemory,
   ApiLiveMemoryMessage,
   ApiLiveChaseMessage,
@@ -115,6 +117,12 @@ export function getApiSetEntitiesMessage<T extends EntityName>(
 
 export function getResetStateMessage(): ApiResetStateMessage {
   return { type: 'reset-state' }
+}
+
+export function getApiProjectSettingsMessage(
+  settings: Partial<ProjectSettings>
+): ApiProjectSettingsMessage {
+  return { type: 'project-settings', settings }
 }
 
 export function getApiLiveMemoryMessage(
