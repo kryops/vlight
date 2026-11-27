@@ -19,6 +19,7 @@ import {
 } from '../../api'
 import { Button } from '../../ui/buttons/button'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
+import { faderHotkeys } from '../../hooks/fader-hotkeys'
 import { Fader } from '../../ui/controls/fader/fader'
 import { widgetTitleControls } from '../../ui/css/widget-controls'
 import { StartStopButton } from '../start-stop-button'
@@ -251,6 +252,7 @@ export const StatelessLiveMovementWidget = ({
             step={1}
             value={state.scaleX}
             onChange={scaleX => update({ scaleX })}
+            hotkeys={faderHotkeys[0]}
             label="Scale X"
           />
           <Fader
@@ -258,6 +260,7 @@ export const StatelessLiveMovementWidget = ({
             step={1}
             value={state.scaleY}
             onChange={scaleY => update({ scaleY })}
+            hotkeys={faderHotkeys[1]}
             label="Scale Y"
           />
           <Fader
@@ -265,6 +268,7 @@ export const StatelessLiveMovementWidget = ({
             step={1}
             value={state.rotation}
             onChange={rotation => update({ rotation })}
+            hotkeys={faderHotkeys[2]}
             label="Rotate"
             subLabel={`${state.rotation}°`}
           />
@@ -273,6 +277,7 @@ export const StatelessLiveMovementWidget = ({
             step={1}
             value={state.rotationOffset ?? 0}
             onChange={rotationOffset => update({ rotationOffset })}
+            hotkeys={faderHotkeys[3]}
             label="Rot. Offset"
             subLabel={`${state.rotationOffset ?? 0}°`}
           />
@@ -281,6 +286,7 @@ export const StatelessLiveMovementWidget = ({
             step={1}
             value={state.offset * 100}
             onChange={offset => update({ offset: offset / 100 })}
+            hotkeys={faderHotkeys[4]}
             label="Time Offset"
             subLabel={`${Math.round(state.offset * 100)}%`}
           />
@@ -290,6 +296,7 @@ export const StatelessLiveMovementWidget = ({
             quadraticScale={liveMovementFaderQuadraticScale}
             value={state.speed}
             onChange={speed => update({ speed })}
+            hotkeys={faderHotkeys[5]}
             label="Speed"
             subLabel={`${state.speed.toFixed(2)}s`}
           />

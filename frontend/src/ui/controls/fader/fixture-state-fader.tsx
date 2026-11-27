@@ -1,6 +1,8 @@
 import { FixtureChannelState, FixtureState } from '@vlight/types'
 import { getChannelStateNames } from '@vlight/controls'
 
+import { FaderHotkeys } from '../../../hooks/fader-hotkeys'
+
 import { Fader } from './fader'
 
 export interface FixtureStateFaderProps {
@@ -25,6 +27,9 @@ export interface FixtureStateFaderProps {
    */
   states?: FixtureChannelState[][]
 
+  /** Keys to move the fader up and down while they are held. */
+  hotkeys?: FaderHotkeys
+
   onChange: (partialState: Partial<FixtureState>) => void
 }
 
@@ -36,6 +41,7 @@ export const FixtureStateFader = ({
   value,
   colorPicker,
   states,
+  hotkeys,
   onChange,
 }: FixtureStateFaderProps) => {
   const stateNames = states ? getChannelStateNames(states, value ?? 0) : []
@@ -58,6 +64,7 @@ export const FixtureStateFader = ({
       value={value ?? 0}
       onChange={changeFn}
       colorPicker={colorPicker}
+      hotkeys={hotkeys}
     />
   )
 }

@@ -1,6 +1,7 @@
 import { css } from '@linaria/core'
 
 import { setDmxMaster } from '../../api'
+import { faderHotkeys } from '../../hooks/fader-hotkeys'
 import { useApiState } from '../../hooks/api'
 import { Button } from '../../ui/buttons/button'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
@@ -30,6 +31,7 @@ export const DmxMasterWidget = ({ ...passThrough }: DmxMasterWidgetProps) => {
         step={1}
         value={dmxMaster}
         onChange={setMasterValue}
+        hotkeys={faderHotkeys[0]}
         ariaLabel="DMX Master"
       />
       <div className={buttonContainer}>
@@ -45,6 +47,7 @@ export const DmxMasterWidget = ({ ...passThrough }: DmxMasterWidgetProps) => {
         max={0}
         value={dmxMasterFade}
         onChange={setMasterFade}
+        hotkeys={faderHotkeys[1]}
         label="Fade"
         subLabel={
           dmxMasterFade === 0 ? 'Instant' : `${dmxMasterFade.toFixed(2)}s`

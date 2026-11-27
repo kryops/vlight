@@ -20,6 +20,7 @@ import { Touchable } from '../../ui/components/touchable'
 import { Icon } from '../../ui/icons/icon'
 import { faderContainer } from '../../ui/css/fader-container'
 import { getFixtureStateColor } from '../../util/fixtures'
+import { faderHotkeys } from '../../hooks/fader-hotkeys'
 import { FixtureStateFader } from '../../ui/controls/fader/fixture-state-fader'
 import { baseline } from '../../ui/styles'
 import { cx } from '../../util/styles'
@@ -119,6 +120,7 @@ export const FixtureStateWidget = ({
       channelType={channelType}
       value={fixtureState.channels[channelType] ?? 0}
       onChange={onChange}
+      hotkeys={channelType === ChannelType.Master ? faderHotkeys[0] : undefined}
       states={channelStates?.[channelType]}
       colorPicker={
         colorPickerCapable &&

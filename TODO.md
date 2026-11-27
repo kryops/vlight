@@ -2,8 +2,6 @@
 
 ## Roadmap
 
-- Control improvements
-  - keyboard input for faders?
 - Map
   - Change size
 - Speed/Fade control

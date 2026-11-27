@@ -6,6 +6,7 @@ import { defaultLiveMemoryGradientSpeed } from '@vlight/controls'
 import { deleteLiveMemory, setLiveMemoryState } from '../../api'
 import { MemorySceneEditor } from '../../pages/config/entities/editors/memory-scene-editor'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
+import { faderHotkeys } from '../../hooks/fader-hotkeys'
 import { Fader } from '../../ui/controls/fader/fader'
 import { flexWrap } from '../../ui/css/flex'
 import { baseline } from '../../ui/styles'
@@ -287,6 +288,7 @@ export const StatelessLiveMemoryWidget = ({
           step={1}
           value={state.value ?? 0}
           onChange={changeValue}
+          hotkeys={faderHotkeys[0]}
           ariaLabel="Value"
         />
         {hasGradient && (
@@ -297,6 +299,7 @@ export const StatelessLiveMemoryWidget = ({
             quadraticScale={1 / 5}
             value={gradientSpeed}
             onChange={changeGradientSpeed}
+            hotkeys={faderHotkeys[1]}
             label="Move"
             subLabel={`${gradientSpeed.toFixed(2)}s`}
           />

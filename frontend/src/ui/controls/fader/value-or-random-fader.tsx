@@ -2,6 +2,8 @@ import { ValueOrRandom } from '@vlight/types'
 import { isValueRange, valueToFraction } from '@vlight/utils'
 import { JSX } from 'react'
 
+import { FaderHotkeys } from '../../../hooks/fader-hotkeys'
+
 import { Button } from '../../buttons/button'
 import { centeredText, smallText } from '../../css/basic-styles'
 import { iconMultiple, iconRange, iconSingle } from '../../icons'
@@ -41,6 +43,12 @@ export interface ValueOrRandomFaderProps {
   /** Secondary label to display on the fader button (only for single values). */
   subLabel?: string
 
+  /**
+   * Keys to move the fader up and down while they are held
+   * (only for single values).
+   */
+  hotkeys?: FaderHotkeys
+
   onChange: (value: ValueOrRandom<number>) => void
 }
 
@@ -58,6 +66,7 @@ export const ValueOrRandomFader = ({
   quadraticScale = 1,
   label,
   subLabel,
+  hotkeys,
   onChange,
 }: ValueOrRandomFaderProps) => {
   let fader: JSX.Element
@@ -132,6 +141,7 @@ export const ValueOrRandomFader = ({
         onChange={onChange}
         ariaLabel={label}
         subLabel={subLabel}
+        hotkeys={hotkeys}
       />
     )
   }

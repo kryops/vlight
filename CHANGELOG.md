@@ -22,6 +22,7 @@
 - Improved dynamic pages editing; removed row cells
 - Color preview now includes amber and UV channels
 - Added mouse wheel input to faders (when a modifier key is pressed)
+- Added keyboard input to faders of the selected widget (hold Q/A, W/S, …; Shift for faster)
 - Long labels on fader buttons now wrap
 - Added tooltips to icon buttons
 - Added Playwright E2E tests and a read-only server mode (`readOnly` config option)

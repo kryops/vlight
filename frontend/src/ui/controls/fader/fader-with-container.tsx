@@ -1,3 +1,4 @@
+import { FaderHotkeys } from '../../../hooks/fader-hotkeys'
 import { cx } from '../../../util/styles'
 import { centeredText, smallText } from '../../css/basic-styles'
 import { Icon } from '../../icons/icon'
@@ -37,6 +38,9 @@ export interface FaderWithContainerProps {
   /** Tooltip for the bottom icon. */
   bottomIconTitle?: string
   onBottomIconClick?: () => any
+
+  /** Keys to move the fader up and down while they are held. */
+  hotkeys?: FaderHotkeys
 
   className?: string
   faderClassName?: string

@@ -5,7 +5,10 @@ import {
   ensureBetween,
 } from '@vlight/utils'
 
+import { useRef } from 'react'
+
 import { useDelayedState } from '../../../hooks/delayed-state'
+import { FaderHotkeys, useFaderHotkeys } from '../../../hooks/fader-hotkeys'
 
 import { FaderBase } from './fader-base'
 import { FaderButton } from './fader-button'
@@ -72,6 +75,12 @@ export interface FaderProps {
    */
   colorPicker?: boolean
 
+  /**
+   * Keys to move the fader up and down while they are held
+   * (active while the surrounding widget's hotkeys are active).
+   */
+  hotkeys?: FaderHotkeys
+
   onChange: (value: number) => void
 
   className?: string
@@ -90,6 +99,7 @@ export const Fader = ({
   subLabel,
   subLabelTitle,
   ariaLabel,
+  hotkeys,
   onChange,
   ...passThrough
 }: FaderProps) => {
@@ -137,6 +147,34 @@ export const Fader = ({
     onChange(newValue)
   }
 
+  // fraction accumulated during keyboard movement, so that rounding
+  // to the step size does not swallow small changes
+  const keyboardFractionRef = useRef<number | null>(null)
+
+  const onKeyboardMove = (fractionDelta: number) => {
+    const currentFraction =
+      keyboardFractionRef.current ??
+      valueToFraction(valueToUse, min, max, quadraticScale)
+    const newFraction = ensureBetween(currentFraction + fractionDelta, 0, 1)
+    keyboardFractionRef.current = newFraction
+    const newRawValue = fractionToValue(newFraction, min, max, quadraticScale)
+    if (newRawValue === valueToUse) {
+      return
+    }
+    setLocalValue(newRawValue)
+    const roundedValue = roundToStep(newRawValue, step)
+    if (roundedValue !== roundToStep(valueToUse, step)) {
+      onChange(roundedValue)
+    }
+  }
+
+  const onKeyboardStop = () => {
+    keyboardFractionRef.current = null
+    setLocalValue(null, true)
+  }
+
+  const hotkeysActive = useFaderHotkeys(hotkeys, onKeyboardMove, onKeyboardStop)
+
   return (
     <FaderBase
       {...passThrough}
@@ -151,7 +189,16 @@ export const Fader = ({
         'aria-valuemax': max,
         'aria-valuetext': subLabel,
         'aria-orientation': 'vertical',
+        'aria-keyshortcuts':
+          hotkeys && hotkeysActive
+            ? `${hotkeys.up.toUpperCase()} ${hotkeys.down.toUpperCase()}`
+            : undefined,
       }}
+      title={
+        hotkeys && hotkeysActive
+          ? `${hotkeys.up.toUpperCase()} / ${hotkeys.down.toUpperCase()} (hold, Shift for faster)`
+          : undefined
+      }
     >
       <FaderButton
         fraction={valueToFraction(valueToUse, min, max, quadraticScale)}

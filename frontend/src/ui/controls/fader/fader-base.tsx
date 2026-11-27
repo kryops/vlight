@@ -81,6 +81,9 @@ export interface FaderBaseProps {
 
   className?: string
 
+  /** Title to display as tooltip. */
+  title?: string
+
   /**
    * Touch handler that is called with the touch position as fraction from 0-1.
    */
@@ -117,6 +120,7 @@ export function FaderBase({
   cornerLabelOverflow = false,
   colorPicker = false,
   className,
+  title,
   onTouch,
   onUp,
   onWheel,
@@ -166,6 +170,7 @@ export function FaderBase({
       }}
       onUp={onUp}
       ref={containerRef}
+      title={title}
       preventScroll
       {...aria}
     >

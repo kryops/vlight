@@ -18,6 +18,7 @@ import { Button } from '../../ui/buttons/button'
 import { ValueOrRandomFader } from '../../ui/controls/fader/value-or-random-fader'
 import { FaderWithContainer } from '../../ui/controls/fader/fader-with-container'
 import { useDeepEqualMemo } from '../../hooks/performance'
+import { faderHotkeys } from '../../hooks/fader-hotkeys'
 import { useMasterDataAndMaps } from '../../hooks/api'
 import { cx } from '../../util/styles'
 
@@ -140,6 +141,7 @@ export const StatelessLiveChaseWidget = ({
               step={1}
               value={state.value ?? 0}
               onChange={changeValue}
+              hotkeys={faderHotkeys[0]}
               label="Value"
             />
             <Fader
@@ -148,6 +150,7 @@ export const StatelessLiveChaseWidget = ({
               quadraticScale={liveChaseFaderQuadraticScale}
               value={state.speed}
               onChange={changeSpeed}
+              hotkeys={faderHotkeys[1]}
               label="Speed"
               subLabel={`${state.speed.toFixed(2)}s`}
             />
@@ -165,6 +168,7 @@ export const StatelessLiveChaseWidget = ({
                   : (state.fade ?? 0)
               }
               onChange={changeFadeTime}
+              hotkeys={faderHotkeys[2]}
               label="Fade"
               subLabel={state.fade ? `${state.fade.toFixed(2)}s` : 'Instant'}
               bottomIcon={state.fadeLockedToSpeed ? iconPercentage : iconTime}
@@ -180,6 +184,7 @@ export const StatelessLiveChaseWidget = ({
               max={1}
               value={light}
               onChange={changeLight}
+              hotkeys={faderHotkeys[3]}
               label="Light"
               subLabel={lightSubLabel}
             />

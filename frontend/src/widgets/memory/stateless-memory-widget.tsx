@@ -5,6 +5,7 @@ import { setMemoryState } from '../../api'
 import { openEntityEditorForId } from '../../pages/config/entities/editors'
 import { Button } from '../../ui/buttons/button'
 import { Widget, WidgetPassthrough } from '../../ui/containers/widget'
+import { faderHotkeys } from '../../hooks/fader-hotkeys'
 import { Fader } from '../../ui/controls/fader/fader'
 import { verticalFlexContainer } from '../../ui/css/flex'
 import { faderContainer } from '../../ui/css/fader-container'
@@ -129,6 +130,7 @@ export const StatelessMemoryWidget = ({
                 step={1}
                 value={state.value ?? 0}
                 onChange={changeValue}
+                hotkeys={faderHotkeys[0]}
                 ariaLabel="Value"
               />
             </div>
